@@ -12,8 +12,9 @@ var hora;
 const radioButton = document.getElementById('radiobutton');
 const player = document.getElementById('player');
 const secchome = document.getElementById('home');
-
-
+const station1 = '';
+const station2 = '';
+const currentstation = '';
 
 //function initPlayer(){
     function initPlayerSDK(){
@@ -31,7 +32,7 @@ const secchome = document.getElementById('home');
              analytics: {
                 active: true,
                 debug: false,
-                appInstallerId: 'beatpag',            
+                appInstallerId: 'stereocien',            
                 trackingId: 'UA-63005013-1',
                 trackingEvents: [ 'play', 'stop', 'pause', 'resume', 'all' ],
                 sampleRate: 100,     
@@ -155,7 +156,42 @@ const secchome = document.getElementById('home');
         console.log( 'AdBlockerDetected' );
     }
 
-    initPlayerSDK();        
+    initPlayerSDK();       
+    
+    const playstopRadio = function(){
+        console.log(local_status);
+        const getplayingstatus = playerstatus();
+        console.log(getplayingstatus);
+        if (getplayingstatus == 'init'){
+            openbarra();
+        }
+        
+        if(getplayingstatus == 'podcast-playing'){
+            transitionBarra();
+            const containerpodcast  = document.getElementById('iframepodcast');
+            containerpodcast.innerHTML ='';                
+        }                
+                                           
+        if(getplayingstatus == 'video-playing'){
+            
+        }
+
+        if( local_status == null || local_status == 'undefined' || local_status == '' || local_status == 'LIVE_STOP' ){                
+            //streaming.playAd( 'vastAd', { url:'https://pubads.g.doubleclick.net/gampad/ads?sz=600x360&iu=/21799830913/Oye/VASTPrueba&ciu_szs=600x360&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&url=[referrer_url]&description_url=[description_url]&correlator=[timestamp]' } );
+            streaming.play({
+                station:'XHSONFM',
+                trackingParameters:{
+                Dist: 'WebBeat'
+                }
+            });     
+
+         $('#player').attr('data-status','radio-playing');
+         transitionBarra(); 
+         radioActive();   
+        }else if( local_status == 'LIVE_PLAYING' || local_status == 'GETTING_STATION_INFORMATION' || local_status == 'LIVE_CONNECTING' || local_status == 'LIVE_BUFFERING'){                
+            radioStop();
+        }
+};
         volume = document.getElementById('vol');
         volume.addEventListener('input', function(){
             //console.log(volume.value);
@@ -359,40 +395,7 @@ const playerstatus = function(){
     return state;
 };
 
-const playstopRadio = function(){
-            console.log(local_status);
-            const getplayingstatus = playerstatus();
-            console.log(getplayingstatus);
-            if (getplayingstatus == 'init'){
-                openbarra();
-            }
-            
-            if(getplayingstatus == 'podcast-playing'){
-                transitionBarra();
-                const containerpodcast  = document.getElementById('iframepodcast');
-                containerpodcast.innerHTML ='';                
-            }                
-                                               
-            if(getplayingstatus == 'video-playing'){
-                
-            }
 
-            if( local_status == null || local_status == 'undefined' || local_status == '' || local_status == 'LIVE_STOP' ){                
-                //streaming.playAd( 'vastAd', { url:'https://pubads.g.doubleclick.net/gampad/ads?sz=600x360&iu=/21799830913/Oye/VASTPrueba&ciu_szs=600x360&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&url=[referrer_url]&description_url=[description_url]&correlator=[timestamp]' } );
-                streaming.play({
-                    station:'XHSONFM',
-                    trackingParameters:{
-                    Dist: 'WebBeat'
-                    }
-                });     
-
-             $('#player').attr('data-status','radio-playing');
-             transitionBarra(); 
-             radioActive();   
-            }else if( local_status == 'LIVE_PLAYING' || local_status == 'GETTING_STATION_INFORMATION' || local_status == 'LIVE_CONNECTING' || local_status == 'LIVE_BUFFERING'){                
-                radioStop();
-            }
-};
 
 
 $('#radiobutton').on('click',function(){    
@@ -497,7 +500,7 @@ const showMenu = (toggleId, navId) =>{
              document.getElementById('big-play').innerHTML = bigButtonPause; 
         }
 
-                var elem = document.querySelector('.carousel-main');
+        /*var elem = document.querySelector('.carousel-main');
         var flkty = new Flickity( elem, {
             // options
             cellAlign: 'left',
@@ -531,7 +534,7 @@ const showMenu = (toggleId, navId) =>{
             pageDots: false, 
             autoPlay: true
         });
-
+        */
 
 
 
