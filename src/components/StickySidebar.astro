@@ -1,0 +1,132 @@
+---
+import Menu from './Menu.astro';
+import MenuSidebar from './MenuSidebar.astro';
+
+---
+
+<!--div class="flex-[0_0_auto] flex-shrink-0 whitespace-nowrap box-border overflow-x-hidden absolute bg-white bg-opacity-90 backdrop-blur-md after:content-[''] after:flex after:bg-[#0f1218] after:bg-opacity-10 after:backdrop-blur-md after:absolute after:left-0 after:w-full after:h-fit after:z-[-2] z-[3] md:overflow-visible">
+    <div class="z-[5] border-solid border-0 border-r border-[#333333]  transition-[width] duration-[225ms] delay-[0ms] ease-transition-sidebar w-[220px]">
+        <div class="relative flex flex-col items-stretch top-0 left-0 h-[175px] overflow-x-hidden overflow-y-hidden h-screen transition-all duration-300 ease-linear">
+            <div class="relative w-[calc(100%-2px)] h-[175px] left-[2px] top-[-1px] [&amp;::_>_span]:border-0">
+                <img alt="image-stc" src="https://storage.googleapis.com/nrm-web/stereocien/sc-mil-500-min.png">
+
+            </div>
+
+            <MenuSidebar />
+        </div>
+    </div>
+</div-->
+
+<aside class="h-screen bg-white text-azul-stc sticky top-0 left-0 ">
+  <div class="p-2 z-[5] border-solid border-0 border-r border-[#333333]  transition-[width] duration-[225ms] delay-[0ms] ease-transition-sidebar w-[220px]">
+    <a href="/">
+		<img src="https://storage.googleapis.com/nrm-web/stereocien/sc-mil-500-min.png" class="max-w-28 m-auto" alt="Stereo Cien" width="112" height="75" />
+	</a>
+    
+    <div>
+        <span class="text-[14px]">¿Qué Quieres escuchar?</span>
+        <a href="#" class="w-full flex items-center justify-start text-azul-stc">
+            <svg xmlns="http://www.w3.org/2000/svg" x-bind:width="size" x-bind:height="size" viewBox="0 0 24 24" fill="currentColor" width="40" height="40">
+            <path d="M6 4v16a1 1 0 0 0 1.524 .852l13 -8a1 1 0 0 0 0 -1.704l-13 -8a1 1 0 0 0 -1.524 .852z"></path>
+            </svg>
+            <span >Stereo Cien Digital</span>
+        </a>
+        <a href="#" class="w-full flex items-center justify-start text-azul-stc">
+            <svg xmlns="http://www.w3.org/2000/svg" x-bind:width="size" x-bind:height="size" viewBox="0 0 24 24" fill="currentColor" width="40" height="40">
+            <path d="M6 4v16a1 1 0 0 0 1.524 .852l13 -8a1 1 0 0 0 0 -1.704l-13 -8a1 1 0 0 0 -1.524 .852z"></path>
+            </svg>
+            <span >Enfoque Noticias</span>
+        </a>
+    </div>
+
+    <nav class="flex items-center justify-center h-full pb-[84px] w-[calc(100%-1px)] flex-col">
+      <ul>
+        <li class=" p-2 mb-2 hover:bg-blue-900 hover:text-white rounded-lg transition-colors">
+            <a href="/noticias" class="w-full flex items-center justify-start text-azul-stc">
+                <svg xmlns="http://www.w3.org/2000/svg" x-bind:width="size" x-bind:height="size" viewBox="0 0 24 24" fill="none" stroke="currentColor" x-bind:stroke-width="stroke" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
+                <path d="M3 4m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z"></path>
+                <path d="M7 8h10"></path>
+                <path d="M7 12h10"></path>
+                <path d="M7 16h10"></path>
+                </svg>
+                <span class="uppercase tracking-[0.2em] text-xs font-bold ml-2">Noticias</span>
+            </a>
+        </li>
+        <li class=" p-2 mb-2 hover:bg-blue-900 hover:text-white rounded-lg transition-colors">
+            <a href="/promociones" class="w-full flex items-center justify-start text-azul-stc">
+                <svg xmlns="http://www.w3.org/2000/svg" x-bind:width="size" x-bind:height="size" viewBox="0 0 24 24" fill="none" stroke="currentColor" x-bind:stroke-width="stroke" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
+                <path d="M15 5l0 2"></path>
+                <path d="M15 11l0 2"></path>
+                <path d="M15 17l0 2"></path>
+                <path d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-3a2 2 0 0 0 0 -4v-3a2 2 0 0 1 2 -2"></path>
+                </svg>
+                <span class="uppercase tracking-[0.2em] text-xs font-bold ml-2">Promociones</span>
+            </a>
+        </li>
+        <li class=" p-2 mb-2 hover:bg-blue-900 hover:text-white rounded-lg transition-colors">
+            <a href="/autos-al-cien" class="w-full flex items-center justify-start text-azul-stc">
+                <svg xmlns="http://www.w3.org/2000/svg" x-bind:width="size" x-bind:height="size" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                <path d="M17 14a3 3 0 0 1 2.685 4.34l-.067 .126l-.1 .165l-.141 .2l-.116 .141l-.116 .126a3 3 0 0 1 -.388 .334l-.149 .1l-.089 .055q -.052 .032 -.107 .06l-.17 .085l-.175 .073l-.104 .037l-.17 .052l-.172 .042l-.183 .032l-.075 .01q -.09 .011 -.18 .016l-.183 .006l-.183 -.006l-.18 -.016l-.192 -.03l-.17 -.036l-.18 -.051l-.058 -.019a3 3 0 0 1 -.174 -.065l-.161 -.072l-.168 -.087l-.053 -.03q -.122 -.072 -.237 -.156l-.16 -.124l-.15 -.134l-.129 -.129l-.066 -.073l-.1 -.12l-.12 -.165l-.074 -.113l-.063 -.108l-.067 -.126a3 3 0 0 1 -.315 -1.34a3 3 0 0 1 3 -3m-10 0a3 3 0 0 1 2.685 4.34l-.067 .126l-.1 .165l-.141 .2l-.116 .141l-.116 .126a3 3 0 0 1 -.388 .334l-.149 .1l-.089 .055q -.052 .032 -.107 .06l-.17 .085l-.175 .073l-.104 .037l-.17 .052l-.172 .042l-.183 .032l-.075 .01q -.09 .011 -.18 .016l-.183 .006l-.183 -.006l-.18 -.016l-.192 -.03l-.17 -.036l-.18 -.051l-.058 -.019a3 3 0 0 1 -.174 -.065l-.161 -.072l-.168 -.087l-.053 -.03q -.122 -.072 -.237 -.156l-.16 -.124l-.15 -.134l-.129 -.129l-.066 -.073l-.1 -.12l-.12 -.165l-.074 -.113l-.063 -.108l-.067 -.126a3 3 0 0 1 -.315 -1.34a3 3 0 0 1 3 -3m7 -9a1 1 0 0 1 .694 .28l.087 .095l3.699 4.625h.52a3 3 0 0 1 2.995 2.824l.005 .176v4a1 1 0 0 1 -1 1h-.126q .125 -.48 .126 -1a4 4 0 1 0 -7.874 1h-2.252q .124 -.48 .126 -1a4 4 0 1 0 -7.874 1h-.126a1 1 0 0 1 -1 -1v-6l.007 -.117l.008 -.056l.017 -.078l.012 -.036l.014 -.05l2.014 -5.034a1 1 0 0 1 .928 -.629zm-7 11a1 1 0 1 0 0 2a1 1 0 0 0 0 -2m10 0a1 1 0 1 0 0 2a1 1 0 0 0 0 -2m-3.48 -9h-.52v3h2.92z"></path>
+                </svg>
+                <span class="uppercase tracking-[0.2em] text-xs font-bold ml-2">Autos al Cien</span>
+            </a>
+        </li>
+
+        <li class="group">
+            <button class="w-full flex items-center justify-between p-2 mb-2 hover:bg-blue-900 hover:text-white rounded-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" x-bind:width="size" x-bind:height="size" viewBox="0 0 24 24" fill="none" stroke="currentColor" x-bind:stroke-width="stroke" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
+                <path d="M4 13m0 2a2 2 0 0 1 2 -2h1a2 2 0 0 1 2 2v3a2 2 0 0 1 -2 2h-1a2 2 0 0 1 -2 -2z"></path>
+                <path d="M15 13m0 2a2 2 0 0 1 2 -2h1a2 2 0 0 1 2 2v3a2 2 0 0 1 -2 2h-1a2 2 0 0 1 -2 -2z"></path>
+                <path d="M4 15v-3a8 8 0 0 1 16 0v3"></path>
+                </svg>
+                <span class="uppercase tracking-[0.2em] text-xs font-bold">Podcast</span>
+                <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+            <div class="hidden group-hover:block pl-4">
+                <a href="#" class="block p-2 text-azul-stc hover:bg-blue-900 hover:text-white rounded-lg mt-1 transition-colors">
+                    <span class="uppercase tracking-[0.2em] text-xs font-bold">Autos al Cien</span>
+                </a>
+                <a href="#" class="block p-2 text-azul-stc hover:bg-blue-900 hover:text-white rounded-lg mt-1 transition-colors">
+                    <span class="uppercase tracking-[0.2em] text-xs font-bold">El Especial de Stereo Cien</span>
+                </a>
+                <a href="#" class="block p-2 text-azul-stc hover:bg-blue-900 hover:text-white rounded-lg mt-1 transition-colors">
+                    <span class="uppercase tracking-[0.2em] text-xs font-bold">Mascotas con Estrella</span>
+                </a>
+            </div>
+        </li>
+        <li class="group">
+            <button class="w-full flex items-center justify-between mb-2 p-2 hover:bg-blue-900 hover:text-white rounded-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" x-bind:width="size" x-bind:height="size" viewBox="0 0 24 24" fill="none" stroke="currentColor" x-bind:stroke-width="stroke" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
+                <path d="M3 17a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path>
+                <path d="M9 17v-13h10v8"></path>
+                <path d="M9 8h10"></path>
+                <path d="M16 19h6"></path>
+                <path d="M19 16v6"></path>
+                </svg>
+                <span class="uppercase tracking-[0.2em] text-xs font-bold">Más</span>
+                <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+            <div class="hidden group-hover:block pl-4">
+                <a href="#" class="block p-2 text-azul-stc hover:bg-blue-900 hover:text-white rounded-lg mt-1 transition-colors">
+                    <span class="uppercase tracking-[0.2em] text-xs font-bold">Mascotas</span>
+                </a>
+                <a href="#" class="block p-2 text-azul-stc hover:bg-blue-900 hover:text-white rounded-lg mt-1 transition-colors">
+                    <span class="uppercase tracking-[0.2em] text-xs font-bold">Programación</span>
+                </a>
+                <a href="#" class="block p-2 text-azul-stc hover:bg-blue-900 hover:text-white rounded-lg mt-1 transition-colors">
+                    <span class="uppercase tracking-[0.2em] text-xs font-bold">Programas</span>
+                </a>
+                <a href="#" class="block p-2 text-azul-stc hover:bg-blue-900 hover:text-white rounded-lg mt-1 transition-colors">
+                    <span class="uppercase tracking-[0.2em] text-xs font-bold">Cartelera</span>
+                </a>
+            </div>
+        </li>
+    
+      </ul>
+    </nav>
+  </div>
+</aside>

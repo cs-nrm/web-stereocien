@@ -1,0 +1,91 @@
+---
+import { Image } from 'astro:assets';
+
+const res = await fetch("https://contenido.stereociendigital.mx/wp-json/wp/v2/posts?_fields=title,sticky,categories,slug,yoast_head_json,_links,_embedded&_embed&per_page=30&sticky=true");
+const posts = await res.json();
+
+
+    posts.map((post) => {
+      return {
+        cat:post.categories[0]
+      };
+    });
+
+interface Props{ 
+  post:any; 
+  cat:any; 
+}
+
+const { post } = Astro.props;
+const { cat } = Astro.props ;
+
+var url_seccion;
+var seccion;
+
+switch (cat){
+    case 143 :        
+        url_seccion = 'noticias';
+        seccion = 'Noticias';
+    break;
+    case 275:        
+        url_seccion = 'promociones';
+        seccion = '¡Participa!';
+    break;
+    case 169:
+        url_seccion = 'autos-al-cien';
+        seccion = 'Autos al Cien';
+    break;
+    case 167:
+        url_seccion = 'mascotas';
+        seccion = 'Mascotas';
+    break;
+    case 200:
+        url_seccion = 'artista-de-la-semana';
+        seccion = 'Artista de la Semana';
+    break;
+    default:
+        url_seccion = 'noticias'; 
+        seccion = 'Noticias';   
+    break;      
+}
+
+---
+<div class="main-carousel bg-azul p-12">
+	{
+	posts.map((post:any)=> (
+		<div class="carousel-cell">
+			<a class="flex flex-wrap items-center justify-between" href={`/${url_seccion}/${post.slug}/`}>
+                <div class="w-1/2">
+                    <p class="oswald text-2xl text-azul-boton" set:html={post.categories[0]}></p>
+                    <p class="oswald text-2xl text-azul-boton" set:html={seccion}></p>
+                    <h2 class="oswald text-xl text-white" set:html={post.title.rendered}></h2>
+                    <p class="text-base text-zinc-300 font-bold" set:html={post.title.rendered}></p>
+                </div>
+                <div class="w-1/2 flex justify-center p-4">
+                    <!--Image class="block h-auto w-full object-fill h-auto" src={post._embedded['wp:featuredmedia'][0].media_details.sizes['medium_large'].source_url} width="800" height="600" alt={post.title.rendered}/-->
+                    <Image class="block max-h-[400px] w-auto object-fill" src={post.yoast_head_json['og_image'][0].url} width="800" height="600" alt={post.title.rendered}/>
+                </div>
+				
+			</a>
+		</div>
+	))    
+	}
+</div>
+
+<style>
+.container.cards{
+	max-width: 100% !important;
+}
+
+.carousel-cell {
+  width: 100%;
+  height: auto;
+}
+
+.carousel-cell img{
+	border-radius: var(--border-radius);
+	box-shadow: 0 2px 12px 7px rgba(0,0,0,0.4);
+}
+
+
+</style>
