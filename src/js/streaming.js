@@ -523,7 +523,7 @@ const showMenu = (toggleId, navId) =>{
             prevNextButtons: false,
             pageDots: false, 
             pauseAutoPlayOnHover: true
-        }); 
+        }); */
 
         var elempod = document.querySelector('.main-carousel');
         var flktypod = new Flickity( elempod, {
@@ -534,7 +534,7 @@ const showMenu = (toggleId, navId) =>{
             pageDots: false, 
             autoPlay: true
         });
-        */
+        
 
 
 

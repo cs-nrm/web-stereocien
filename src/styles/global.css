@@ -3,7 +3,20 @@
   https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6b9f7961c350917dd/templates/styles/blog/default.css
   License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
  */
-
+@font-face {
+	font-family: 'Oswald';
+	src: url('/fonts/Oswald-Regular.ttf');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: 'Poppins';
+	src: url('/fonts/Poppins-Light.ttf');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
  :root {
 	--accent: #2337ff;
 	--accent-dark: #000d8a;
@@ -17,77 +30,39 @@
   --gray-color: #191818;
 	--gray-light: #868583;
 
-	--yellow-beat: #ffeb3b;
-	--gray-beat: #d4d4d8;
-  --azul-neon: #09e6f1;
-  
-
 	--border: hsl(280 10% 50% / 1);
     --card: hsl(0 0% 0%);
     --color: hsl(240 18% 80%);
     --border-width: 2px;
     --border-radius: 0.5rem;
     --gradient: conic-gradient(from 180deg at 50% 70%, hsla(0, 0%, 98%, 1) 0deg, #df19f5 72.0000010728836deg, #f70bd0 144.0000021457672deg, #09e6f1 216.00000858306885deg, #08f62c 288.0000042915344deg, hsla(0, 0%, 98%, 1) 1turn);
+    --azul-stc: #12216a;
+    --azul-fondo: #031653;
+    --azul-boton: #044df1;
+    --gris-fondo: #eeeff0;
 }
-.yellow-beat{
-	color: #ffeb3b;
+.text-azul-stc{
+	color: var(--azul-stc);
 }
-.gray-beat{
-	color: #868583;
+.text-azul-boton{
+	color: var(--azul-boton);
 }
-
-@font-face {
-	font-family: 'Atkinson';
-	src: url('/fonts/atkinson-regular.woff') format('woff');
-	font-weight: 400;
-	font-style: normal;
-	font-display: swap;
+.border-stc{
+  border: 1px solid var(--azul-stc);
 }
-@font-face {
-	font-family: 'Atkinson';
-	src: url('/fonts/atkinson-bold.woff') format('woff');
-	font-weight: 700;
-	font-style: normal;
-	font-display: swap;
+.bg-stc{
+  background: var(--azul-stc);
 }
-/*@font-face {
-	font-family: 'Antonsc';
-	src: url('/fonts/AntonSC-Regular.ttf');
-	font-weight: 400;
-	font-style: normal;
-	font-display: swap;
-}*/
-@font-face {
-	font-family: 'Audiowide';
-	src: url('/fonts/Audiowide-Regular.ttf');
-	font-weight: 400;
-	font-style: normal;
-	font-display: swap;
+.bg-azul{
+  background: var(--azul-fondo);
 }
-/*@font-face {
-	font-family: 'Bebasneue';
-	src: url('/fonts/BebasNeue-Regular.ttf');
-	font-weight: 400;
-	font-style: normal;
-	font-display: swap;
-}*/
-@font-face {
-	font-family: 'Firasans';
-	src: url('/fonts/FiraSans-Regular.ttf');
-	font-weight: 400;
-	font-style: normal;
-	font-display: swap;
+.oswald{
+  font-family: 'Oswald';
 }
 
-.audiowide{
-  font-family: 'Audiowide';
-}
 
 body {
-	font-family: 'Atkinson', sans-serif;
-  /*font-family: 'Antonsc';*/
-  font-family: 'Bebasneue';
-  font-family: 'FiraSans';
+	font-family: 'Poppins';
   letter-spacing: 0.05em;
 	margin: 0;
 	padding: 0;
@@ -99,7 +74,7 @@ body {
 	color: var(--gray-beat);
 	font-size: 20px;
 	line-height: 1.7;
-	background-color: var(--gray-color);
+	background-color: var(--gris-fondo);
 /*
 	background: radial-gradient(circle, transparent 25%, #191818  26%),linear-gradient(45deg, transparent 46%, #242424 47%, #242424 52%, transparent 53%), linear-gradient(135deg, transparent 46%, #242424 47%, #242424 52%, transparent 53%);
 	background: radial-gradient(circle at top left,transparent 9%, #242424 10% ,#242424 15% , transparent 16%) , radial-gradient(circle at bottom left,transparent 9%, #242424 10% ,#242424 15% , transparent 16%), radial-gradient(circle at top right ,transparent 9%, #242424 10% ,#242424 15% , transparent 16%) , radial-gradient(circle at bottom right,transparent 9%, #242424 10% ,#242424 15% , transparent 16%),radial-gradient(circle, transparent 25%, #191818  26%),linear-gradient(45deg, transparent 46%, #242424 47%, #242424 52%, transparent 53%), linear-gradient(135deg, transparent 46%, #242424 47%, #242424 52%, transparent 53%);
@@ -111,84 +86,6 @@ body {
         background-size: 2em 2em;
         background-color: #191818;
         opacity: 1;*/
-}
-
-.neon-rosa{
-  /*background: -webkit-linear-gradient(-86deg, #f70bd0 20%, #f4c7dc 53%, #09E5C3 91%);
-  -webkit-background-clip: text;
-  -webkit-text-stroke: 4px transparent;
-  color: #000; */
-  text-shadow: 0 0 0px #fff, 0 0 10px #f70bd0, 0 0 20px #f70bd0, 0 0 30px #f70bd0;
-  color: white;
-  display: flex;
-  align-items: baseline;
-  white-space: nowrap;
-}
-.neon-rosa:after{
-  content: '';
-  width: 100%;
-  height: 5px;
-  background-color: white;
-  margin-left: 20px;
-  border-radius: 4px;
-  box-shadow: 0 0 0px #fff, 0 0 10px #f70bd0, 0 0 20px #f70bd0, 0 0 30px #f70bd0;
-}
-.neon-morado{
-  /*background: -webkit-linear-gradient(-86deg, #df19f5 20%, #09e6f1 53%, rgba(9,106,229,1) 91%);
-  -webkit-background-clip: text;
-  -webkit-text-stroke: 4px transparent;
-  color: #000;*/
-  text-shadow: 0 0 0px #fff, 0 0 10px #df19f5, 0 0 20px #df19f5, 0 0 30px #df19f5;
-  color: white;
-  display: flex;
-  align-items: baseline;
-  white-space: nowrap;
-}
-.neon-morado:after{
-  content: '';
-  width: 100%;
-  height: 5px;
-  background-color: white;
-  margin-left: 20px;
-  border-radius: 4px;
-  box-shadow: 0 0 0px #fff, 0 0 10px #df19f5, 0 0 20px #df19f5, 0 0 30px #df19f5;
-}
-.neon-azul{
-  /*background: -webkit-linear-gradient(-86deg, #09e6f1 26%, #1c726c 53%, #09E5C3 91%);
-  -webkit-background-clip: text;
-  -webkit-text-stroke: 4px transparent;
-  color: #000;*/
-  text-shadow: 0 0 0px #fff, 0 0 10px #09e6f1, 0 0 20px #09e6f1, 0 0 30px #09e6f1;
-  color: #ffffff;
-  display: flex;
-  align-items: baseline;
-  white-space: nowrap;
-}
-.neon-azul:after{
-  content: '';
-  width: 100%;
-  height: 5px;
-  background-color: white;
-  margin-left: 20px;
-  border-radius: 4px;
-  box-shadow: 0 0 0px #fff, 0 0 10px #09e6f1, 0 0 20px #09e6f1, 0 0 30px #09e6f1;
-}
-
-.neon-amarillo{
-  color: #000000;
-  text-shadow:
-  0 0 0 #fff, 
-  0 0 1px #c5f9cd,
-  0 0 4px #08f62c,
-  0 0 10px #08f62c; 
-  /*text-shadow: 
-    0 0 10px rgba(255,255,255,1) , 
-    0 0 20px rgba(255,255,255,1) , 
-    0 0 30px rgba(255,255,255,1) , 
-    0 0 40px var(--yellow-beat), 
-    0 0 70px var(--yellow-beat), 
-    0 0 80px var(--yellow-beat), 
-    0 0 100px var(--yellow-beat);*/
 }
 
 .ver-mas{
