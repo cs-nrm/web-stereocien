@@ -1,4 +1,4 @@
----
+   ---
 import DoubleBox from '../components/DoubleBox.astro';
 import BoxBanner from '../components/BoxBanner.astro';
 import LeaderBoard from'../components/LeaderBoard.astro';
@@ -6,14 +6,14 @@ import SuperLeader from '../components/SuperLeader.astro';
 import { Image } from 'astro:assets';
 
 
-const res = await fetch("https://stereociendigital.mx/wp-json/wp/v2/posts?_fields=title,date,slug,yoast_head_json,_links,_embedded&_embed&per_page=8&categories=143");
+const res = await fetch("https://stereociendigital.mx/wp-json/wp/v2/posts?_fields=title,date,slug,yoast_head_json,_links,_embedded&_embed&per_page=5&categories=275");
 
 const posts = await res.json();
 
 ---
       <div class="container cards">
-        <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-6 xl:gap-8">
-          <div class="card sm:col-span-2">
+        <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 md:gap-6 xl:gap-8">
+          <div class="card">
               <a href={`/noticias/${posts[0].slug}/`} class="group relative flex h-60 sm:h-48 items-end overflow-hidden rounded-lg bg-gray-100 shadow-lg md:h-60">
                   <img src={posts[0].yoast_head_json['og_image'][0].url} alt={posts[0].title.rendered} class="absolute inset-0 w-full h-full object-cover object-center transition duration-200 group-hover:scale-110" />
                   <!--img src={posts[0]._embedded['wp:featuredmedia'][0].media_details.sizes['beat-news-size'].source_url} alt={posts[0].title.rendered} class="absolute inset-0 w-full h-full object-cover object-center transition duration-200 group-hover:scale-110" /-->
@@ -24,7 +24,7 @@ const posts = await res.json();
                   </div>
               </a>
           </div>
-          <div class="card">
+          <!--div class="card">
               <a href={`/noticias/${posts[1].slug}/`} class="group relative flex h-60 sm:h-48 items-end overflow-hidden rounded-lg bg-gray-100 shadow-lg md:h-60">
                   <img src={posts[1].yoast_head_json['og_image'][0].url} alt={posts[1].title.rendered} class="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" />
                   <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-800 via-transparent to-transparent opacity-50"></div>
@@ -44,7 +44,7 @@ const posts = await res.json();
                   </div>
               </a>
           </div>
-          <div class="card sm:col-span-1 lg:col-span-2">
+          <div class="card">
               <a href={`/noticias/${posts[3].slug}/`} class="group relative flex h-60 sm:h-48 items-end overflow-hidden rounded-lg bg-gray-100 shadow-lg md:h-60">
                   <img src={posts[3].yoast_head_json['og_image'][0].url} alt={posts[3].title.rendered} class="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" />
                   <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-800 via-transparent to-transparent opacity-50"></div>
@@ -52,48 +52,8 @@ const posts = await res.json();
                     <p class="mb-0 leading-tight" set:html={posts[3].title.rendered}></p>
                     <span class="text-xs font-thin text-zinc-300" set:html={posts[3].yoast_head_json.article_published_time.substring(0, 10)}></span>
                   </div>
-              </a>
-          </div>
-          <div class="card sm:col-span-1 lg:col-span-2">
-              <a href={`/noticias/${posts[4].slug}/`} class="group relative flex h-60 sm:h-48 items-end overflow-hidden rounded-lg bg-gray-100 shadow-lg md:h-60">
-                  <img src={posts[4].yoast_head_json['og_image'][0].url} alt={posts[4].title.rendered} class="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" />
-                  <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-800 via-transparent to-transparent opacity-50"></div>
-                  <div class="oswald w-full text relative inline-block p-3 text-base sm:text-sm md:text-lg text-white">
-                    <p class="mb-0 leading-tight" set:html={posts[4].title.rendered}></p>
-                    <span class="text-xs font-thin text-zinc-300" set:html={posts[4].yoast_head_json.article_published_time.substring(0, 10)}></span>
-                  </div>
-              </a>
-          </div>
-          <div class="card sm:col-span-2 lg:col-span-1">
-              <a href={`/noticias/${posts[5].slug}/`} class="group relative flex h-60 sm:h-48 items-end overflow-hidden rounded-lg bg-gray-100 shadow-lg md:h-60">
-                  <img src={posts[5].yoast_head_json['og_image'][0].url} alt={posts[5].title.rendered} class="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" />
-                  <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-800 via-transparent to-transparent opacity-50"></div>
-                  <div class="oswald w-full text relative inline-block p-3 text-base sm:text-sm md:text-lg text-white">
-                    <p class="mb-0 leading-tight" set:html={posts[5].title.rendered}></p>
-                    <span class="text-xs font-thin text-zinc-300" set:html={posts[5].yoast_head_json.article_published_time.substring(0, 10)}></span>
-                  </div>
               </a>       
-          </div>
-          <div class="card md:hidden lg:block">
-              <a href={`/noticias/${posts[6].slug}/`} class="group relative flex h-60 sm:h-48 items-end overflow-hidden rounded-lg bg-gray-100 shadow-lg md:h-60">
-                  <img src={posts[6].yoast_head_json['og_image'][0].url} alt={posts[6].title.rendered} class="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" />
-                  <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-800 via-transparent to-transparent opacity-50"></div>
-                  <div class="oswald w-full text relative inline-block p-3 text-base sm:text-sm md:text-lg text-white">
-                    <p class="mb-0 leading-tight" set:html={posts[6].title.rendered}></p>
-                    <span class="text-xs font-thin text-zinc-300" set:html={posts[6].yoast_head_json.article_published_time.substring(0, 10)}></span>
-                  </div>
-              </a>       
-          </div>
-          <div class="card md:col-span-2 md:hidden lg:block">
-              <a href={`/noticias/${posts[7].slug}/`} class="group relative flex h-60 sm:h-48 items-end overflow-hidden rounded-lg bg-gray-100 shadow-lg md:h-60">
-                  <img src={posts[7].yoast_head_json['og_image'][0].url} alt={posts[7].title.rendered} class="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" />
-                  <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-800 via-transparent to-transparent opacity-50"></div>
-                  <div class="oswald w-full text relative inline-block p-3 text-base sm:text-sm md:text-lg text-white">
-                    <p class="mb-0 leading-tight" set:html={posts[7].title.rendered}></p>
-                    <span class="text-xs font-thin text-zinc-300" set:html={posts[7].yoast_head_json.article_published_time.substring(0, 10)}></span>
-                  </div>
-              </a>       
-          </div>
+          </div-->
         </div>
       </div>
 
@@ -139,7 +99,7 @@ posts.map((post:any)=> (
 }
 </div-->
 <div class="m-auto text-center">
-    <a href="/news/2">
+    <a href="/autos-al-cien">
         <button class="ver-mas group relative h-8 w-36 m-4 overflow-hidden rounded-lg bg-[#044df1] text-base shadow">
             <div class="absolute inset-0 w-3 bg-[#031653] transition-all duration-[250ms] ease-out group-hover:w-full"></div>
             <span class="relative text-zinc-200 group-hover:text-white">Ver más</span>

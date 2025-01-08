@@ -531,8 +531,9 @@ const showMenu = (toggleId, navId) =>{
             lazyLoad: 1, 
             wrapAround: true, 
             cellAlign: 'center',
-            pageDots: false, 
-            autoPlay: true
+            prevNextButtons: false,
+            pageDots: true, 
+            autoPlay: 4000
         });
         
 

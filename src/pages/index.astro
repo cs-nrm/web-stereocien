@@ -2,7 +2,9 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import CardNews from '../layouts/CardsHomeNews.astro';
+import CardsNews from '../layouts/CardsHomeNews.astro';
+import CardsAutos from '../layouts/CardsHomeAutos.astro';
+import CardsHomePodcast from '../layouts/CardsHomePodcast.astro';
 import CardNerdosis from '../layouts/CardsHomeNerdosis.astro';
 import CardTrends from '../layouts/CardsHomeTrends.astro';
 import SliderPodcast from '../layouts/SliderPodcast.astro';
@@ -16,8 +18,8 @@ import BillBoard from '../components/BillBoard.astro';
 import SliderPrincipal from '../layouts/SliderPrincipal.astro';
 
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
-import SliderPromociones from '../layouts/SliderPromociones.astro';
-import CardsHomeNerdosis from '../layouts/CardsHomeNerdosis.astro';
+import Promociones from '../layouts/CardsHomePromociones.astro';
+
 
 ---
 
@@ -30,29 +32,35 @@ import CardsHomeNerdosis from '../layouts/CardsHomeNerdosis.astro';
 	  <div class="md:flex min-h-screen bg-gray-100">
 		<Header title={SITE_TITLE} />
 		
-		<div class="md:flex-1">
+		<div class="container-s md:flex-1">
 			<main id="home" >
 					<header>
 					</header>
-							
+					
 					<section>
 						<SliderPrincipal />
 						<SuperLeader />	
-						<div class="container-home p-4 mx-auto">
-							<h1 class="audiowide neon-morado text-center md:text-left py-4 font-bold yellow-beat text-4xl md:text-5xl lg:text-4xl xl:text-5xl">News</h1>
-							<div class="">
-								<!--CardNews /-->
-							</div>
-						</div>
 					</section>
-					<section class="bg-black">
+					<section>
 						<div class="container-home p-4 mx-auto">
+							<h1 class="audiowide neon-morado text-center md:text-left py-4 font-bold yellow-beat text-4xl md:text-5xl lg:text-4xl xl:text-5xl">Podcast</h1>
+							<CardsHomePodcast/>
+						</div>
+					</section>	
+					<section>
+						<div class="container-home p-4 mx-auto">
+							<h1 class="audiowide neon-morado text-center md:text-left py-4 font-bold yellow-beat text-4xl md:text-5xl lg:text-4xl xl:text-5xl">Noticias</h1>
+							<CardsNews />
+						</div>					
+					</section>
+					<section>
+						<div class="container-home p-4 mx-auto">
+							<h1 class="audiowide neon-morado text-center md:text-left py-4 font-bold yellow-beat text-4xl md:text-5xl lg:text-4xl xl:text-5xl">Autos al Cien</h1>
 							<div class="flex flex-wrap">
-								<div class="w-full lg:w-2/3">
-									<h1 class="audiowide neon-azul text-center md:text-left py-4 font-bold yellow-beat text-3xl md:text-5xl lg:text-4xl xl:text-5xl">Promociones</h1>
-									<!--SliderPromociones /-->
+								<div class="w-full lg:w-2/3 pr-2">
+									<CardsAutos />
 								</div>
-								<div class="w-full mt-8 lg:w-1/3 lg:m-0 content-center bg-zinc-700 rounded">
+								<div class="w-full mt-8 lg:w-1/3 lg:m-0 content-center bg-azul rounded">
 									<DoubleBox />
 									<!--h1 class="py-4 text-center font-bold yellow-beat text-4xl md:text-5xl lg:text-4xl xl:text-5xl [text-shadow:2px_4px_2px_rgb(86_85_83_/_64%)]">Beat Trends</h1>
 									<CardTrends />
@@ -62,6 +70,12 @@ import CardsHomeNerdosis from '../layouts/CardsHomeNerdosis.astro';
 							</div>
 							<LeaderBoard />						
 						</div>
+					</section>
+					<section>
+						<div class="container-home p-4 mx-auto">
+							<h1 class="audiowide neon-morado text-center md:text-left py-4 font-bold yellow-beat text-4xl md:text-5xl lg:text-4xl xl:text-5xl">Promociones</h1>
+							<Promociones />
+						</div>					
 					</section>
 					<section>
 						<div class="container-home p-4 mx-auto">
