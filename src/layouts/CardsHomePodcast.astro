@@ -1,0 +1,81 @@
+---
+import { Image } from 'astro:assets';
+---
+      <!-- Autos al Cien -->
+      <article class="podcast-card">
+        <img src="https://images.unsplash.com/photo-1494905998402-395d579af36f?auto=format&fit=crop&w=400" alt="Autos al Cien">
+        <div class="podcast-content">
+          <h3>AUTOS AL CIEN</h3>
+          <p>Descubre la innovación e información de la industria automotriz.</p>
+          <span class="host">con Memo Lira</span>
+        </div>
+      </article>
+
+      <!-- Macotas con Estrella -->
+      <article class="podcast-card">
+        <img src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?auto=format&fit=crop&w=400" alt="Macotas con Estrella">
+        <div class="podcast-content">
+          <h3>MACOTAS CON ESTRELLA</h3>
+          <p>Todo eso que siempre quisiste saber de tus mascotas y jamás te atreviste a preguntar.</p>
+          <span class="host">con Rodrigo Estrella</span>
+        </div>
+      </article>
+
+      <!-- Studio 100.1 -->
+      <article class="podcast-card">
+        <img src="https://images.unsplash.com/photo-1478737270239-2f02b77fc618?auto=format&fit=crop&w=400" alt="Studio 100.1">
+        <div class="podcast-content">
+          <h3>STUDIO 100.1 PRESENTA</h3>
+          <p>USA for Africa. Cuando las estrellas se alinearon. La historia del suceso y de sus protagonistas.</p>
+          <span class="host">con Pepe Campa y Benjamín Salcedo</span>
+        </div>
+      </article>
+
+<style>
+.podcast-card {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: none;
+  border-radius: 0.5rem;
+  transition: transform 0.3s ease;
+  flex-direction: row-reverse;
+}
+
+.podcast-card:hover {
+  transform: translateY(-4px);
+}
+
+.podcast-card img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+
+}
+
+.podcast-content {
+  flex: 1;
+}
+
+.podcast-content h3 {
+  font-size: 1.125rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: black;
+}
+
+.podcast-content p {
+  font-size: 0.875rem;
+  color: black;
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.host {
+  font-size: 0.75rem;
+  color: black;
+  font-family: 'Roboto';
+  font-weight: bold;
+
+}
+</style>

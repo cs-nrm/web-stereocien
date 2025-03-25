@@ -1,0 +1,98 @@
+---
+import DoubleBox from '../components/DoubleBox.astro';
+import BoxBanner from '../components/BoxBanner.astro';
+import LeaderBoard from'../components/LeaderBoard.astro';
+import SuperLeader from '../components/SuperLeader.astro';
+import { Image } from 'astro:assets';
+
+
+const ressti = await fetch("https://contenido.stereociendigital.mx/wp-json/wp/v2/posts?_fields=date,title,slug,sticky,yoast_head_json,excerpt,_links,_embedded&_embed&per_page=1&categories=143&sticky=true");
+
+const poststi = await ressti.json();
+
+---
+ <div class="review-container">
+    <div class="book-cover">
+      <img src="/img/libro.jpg" alt="Virginia Woolf - Un cuarto propio">
+    </div>
+    <div class="review-content">
+        <span class="category lovelo">RESEÑAS</span>
+        <h2>VIRGINIA WOOLF: UN CUARTO PROPIO</h2>
+        <p>Según ella, para escribir novelas, había que tener dinero y un cuarto propio, dos requisitos que rara vez cumplían las mujeres. Estas reflexiones, que escribió hace casi cien años, no han perdido vigencia.</p>
+        <span class="author roboto font-bold">por Alex Loam</span>
+    </div>
+  </div>
+
+
+<style>
+.review-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: #f5f3e7;
+  margin-top: 4rem;
+}
+
+.review-content {
+  padding: 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.review-content .category {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+.review-content h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+.review-content p {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.review-content .author {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.book-cover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.book-cover img {
+  filter: grayscale(100%);
+  transition: filter 0.3s ease;
+}
+
+.book-cover img:hover {
+  filter: grayscale(0);
+}
+@media (min-width: 769px){
+  .book-cover img {max-width: 400px; height: auto;}
+}
+@media (max-width: 900px) {
+  .review-container{min-height: auto;}
+  .review-content {padding: 1rem;}
+  .review-content p{display: none;  }
+}
+@media (max-width: 640px) {
+  .review-content h2{font-size: 1.5rem;}
+  .review-content .author, .review-content .category{ font-size: 0.6rem;}
+}
+</style>

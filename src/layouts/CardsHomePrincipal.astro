@@ -1,0 +1,107 @@
+---
+import DoubleBox from '../components/DoubleBox.astro';
+import BoxBanner from '../components/BoxBanner.astro';
+import LeaderBoard from'../components/LeaderBoard.astro';
+import SuperLeader from '../components/SuperLeader.astro';
+import { Image } from 'astro:assets';
+
+
+const ressti = await fetch("https://contenido.stereociendigital.mx/wp-json/wp/v2/posts?_fields=date,title,slug,sticky,yoast_head_json,excerpt,_links,_embedded&_embed&per_page=1&categories=143&sticky=true");
+
+const poststi = await ressti.json();
+
+---
+<div class="hero">
+  <img src={poststi[0]._embedded['wp:featuredmedia'][0].media_details.sizes['full'].source_url} alt="Imagen La Nota">
+  <div class="gradient-overlay"></div>
+  <div class="hero-content">
+    <div class="category">LA NOTICIA</div>
+    <h1 set:html={poststi[0].title.rendered}></h1>
+    <div class="text" set:html={poststi[0].excerpt.rendered}></div>
+    <div class="author">por {poststi[0].yoast_head_json.author}</div>
+  </div>
+</div>
+
+
+<style>
+/*.cards img{
+  mask-image: linear-gradient(225deg, hsla(var(--color-black), 1) 0, hsla(var(--color-black), 0.9) 40%, hsla(var(--color-black), 0) 80%);
+}*/
+
+
+.hero {
+  position: relative;
+  /*height: 600px;*/
+  color: white;
+}
+
+.hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+}
+
+.hero-content {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  padding: 3rem;
+  max-width: 65%;
+  text-align: center;
+}
+.hero-content .author {color: white;}
+
+.hero .category {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  font-family: 'Lovelo'
+}
+
+.hero h1 {
+  font-size: 2.8rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+ 	display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hero-content .text {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+	display: -webkit-box;
+	-webkit-margin-before: 0;
+  margin-block-start: 0;
+  -webkit-margin-after: 12px;
+  margin-block-end: 12px;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hero .author {
+  font-size: 0.875rem;
+  font-family: 'Roboto';
+  font-weight: bold;
+}
+
+@media (max-width: 1023px) {
+  .hero-content{max-width: 100%;}
+  .hero h1 {font-size: 1.2rem;}
+  .hero-content .text{display: none;}
+  .hero .author {display: none;}
+}
+</style>
+

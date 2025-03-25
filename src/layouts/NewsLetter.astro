@@ -1,0 +1,118 @@
+---
+---
+    <div class="newsletter-container">
+      <div class="newsletter-content">
+        <h2>MANTENTE INFORMADO</h2>
+        <ul>
+          <li>Leer nuestro newsletter te mantendrá informado.</li>
+          <li>Al suscribirte (gratis) ayudarás a mantener viva nuestra comunidad.</li>
+          <li>Tendrás acceso a los mejores eventos y promociones de primera mano.</li>
+        </ul>
+        <form class="subscribe-form">
+          <input type="email" placeholder="Dirección de correo" required>
+          <button type="submit">SUSCRÍBETE GRATIS</button>
+        </form>
+      </div>
+      <div class="newsletter-image">
+        <img src="/img/dolphin.png" alt="Ilustración newsletter">
+      </div>
+    </div>
+
+<style>
+.newsletter-container {
+  display: flex;
+  gap: 4rem;
+  background: none;
+  padding: 0;
+  border-radius: 1rem;
+  margin-bottom: 4rem;
+  justify-content: space-between;
+}
+
+.newsletter-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.newsletter-content h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+}
+
+.newsletter-content ul {
+  color: black;
+  margin-bottom: 2rem;
+  font-family: 'Roboto';
+}
+
+.newsletter-content li {
+  font-size: 1.125rem;
+  color: black;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.subscribe-form {
+  display: flex;
+  font-family: 'Roboto';
+}
+
+.subscribe-form input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 2px solid #333;
+
+  background: transparent;
+  color: white;
+  font-family: inherit;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.subscribe-form input:focus {
+  outline: none;
+  border-color: #ef4444;
+}
+
+.subscribe-form input::placeholder {
+  color: #666;
+}
+
+.subscribe-form button {
+  padding: 0.75rem 1.5rem;
+  background: #ff4949;
+  color: white;
+  border: none;
+
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
+}
+
+.subscribe-form button:hover {
+  background: #dc2626;
+}
+
+.newsletter-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.newsletter-image img {
+  width: 100%;
+  height: auto;
+  max-width: 400px;
+  filter: grayscale(100%);
+  transition: filter 0.3s ease;
+}
+
+.newsletter-image img:hover {
+  filter: grayscale(0);
+}
+
+</style>

@@ -1,0 +1,114 @@
+<div class="bar-stereo is-pinned">
+    <div class="white-space sec-menu"></div>
+    <div class="logo sec-menu"><a href="/"><img src="https://storage.googleapis.com/nrm-web/stereocien/3.svg" /></a></div>
+    <div class="header-buttons sec-menu">
+      <!--button class="to-dark">Newsletter</button>
+      <button class="to-dark">Inicia Sesión</button-->
+      <button class="radio-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.4 2.3 6.2 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/></svg>
+        Radio en Vivo 100.1 FM
+      </button>
+      <button class="search-button to-dark">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      </button>
+    </div>
+</div>
+
+<style>
+.bar-stereo {
+  background: black;
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Roboto';
+  overflow: hidden;
+  position: sticky;
+  top: -1px;
+  z-index: 999;
+  /*height: 140px;*/
+  transition: height 0.5s;
+}
+
+.sec-menu{width: 33%;}
+
+.header-white {background: white; color: black; transition: all 0.2s;}
+
+.compress{  height: 50px; transition: height 0.5s; position: fixed; width: 100%;}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+}
+
+.logo img{
+  height: 110px;
+  transition: all 0.5s;
+}
+
+.compress-logo img{
+  height: 50px;
+  transition: all 0.5s;
+}
+
+.header-buttons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: end;
+}
+
+button {
+  background: none;
+  border: none;
+  color: white;
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: color 0.2s;
+}
+
+button:hover {
+  color: #d1d1d1;
+}
+
+.dark-mode{
+    color:black;
+    transition: all 0.2s;
+}
+
+.logo-dark-mode{
+  filter: invert();
+  transition: all 0.4s;
+}
+
+.radio-button {
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 15px;
+}
+
+.radio-button:hover {
+  color: #f87171;
+}
+
+@media (max-width: 1024px) {
+    .white-space{
+        display: none;
+    }
+    .logo{
+        justify-content: flex-start;
+    }
+}
+@media (max-width: 640px) {
+  .bar-stereo[data-astro-cid-5jjk3m53] {padding: 1rem 0.5rem;}
+  .sec-menu{width: 50%;}
+  .search-button{display: none;}
+} 
+</style>

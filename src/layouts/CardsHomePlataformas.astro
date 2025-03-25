@@ -1,0 +1,85 @@
+---
+import DoubleBox from '../components/DoubleBox.astro';
+import BoxBanner from '../components/BoxBanner.astro';
+import LeaderBoard from'../components/LeaderBoard.astro';
+import SuperLeader from '../components/SuperLeader.astro';
+import { Image } from 'astro:assets';
+
+
+const ressti = await fetch("https://contenido.stereociendigital.mx/wp-json/wp/v2/posts?_fields=date,title,slug,sticky,yoast_head_json,excerpt,_links,_embedded&_embed&per_page=1&categories=143&sticky=true");
+
+const poststi = await ressti.json();
+
+---
+<div class="platforms-grid">
+      <article class="platform-card">
+        <img src="/img/plataformas1.jpg" alt="El Juego del Calamar">
+        <div class="platform-content">
+          <h3>EL JUEGO DEL CALAMAR TEMPORADA 3</h3>
+          <span class="platform-name">NETFLIX</span>
+        </div>
+      </article>
+
+      <!-- Historias Lamentables -->
+      <article class="platform-card">
+        <img src="/img/plataformas2.jpg" alt="Historias Lamentables">
+        <div class="platform-content">
+          <h3>HISTORIAS LAMENTABLES</h3>
+          <span class="platform-name">PRIME VIDEO</span>
+        </div>
+      </article>
+</div>
+
+<style>
+.platforms-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  align-items: center;
+}
+
+.platform-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: #111;
+  transition: transform 0.3s ease;
+}
+
+.platform-card:hover {
+  transform: translateY(-4px);
+}
+
+.platform-card img {
+  width: 100%;
+  object-fit: cover;
+}
+
+.platform-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.5rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+}
+
+.platform-content h3 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.platform-name {
+  font-size: 0.875rem;
+  color: #ef4444;
+  text-transform: uppercase;
+  font-family: 'Roboto';
+}
+@media (max-width: 640px) {
+  .platforms-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+</style>
