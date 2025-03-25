@@ -6,6 +6,9 @@ export interface Props {
          rendered: string;
       }
       content: string;
+      excerpt:{
+        rendered: string;
+      }
       slug: string;
       categories : {};
       yoast_head_json: {
@@ -17,6 +20,10 @@ export interface Props {
          article_published_time: string;
          author:string;         
       }
+
+
+
+
     };
     
 }
@@ -27,22 +34,25 @@ var url_seccion;
 //console.log(post.categories[0]);
 switch (post.categories[0]){
     case 143:        
-        url_seccion = 'news';
+        url_seccion = 'noticias';
     break;
-    case 537:        
-        url_seccion = 'promociones';
+    case 526:        
+        url_seccion = 'librosycultura';
     break;
-    case 578:
-        url_seccion = 'purple-noise';
+    case 527:
+        url_seccion = 'seriesypeliculas';
     break;
-    case 505:
-        url_seccion = 'beat-trends';
+    case 528:
+        url_seccion = 'guiasycomida';
     break;
-    case 531:
-        url_seccion = 'nerdosis';
+    case 169:
+        url_seccion = 'autos';
+    break;
+    case 529:
+        url_seccion = 'vinos';
     break;
     default:
-        url_seccion = 'news';    
+        url_seccion = 'noticias';    
     break;      
 }
 
@@ -51,33 +61,26 @@ switch (post.categories[0]){
 console.log(section);*/
 
 ---
-<div class="card carduno">
-    <article>
-        <div class="glows"></div>
-        <a href={`/${url_seccion}/${post.slug}/`} class="group relative flex h-60 sm:h-48 items-end overflow-hidden rounded-xl shadow-lg md:h-96">
-            <!--img src={post._embedded['wp:featuredmedia'][0].media_details.sizes['beat-news-size'].source_url} alt={post.title.rendered} class="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" /-->
-            <img src={post.yoast_head_json.og_image[0].url} alt={post.title.rendered} class="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" />
-            <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-800 via-transparent to-transparent opacity-50"></div>
-            <div class="text relative inline-block p-3 text-lg sm:text-sm text-white md:text-xl leading-tight md:leading-none"><p set:html={post.title.rendered}></p></div>
-        </a>
-    </article>
-</div>
+          <article class="news-card transition duration-[0.2s] hover:translate-y-[-4px]">
+            <a href={`/news/${post.slug}/`}>
+              <div class="bg-black"><img src={post.yoast_head_json.og_image[0].url} alt="Imagen Noticias"/></div>
+              <div class="news-content p-6">
+                <h5 set:html={post.title.rendered}></h5>
+                <div class="text-sm resumen" set:html={post.excerpt.rendered}></div>
+                <span class="roboto font-bold text-xs mt-4">por {post.yoast_head_json.author}</span>
+              </div>
+            </a>  
+          </article>
+
 
 <style>
-    .card.carddos article {
-        background: hsl(0deg 0% 0% / 50%) !important;
-    }
     .carduno img{
         box-shadow: none;
         width: 100%;
         height: 100%;
         mask-image: linear-gradient(225deg, hsla(var(--color-black), 1) 0, hsla(var(--color-black), 0.9) 40%, hsla(var(--color-black), 0) 80%);
         }
-    .carddos img{
-        width: 100%;
-        height: 100%;
-        mask-image: linear-gradient(to bottom, hsla(var(--color-black), 1) 0, hsla(var(--color-black), 1) 70%, hsla(var(--color-black), 0) 100%);
-    }
+
     .carduno h2, .carddos h2{
         display: -webkit-box;
         -webkit-margin-before: 0;

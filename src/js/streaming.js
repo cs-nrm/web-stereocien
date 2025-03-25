@@ -293,7 +293,7 @@ const secchome = document.getElementById('home');
         
         function getInfoProg(){
             //fetch("https://beatdigital.mx/wp-json/wp/v2/posts?_embed&per_page=30&categories=3312&_fields[]=acf")
-            fetch("https://contenido.beatdigital.mx/wp-json/wp/v2/posts?_embed&per_page=40&categories=515&_fields[]=acf")            
+            fetch("https://contenido.stereociendigital.mx/wp-json/wp/v2/posts?_embed&per_page=40&categories=515&_fields[]=acf")            
             .then((res) => {
                 if (!res.ok) {
                     throw new Error
@@ -535,6 +535,7 @@ document.addEventListener('astro:page-load', ev => {
 
 
     /* efectos */ 
+    var distance = '';
     (function($){
         $(document).ready(function(){
         
@@ -549,7 +550,7 @@ document.addEventListener('astro:page-load', ev => {
             
             window.addEventListener('scroll', function(e){
                // console.log(window.scrollY );
-                if( window.scrollY > 0 && window.scrollY <= range ){                    
+               /* if( window.scrollY > 0 && window.scrollY <= range ){                    
                     document.styleSheets[1].addRule('body::before','filter: hue-rotate(0deg) blur(5px)');
                     document.styleSheets[1].addRule('body::before','transition: filter 0.5s ease-in-out;');
                 }
@@ -572,18 +573,29 @@ document.addEventListener('astro:page-load', ev => {
                 if( window.scrollY > range4 ){                    
                     document.styleSheets[1].addRule('body::before','filter: hue-rotate(0deg) blur(5px)');
                     document.styleSheets[1].addRule('body::before','transition: filter 0.5s ease-in-out;');
-                }
+                }*/
 
 
 
-                if (header.hasClass('is-pinned') ){
-                    header.addClass('compress');
-                    $('header .logo').addClass('compress-logo');
+                if ($('.bar-stereo').hasClass('is-pinned') ){
+                    $('.bar-stereo').addClass('compress');
+                    $('.bar-stereo .logo').addClass('compress-logo');
                 }
                 if($(document).scrollTop() <= 1){
-                    header.css('position','sticky');
-                    header.removeClass('compress');
-                    $('header .logo').removeClass('compress-logo');
+                    $('.bar-stereo').css('position','sticky');
+                    $('.bar-stereo').removeClass('compress');
+                    $('.bar-stereo .logo').removeClass('compress-logo');
+                }
+                distance = $('.nav-menu').offset().top - $('.bar-stereo').offset().top;
+                console.log(distance);
+                if( distance < 50 ){
+                    $('.bar-stereo').addClass('header-white');
+                    $('.to-dark').addClass('dark-mode');
+                    $('.compress-logo img').addClass('logo-dark-mode');
+                }else {
+                    $('.bar-stereo').removeClass('header-white');
+                    $('.to-dark').removeClass('dark-mode');
+                    $('.compress-logo img').removeClass('logo-dark-mode');
                 }
             });
         });
@@ -845,7 +857,7 @@ document.addEventListener('astro:page-load', ev => {
                     body: JSON.stringify( params )
                 };
                     
-                fetch('https://contenido.beatdigital.mx/wp-json/wp-ulike-pro/v1/vote/', Rparamas)
+                fetch('https://contenido.stereociendigital.mx/wp-json/wp-ulike-pro/v1/vote/', Rparamas)
                 .then((res) => {
                     if (!res.ok) {
                         throw new Error
