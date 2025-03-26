@@ -3,14 +3,14 @@
 
   <!-- Navigation -->
   <nav class="nav-menu">
-    <ul>
+    <ul class="menu-mobile">
       <li><a href="/noticias">Noticias</a></li>
       <li><a href="/librosycultura">Libros & Cultura</a></li>
       <li><a href="/seriesypeliculas">Series & Películas</a></li>
       <li><a href="/guiasycomida">Guías & Comida</a></li>
+      <li><a href="/tecnologia">Tecnología</a></li>
       <li><a href="/autos">Autos</a></li>
       <li><a href="/vinos">Vinos</a></li>
-      <li><a href="/video">Video</a></li>
       <li class="dd-menu">Podcast
         <ul>
           <li><a href="/podcast/autos-al-cien">Autos al Cien</a></li>
@@ -120,6 +120,20 @@
   color: #ef4444;
 }
 
+@media (max-width: 1145px){
+  .nav-menu ul{
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow-x: scroll;
+    -ms-overflow-style: none;  
+    scrollbar-width: none;  
+    justify-content: left;
+  }
+  .menu-mobile::-webkit-scrollbar { 
+      display: none;  
+  }
+}
+
 /*
 @media (max-width: 1023px) {
 .menutres {
@@ -217,12 +231,12 @@ nav ul ul ul li {
 li > a:after, .dd-menu:after { content:  ' ▼'; font-size: 10px;}
 li > a:only-child:after, li > .dd-menu:only-child:after { content: ''; }
 
-@media (max-width: 639px) {
+/*@media (max-width: 639px) {
   .nav-menu a, .nav-menu li{
     font-size: 0.5rem;
   }
   li > a:after, .dd-menu:after {font-size: 7px;}
-}
+}*/
 
 
 </style>
