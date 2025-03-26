@@ -525,9 +525,10 @@ article iframe.iframe-class{
 .resumen{
   letter-spacing: 2px;
   display: -webkit-box;
+  margin-block-start: 0;
+  -webkit-line-clamp: 6;
   overflow: hidden;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 6;
   margin-bottom: 1rem;
 }
 
@@ -574,7 +575,6 @@ article iframe.iframe-class{
 .share-bar .sticky-bar{
     border: 1px solid #514e4e;
     margin-right: 20px;
-    border-radius: 0.75rem;
     background: #000000;
 }
 .share-bar .share-button {
@@ -584,7 +584,7 @@ article iframe.iframe-class{
     width: 48px;
     height: 48px;
     text-decoration: none;
-    color: var(--amarillo-beat);
+    color: white;
     transition: all 0.3s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

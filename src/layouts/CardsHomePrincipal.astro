@@ -12,14 +12,16 @@ const poststi = await ressti.json();
 
 ---
 <div class="hero">
-  <img src={poststi[0]._embedded['wp:featuredmedia'][0].media_details.sizes['full'].source_url} alt="Imagen La Nota">
-  <div class="gradient-overlay"></div>
-  <div class="hero-content">
-    <div class="category">LA NOTICIA</div>
-    <h1 set:html={poststi[0].title.rendered}></h1>
-    <div class="text" set:html={poststi[0].excerpt.rendered}></div>
-    <div class="author">por {poststi[0].yoast_head_json.author}</div>
-  </div>
+  <a href={`/noticias/${poststi[0].slug}/`}>
+    <img src={poststi[0]._embedded['wp:featuredmedia'][0].media_details.sizes['full'].source_url} alt="Imagen La Nota">
+    <div class="gradient-overlay"></div>
+    <div class="hero-content">
+      <div class="category">LA NOTICIA</div>
+      <h1 set:html={poststi[0].title.rendered}></h1>
+      <div class="text" set:html={poststi[0].excerpt.rendered}></div>
+      <div class="author">por {poststi[0].yoast_head_json.author}</div>
+    </div>
+  </a>
 </div>
 
 

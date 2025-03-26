@@ -62,7 +62,7 @@ console.log(section);*/
 
 ---
           <article class="news-card transition duration-[0.2s] hover:translate-y-[-4px]">
-            <a href={`/news/${post.slug}/`}>
+            <a href={`/${url_seccion}/${post.slug}/`}>
               <div class="bg-black"><img src={post.yoast_head_json.og_image[0].url} alt="Imagen Noticias"/></div>
               <div class="news-content p-6">
                 <h5 set:html={post.title.rendered}></h5>
