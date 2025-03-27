@@ -5,14 +5,14 @@ import Footer from '../../components/Footer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts.js';
 
 import {getArticles} from '../../lib/api.js';
-import Card from '../../layouts/Cardsq.astro';
+import Card from '../../layouts/Cards.astro';
 import DoubleBox from '../../components/DoubleBox.astro';
 import BoxBanner from '../../components/BoxBanner.astro';
 import BarNrm from '../../components/BarNrm.astro';
 
 
 export async function getStaticPaths( { paginate } ) {
-  const data = await getArticles(578);  
+  const data = await getArticles(524);  
   return paginate(data, { pageSize: 10 });
 }
 
@@ -26,7 +26,7 @@ console.log(page.data);
 <!doctype html>
 <html lang="es">
 	<head>
-		<BaseHead title={SITE_TITLE} seccion="Purplenoise" description={SITE_DESCRIPTION} />
+		<BaseHead title={SITE_TITLE} seccion="Series y Películas" description={SITE_DESCRIPTION} />
 		
 	</head>
 	<body>
@@ -35,7 +35,7 @@ console.log(page.data);
 		
 		<main>
       <div class="container my-12 mx-auto px-4 md:px-12">
-				<h1 class="text-center md:text-left pt-4 font-bold text-4xl md:text-5xl lg:text-4xl xl:text-5xl">Purple Noise</h1>	
+				<h1 class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl">Series y Películas</h1>
         <div class="flex flex-col lg:flex-row">
           <div class="sm:min-w-[calc(100%-400px)] lg:mr-10">
             <!--section class="flex flex-wrap -mx-1 lg:-mx-4"-->

@@ -376,7 +376,7 @@ article iframe.iframe-class{
   #radiobutton .show { display:block }
   #radiobutton .hide{ display: none; transition: all 0.5s;}
   #radiobutton .active{ display: flex!important;  transition: all 1s;}
-      
+
   .marquee { white-space: nowrap; overflow: hidden; width: 100%; color:black;}
   .marquee div{  display: inline-block; animation: animate 10s linear infinite; padding-left: 100%;}
   .label-ahora {padding: 0 10px;     font-size: 95%;    font-weight: bold;    white-space: nowrap; color:black;}
@@ -438,7 +438,6 @@ article iframe.iframe-class{
       --active: 0.15;
       --start: 0;
       background: var(--card);
-      border-radius: var(--border-radius);
       gap: 0.25rem;
       position: relative;
       
@@ -446,7 +445,7 @@ article iframe.iframe-class{
   .card article:is(:hover, :focus-visible) {
       z-index: 2;
   }
-  .card .glows {
+  /*.card .glows {
       pointer-events: none;
       position: absolute;
       inset: 0;
@@ -470,9 +469,9 @@ article iframe.iframe-class{
       mask-clip: padding-box, border-box;
       opacity: var(--active);
       transition: opacity 1s;
-  }
+  }*/
 
-  .card article::before {
+  /*.card article::before {
       position: absolute;
       inset: 0;
       border: var(--border-width) solid transparent;
@@ -512,7 +511,7 @@ article iframe.iframe-class{
       filter: brightness(1.5);
       mask-clip: padding-box, border-box;
       mask-composite: intersect;
-  }
+  }*/
 }
 .card article h2{
   color: var(--gray-beat);
