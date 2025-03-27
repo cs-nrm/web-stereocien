@@ -19,7 +19,7 @@ const posts = await ressti.json();
       <a href={`/librosycultura/${posts[0].slug}/`}>
         <span class="category lovelo">RESEÑAS</span>
         <h2 set:html={posts[0].title.rendered}></h2>
-        <p set:html={posts[0].excerpt.rendered}></p>
+        <div class="resumen" ><p set:html={posts[0].excerpt.rendered}></p></div>
         <span class="author roboto font-bold">por {posts[0].yoast_head_json.author}</span>
       </a>
     </div>
