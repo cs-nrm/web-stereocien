@@ -1,10 +1,12 @@
 var streaming;
 var local_status;
-const buttonPause = '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-player-pause" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /><path d="M14 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /></svg>';
-const buttonPlay = '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-player-play-filled" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4v16a1 1 0 0 0 1.524 .852l13 -8a1 1 0 0 0 0 -1.704l-13 -8a1 1 0 0 0 -1.524 .852z" stroke-width="0" fill="currentColor" /></svg>';
-const bigButtonPause = '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-player-pause" width="35" height="35" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000" fill="#000" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /><path d="M14 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /></svg>';
-const bigButtonPlay = '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-player-play" width="35" height="35" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000" fill="#000" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 4v16l13 -8z" /></svg>';
+const buttonPause = '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-player-pause" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#012169" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /><path d="M14 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /></svg>';
+const buttonPlay = '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-player-play-filled" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#012169" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4v16a1 1 0 0 0 1.524 .852l13 -8a1 1 0 0 0 0 -1.704l-13 -8a1 1 0 0 0 -1.524 .852z" stroke-width="0" fill="currentColor" /></svg>';
+const bigButtonPause = '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-player-pause" width="35" height="35" viewBox="0 0 24 24" stroke-width="1.5" stroke="#012169" fill="#000" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /><path d="M14 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /></svg>';
+const bigButtonPlay = '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-player-play" width="35" height="35" viewBox="0 0 24 24" stroke-width="1.5" stroke="#012169" fill="#000" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 4v16l13 -8z" /></svg>';
 const buttongLoading = '<img width="40" height="40" src="https://storage.googleapis.com/nrm-web/oye/recursos/loading-normal.gif" style="padding:5px;"/>';
+const buttonPodcastPlay = '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-player-play" width="80" height="80" viewBox="0 0 24 24" stroke-width="2" stroke="#012169" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 4v16l13 -8z" /></svg>';
+const buttonPodcastPause = '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-player-pause" width="80" height="80" viewBox="0 0 24 24" stroke-width="1.5" stroke="#012169" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /><path d="M14 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /></svg>';
 var volume;
 var artist;
 var cancion;
@@ -95,7 +97,7 @@ const secchome = document.getElementById('home');
 
     function completeAd(e){                
         streaming.play({
-            station:'XHSONFM',
+            station:'XEOYAM',
             trackingParameters:{
             Dist: 'WebBeat'
             }
@@ -192,7 +194,7 @@ const secchome = document.getElementById('home');
         });
 
         function getInfoMusic(){
-            fetch("https://cdn.nrm.com.mx/cdn/beat/playlist/cancion.json")
+            fetch("https://cdn.nrm.com.mx/cdn/stereociendigital/playlist/cancion.json")
             .then((res) => {
                 if (!res.ok) {
                     throw new Error
@@ -206,15 +208,87 @@ const secchome = document.getElementById('home');
                         artist = 'PAUSA COMERCIAL';
                         cancion = '';
                     break;
-                    case 'DROP' :
+                    case 'QATAR' :
                         artist = 'PAUSA COMERCIAL';
                         cancion = '';
                     break;
-                    case 'NUEVA PRODUCCION' :
+                    case 'TITULOS' :
                         artist = 'PAUSA COMERCIAL';
                         cancion = '';
                     break;
-                    case 'ELEMENTOS' :
+                    case 'STTEMPERATURA' :
+                        artist = 'PAUSA COMERCIAL';
+                        cancion = '';
+                    break;
+                    case 'STSALUDOS' :
+                        artist = 'PAUSA COMERCIAL';
+                        cancion = '';
+                    break;
+                    case 'STPROMOS' :
+                        artist = 'PAUSA COMERCIAL';
+                        cancion = '';
+                    break;
+                    case 'STPROGRAMAS' :
+                        artist = 'PAUSA COMERCIAL';
+                        cancion = '';
+                    break;
+                    case 'STDESPEDIDAS' :
+                        artist = 'PAUSA COMERCIAL';
+                        cancion = '';
+                    break;
+                    case 'ST-ELEMENTOS PROD' :
+                        artist = 'PAUSA COMERCIAL';
+                        cancion = '';
+                    break;
+                    case 'ST TITULOS NAVIDAD' :
+                        artist = 'PAUSA COMERCIAL';
+                        cancion = '';
+                    break;
+                    case 'ST TATUAJES LILI' :
+                        artist = 'PAUSA COMERCIAL';
+                        cancion = '';
+                    break;
+                    case 'ST PROD NAVIDAD' :
+                        artist = 'PAUSA COMERCIAL';
+                        cancion = '';
+                    break;
+                    case 'ST INTERVENCIONES MADRUGADA' :
+                        artist = 'PAUSA COMERCIAL';
+                        cancion = '';
+                    break;
+                    case 'ST DIGITAL' :
+                        artist = 'PAUSA COMERCIAL';
+                        cancion = '';
+                    break;
+                    case 'ST DANI' :
+                        artist = 'PAUSA COMERCIAL';
+                        cancion = '';
+                    break;
+                    case 'ST BUENA NOTICIA' :
+                        artist = 'PAUSA COMERCIAL';
+                        cancion = '';
+                    break;
+                    case 'ST BACK TO THE 80S' :
+                        artist = 'PAUSA COMERCIAL';
+                        cancion = '';
+                    break;
+                    case 'ST ANIMALES CON ESTRELLA' :
+                        artist = 'PAUSA COMERCIAL';
+                        cancion = '';
+                    break;
+                    case 'MENCIONES-STEREO CIEN' :
+                        artist = 'PAUSA COMERCIAL';
+                        cancion = '';
+                    break;
+                    case 'CARTS' :
+                        artist = 'PAUSA COMERCIAL';
+                        cancion = '';
+                    break;
+                    case 'CARTS' :
+                        artist = 'PAUSA COMERCIAL';
+                        cancion = '';
+                    break;
+                    case 'CARTS' :
                         artist = 'PAUSA COMERCIAL';
                         cancion = '';
                     break;
@@ -271,7 +345,7 @@ const secchome = document.getElementById('home');
                         hora = data.hora_real;
                     break;
                     default:
-                        artist = data.dj;
+                        artist = data.artista;
                         cancion = data.title;
                         hora = data.hora_real;
                     break;
@@ -293,7 +367,7 @@ const secchome = document.getElementById('home');
         
         function getInfoProg(){
             //fetch("https://beatdigital.mx/wp-json/wp/v2/posts?_embed&per_page=30&categories=3312&_fields[]=acf")
-            fetch("https://contenido.stereociendigital.mx/wp-json/wp/v2/posts?_embed&per_page=40&categories=515&_fields[]=acf")            
+            fetch("https://contenido.beatdigital.mx/wp-json/wp/v2/posts?_embed&per_page=40&categories=515&_fields[]=acf")            
             .then((res) => {
                 if (!res.ok) {
                     throw new Error
@@ -383,7 +457,8 @@ const podcastActive = function(){
     $('#player-v-podcast').addClass('active');
     $('#player-v-video').removeClass('active');
     $('.player-float').addClass('hide');
-    $('#radiobutton').addClass('playerplaying'); 
+    $('.player-float').removeClass('active');
+    //$('#radiobutton').addClass('playerplaying'); 
 }
 
 const videoActive = function(){
@@ -454,17 +529,20 @@ const playstopRadio = function(){
 };
 
 
-$('#radiobutton').on('click',function(){    
+$('#big-play').on('click',function(){    
         console.log('click en radiobutton');
         playstopRadio();      
 });
 
+
 $('#return-live').on('click',function(){    
        playstopRadio();    
 });
+
 $('.radio-link').on('click',function(){    
        playstopRadio();    
 });
+
 
 
 /*$('#play-pause').on('click', function(){
@@ -550,7 +628,7 @@ document.addEventListener('astro:page-load', ev => {
             
             window.addEventListener('scroll', function(e){
                // console.log(window.scrollY );
-               /* if( window.scrollY > 0 && window.scrollY <= range ){                    
+                if( window.scrollY > 0 && window.scrollY <= range ){                    
                     document.styleSheets[1].addRule('body::before','filter: hue-rotate(0deg) blur(5px)');
                     document.styleSheets[1].addRule('body::before','transition: filter 0.5s ease-in-out;');
                 }
@@ -573,8 +651,7 @@ document.addEventListener('astro:page-load', ev => {
                 if( window.scrollY > range4 ){                    
                     document.styleSheets[1].addRule('body::before','filter: hue-rotate(0deg) blur(5px)');
                     document.styleSheets[1].addRule('body::before','transition: filter 0.5s ease-in-out;');
-                }*/
-
+                }
 
 
                 if ($('.bar-stereo').hasClass('is-pinned') ){
@@ -663,8 +740,8 @@ document.addEventListener('astro:page-load', ev => {
     
     if( getplayingstatus == 'podcast-playing'){
         const containerpodcast  = document.getElementById('iframepodcast');
-        containerpodcast.innerHTML ='';
-
+        //containerpodcast.innerHTML ='';
+        initPlayer();
         //hidebarra();
     }
 
@@ -681,7 +758,10 @@ document.addEventListener('astro:page-load', ev => {
             
             transitionPlayer();
             podcastActive();
-            $('#radiobutton').addClass('playerplaying'); 
+            setTimeout( function(){
+                $('#radiobutton').addClass('playerplaying'); 
+            },600);
+            
             
             if (getstatus == 'radio-playing'){
                 radioStop();                
@@ -689,17 +769,31 @@ document.addEventListener('astro:page-load', ev => {
                                                 
             podactive.html('<img class="loading-gif" src="https://storage.googleapis.com/nrm-web/oye/recursos/loading-normal.gif" />');
             
-            if (getstatus == 'podcast-playing'){
-                
-                const playerpodcast = document.getElementById('iframepodcast').getElementsByTagName('iframe')[0];
-                //console.log(playerpodcast);
+            $('.close-podcast').on('click',function(){
+                initPlayer();
+                const playerpodcast = document.getElementById('iframepodcast').getElementsByTagName('iframe')[0];                
                 const ply =  new playerjs.Player(playerpodcast);
                 ply.on('ready', ()=> {
                     ply.pause();
                     podactive.attr('data-podcast-status','ready');
                 });
                 $('.audiopod').each(function(){
-                    $('.audiopod').find('.play-pause-podcast').html(buttonPlay);
+                    $('.audiopod').find('.play-pause-podcast').html(buttonPodcastPlay);
+                    $('.audiopod').find('.play-pause-podcast').attr('data-podcast-status','ready');
+                });
+                
+            });
+            
+            if (getstatus == 'podcast-playing'){
+                
+                const playerpodcast = document.getElementById('iframepodcast').getElementsByTagName('iframe')[0];                
+                const ply =  new playerjs.Player(playerpodcast);
+                ply.on('ready', ()=> {
+                    ply.pause();
+                    podactive.attr('data-podcast-status','ready');
+                });
+                $('.audiopod').each(function(){
+                    $('.audiopod').find('.play-pause-podcast').html(buttonPodcastPlay);
                     $('.audiopod').find('.play-pause-podcast').attr('data-podcast-status','ready');
                 });
             }
@@ -722,6 +816,7 @@ document.addEventListener('astro:page-load', ev => {
                 //console.log(playerpodcast);
                 containerpodcast.appendChild(playerpodcast);            
                 const ply =  new playerjs.Player(playerpodcast);
+                 
                 ply.on('ready', ()=> {
                     podactive.attr('data-podcast-status','active');
                     $('#player').attr('data-status','podcast-playing');
@@ -729,11 +824,11 @@ document.addEventListener('astro:page-load', ev => {
                     ply.play(); 
                     
                     ply.on('play', ()=>{
-                        podactive.html(buttonPause); 
+                        podactive.html(buttonPodcastPause); 
                     });
     
                     ply.on('pause', ()=>{
-                        podactive.html(buttonPlay); 
+                        podactive.html(buttonPodcastPlay); 
                     });
                     
                 });   
@@ -857,7 +952,7 @@ document.addEventListener('astro:page-load', ev => {
                     body: JSON.stringify( params )
                 };
                     
-                fetch('https://contenido.stereociendigital.mx/wp-json/wp-ulike-pro/v1/vote/', Rparamas)
+                fetch('https://contenido.beatdigital.mx/wp-json/wp-ulike-pro/v1/vote/', Rparamas)
                 .then((res) => {
                     if (!res.ok) {
                         throw new Error
