@@ -150,6 +150,7 @@ table {
 }
 img {
 	max-width: 100%;
+  width: 100%;
 	height: auto;
 }
 code {
@@ -346,15 +347,18 @@ article iframe.iframe-class{
 	min-height: 800px;
 }
 
-.wp-block-embed-youtube .wp-block-embed__wrapper{
+article .plyr--video{
+  margin-bottom: 20px;
+}
+
+/*article .plyr__video-wrapper{
   position: relative;
   overflow: hidden;
   width: 100%;
-  padding-top: 56.25%; /* 16:9 Aspect Ratio (divide 9 by 16 = 0.5625) */
+  padding-top: 56.25%;
 }
 
-/* Then style the iframe to fit in the container div with full height and width */
-.wp-block-embed-youtube .wp-block-embed__wrapper iframe {
+article .plyr__video-wrapper iframe {
   position: absolute;
   top: 0;
   left: 0;
@@ -362,7 +366,7 @@ article iframe.iframe-class{
   right: 0;
   width: 100%;
   height: 100%;
-}
+}*/
 
 /* player */
 .iframestyle {box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px; background-image: url('https://storage.googleapis.com/nrm-web/oye/recursos/8p7m.gif'); background-size:contain; background-color:#15181f; border: 1px solid  white; border-radius: 6px; box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;}
