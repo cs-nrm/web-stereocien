@@ -32,7 +32,7 @@ const posts = await ressti.json();
             <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-800 via-transparent to-transparent opacity-50"></div>
             <div class="lovelo text relative inline-block p-3 text-lg sm:text-sm text-white md:text-xl leading-tight md:leading-none">
               <p class="mb-[15px]" set:html={posts[0].title.rendered}></p>
-              <span class="roboto text-[#ef4444] text-base" set:html={posts[0].acf.plataforma}></span>
+              <span class="roboto text-[#ef4444] text-base" set:html={posts[1].acf.plataforma}></span>
             </div>
         </a>
     </article>
