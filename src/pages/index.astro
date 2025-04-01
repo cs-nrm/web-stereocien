@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import CardNews from '../layouts/CardsHomeNews.astro';
 import CardGuia from '../layouts/CardsHomeGuia.astro';
+import CardMascotas from '../layouts/CardsHomeMascotas.astro';
 import Separator from '../components/Separator.astro';
 import HomeHeader from '../layouts/HomeHeader.astro';
 import DoubleBox from '../components/DoubleBox.astro';
@@ -55,6 +56,11 @@ import NewsLetter from '../layouts/NewsLetter.astro';
                 <LeaderBoard />
                 <section>
                     <Libros />
+                </section>
+                <section>
+                    <div class="container-home p-4 mx-auto">                        
+                        <CardMascotas />
+                    </div>
                 </section>
                 <section>
                     <div class="container-home p-4 mx-auto">

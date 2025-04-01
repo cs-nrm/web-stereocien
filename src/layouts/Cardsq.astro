@@ -31,7 +31,7 @@ export interface Props {
 const { post } = Astro.props;
 
 var url_seccion;
-//console.log(post.categories[0]);
+console.log(post.categories[0]);
 switch (post.categories[0]){
     case 143:        
         url_seccion = 'noticias';
@@ -50,6 +50,12 @@ switch (post.categories[0]){
     break;
     case 526:
         url_seccion = 'vinos';
+    break;
+    case 167:
+        url_seccion = 'mascotas';
+    break;
+    case 528:
+        url_seccion = 'tecnologia';
     break;
     default:
         url_seccion = 'noticias';    

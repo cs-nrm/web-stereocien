@@ -31,7 +31,7 @@ const posts = await ressti.json();
             <img src={posts[1].yoast_head_json.og_image[0].url} alt={posts[1].title.rendered} class="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" />
             <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-800 via-transparent to-transparent opacity-50"></div>
             <div class="lovelo text relative inline-block p-3 text-lg sm:text-sm text-white md:text-xl leading-tight md:leading-none">
-              <p class="mb-[15px]" set:html={posts[0].title.rendered}></p>
+              <p class="mb-[15px]" set:html={posts[1].title.rendered}></p>
               <span class="roboto text-[#ef4444] text-base" set:html={posts[1].acf.plataforma}></span>
             </div>
         </a>
