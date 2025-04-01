@@ -314,6 +314,14 @@ hr {
   opacity: 0.6;  
 }
 
+article.nota-interna p a{
+  color: #ef4444;
+}
+article.nota-interna p a:hover{
+  color: #ef4444;
+  text-decoration: underline;
+}
+
 article .wp-block-embed-twitter{
 	display: ruby-text;
 	text-align: center;
