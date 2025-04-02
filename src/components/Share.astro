@@ -50,7 +50,7 @@ const { slug } = Astro.params;
 <div class="share-bar">
     <div class="sticky top-[90px] left-0 right-0">
         <div class="share-buttons pl-2 pr-4">
-            <a href="https://www.facebook.com/sharer/sharer.php?u=https:beat.digital.mx/${slug}" 
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://stereociendigital.mx/${slug}" 
                 target="_blank" 
                 class="share-button facebook"
                 title="Compartir en Facebook">
@@ -58,7 +58,7 @@ const { slug } = Astro.params;
                 <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
                 </svg>
             </a>
-            <a href="https://twitter.com/intent/tweet?url=https://example.com/article&text=Título del artículo" 
+            <a href="https://twitter.com/intent/tweet?url=https://stereociendigital.mx/${slug}&text=${title.rendered}" 
                 target="_blank" 
                 class="share-button twitter"
                 title="Compartir en X">
@@ -67,7 +67,7 @@ const { slug } = Astro.params;
                     <path d="M4 20l6.768-6.768m2.46-2.46L20 4"></path>
                 </svg>
             </a>
-            <a href="https://wa.me/?text=Título del artículo https://example.com/article" 
+            <a href="https://wa.me/?text=${title.rendered} https://stereociendigital.mx/${slug}" 
                 target="_blank" 
                 class="share-button whatsapp"
                 title="Compartir en WhatsApp">
