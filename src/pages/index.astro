@@ -5,13 +5,17 @@ import Footer from '../components/Footer.astro';
 import CardNews from '../layouts/CardsHomeNews.astro';
 import CardGuia from '../layouts/CardsHomeGuia.astro';
 import CardMascotas from '../layouts/CardsHomeMascotas.astro';
+import CardTecnologia from '../layouts/CardsHomeTecnologia.astro';
+import CardAutos from '../layouts/CardsHomeAutos.astro';
 import Separator from '../components/Separator.astro';
 import HomeHeader from '../layouts/HomeHeader.astro';
 import DoubleBox from '../components/DoubleBox.astro';
 import BoxBanner from '../components/BoxBanner.astro';
 import LeaderBoard from'../components/LeaderBoard.astro';
+import LeaderBoard2 from'../components/LeaderBoard2.astro';
 import SuperLeader from '../components/SuperLeader.astro';
 import BillBoard from '../components/BillBoard.astro';
+import BillBoard2 from '../components/BillBoard2.astro';
 
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import BarNrm from '../components/BarNrm.astro';
@@ -59,9 +63,16 @@ import NewsLetter from '../layouts/NewsLetter.astro';
                 </section>
                 <section>
                     <div class="container-home p-4 mx-auto">                        
-                        <CardMascotas />
+                        <CardTecnologia/>
                     </div>
                 </section>
+                <BillBoard2 />
+                <section>
+                    <div class="container-home p-4 mx-auto">                        
+                        <CardAutos/>
+                    </div>
+                </section>
+                <LeaderBoard2/>
                 <section>
                     <div class="container-home p-4 mx-auto">
                         <h1 class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl">EN PLATAFORMAS</h1>
@@ -73,6 +84,11 @@ import NewsLetter from '../layouts/NewsLetter.astro';
                                 <BoxBanner />
                             </div>
                         </div>                   
+                    </div>
+                </section>
+                <section>
+                    <div class="container-home p-4 mx-auto">                        
+                        <CardMascotas/>
                     </div>
                 </section>
                 <section>
