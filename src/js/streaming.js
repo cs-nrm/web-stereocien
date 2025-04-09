@@ -294,56 +294,6 @@ const secchome = document.getElementById('home');
                     break;
                     
                     
-                    case 'RANDOM':
-                        artist = data.dj;
-                        cancion = data.title;
-                        hora = data.hora_real;
-                    break;
-                    case 'MUSICA-DANCE':
-                        artist = data.dj;
-                        cancion = data.title;
-                        hora = data.hora_real; 
-                    break;
-                    case 'MUSICA-HOUSE':
-                        artist = data.dj;
-                        cancion = data.title;
-                        hora = data.hora_real;
-                    break;
-                    case 'MUSICA-DANCE':
-                        artist = data.dj;
-                        cancion = data.title;
-                        hora = data.hora_real;
-                    break;
-                    case 'MÚSICA-DREAM':
-                        artist = data.dj;
-                        cancion = data.title;
-                        hora = data.hora_real;
-                    break;
-                    case 'MUSICA-ELECTRONICA':
-                        artist = data.dj;
-                        cancion = data.title;
-                        hora = data.hora_real;
-                    break;
-                    case 'MUSICA-PROGRESIVO':
-                        artist = data.dj;
-                        cancion = data.title;
-                        hora = data.hora_real;
-                    break;
-                    case 'MUSICA-RETRO':
-                        artist = data.dj;
-                        cancion = data.title;
-                        hora = data.hora_real;
-                    break;
-                    case 'MUSICA-RANDOM ANDRE':
-                        artist = data.dj;
-                        cancion = data.title;
-                        hora = data.hora_real;
-                    break;
-                    case 'LADO F':
-                        artist = data.dj;
-                        cancion = data.title;
-                        hora = data.hora_real;
-                    break;
                     default:
                         artist = data.artista;
                         cancion = data.title;
@@ -366,8 +316,8 @@ const secchome = document.getElementById('home');
 
         
         function getInfoProg(){
-            //fetch("https://beatdigital.mx/wp-json/wp/v2/posts?_embed&per_page=30&categories=3312&_fields[]=acf")
-            fetch("https://contenido.beatdigital.mx/wp-json/wp/v2/posts?_embed&per_page=40&categories=515&_fields[]=acf")            
+            
+            fetch("https://contenido.stereociendigital.mx/wp-json/wp/v2/posts?_embed&per_page=40&categories=302&_fields[]=acf&_fields[]=jetpack_featured_media_url")
             .then((res) => {
                 if (!res.ok) {
                     throw new Error
@@ -382,46 +332,44 @@ const secchome = document.getElementById('home');
                 const dias = ['domingo','lunes','martes','miercoles','jueves','viernes','sabado'];
                 const dia = dias[fecha.getDay()];                
                 const hora = dayjs(fecha).format('HH:mm:ss');
-                //console.log(hora);
-                data.map(function(prog){                    
+                let siguientePrograma = null;
+                data.map(function(prog,i,el){                    
                     if(prog.acf[dia] === true){
+                        var h_i;
                         if( prog.acf.hora_fin >= hora &&  prog.acf.hora_inicio <= hora){
                            // console.log(prog.acf.hora_inicio);
-                            console.log(prog.acf.hora_inicio);
+                            /*console.log(prog.acf.hora_inicio);
                             console.log(prog.acf.hora_fin);
-                            console.log(prog.acf.programa);
-                            console.log(prog.acf);
-                            if( document.getElementById('nombreprog') ){
-                                document.getElementById('nombreprog').innerHTML = prog.acf.programa;
-                            }
-                            /* 
-                            fetch("https://beatdigital.mx/wp-json/wp/v2/media/"+prog.acf.imagen_ahora_escuchas+"?_fields[]=link")
-                            .then((rs) => {
-                                if (!rs.ok) {
-                                    throw new Error
-                                        ('HTTP error! Status: ${res.status}');
-                                }
-                                return rs.json();
-                            })
-                            .then(function(d){
-                                //console.log(d.link);
-                                if(document.getElementById('imgprog')){                                    
-                                    setTimeout(function(){
-                                        document.getElementById('imgprog').getElementsByClassName('imgprog')[0].src = d.link;
-                                    },2000);
-                                }
-                                
-                            });   */                                                     
+                            console.log(prog.acf.programa);*/
+                            
+                            $('.banner-prog img').attr('src', prog.jetpack_featured_media_url);
+                            $('.envivo-prog').html(prog.acf.programa);
+                            $('.envivo-now').html( prog.acf.hora_inicio + ' - ' + prog.acf.hora_fin);
+                            $('.envivo-prog-tab').html(prog.acf.programa);                            
+
                         }
+
+                        if (prog.acf.hora_inicio > hora) {
+                            if (!siguientePrograma || prog.acf.hora_inicio < siguientePrograma.acf.hora_inicio) {
+                                siguientePrograma = prog;
+                            }
+                        }
+                        
+
                     }
 
-                });                                                
+                });   
+                if (siguientePrograma) {
+                    console.log("Siguiente programa:", siguientePrograma.acf.programa);
+                    $('.envivo-next').html(siguientePrograma.acf.hora_inicio + ' - ' + siguientePrograma.acf.hora_fin);
+                    $('.envivo-prog-next-tab').html(siguientePrograma.acf.programa);
+                }                                                
             });
            // console.log('repetido');   
         }
         
-        //setTimeout(getInfoProg, 20000);
-        //setInterval( getInfoProg, 300000);       
+        setTimeout(getInfoProg, 20000);
+        setInterval( getInfoProg, 300000);       
         
 /* abrir barra*/
 /*const openbarra = function(){
@@ -664,7 +612,7 @@ document.addEventListener('astro:page-load', ev => {
                     $('.bar-stereo .logo').removeClass('compress-logo');
                 }
                 distance = $('.nav-menu').offset().top - $('.bar-stereo').offset().top;
-                console.log(distance);
+              //  console.log(distance);
                 if( distance < 50 ){
                     $('.bar-stereo').addClass('header-white');
                     $('.to-dark').addClass('dark-mode');
@@ -684,6 +632,23 @@ document.addEventListener('astro:page-load', ev => {
     document.querySelector('.preloader').classList.remove('showpreloader');
     
     const secchome = document.getElementById('home');
+    const secenvivo = document.getElementById('envivo');
+
+    if ( secenvivo ){   
+        //console.log('envivo');
+        getInfoProg();
+        $('#radiobutton').addClass('en-vivo');
+        //console.log(local_status);
+
+        if( local_status == null || local_status == 'undefined' || local_status == '' || local_status == 'LIVE_STOP' ){  
+            playstopRadio();
+        }
+        
+    }else{
+        $('#radiobutton').removeClass('en-vivo');
+    }
+    
+    
     if ( secchome ){
         getInfoProg();
         console.log(getplayingstatus);
