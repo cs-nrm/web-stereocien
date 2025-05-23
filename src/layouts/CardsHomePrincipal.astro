@@ -5,9 +5,7 @@ import LeaderBoard from'../components/LeaderBoard.astro';
 import SuperLeader from '../components/SuperLeader.astro';
 import { Image } from 'astro:assets';
 
-
 const ressti = await fetch("https://contenido.stereociendigital.mx/wp-json/wp/v2/posts?_fields=date,title,slug,sticky,acf,yoast_head_json,content,excerpt,_links,_embedded&_embed&per_page=20&categories=143");
-
 const poststi = await ressti.json();
 
 ---
