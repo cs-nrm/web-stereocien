@@ -126,12 +126,12 @@ strong,
 b {
 	font-weight: 700;
 }
-a {
+/*a {
 	color: var(--plyr-color-main);
 }
 a:hover {
 	color: var(--plyr-color-main);
-}
+}*/
 p {
 	margin-bottom: 1em;
 }
