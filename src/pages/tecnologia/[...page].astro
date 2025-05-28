@@ -13,7 +13,7 @@ import BarNrm from '../../components/BarNrm.astro';
 
 export async function getStaticPaths( { paginate } ) {
   const data = await getArticles(528);  
-  return paginate(data, { pageSize: 20 });
+  return paginate(data, { pageSize: 14 });
 }
 
 interface Props{

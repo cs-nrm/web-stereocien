@@ -617,6 +617,10 @@ document.addEventListener('astro:page-load', ev => {
             pauseAutoPlayOnHover: true
         }); 
         */
+    }
+    const secprogram = document.getElementById('programacion');
+    
+    if ( secprogram || secchome ){  
 
         var elempod = document.querySelector('.main-carousel');
         var flktypod = new Flickity( elempod, {
@@ -627,8 +631,6 @@ document.addEventListener('astro:page-load', ev => {
             pageDots: false
             //autoPlay: true
         });
-
-
     }
     
     const imagenNota = document.getElementById("imagen-nota");
