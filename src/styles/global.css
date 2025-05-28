@@ -127,10 +127,10 @@ b {
 	font-weight: 700;
 }
 a {
-	color: var(--amarillo-beat);
+	color: var(--plyr-color-main);
 }
 a:hover {
-	color: var(--amarillo-beat);
+	color: var(--plyr-color-main);
 }
 p {
 	margin-bottom: 1em;
