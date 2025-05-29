@@ -20,7 +20,7 @@ import BarNrm from '../../components/BarNrm.astro';
 		
 		<main id="envivo">
             <div class=" mx-auto ">				
-                <div class="flex flex-col lg:flex-row">
+                <div class="md:flex md:flex-col lg:flex-row">
                     <div class="banner-prog">
                         <img src="" />
                     </div>
@@ -57,16 +57,42 @@ import BarNrm from '../../components/BarNrm.astro';
 </html>
 
 <style>
-    #envivo {   font-family: 'Lovelo';}
-    .programas{display:flex; width: 100%;}
-    .prog-now{width: 33%; padding: 20px;}
-    .prog-next{width: 33%; background: rgb(54 121 202); padding: 20px; border-right: 1px solid white}
-    .prog-all{width: 34%; background: rgb(54 121 202); padding: 20px; ; display: flex; gap: 10px; color:white;}
-    
-    .banner-prog {width: 35%; padding:20px;}
-    .banner-prog img { border-radius: 30px;}
-    .envivo-prog {   font-size: 2.5rem; }
+    .programas{display:flex; width: 100%; font-family: 'Roboto'}
+    .prog-now{width: 33%; padding: 20px; background: #201e1e;     border-top-right-radius: 20px;}
+    .prog-next{width: 33%;  padding: 20px; border-right: 1px solid white}
+    .prog-all{width: 34%;  padding: 20px; ; display: flex; gap: 25px; color:#201e1e;}
+    .prog-all div { display: flex; gap:10px;}
+    .prog-all a {color:#e94543 }
+    .banner-prog {width: 75%; padding:20px;}
+    .banner-prog img {    object-fit: cover;    border-radius: 163%;}
+    .envivo-prog {   font-size: 2.5rem; color:#201e1e; font-family: 'Roboto';}
+    .envivo-prog-tab{ color:#d6d8d7; }
+    .envivo-prog-next-tab { color:#201e1e; }
     .info-envivo {   padding: 40px; }
-    .envivo-title, .siguiente-title {   color:#fb125b; font-weight: bold; font-size: 85%;}
-    .envivo-title span, .siguiente-title span {color:rgb(40, 8, 222); font-weight: normal; }
+    .envivo-title, .siguiente-title {   color:#e94543; font-weight: bold; font-size: 85%;}
+    .envivo-title span, .siguiente-title span {color:#201e1e; font-weight: normal; }
+
+    @media (max-width: 768px) {
+        .programas {display: block;}
+        .banner-prog {width: 100%; justify-content: center;            display: flex;}
+        .banner-prog img {}
+        .info-envivo {display: none;}
+        .prog-now {width: 100%;} 
+        .prog-next {width: 100%;}
+        .prog-all {width: 100%; padding: 20px; gap: 10px;}
+        .prog-all div { width: 100%; padding: 10px; background: #201e1e; border-radius: 20px; }
+        .volume {display: none!important;}
+        
+
+    }
 </style>
+<script>
+//$('.logo-player img').attr('src','/img/logo-beat.png');
+$('#big-play').removeClass('border-4');
+
+$('.like').on('click',function(){
+    console.log('click');
+     $(this).find('svg').css('fill','#d6d8d7');
+});
+
+</script>
