@@ -581,7 +581,7 @@ document.addEventListener('astro:page-load', ev => {
                     $('.bar-stereo').removeClass('compress');
                     $('.bar-stereo .logo').removeClass('compress-logo');
                 }
-                
+
                 if (scrollY >= triggerPoint) {
                     $('.bar-stereo').addClass('header-white');
                     $('.bar-stereo').addClass('header-white');
@@ -613,9 +613,11 @@ document.addEventListener('astro:page-load', ev => {
         if( local_status == null || local_status == 'undefined' || local_status == '' || local_status == 'LIVE_STOP' ){  
             playstopRadio();
         }
+        $('#big-play').removeClass('border-4');
         
     }else{
         $('#radiobutton').removeClass('en-vivo');
+        $('#big-play').addClass('border-4');
     }
     
     
