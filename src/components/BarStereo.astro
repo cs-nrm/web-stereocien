@@ -30,7 +30,7 @@ const currentPath = Astro.url.pathname;
         <div class="bg-[#ef4444] hover:bg-[#f87171] h-1 w-6 mt-1"></div>
       </label>  
   
-      <div class="hidden z-10 peer-checked:block rounded absolute w-44 h-40 p-4 bg-black top-10 right-24">
+      <div class="hidden z-10 peer-checked:block rounded absolute w-48 h-40 p-4 bg-black top-10 right-24">
         <ul>
           <li class={`menu-section${currentPath.startsWith('/en-vivo') ? ' active' : ''}`}><a href="/en-vivo" class="flex flex-wrap items-center mb-4 text-white gap-2 hover:text-#ef4444"><span class="live-icon"></span> <span>En Vivo</span></a></li>
           <li class={`menu-section${currentPath.startsWith('/programacion') ? ' active' : ''}`}><a href="/programacion" class="flex flex-wrap items-center mb-4 text-white gap-2 hover:text-#ef4444"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
