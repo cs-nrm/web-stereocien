@@ -38,10 +38,10 @@ const currentPath = Astro.url.pathname;
 
       </label>  
   
-      <div class="hidden z-10 peer-checked:table rounded absolute w-full p-4 bg-black top-10 right-0">
-        <ul class="flex flex-row justift-center items-center gap-2">
-          <li class={`menu-section${currentPath.startsWith('/en-vivo') ? ' active' : ''}`}><a href="/en-vivo" class="flex flex-nowrap flex-row items-center text-white gap-2 hover:text-#ef4444"><span class="live-icon"></span> <span class="min-w-[85px]">En Vivo</span></a></li>
-          <li class={`menu-section${currentPath.startsWith('/programacion') ? ' active' : ''}`}><a href="/programacion" class="flex flex-nowrap items-center text-white gap-2 hover:text-#ef4444"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
+      <div class="hidden z-10 peer-checked:table rounded absolute w-full p-4 bg-black top-10 right-[-30px] sm:right-0">
+        <ul class="hh flex flex-row justify-center items-center gap-2">
+          <li class={`menu-section${currentPath.startsWith('/en-vivo') ? ' active' : ''}`}><a href="/en-vivo" class="text-xs sm:text-base flex flex-nowrap flex-row items-center text-white gap-2 hover:text-#ef4444"><span class="live-icon"></span> <span class="min-w-[60px] sm:min-w-[85px]">En Vivo</span></a></li>
+          <li class={`menu-section${currentPath.startsWith('/programacion') ? ' active' : ''}`}><a href="/programacion" class="text-xs sm:text-base flex flex-nowrap items-center text-white gap-2 hover:text-#ef4444"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
             <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
             <path d="M16 3v4"></path>
             <path d="M8 3v4"></path>
@@ -54,7 +54,7 @@ const currentPath = Astro.url.pathname;
             <path d="M7.01 17h.005"></path>
             <path d="M10.01 17h.005"></path>
           </svg> <span>Programación</span></a></li>
-          <li class={`menu-section${currentPath.startsWith('/noticiero') ? ' active' : ''}`}><a href="https://enfoquenoticias.com.mx/" target="_blank" class="flex flex-nowrap items-center text-white gap-2 hover:text-#ef4444">
+          <li class={`menu-section${currentPath.startsWith('/noticiero') ? ' active' : ''}`}><a href="https://enfoquenoticias.com.mx/" target="_blank" class="text-xs sm:text-base flex flex-nowrap items-center text-white gap-2 hover:text-#ef4444">
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
             <path d="M16 6h3a1 1 0 0 1 1 1v11a2 2 0 0 1 -4 0v-13a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1v12a3 3 0 0 0 3 3h11" />
             <path d="M8 8l4 0" />
@@ -188,12 +188,9 @@ button:hover {
         justify-content: flex-start;
     }
 }
-/*@media (max-width: 640px) {
-  .bar-stereo {padding: 1rem 0.5rem; flex-direction: column;}
-  .sec-menu{width: 50%;}
-  .header-buttons.sec-menu{width: 100%; justify-content: center;}
-  .search-button{display: none;}
-} */
+@media (max-width: 400px) {
+  .hh{flex-direction: column; align-items: flex-end;}
+}
 
 .live-icon {
     display: inline-block;
