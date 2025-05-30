@@ -16,7 +16,7 @@ const poststi = await ressti.json();
   .map((poststi:any) => (
 
     <div class="hero relative z-0">
-      <a href={`/noticias/${poststi.slug}/`}>
+      <a href={`/culturapop/${poststi.slug}/`}>
         <img src={poststi._embedded['wp:featuredmedia'][0].media_details.sizes['full'].source_url} alt="Imagen La Nota">
         <div class="gradient-overlay"></div>
         <div class="hero-content">

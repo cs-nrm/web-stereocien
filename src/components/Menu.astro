@@ -1,24 +1,38 @@
 ---
+const currentPath = Astro.url.pathname;
 ---
 
   <!-- Navigation -->
   <nav class="nav-menu">
-    <ul class="menu-mobile">
-      <li><a href="/noticias">Noticias</a></li>
-      <li><a href="/librosycultura">Libros & Cultura</a></li>
-      <li><a href="/seriesypeliculas">Series & Películas</a></li>
-      <li><a href="/guiasycomida">Guías & Comida</a></li>
-      <li><a href="/tecnologia">Tecnología</a></li>
-      <li><a href="/autos">Autos</a></li>
-      <li><a href="/vinos">Vinos</a></li>
-      <li><a href="/mascotas">Mascotas</a></li>
+    <ul class="menu-desktop">
+      <li class={`menu-section${currentPath.startsWith('/viajes') ? ' active' : ''}`}><a href="/viajes">Viajes</a></li>
+      <li class={`menu-section${currentPath.startsWith('/comidayguias') ? ' active' : ''}`}><a href="/comidayguias">Comida y Guías</a></li>
+      <li class={`menu-section${currentPath.startsWith('/culturapop') ? ' active' : ''}`}><a href="/culturapop">Cultura Pop</a></li>
+      <li class={`menu-section${currentPath.startsWith('/seriesypeliculas') ? ' active' : ''}`}><a href="/seriesypeliculas">Series y Películas</a></li>
+      <li class={`menu-section${currentPath.startsWith('/librosycultura') ? ' active' : ''}`}><a href="/librosycultura">Libros y Cultura</a></li>
+      <li class={`menu-section${currentPath.startsWith('/tecnologia') ? ' active' : ''}`}><a href="/tecnologia">Tecnología</a></li>
+      <li class={`menu-section${currentPath.startsWith('/autos') ? ' active' : ''}`}><a href="/autos">Autos</a></li>
+      <li class={`menu-section${currentPath.startsWith('/mascotas') ? ' active' : ''}`}><a href="/mascotas">Mascotas</a></li>
       <li class="dd-menu">Podcast
         <ul>
-          <li><a href="/podcast/autos-al-cien">Autos al Cien</a></li>
-          <li><a href="/podcast/el-especial">El Especial</a></li>
-          <li><a href="/podcast/mascotas-con-estrella">Mascotas con Estrella</a></li>
+          <li class={`menu-section${currentPath.startsWith('/podcast/autos-al-cien') ? ' active' : ''}`}><a href="/podcast/autos-al-cien">Autos al Cien</a></li>
+          <li class={`menu-section${currentPath.startsWith('/podcast/el-especial') ? ' active' : ''}`}><a href="/podcast/el-especial">El Especial</a></li>
+          <li class={`menu-section${currentPath.startsWith('/podcast/mascotas-con-estrella') ? ' active' : ''}`}><a href="/podcast/mascotas-con-estrella">Mascotas con Estrella</a></li>
         </ul>        
       </li>
+    </ul>
+    <ul class="menu-mobile !hidden">
+      <li class={`menu-section${currentPath.startsWith('/viajes') ? ' active' : ''}`}><a href="/viajes">Viajes</a></li>
+      <li class={`menu-section${currentPath.startsWith('/comidayguias') ? ' active' : ''}`}><a href="/comidayguias">Comida y Guías</a></li>
+      <li class={`menu-section${currentPath.startsWith('/culturapop') ? ' active' : ''}`}><a href="/culturapop">Cultura Pop</a></li>
+      <li class={`menu-section${currentPath.startsWith('/seriesypeliculas') ? ' active' : ''}`}><a href="/seriesypeliculas">Series y Películas</a></li>
+      <li class={`menu-section${currentPath.startsWith('/librosycultura') ? ' active' : ''}`}><a href="/librosycultura">Libros y Cultura</a></li>
+      <li class={`menu-section${currentPath.startsWith('/tecnologia') ? ' active' : ''}`}><a href="/tecnologia">Tecnología</a></li>
+      <li class={`menu-section${currentPath.startsWith('/autos') ? ' active' : ''}`}><a href="/autos">Autos</a></li>
+      <li class={`menu-section${currentPath.startsWith('/mascotas') ? ' active' : ''}`}><a href="/mascotas">Mascotas</a></li>
+      <li class={`menu-section${currentPath.startsWith('/podcast/autos-al-cien') ? ' active' : ''}`}><a href="/podcast/autos-al-cien">Autos al Cien</a></li>
+      <li class={`menu-section${currentPath.startsWith('/podcast/el-especial') ? ' active' : ''}`}><a href="/podcast/el-especial">El Especial</a></li>
+      <li class={`menu-section${currentPath.startsWith('/podcast/mascotas-con-estrella') ? ' active' : ''}`}><a href="/podcast/mascotas-con-estrella">Mascotas con Estrella</a></li>
     </ul>
   </nav>
 <!--div class="menutres flex w-full h16 b-transparent items-center justify-between p-2 relative poppins">
@@ -86,6 +100,11 @@
 <div class="opacity-back"></div-->
 <style>
 /* Navigation styles */
+.active {
+  background-color: #ef4444;
+  color: white;
+  padding: 0 3px;
+}
 .nav-menu {
   background: white;
   padding: 0.75rem 1.5rem;
@@ -121,7 +140,7 @@
   color: #ef4444;
 }
 
-@media (max-width: 1265px){
+@media (max-width: 1300px){
   .nav-menu ul{
     flex-wrap: nowrap;
     white-space: nowrap;
@@ -130,8 +149,11 @@
     scrollbar-width: none;  
     justify-content: left;
   }
-  .menu-mobile::-webkit-scrollbar { 
-      display: none;  
+  .menu-mobile { 
+      display: flex !important;  
+  }
+  .menu-desktop{
+    display: none !important;
   }
   .nav-menu:after { content:  'ᐅ'; font-size: 18px; position: absolute; top: 30%; right: 4px;}
 }

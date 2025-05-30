@@ -1,6 +1,7 @@
 ---
 import Player from './Player.astro';
 import { Image } from 'astro:assets';
+const currentPath = Astro.url.pathname;
 ---
 
 <div><Player transition:persist /></div>
@@ -34,14 +35,15 @@ import { Image } from 'astro:assets';
       <div class="footer-column">
         <h3>Nuestras Secciones</h3>
         <ul class="roboto font-bold leading-[1.5]">
-          <li><a href="/noticias">Noticias</a></li>
-          <li><a href="/librosycultura">Libros & Cultura</a></li>
-          <li><a href="/seriesypeliculas">Series & Películas</a></li>
-          <li><a href="/guiasycomida">Guías & Comida</a></li>
-          <li><a href="/autos">Autos</a></li>
-          <li><a href="/vinos">Vinos</a></li>
-          <li><a href="/video">Video</a></li>
-          <li><a href="/podcast">Podcast</a></li>
+          <li class={`menu-section${currentPath.startsWith('/viajes') ? ' active' : ''}`}><a href="/viajes">Viajes</a></li>
+          <li class={`menu-section${currentPath.startsWith('/comidayguias') ? ' active' : ''}`}><a href="/comidayguias">Comida y Guías</a></li>
+          <li class={`menu-section${currentPath.startsWith('/culturapop') ? ' active' : ''}`} ><a href="/culturapop">Cultura Pop</a></li>
+          <li class={`menu-section${currentPath.startsWith('/seriesypeliculas') ? ' active' : ''}`}><a href="/seriesypeliculas">Series y Películas</a></li>
+          <li class={`menu-section${currentPath.startsWith('/librosycultura') ? ' active' : ''}`}><a href="/librosycultura">Libros y Cultura</a></li>
+          <li class={`menu-section${currentPath.startsWith('/tecnologia') ? ' active' : ''}`}><a href="/tecnologia">Tecnología</a></li>
+          <li class={`menu-section${currentPath.startsWith('/autos') ? ' active' : ''}`}><a href="/autos">Autos</a></li>
+          <li class={`menu-section${currentPath.startsWith('/mascotas') ? ' active' : ''}`}><a href="/mascotas">Mascotas</a></li>
+          <li class={`menu-section${currentPath.startsWith('/podcast/autos-al-cien') ? ' active' : ''}`}><a href="/podcast/autos-al-cien">Podcast</a></li>
         </ul>
       </div>
 

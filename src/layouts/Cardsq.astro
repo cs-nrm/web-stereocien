@@ -34,7 +34,7 @@ var url_seccion;
 console.log(post.categories[0]);
 switch (post.categories[0]){
     case 143:        
-        url_seccion = 'noticias';
+        url_seccion = 'culturapop';
     break;
     case 525:        
         url_seccion = 'librosycultura';
@@ -43,13 +43,10 @@ switch (post.categories[0]){
         url_seccion = 'seriesypeliculas';
     break;
     case 527:
-        url_seccion = 'guiasycomida';
+        url_seccion = 'comidayguias';
     break;
     case 169:
         url_seccion = 'autos';
-    break;
-    case 526:
-        url_seccion = 'vinos';
     break;
     case 167:
         url_seccion = 'mascotas';
@@ -57,8 +54,11 @@ switch (post.categories[0]){
     case 528:
         url_seccion = 'tecnologia';
     break;
+    case 683:
+        url_seccion = 'viajes';
+    break;
     default:
-        url_seccion = 'noticias';    
+        url_seccion = 'culturapop';    
     break;      
 }
 
