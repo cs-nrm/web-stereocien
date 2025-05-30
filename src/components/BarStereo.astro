@@ -38,7 +38,7 @@ const currentPath = Astro.url.pathname;
 
       </label>  
   
-      <div class="hidden z-10 peer-checked:table rounded absolute w-full p-4 bg-black top-10 right-[-30px] sm:right-0">
+      <div class="hidden z-10 peer-checked:table rounded absolute w-full p-4 bg-black top-10 right-[-20px] sm:right-0">
         <ul class="hh flex flex-row justify-center items-center gap-2">
           <li class={`menu-section${currentPath.startsWith('/en-vivo') ? ' active' : ''}`}><a href="/en-vivo" class="text-xs sm:text-base flex flex-nowrap flex-row items-center text-white gap-2 hover:text-#ef4444"><span class="live-icon"></span> <span class="min-w-[60px] sm:min-w-[85px]">En Vivo</span></a></li>
           <li class={`menu-section${currentPath.startsWith('/programacion') ? ' active' : ''}`}><a href="/programacion" class="text-xs sm:text-base flex flex-nowrap items-center text-white gap-2 hover:text-#ef4444"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
@@ -188,7 +188,7 @@ button:hover {
         justify-content: flex-start;
     }
 }
-@media (max-width: 400px) {
+@media (max-width: 420px) {
   .hh{flex-direction: column; align-items: flex-end;}
 }
 
