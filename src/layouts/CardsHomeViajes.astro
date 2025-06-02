@@ -84,7 +84,14 @@ const posts = await ressti.json();
   height: 100%;
   object-fit: cover;
   filter: grayscale(100%);
+  transition: all 0.3s;
 }
+
+.wine-image a:hover img{
+  filter: grayscale(0%);
+}
+
+
 
 @media (max-width: 900px) {
   .wine-route{min-height: auto;}

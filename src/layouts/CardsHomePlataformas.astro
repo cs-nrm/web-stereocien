@@ -39,11 +39,20 @@ const posts = await ressti.json();
 </div>
 
 <style>
+
 .platforms-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
   align-items: center;
+}
+
+.platforms-grid article {
+  background-color: #000;
+}
+
+.platforms-grid img {
+  mask-image: linear-gradient(225deg, hsla(var(--color-black), 1) 0, hsla(var(--color-black), 0.9) 40%, hsla(var(--color-black), 0) 80%);
 }
 
 .platform-card {

@@ -183,7 +183,7 @@ hr {
 		padding: 1em;
 	}*/
 	h1{
-		font-size: 210%;
+		font-size: 180%;
 	}
 	h2{
 		font-size: 130%;
@@ -352,6 +352,10 @@ article .flex-video.youtube iframe {
     left: 0;
     width: 100%;
     height: 100%;
+}
+article figure.wp-block-embed.is-type-video iframe{
+  width: 100%;
+  height: auto;
 }
 
 article iframe.iframe-class{
@@ -543,9 +547,9 @@ article .plyr__video-wrapper iframe {
   color: var(--amarillo-beat);
 }
 
-.cards img{
+/*.cards img{
   mask-image: linear-gradient(225deg, hsla(var(--color-black), 1) 0, hsla(var(--color-black), 0.9) 40%, hsla(var(--color-black), 0) 80%);
-}
+}*/
 
 
 .resumen{
