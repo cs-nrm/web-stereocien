@@ -365,6 +365,62 @@ const secchome = document.getElementById('home');
                          $(this).find('svg').css('fill','#d6d8d7');
                     });
                 }
+
+                var current_title = $('.current-song').html();                
+                var cover;
+                console.log('aqui' + current_title);
+                var coverbase = "https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=9a371ed9786b7037d2b0b088615b047a&format=json";
+                console.log('coverbase' + coverbase);
+                    
+                    const codtit = cancion.replace('&', '%26');
+                    const codart = artist.replace('&', '%26');
+
+					console.log('contultar api portadas');
+					 var linkcover = coverbase + '&track=' + codtit + '&artist=' + codart;
+					console.log(linkcover);
+
+                    fetch(linkcover)
+                        .then((res) => {
+                            if (!res.ok) {
+                                throw new Error
+                                    ('HTTP error! Status: ${res.status}');
+                            }
+                            return res.json();
+                        })
+                    .then((dataalbum)  => {
+						//console.log(dataalbum);
+                        var lig = dataalbum.track.album;
+                        //console.log('lig'+lig);
+                        
+						if ( lig == '' || lig == 'undefined' || lig == null){
+                            cover = '/img/logo-STEREO-pag.png';
+                            $('.logo-player img').attr('src', cover);
+                            //document.getElementById('infoCover').innerHTML = '<img src="'+ cover + '" />' ;	
+
+                        }else{
+                            cover = dataalbum.track.album.image[2]['#text'];
+                            console.log('cover' + cover);
+                            //document.getElementById('infoCover').innerHTML = '<img src="'+ cover + '" />' ;
+                            $('.logo-player img').attr('src', cover);
+                        }
+                        
+                        
+                       /*
+
+                        if(cover == '' || cover == 'undefined' || cover == null){
+                            cover = 'https://storage.googleapis.com/nrm-web/nrm/images/footer/logo-oye-80.png';
+                            //document.getElementById('infoCover').innerHTML = cover;		
+                            document.getElementById('infoCover').innerHTML = '<img src="'+ cover + '" />' ;
+						}
+						else{
+                            //document.getElementById('infoCover').innerHTML = cover;
+                            document.getElementById('infoCover').innerHTML = '<img src="'+ cover + '" />' ;	
+                        }*/
+
+                        //console.log(cover);
+                        
+					});
+                
             })
            // console.log('repetido');   
         }
@@ -613,9 +669,11 @@ document.addEventListener('astro:page-load', ev => {
         if( local_status == null || local_status == 'undefined' || local_status == '' || local_status == 'LIVE_STOP' ){  
             playstopRadio();
         }
+        $('.logo-player img').attr('src','/img/logo-STEREO-pag.png');
         $('#big-play').removeClass('border-4');
         
     }else{
+        $('.logo-player img').attr('src','https://storage.googleapis.com/nrm-web/stereocien/STEREOCIEN_MIL2.svg');        
         $('#radiobutton').removeClass('en-vivo');
         $('#big-play').addClass('border-4');
     }
