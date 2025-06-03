@@ -409,11 +409,13 @@ const secchome = document.getElementById('home');
                                 }else{
                                     if (!lig || artist == 'PAUSA COMERCIAL' ) {
                                         /*$('#radiobutton').css('background','linear-gradient(90deg,rgb(237 238 242) 0%,rgb(54 121 202) 85%)');*/
+                                        $('#radiobutton .cover-background').html('');
                                     } else {
                                         cover = dataalbum.track.album.image[2]['#text'];
                                         /*$('#radiobutton').css('background-color','rgb(54 121 202)');
                                         $('#radiobutton').css('background-image','url(' + cover + ')');
                                         $('#radiobutton').css('background-repeat','no-repeat');*/
+                                        $('#radiobutton .cover-background').html('');
                                         $('#radiobutton').append('<div class="cover-background"><img src="'+ cover +'" /></div>');
                                     }
                                 }
