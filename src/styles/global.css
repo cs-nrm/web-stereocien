@@ -580,7 +580,8 @@ article .plyr__video-wrapper iframe {
 
 /* FLICKITY */
 .flickity-button{
-	background: #FFAA1F !important;
+	background: var(--plyr-color-main) !important;
+  color: white !important;
 }
 .flickity-prev-next-button {
     width: 70px !important;

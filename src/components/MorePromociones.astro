@@ -2,7 +2,7 @@
 import Card from '../layouts/CardMoreNews.astro';
 
 
-const res = await fetch("https://contenido.stereociendigital.mx/wp-json/wp/v2/posts?_embed&per_page=4&_fields=title,slug,yoast_head_json,categories&categories=527");
+const res = await fetch("https://contenido.stereociendigital.mx/wp-json/wp/v2/posts?_embed&per_page=4&_fields=title,slug,yoast_head_json,categories&categories=275");
 const posts = await res.json();
 
 ---
@@ -18,7 +18,7 @@ const posts = await res.json();
                     }
         </section>
 <div class="m-auto text-center">
-    <a href="/comidayguias" class="text-black hover:text-white">
+    <a href="/promociones" class="text-black hover:text-white">
         <button class="ver-mas lovelo group relative h-8 w-36 m-4 overflow-hidden bg-white hover:bg-black uppercase text-xs font-bold tracking-[3px]">
             <span>Más</span>
         </button>
