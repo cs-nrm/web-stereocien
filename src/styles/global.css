@@ -390,7 +390,7 @@ article .plyr__video-wrapper iframe {
 /* player */
 .iframestyle {box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px; background-image: url('https://storage.googleapis.com/nrm-web/oye/recursos/8p7m.gif'); background-size:contain; background-color:#15181f; border: 1px solid  white; border-radius: 6px; box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;}
 .loading-gif {	width: 20px; height: auto;}
-.infoMusic { line-height: 10px;}
+.infoMusic { line-height: 10px; text-shadow: 1px 1px black;}
 
 .en-vivo {font-family: 'Roboto'!important;}
 .en-vivo #infoMusic { color: white!important;     font-size: 16px !important;  line-height: 26px !important; width: 400px!important; font-family: 'Roboto';}
@@ -404,6 +404,8 @@ article .plyr__video-wrapper iframe {
 .en-vivo .share-current { display: flex;  gap: 15px; margin-top: 10px;   }
 .en-vivo #infoMusic a {color: white;}
 .en-vivo .logo-player {width: 125px;}
+.cover-background {    position: absolute;    top: 0;    right: 0;        height: 100%;    background-size: cover;    background-position: center;    z-index: -1;  mask-image: radial-gradient(ellipse 76% 226% at 50% 60%, black 56%, transparent 65%);} 
+.cover-background img{ height: 100%;     border-top-left-radius: 35px;    border-bottom-left-radius: 35px;     object-fit: contain; opacity: 0.5;}
 
   .marquee { white-space: nowrap; overflow: hidden; width: 100%; color:black;}
   .marquee div{  display: inline-block; animation: animate 10s linear infinite; padding-left: 100%;}

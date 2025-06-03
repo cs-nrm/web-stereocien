@@ -242,7 +242,10 @@ const secchome = document.getElementById('home');
             streaming.setVolume(volume.value);
 
         });
-
+        
+        var lastArtist = '';
+        var lastSong = '';
+        
         function getInfoMusic(){
             fetch("https://cdn.nrm.com.mx/cdn/stereociendigital/playlist/cancion.json")
             .then((res) => {
@@ -258,6 +261,11 @@ const secchome = document.getElementById('home');
                         artist = 'PAUSA COMERCIAL';
                         cancion = '';
                     break;
+                    case 'ST LILI' :
+                        artist = 'PAUSA COMERCIAL';
+                        cancion = '';
+                    break;
+                    
                     case 'QATAR' :
                         artist = 'PAUSA COMERCIAL';
                         cancion = '';
@@ -355,29 +363,84 @@ const secchome = document.getElementById('home');
                 if (cancion == ''){
                     document.getElementById('infoMusic').innerHTML = artist;
                 }else{
+                const secenvivo = document.getElementById('envivo');
+                //console.log(secenvivo);
+
+                
+                var cover;                
+                var coverbase = "https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=9a371ed9786b7037d2b0b088615b047a&format=json";
                     const codtit = cancion.replace('&', '%26');
                     const codart = artist.replace('&', '%26');
                     //document.getElementById('infoMusic').innerHTML = artist + ' / ' + cancion;
                     document.getElementById('infoMusic').innerHTML = '<div class="current-song">' + artist + ' / ' + cancion + '</div><div class="share-current"><div class="like"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" stroke-width="1"> <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path> </svg> </div> <div class="share-wp"><a href="https://api.whatsapp.com/send/?text=Estoy%20escuchando%20' + codtit +'%20de%20'+ codart +'%20en%20https://stereociendigital.mx/" target="_blank"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" stroke-width="1"> <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z"></path> </svg> </div></div>';
                     
-                    $('.like').on('click',function(){
-                        console.log('click');
+                    $('.like').on('click',function(){                        
                          $(this).find('svg').css('fill','#d6d8d7');
                     });
-                }
 
+                    // Solo consulta el cover si hay cambio de artista o canción
+                    if (artist !== lastArtist || cancion !== lastSong) {
+                        lastArtist = artist;
+                        lastSong = cancion;
+
+                        const codtit = cancion.replace('&', '%26');
+                        const codart = artist.replace('&', '%26');
+                        var linkcover = coverbase + '&track=' + codtit + '&artist=' + codart;
+
+                        fetch(linkcover)
+                            .then((res) => {
+                                if (!res.ok) {
+                                    throw new Error('HTTP error! Status: ${res.status}');
+                                }
+                                return res.json();
+                            })
+                            .then((dataalbum) => {
+                                console.log('consultando');
+                                var lig = dataalbum.track.album;
+                                console.log(lig);
+                                if ( secenvivo ){
+                                    if (!lig || artist == 'PAUSA COMERCIAL' ) {
+                                        cover = '/img/logo-STEREO-pag.png';
+                                        $('.logo-player img').attr('src', cover);
+                                    } else {
+                                        cover = dataalbum.track.album.image[2]['#text'];
+                                        $('.logo-player img').attr('src', cover);
+                                    }
+                                }else{
+                                    if (!lig || artist == 'PAUSA COMERCIAL' ) {
+                                        /*$('#radiobutton').css('background','linear-gradient(90deg,rgb(237 238 242) 0%,rgb(54 121 202) 85%)');*/
+                                    } else {
+                                        cover = dataalbum.track.album.image[2]['#text'];
+                                        /*$('#radiobutton').css('background-color','rgb(54 121 202)');
+                                        $('#radiobutton').css('background-image','url(' + cover + ')');
+                                        $('#radiobutton').css('background-repeat','no-repeat');*/
+                                        $('#radiobutton').append('<div class="cover-background"><img src="'+ cover +'" /></div>');
+                                    }
+                                }
+
+                            });
+                    }
+                 
+                }
+                /*
                 var current_title = $('.current-song').html();                
                 var cover;
-                console.log('aqui' + current_title);
+                
                 var coverbase = "https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=9a371ed9786b7037d2b0b088615b047a&format=json";
-                console.log('coverbase' + coverbase);
+                //console.log('coverbase' + coverbase);
                     
                     const codtit = cancion.replace('&', '%26');
                     const codart = artist.replace('&', '%26');
 
-					console.log('contultar api portadas');
+					
 					 var linkcover = coverbase + '&track=' + codtit + '&artist=' + codart;
-					console.log(linkcover);
+                    const newsong = artist + ' / ' + cancion;
+                    console.log('newsong ' + newsong);
+                    console.log('oldsong ' + current_title);
+                    if( current_title != newsong  ){
+                        console.log('solo si hay cambio');
+                        console.log('contultar api portadas');
+                    
 
                     fetch(linkcover)
                         .then((res) => {
@@ -387,39 +450,18 @@ const secchome = document.getElementById('home');
                             }
                             return res.json();
                         })
-                    .then((dataalbum)  => {
-						//console.log(dataalbum);
-                        var lig = dataalbum.track.album;
-                        //console.log('lig'+lig);
-                        
+                    .then((dataalbum)  => {						
+                        var lig = dataalbum.track.album;                        
 						if ( lig == '' || lig == 'undefined' || lig == null){
                             cover = '/img/logo-STEREO-pag.png';
-                            $('.logo-player img').attr('src', cover);
-                            //document.getElementById('infoCover').innerHTML = '<img src="'+ cover + '" />' ;	
-
+                            $('.logo-player img').attr('src', cover);                            
                         }else{
-                            cover = dataalbum.track.album.image[2]['#text'];
-                            console.log('cover' + cover);
-                            //document.getElementById('infoCover').innerHTML = '<img src="'+ cover + '" />' ;
+                            cover = dataalbum.track.album.image[2]['#text'];                            
+                            console.log(cover);                            
                             $('.logo-player img').attr('src', cover);
-                        }
-                        
-                        
-                       /*
-
-                        if(cover == '' || cover == 'undefined' || cover == null){
-                            cover = 'https://storage.googleapis.com/nrm-web/nrm/images/footer/logo-oye-80.png';
-                            //document.getElementById('infoCover').innerHTML = cover;		
-                            document.getElementById('infoCover').innerHTML = '<img src="'+ cover + '" />' ;
-						}
-						else{
-                            //document.getElementById('infoCover').innerHTML = cover;
-                            document.getElementById('infoCover').innerHTML = '<img src="'+ cover + '" />' ;	
-                        }*/
-
-                        //console.log(cover);
-                        
+                        }                        
 					});
+                    }   */
                 
             })
            // console.log('repetido');   
