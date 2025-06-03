@@ -403,6 +403,7 @@ article .plyr__video-wrapper iframe {
 .share-current {display: none;}
 .en-vivo .share-current { display: flex;  gap: 15px; margin-top: 10px;   }
 .en-vivo #infoMusic a {color: white;}
+.en-vivo .logo-player {width: 125px;}
 
   .marquee { white-space: nowrap; overflow: hidden; width: 100%; color:black;}
   .marquee div{  display: inline-block; animation: animate 10s linear infinite; padding-left: 100%;}
