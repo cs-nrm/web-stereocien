@@ -678,3 +678,14 @@ article .plyr__video-wrapper iframe {
         height: 28px;
     }
 }
+
+/* PROMOCIONES HOME */
+.slider-promociones .flickity-viewport {
+    min-height: 360px;
+}
+
+@media only screen and (max-width: 768px){
+	.slider-promociones .flickity-viewport {
+    	min-height: 480px;
+	}
+}

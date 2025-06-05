@@ -111,10 +111,17 @@ const posts = await res.json();
     left: 8% !important;
 }
 
+.slider-promociones .flickity-viewport {
+    min-height: 360px;
+}
+
 @media only screen and (max-width: 768px){
 	.carousel-cell {
 		width: 70%;
 		height: auto;
+	}
+	.slider-promociones .flickity-viewport {
+    	min-height: 480px;
 	}
 }
 

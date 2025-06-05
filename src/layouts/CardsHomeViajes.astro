@@ -18,10 +18,10 @@ const posts = await ressti.json();
           <h2 set:html={posts[0].title.rendered}></h2>
           <div class="resumen" set:html={posts[0].excerpt.rendered}></div>
           <span class="author font-bold roboto">por {posts[0].yoast_head_json.author}</span>
-          <div class="roboto flex flex-wrap justify-end">
+          <div class="roboto flex flex-wrap items-center mt-4 justify-end sm:gap-4 leading-none">
             <span class="text-xs">Patrocinado por</span>
             <div id="ad-slot7">
-              <script defer is:inline>
+              <script is:inline>
               var gptAdSlots7 = [];
               googletag.cmd.push(function() {
               var mapping7 = googletag.sizeMapping().addSize([1, 1]).build();

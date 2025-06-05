@@ -54,7 +54,7 @@ const { title, description, image = '/stereocien-share.jpg', seccion } = Astro.p
 <!--meta property="twitter:image" content={new URL(image, Astro.url)} /-->
 
 
-<!-- Google tag (gtag.js) -->
+<!-- Google tag (gtag.js) Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-8DSGT28PYF"></script>
 <script is:inline>
   window.dataLayer = window.dataLayer || [];
@@ -64,7 +64,37 @@ const { title, description, image = '/stereocien-share.jpg', seccion } = Astro.p
   gtag('config', 'G-8DSGT28PYF');
 </script>
 
-<!--script defer>
+<!-- AD SENSE -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7423640555477330"
+     crossorigin="anonymous"></script>
+
+<!-- AD MANAGER -->
+
+<!-- Begin comScore Tag -->
+<!--script is:inline>
+  var _comscore = _comscore || [];
+  _comscore.push({
+  c1: "2", c2: "6906652",
+  options: {
+  enableFirstPartyCookie: true,
+  bypassUserConsentRequirementFor1PCookie: true
+  }
+  });
+  (function() {
+  var s = document.createElement("script"), el =
+  document.getElementsByTagName("script")[0]; s.async = true;
+  s.src = "https://sb.scorecardresearch.com/cs/6906652/beacon.js";
+  el.parentNode.insertBefore(s, el);
+  })();
+  </script>
+  <noscript>
+  <img
+  src="https://sb.scorecardresearch.com/p?c1=2&amp;c2=6906652&amp;cv=cv=4.4.0&amp;c
+  j=1">
+  </noscript-->
+  <!-- End comScore Tag -->
+
+<script defer>
     // Cargue GPT de forma síncrona (Expandibles y Creatividad Adaptable)
     (function() {
         var useSSL = 'https:' == document.location.protocol;
@@ -73,4 +103,4 @@ const { title, description, image = '/stereocien-share.jpg', seccion } = Astro.p
         document.write('<scr' + 'ipt src="' + src + '"></scr' + 'ipt>');
     })();
 </script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7423640555477330" crossorigin="anonymous"></script-->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7423640555477330" crossorigin="anonymous"></script>
