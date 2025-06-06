@@ -399,6 +399,8 @@ const secchome = document.getElementById('home');
                                 var lig = dataalbum.track.album;
                                 console.log(lig);
                                 if ( secenvivo ){
+                                    $('.cover-background').html('');
+
                                     if (!lig || artist == 'PAUSA COMERCIAL' ) {
                                         cover = '/img/logo-STEREO-pag.png';
                                         $('.logo-player img').attr('src', cover);
@@ -636,6 +638,7 @@ document.addEventListener('astro:before-preparation', ev => {
 
 document.addEventListener('astro:page-load', ev => {
    // console.log('pageload');
+   $('.cover-background').html('');
 
     /* efectos */ 
     var distance = '';    
