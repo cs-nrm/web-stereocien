@@ -405,7 +405,7 @@ article .plyr__video-wrapper iframe {
 .en-vivo #infoMusic a {color: white;}
 .en-vivo .logo-player {width: 125px;}
 .cover-background {    position: absolute;    top: 0;    right: 0;      width: 100%;  height: 100%;    background-size: cover;    background-position: center;    z-index: -1;  mask-image: radial-gradient(ellipse 76% 226% at 50% 60%, black 56%, transparent 65%);} 
-.cover-background img{ height: 100%;     border-top-left-radius: 35px;    border-bottom-left-radius: 35px;     object-fit: cover; opacity: 0.4;}
+.cover-background img{ height: 100%;     border-top-left-radius: 35px;    border-bottom-left-radius: 35px;     object-fit: cover; opacity: 0.4; filter: brightness(0.4);}
 
   .marquee { white-space: nowrap; overflow: hidden; width: 100%; color:black;}
   .marquee div{  display: inline-block; animation: animate 10s linear infinite; padding-left: 100%;}
