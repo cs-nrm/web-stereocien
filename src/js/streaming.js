@@ -697,7 +697,27 @@ document.addEventListener('astro:page-load', ev => {
                     $('.compress-logo img').removeClass('logo-dark-mode');
                 }
             });
-        
+
+            /* publicidad google refresh*/
+    googletag.pubads().refresh();
+
+    /* =======COMSCORE*/
+    var ts = Math.round((new Date()).getTime() / 1000 * Math.random() * 10);
+    // cowensole.log(ts);
+    self.COMSCORE && COMSCORE.beacon({
+            c1: "2", c2: "6906652",
+            options: {
+                enableFirstPartyCookie: true,
+                bypassUserConsentRequirementFor1PCookie: true
+            }
+    });
+
+    fetch('/pageview_candidate.txt?'+ts)
+    .then(function(resp){
+        console.log(resp);            
+    });  
+
+    /* =======COMSCORE*/
 
 
    const getplayingstatus = playerstatus();
