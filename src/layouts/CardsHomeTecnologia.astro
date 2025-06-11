@@ -16,7 +16,7 @@ const posts = await res.json();
           <!-- Article 1 -->
           <article class="news-card transition duration-[0.2s] hover:translate-y-[-4px]">
             <a href={`/tecnologia/${posts[0].slug}/`}>
-              <div class="bg-black"><img src={posts[0]._embedded['wp:featuredmedia'][0].media_details.sizes['stc-size'].source_url} alt="Imagen Las de Hoy"/></div>
+              <div class=""><img src={posts[0]._embedded['wp:featuredmedia'][0].media_details.sizes['stc-size'].source_url} alt="Imagen Las de Hoy"/></div>
               <div class="news-content p-6">
                 <h5 set:html={posts[0].title.rendered}></h5>
                 <div class="text-sm resumen" set:html={posts[0].excerpt.rendered}></div>
@@ -28,7 +28,7 @@ const posts = await res.json();
           <!-- Article 2 -->
           <article class="news-card transition duration-[0.2s] hover:translate-y-[-4px]">
             <a href={`/tecnologia/${posts[1].slug}/`}>
-              <div class="bg-black"><img src={posts[1]._embedded['wp:featuredmedia'][0].media_details.sizes['stc-size'].source_url} alt="Imagen Las de Hoy"/></div>
+              <div class=""><img src={posts[1]._embedded['wp:featuredmedia'][0].media_details.sizes['stc-size'].source_url} alt="Imagen Las de Hoy"/></div>
               <div class="news-content p-6">
                 <h5 set:html={posts[1].title.rendered}></h5>
                 <div class="text-sm resumen" set:html={posts[1].excerpt.rendered}></div>
@@ -40,7 +40,7 @@ const posts = await res.json();
           <!-- Article 3 -->
           <article class="news-card transition duration-[0.2s] hover:translate-y-[-4px]">
             <a href={`/tecnologia/${posts[2].slug}/`}>
-              <div class="bg-black"><img src={posts[2]._embedded['wp:featuredmedia'][0].media_details.sizes['stc-size'].source_url} alt="Imagen Las de Hoy"/></div>
+              <div class=""><img src={posts[2]._embedded['wp:featuredmedia'][0].media_details.sizes['stc-size'].source_url} alt="Imagen Las de Hoy"/></div>
               <div class="news-content p-6">
                 <h5 set:html={posts[2].title.rendered}></h5>
                 <div class="text-sm resumen" set:html={posts[2].excerpt.rendered}></div>
@@ -52,7 +52,7 @@ const posts = await res.json();
           <!-- Article 4 -->
           <article class="news-card hidden md:block lg:hidden transition duration-[0.2s] hover:translate-y-[-4px]">
             <a href={`/tecnologia/${posts[3].slug}/`}>
-              <div class="bg-black"><img src={posts[3]._embedded['wp:featuredmedia'][0].media_details.sizes['stc-size'].source_url} alt="Imagen Las de Hoy"/></div>
+              <div class=""><img src={posts[3]._embedded['wp:featuredmedia'][0].media_details.sizes['stc-size'].source_url} alt="Imagen Las de Hoy"/></div>
               <div class="news-content p-6">
                 <h5 set:html={posts[3].title.rendered}></h5>
                 <div class="text-sm resumen" set:html={posts[3].excerpt.rendered}></div>
@@ -145,9 +145,12 @@ posts.map((post:any)=> (
 </div>
 
 <style>
-/*.cards img{
-  mask-image: linear-gradient(225deg, hsla(var(--color-black), 1) 0, hsla(var(--color-black), 0.9) 40%, hsla(var(--color-black), 0) 80%);
-}*/
+.cards img{
+  /*mask-image: linear-gradient(225deg, hsla(var(--color-black), 1) 0, hsla(var(--color-black), 0.9) 40%, hsla(var(--color-black), 0) 80%);*/
+  max-height: 250px;
+  margin: 0 auto;
+  width: auto;
+}
 
 
 .resumen{
