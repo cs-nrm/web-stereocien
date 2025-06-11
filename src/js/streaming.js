@@ -702,7 +702,7 @@ document.addEventListener('astro:page-load', ev => {
     googletag.pubads().refresh();
 
     /* =======COMSCORE*/
-/*    var ts = Math.round((new Date()).getTime() / 1000 * Math.random() * 10);
+    var ts = Math.round((new Date()).getTime() / 1000 * Math.random() * 10);
     // cowensole.log(ts);
     self.COMSCORE && COMSCORE.beacon({
             c1: "2", c2: "6906652",
@@ -716,7 +716,7 @@ document.addEventListener('astro:page-load', ev => {
     .then(function(resp){
         console.log(resp);            
     });  
-*/
+
     /* =======COMSCORE*/
 
 
