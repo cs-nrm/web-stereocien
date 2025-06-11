@@ -686,6 +686,12 @@ document.addEventListener('astro:before-preparation', ev => {
 document.addEventListener("astro:after-swap", () => {
     console.log('astro:after-swap');
     (window.adsbygoogle = window.adsbygoogle || []).push({});
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
+    
     googletag.pubads().refresh();
 });
 
