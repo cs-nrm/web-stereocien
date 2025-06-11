@@ -350,12 +350,60 @@ const secchome = document.getElementById('home');
                         artist = 'PAUSA COMERCIAL';
                         cancion = '';
                     break;
-                    
-                    
-                    default:
+                    case 'ST2000' :
                         artist = data.artista;
                         cancion = data.title;
                         hora = data.hora_real;
+                    break;
+                    case "ST70'S" :
+                        artist = data.artista;
+                        cancion = data.title;
+                        hora = data.hora_real;
+                    break;
+                    case "ST80'S" :
+                        artist = data.artista;
+                        cancion = data.title;
+                        hora = data.hora_real;
+                    break;
+                    case "ST90'S" :
+                        artist = data.artista;
+                        cancion = data.title;
+                        hora = data.hora_real;
+                    break;
+                    case 'STCIEN' :
+                        artist = data.artista;
+                        cancion = data.title;
+                        hora = data.hora_real;
+                    break;
+                    case 'STCURREN' :
+                        artist = data.artista;
+                        cancion = data.title;
+                        hora = data.hora_real;
+                    break;
+                    case 'STDISCO' :
+                        artist = data.artista;
+                        cancion = data.title;
+                        hora = data.hora_real;
+                    break;
+                    case 'STEREO CIEN 2020' :
+                        artist = data.artista;
+                        cancion = data.title;
+                        hora = data.hora_real;
+                    break;
+                    case 'STEXITOS' :
+                        artist = data.artista;
+                        cancion = data.title;
+                        hora = data.hora_real;
+                    break;
+                    case 'STNAVIDAD' :
+                        artist = data.artista;
+                        cancion = data.title;
+                        hora = data.hora_real;
+                    break;                                        
+                    default:
+                        artist = 'PAUSA COMERCIAL';
+                        cancion = '';
+                        hora = '';
                     break;
                     
 
