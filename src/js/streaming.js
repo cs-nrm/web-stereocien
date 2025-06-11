@@ -683,6 +683,11 @@ document.addEventListener('astro:before-preparation', ev => {
     document.querySelector('.preloader').classList.add('showpreloader');
 });
 
+document.addEventListener("astro:after-swap", () => {
+    console.log('astro:after-swap');
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
+    googletag.pubads().refresh();
+});
 
 document.addEventListener('astro:page-load', ev => {
    // console.log('pageload');
@@ -747,12 +752,13 @@ document.addEventListener('astro:page-load', ev => {
             });
 
     /* publicidad google refresh*/
-    (function() {
+    /*(function() {
         if (window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
             window.adsbygoogle.push({});
         }
     })();
     googletag.pubads().refresh();
+    */
 
     /* =======COMSCORE*/
     var ts = Math.round((new Date()).getTime() / 1000 * Math.random() * 10);
