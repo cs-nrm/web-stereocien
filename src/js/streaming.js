@@ -690,9 +690,9 @@ document.addEventListener("astro:after-swap", () => {
     (window.adsbygoogle = window.adsbygoogle || []).push({});
     setTimeout(() => { (window.adsbygoogle = window.adsbygoogle || []).push({}); }, 1000);
     setTimeout(() => { (window.adsbygoogle = window.adsbygoogle || []).push({}); }, 1500);
-    setTimeout(() => { (window.adsbygoogle = window.adsbygoogle || []).push({}); }, 2000);
+    /*setTimeout(() => { (window.adsbygoogle = window.adsbygoogle || []).push({}); }, 2000);
     setTimeout(() => { (window.adsbygoogle = window.adsbygoogle || []).push({}); }, 2500);
-    setTimeout(() => { (window.adsbygoogle = window.adsbygoogle || []).push({}); }, 3000);
+    setTimeout(() => { (window.adsbygoogle = window.adsbygoogle || []).push({}); }, 3000);*/
 
     googletag.pubads().refresh();
 });
