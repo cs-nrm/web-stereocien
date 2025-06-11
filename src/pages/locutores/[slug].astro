@@ -5,7 +5,7 @@ import BoxBanner from '../../components/BoxBanner.astro';
 import LeaderBoard from '../../components/LeaderBoard.astro';
 import SuperLeader from '../../components/SuperLeader.astro';
 import MoreNews from '../../components/MoreNews.astro';
-import Board from '../../components/Board.astro';
+import LeaderBoard2 from '../../components/LeaderBoard2.astro';
 import { any } from 'astro/zod';
 import { SITE_TITLE } from '../../consts';
 
@@ -83,7 +83,7 @@ export async function getStaticPaths() {
           </div>
           <div class="w-full">
             <Fragment set:html={post.content.rendered} />
-            <Board />
+            <LeaderBoard2 />
           </div>
           
         </article>
