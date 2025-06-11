@@ -122,13 +122,13 @@ const secchome = document.getElementById('home');
         const codart = artistName.replace('&', '%26');
         //document.getElementById('infoMusic').innerHTML = '<div class="current-song">' + artistName + ' / ' + cueTitle + '</div><div class="share-current"><div class="like"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" stroke-width="1"> <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path> </svg> </div> <div class="share-wp"><a href="https://api.whatsapp.com/send/?text=Estoy%20escuchando%20' + codtit +'%20de%20'+ codart +'%20en%20https://beatdigital.mx/" target="_blank"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" stroke-width="1"> <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z"></path> </svg> </div></div>';
         $('.like').on('click',function(){
-           console.log('click');
+          // console.log('click');
             $(this).find('svg').css('fill','#d6d8d7');
        });
      }
 
      function adBreakCuePoint( e ){
-       console.log('PAUSA COMERCIAL');
+       //console.log('PAUSA COMERCIAL');
        //document.getElementById('infoMusic').innerHTML = 'PAUSA COMERCIAL';
     }
 
@@ -179,7 +179,7 @@ const secchome = document.getElementById('home');
    
 
       function stop(){
-        console.log('stopped');
+      //  console.log('stopped');
         streaming.stop();
       }
 
@@ -202,7 +202,7 @@ const secchome = document.getElementById('home');
         document.getElementById('play-pause').classList.add('show');
         document.getElementById('play-pause').classList.remove('hide'); 
         vol = streaming.getVolume();
-        console.log(vol);
+     //   console.log(vol);
 
     }
 
@@ -447,7 +447,7 @@ const secchome = document.getElementById('home');
                             .then((dataalbum) => {
                                 console.log('consultando');
                                 var lig = dataalbum.track.album;
-                                console.log(lig);
+                               // console.log(lig);
                                 if ( secenvivo ){
                                     $('.cover-background').html('');
 
@@ -686,7 +686,7 @@ document.addEventListener('astro:before-preparation', ev => {
 });
 
 document.addEventListener("astro:after-swap", () => {
-    console.log('astro:after-swap');
+    //console.log('astro:after-swap');
     (window.adsbygoogle = window.adsbygoogle || []).push({});
     setTimeout(() => { (window.adsbygoogle = window.adsbygoogle || []).push({}); }, 1000);
     setTimeout(() => { (window.adsbygoogle = window.adsbygoogle || []).push({}); }, 1500);
@@ -998,11 +998,11 @@ document.addEventListener('astro:page-load', ev => {
     const containvideo = document.getElementById('content-w-video');
     if (containvideo){
         //console.log('sccion pop');  
-        console.log(navigator.userAgent);
+        //console.log(navigator.userAgent);
         if(navigator.userAgent.indexOf("iPhone") != -1){
             
         $('.wp-block-embed-youtube .wp-block-embed__wrapper iframe').each(function(t,el){
-            console.log($(this));   
+           // console.log($(this));   
             //const ele = $(this).attr('id','el-'+t);     
             $(this).on('click',function(){
                 const getstatus = playerstatus();
@@ -1017,7 +1017,7 @@ document.addEventListener('astro:page-load', ev => {
 
         }else{                      
         $('.wp-block-embed-youtube .wp-block-embed__wrapper').each(function(){
-            console.log($(this).find('iframe'));            
+           // console.log($(this).find('iframe'));            
             const plyr = new Plyr($(this).find('iframe').parent(),{
                 debug:true,
                 controls:[
@@ -1061,7 +1061,7 @@ document.addEventListener('astro:page-load', ev => {
         /*voto*/
         $('.voto-pop').each(function(){
             $(this).on('click', function(){
-                console.log($(this).attr('data-voto-id'));
+                //console.log($(this).attr('data-voto-id'));
                 const id = $(this).attr('data-voto-id');                                
                 /*const params = {
                     "search": id, 
@@ -1093,7 +1093,7 @@ document.addEventListener('astro:page-load', ev => {
                     return res.json();
                 })
                 .then((data) => { 
-                        console.log(data);
+                        //console.log(data);
                         $(this).addClass('voted');
                         $(this).find('svg').attr('fill','white');
                         Toastify({
