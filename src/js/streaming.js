@@ -746,7 +746,12 @@ document.addEventListener('astro:page-load', ev => {
                 }
             });
 
-            /* publicidad google refresh*/
+    /* publicidad google refresh*/
+    (function() {
+        if (window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
+            window.adsbygoogle.push({});
+        }
+    })();
     googletag.pubads().refresh();
 
     /* =======COMSCORE*/
