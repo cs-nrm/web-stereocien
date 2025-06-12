@@ -1,5 +1,3 @@
-import { set } from "astro:schema";
-
 var streaming;
 var local_status;
 const buttonPause = '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-player-pause" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /><path d="M14 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /></svg>';
@@ -248,282 +246,97 @@ const secchome = document.getElementById('home');
         var lastArtist = '';
         var lastSong = '';
         
-        function getInfoMusic(){
-            fetch("https://cdn.nrm.com.mx/cdn/stereociendigital/playlist/cancion.json")
-            .then((res) => {
-                if (!res.ok) {
-                    throw new Error
-                        ('HTTP error! Status: ${res.status}');
-                }
-                return res.json();
-            })
-            .then((data) => {                
-                switch( data.categoria ){
-                    case 'COMERCIALES' :
-                        artist = 'PAUSA COMERCIAL';
-                        cancion = '';
-                    break;
-                    case 'ST LILI' :
-                        artist = 'PAUSA COMERCIAL';
-                        cancion = '';
-                    break;
-                    
-                    case 'QATAR' :
-                        artist = 'PAUSA COMERCIAL';
-                        cancion = '';
-                    break;
-                    case 'TITULOS' :
-                        artist = 'PAUSA COMERCIAL';
-                        cancion = '';
-                    break;
-                    case 'STTEMPERATURA' :
-                        artist = 'PAUSA COMERCIAL';
-                        cancion = '';
-                    break;
-                    case 'STSALUDOS' :
-                        artist = 'PAUSA COMERCIAL';
-                        cancion = '';
-                    break;
-                    case 'STPROMOS' :
-                        artist = 'PAUSA COMERCIAL';
-                        cancion = '';
-                    break;
-                    case 'STPROGRAMAS' :
-                        artist = 'PAUSA COMERCIAL';
-                        cancion = '';
-                    break;
-                    case 'STDESPEDIDAS' :
-                        artist = 'PAUSA COMERCIAL';
-                        cancion = '';
-                    break;
-                    case 'ST-ELEMENTOS PROD' :
-                        artist = 'PAUSA COMERCIAL';
-                        cancion = '';
-                    break;
-                    case 'ST TITULOS NAVIDAD' :
-                        artist = 'PAUSA COMERCIAL';
-                        cancion = '';
-                    break;
-                    case 'ST TATUAJES LILI' :
-                        artist = 'PAUSA COMERCIAL';
-                        cancion = '';
-                    break;
-                    case 'ST PROD NAVIDAD' :
-                        artist = 'PAUSA COMERCIAL';
-                        cancion = '';
-                    break;
-                    case 'ST INTERVENCIONES MADRUGADA' :
-                        artist = 'PAUSA COMERCIAL';
-                        cancion = '';
-                    break;
-                    case 'ST DIGITAL' :
-                        artist = 'PAUSA COMERCIAL';
-                        cancion = '';
-                    break;
-                    case 'ST DANI' :
-                        artist = 'PAUSA COMERCIAL';
-                        cancion = '';
-                    break;
-                    case 'ST BUENA NOTICIA' :
-                        artist = 'PAUSA COMERCIAL';
-                        cancion = '';
-                    break;
-                    case 'ST BACK TO THE 80S' :
-                        artist = 'PAUSA COMERCIAL';
-                        cancion = '';
-                    break;
-                    case 'ST ANIMALES CON ESTRELLA' :
-                        artist = 'PAUSA COMERCIAL';
-                        cancion = '';
-                    break;
-                    case 'MENCIONES-STEREO CIEN' :
-                        artist = 'PAUSA COMERCIAL';
-                        cancion = '';
-                    break;
-                    case 'CARTS' :
-                        artist = 'PAUSA COMERCIAL';
-                        cancion = '';
-                    break;
-                    case 'CARTS' :
-                        artist = 'PAUSA COMERCIAL';
-                        cancion = '';
-                    break;
-                    case 'CARTS' :
-                        artist = 'PAUSA COMERCIAL';
-                        cancion = '';
-                    break;
-                    case 'ST NVDISCO' :
-                        artist = 'Stereo Cien Digital';
-                        cancion = data.title;
-                        hora = data.hora_real;
-                    break;                    
-                    case 'ST2000' :
-                        artist = data.artista;
-                        cancion = data.title;
-                        hora = data.hora_real;
-                    break;
-                    case "ST70'S" :
-                        artist = data.artista;
-                        cancion = data.title;
-                        hora = data.hora_real;
-                    break;
-                    case "ST80'S" :
-                        artist = data.artista;
-                        cancion = data.title;
-                        hora = data.hora_real;
-                    break;
-                    case "ST90'S" :
-                        artist = data.artista;
-                        cancion = data.title;
-                        hora = data.hora_real;
-                    break;
-                    case 'STCIEN' :
-                        artist = data.artista;
-                        cancion = data.title;
-                        hora = data.hora_real;
-                    break;
-                    case 'STCURREN' :
-                        artist = data.artista;
-                        cancion = data.title;
-                        hora = data.hora_real;
-                    break;
-                    case 'STDISCO' :
-                        artist = data.artista;
-                        cancion = data.title;
-                        hora = data.hora_real;
-                    break;
-                    case 'STEREO CIEN 2020' :
-                        artist = data.artista;
-                        cancion = data.title;
-                        hora = data.hora_real;
-                    break;
-                    case 'STEXITOS' :
-                        artist = data.artista;
-                        cancion = data.title;
-                        hora = data.hora_real;
-                    break;
-                    case 'STNAVIDAD' :
-                        artist = data.artista;
-                        cancion = data.title;
-                        hora = data.hora_real;
-                    break;                                        
-                    default:
-                        artist = 'PAUSA COMERCIAL';
-                        cancion = '';
-                        hora = '';
-                    break;
-                    
+        function getInfoMusic() {
+        fetch("https://cdn.nrm.com.mx/cdn/stereociendigital/playlist/cancion.json")
+        .then((res) => {
+            if (!res.ok) {
+                throw new Error(`HTTP error! Status: ${res.status}`);
+            }
+            return res.json();
+        })
+        .then((data) => {
+            let newArtist = '';
+            let newSong = '';
+            let newHora = '';
 
-                }                 
-                if (cancion == ''){
+            switch (data.categoria) {
+                case 'ST2000':
+                case "ST70'S":
+                case "ST80'S":
+                case "ST90'S":
+                case 'STCIEN':
+                case 'STCURREN':
+                case 'STDISCO':
+                case 'STEREO CIEN 2020':
+                case 'STEXITOS':
+                case 'STNAVIDAD':
+                    newArtist = data.artista;
+                    newSong = data.title;
+                    newHora = data.hora_real;
+                    break;
+                default:
+                    newArtist = 'PAUSA COMERCIAL';
+                    newSong = '';
+                    newHora = '';
+                    break;
+            }
+
+            // Solo actualiza si hay cambio
+            if (newArtist !== lastArtist || newSong !== lastSong) {
+                lastArtist = newArtist;
+                lastSong = newSong;
+                artist = newArtist;
+                cancion = newSong;
+                hora = newHora;
+
+                if (cancion === '') {
                     document.getElementById('infoMusic').innerHTML = artist;
-                }else{
-                const secenvivo = document.getElementById('envivo');
-                //console.log(secenvivo);
-
-                
-                var cover;                
-                var coverbase = "https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=9a371ed9786b7037d2b0b088615b047a&format=json";
+                } else {
+                    const secenvivo = document.getElementById('envivo');
+                    var cover;
+                    var coverbase = "https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=9a371ed9786b7037d2b0b088615b047a&format=json";
                     const codtit = cancion.replace('&', '%26');
                     const codart = artist.replace('&', '%26');
-                    //document.getElementById('infoMusic').innerHTML = artist + ' / ' + cancion;
                     document.getElementById('infoMusic').innerHTML = '<div class="current-song">' + cancion + ' / ' + artist + '</div><div class="share-current"><div class="like"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" stroke-width="1"> <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path> </svg> </div> <div class="share-wp"><a href="https://api.whatsapp.com/send/?text=Estoy%20escuchando%20' + codtit +'%20de%20'+ codart +'%20en%20https://stereociendigital.mx/" target="_blank"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" stroke-width="1"> <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z"></path> </svg> </div></div>';
-                    
-                    $('.like').on('click',function(){                        
-                         $(this).find('svg').css('fill','#d6d8d7');
+
+                    $('.like').on('click', function () {
+                        $(this).find('svg').css('fill', '#d6d8d7');
                     });
 
-                    // Solo consulta el cover si hay cambio de artista o canción
-                    if (artist !== lastArtist || cancion !== lastSong) {
-                        lastArtist = artist;
-                        lastSong = cancion;
-
-                        const codtit = cancion.replace('&', '%26');
-                        const codart = artist.replace('&', '%26');
-                        var linkcover = coverbase + '&track=' + codtit + '&artist=' + codart;
-
-                        fetch(linkcover)
-                            .then((res) => {
-                                if (!res.ok) {
-                                    throw new Error('HTTP error! Status: ${res.status}');
-                                }
-                                return res.json();
-                            })
-                            .then((dataalbum) => {
-                                console.log('consultando');
-                                var lig = dataalbum.track.album;
-                               // console.log(lig);
-                                if ( secenvivo ){
-                                    $('.cover-background').html('');
-
-                                    if (!lig || artist == 'PAUSA COMERCIAL' ) {
-                                        cover = '/img/logo-STEREO-pag.png';
-                                        $('.logo-player img').attr('src', cover);
-                                    } else {
-                                        cover = dataalbum.track.album.image[2]['#text'];
-                                        $('.logo-player img').attr('src', cover);
-                                    }
-                                }else{
-                                    if (!lig || artist == 'PAUSA COMERCIAL' ) {
-                                        /*$('#radiobutton').css('background','linear-gradient(90deg,rgb(237 238 242) 0%,rgb(54 121 202) 85%)');*/
-                                        $('#radiobutton .cover-background').html('');
-                                    } else {
-                                        cover = dataalbum.track.album.image[2]['#text'];
-                                        /*$('#radiobutton').css('background-color','rgb(54 121 202)');
-                                        $('#radiobutton').css('background-image','url(' + cover + ')');
-                                        $('#radiobutton').css('background-repeat','no-repeat');*/
-                                        $('#radiobutton .cover-background').html('');
-                                        $('#radiobutton').append('<div class="cover-background"><img src="'+ cover +'" /></div>');
-                                    }
-                                }
-
-                            });
-                    }
-                 
-                }
-                /*
-                var current_title = $('.current-song').html();                
-                var cover;
-                
-                var coverbase = "https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=9a371ed9786b7037d2b0b088615b047a&format=json";
-                //console.log('coverbase' + coverbase);
-                    
-                    const codtit = cancion.replace('&', '%26');
-                    const codart = artist.replace('&', '%26');
-
-					
-					 var linkcover = coverbase + '&track=' + codtit + '&artist=' + codart;
-                    const newsong = artist + ' / ' + cancion;
-                    console.log('newsong ' + newsong);
-                    console.log('oldsong ' + current_title);
-                    if( current_title != newsong  ){
-                        console.log('solo si hay cambio');
-                        console.log('contultar api portadas');
-                    
-
+                    // Consulta el cover solo si hay cambio
+                    var linkcover = coverbase + '&track=' + codtit + '&artist=' + codart;
                     fetch(linkcover)
                         .then((res) => {
                             if (!res.ok) {
-                                throw new Error
-                                    ('HTTP error! Status: ${res.status}');
+                                throw new Error(`HTTP error! Status: ${res.status}`);
                             }
                             return res.json();
                         })
-                    .then((dataalbum)  => {						
-                        var lig = dataalbum.track.album;                        
-						if ( lig == '' || lig == 'undefined' || lig == null){
-                            cover = '/img/logo-STEREO-pag.png';
-                            $('.logo-player img').attr('src', cover);                            
-                        }else{
-                            cover = dataalbum.track.album.image[2]['#text'];                            
-                            console.log(cover);                            
-                            $('.logo-player img').attr('src', cover);
-                        }                        
-					});
-                    }   */
-                
-            })
-           // console.log('repetido');   
+                        .then((dataalbum) => {
+                            var lig = dataalbum.track.album;
+                            if (secenvivo) {
+                                $('.cover-background').html('');
+                                if (!lig || artist == 'PAUSA COMERCIAL') {
+                                    cover = '/img/logo-STEREO-pag.png';
+                                    $('.logo-player img').attr('src', cover);
+                                } else {
+                                    cover = dataalbum.track.album.image[2]['#text'];
+                                    $('.logo-player img').attr('src', cover);
+                                }
+                            } else {
+                                if (!lig || artist == 'PAUSA COMERCIAL') {
+                                    $('#radiobutton .cover-background').html('');
+                                } else {
+                                    cover = dataalbum.track.album.image[2]['#text'];
+                                    $('#radiobutton .cover-background').html('');
+                                    $('#radiobutton').append('<div class="cover-background"><img src="' + cover + '" /></div>');
+                                }
+                            }
+                        });
+                }
+            }
+            // Si no hay cambio, no hace nada
+            });
         }
         getInfoMusic();
         setInterval( getInfoMusic, 30000);
