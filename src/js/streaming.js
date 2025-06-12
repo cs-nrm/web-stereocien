@@ -352,6 +352,11 @@ const secchome = document.getElementById('home');
                         artist = 'PAUSA COMERCIAL';
                         cancion = '';
                     break;
+                    case 'ST NVDISCO' :
+                        artist = '';
+                        cancion = data.title;
+                        hora = data.hora_real;
+                    break;                    
                     case 'ST2000' :
                         artist = data.artista;
                         cancion = data.title;
