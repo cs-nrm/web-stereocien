@@ -353,7 +353,7 @@ const secchome = document.getElementById('home');
                         cancion = '';
                     break;
                     case 'ST NVDISCO' :
-                        artist = '';
+                        artist = 'Stereo Cien Digital';
                         cancion = data.title;
                         hora = data.hora_real;
                     break;                    
