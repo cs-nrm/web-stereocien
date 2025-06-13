@@ -278,6 +278,7 @@ function getInfoMusic() {
             case 'STDISCO':
             case 'STEREO CIEN 2020':
             case 'STEXITOS':
+            case 'ST-BEATLES':
             case 'STNAVIDAD':
                 newArtist = data.artista;
                 newSong = data.title;
