@@ -614,7 +614,7 @@ document.addEventListener('astro:page-load', ev => {
         $('#big-play').removeClass('border-4');
         
     }else{
-        getInfoMusic();
+       // getInfoMusic();
         $('.logo-player img').attr('src','https://storage.googleapis.com/nrm-web/stereocien/STEREOCIEN_MIL2.svg');        
         $('#radiobutton').removeClass('en-vivo');
         $('#big-play').addClass('border-4');
