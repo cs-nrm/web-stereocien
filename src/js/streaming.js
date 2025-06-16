@@ -54,10 +54,12 @@ const secchome = document.getElementById('home');
         streaming.addEventListener( 'autoplay', autoplay);
       }
     
-     function getStatus(s){
+     var musicInterval = null; // Agrega esto al inicio del archivo o cerca de lastArtist/lastSong
+
+    function getStatus(s){
         local_status = s.data.code;
         const secchome = document.getElementById('home');                 
-         if( local_status == 'GETTING_STATION_INFORMATION' || local_status == 'LIVE_CONNECTING' || local_status == 'LIVE_BUFFERING' ){
+        if( local_status == 'GETTING_STATION_INFORMATION' || local_status == 'LIVE_CONNECTING' || local_status == 'LIVE_BUFFERING' ){
             document.getElementById('loading').classList.add('show');
             document.getElementById('loading').classList.remove('hide');
             document.getElementById('play-pause').classList.remove('show');
@@ -75,7 +77,12 @@ const secchome = document.getElementById('home');
             $('.text-player').html('<div style="font-weight:bold;">Ahora suena...</div><div id="infoMusic" style="line-height:11px; font-size:12px;"></div>');
             $('.text-player').addClass('playing');
             $('#radiobutton').addClass('playerplaying');
-            getInfoMusic();
+            // Limpia cualquier intervalo anterior
+            if (musicInterval) clearInterval(musicInterval);
+            setTimeout(function(){
+                getInfoMusic(); // Primera consulta inmediata
+            }, 1000); // Espera 1 segundo antes de la primera consulta
+            musicInterval = setInterval(getInfoMusic, 30000); // Intervalo solo cuando está LIVE_PLAYING
             
          }
          if(local_status == 'LIVE_STOP' || local_status == 'LIVE_PAUSE') {
@@ -91,7 +98,7 @@ const secchome = document.getElementById('home');
             setTimeout( function(){
                 $('.text-player').html('ESCUCHA LA RADIO EN VIVO <span style="color: #df104a;    font-weight: bold;    font-size: 12px;">GRATIS</span> AHORA');             
             },1000);
-                
+            if (musicInterval) clearInterval(musicInterval);    
             //$('.text-player').attr('id','');            
          }
 
@@ -107,14 +114,16 @@ const secchome = document.getElementById('home');
         }); 
         $('#td_container').removeClass('pub_active');
         $('#full-cover').css('display','none');
+        
+       
       }
 
       function onTrackCuePoint( event ){
-        var cueTitle = event.data.cuePoint.cueTitle;
+        /*var cueTitle = event.data.cuePoint.cueTitle;
         var artistName = event.data.cuePoint.artistName;         
         //console.log('cueTitle: ' + cueTitle);
         //console.log('cambio de cancion');
-        console.log(event.data.cuePoint);
+        //console.log(event.data.cuePoint);
 
         const codtit = cueTitle.replace('&', '%26');
         const codart = artistName.replace('&', '%26');
@@ -122,7 +131,7 @@ const secchome = document.getElementById('home');
         $('.like').on('click',function(){
           // console.log('click');
             $(this).find('svg').css('fill','#d6d8d7');
-       });
+       });*/
      }
 
      function adBreakCuePoint( e ){
@@ -243,106 +252,108 @@ const secchome = document.getElementById('home');
 
         });
         
-        var lastArtist = '';
-        var lastSong = '';
-        
-        function getInfoMusic() {
-        fetch("https://cdn.nrm.com.mx/cdn/stereociendigital/playlist/cancion.json")
-        .then((res) => {
-            if (!res.ok) {
-                throw new Error(`HTTP error! Status: ${res.status}`);
-            }
-            return res.json();
-        })
-        .then((data) => {
-            let newArtist = '';
-            let newSong = '';
-            let newHora = '';
+var lastArtist = null;
+var lastSong = null;
 
-            switch (data.categoria) {
-                case 'ST2000':
-                case "ST70'S":
-                case "ST80'S":
-                case "ST90'S":
-                case 'STCIEN':
-                case 'STCURREN':
-                case 'STDISCO':
-                case 'STEREO CIEN 2020':
-                case 'STEXITOS':
-                case 'STNAVIDAD':
-                    newArtist = data.artista;
-                    newSong = data.title;
-                    newHora = data.hora_real;
-                    break;
-                default:
-                    newArtist = 'PAUSA COMERCIAL';
-                    newSong = '';
-                    newHora = '';
-                    break;
-            }
+function getInfoMusic() {
+    fetch("https://cdn.nrm.com.mx/cdn/stereociendigital/playlist/cancion.json")
+    .then((res) => {
+        if (!res.ok) {
+            throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+        return res.json();
+    })
+    .then((data) => {
+        let newArtist = '';
+        let newSong = '';
+        let newHora = '';
 
-            // Solo actualiza si hay cambio
-            if (newArtist !== lastArtist || newSong !== lastSong) {
-                lastArtist = newArtist;
-                lastSong = newSong;
-                artist = newArtist;
-                cancion = newSong;
-                hora = newHora;
+        switch (data.categoria) {
+            case 'ST2000':
+            case "ST70'S":
+            case "ST80'S":
+            case "ST90'S":
+            case 'STCIEN':
+            case 'STCURREN':
+            case 'STDISCO':
+            case 'STEREO CIEN 2020':
+            case 'STEXITOS':
+            case 'ST-BEATLES':
+            case 'STNAVIDAD':
+                newArtist = data.artista;
+                newSong = data.title;
+                newHora = data.hora_real;
+                break;
+            default:
+                newArtist = 'PAUSA COMERCIAL';
+                newSong = '';
+                newHora = '';
+                break;
+        }
 
-                if (cancion === '') {
-                    document.getElementById('infoMusic').innerHTML = artist;
-                } else {
-                    const secenvivo = document.getElementById('envivo');
-                    var cover;
-                    var coverbase = "https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=9a371ed9786b7037d2b0b088615b047a&format=json";
-                    const codtit = cancion.replace('&', '%26');
-                    const codart = artist.replace('&', '%26');
-                    document.getElementById('infoMusic').innerHTML = '<div class="current-song">' + cancion + ' / ' + artist + '</div><div class="share-current"><div class="like"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" stroke-width="1"> <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path> </svg> </div> <div class="share-wp"><a href="https://api.whatsapp.com/send/?text=Estoy%20escuchando%20' + codtit +'%20de%20'+ codart +'%20en%20https://stereociendigital.mx/" target="_blank"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" stroke-width="1"> <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z"></path> </svg> </div></div>';
+        // Actualiza siempre en la primera llamada o si hay cambio
+        if (lastArtist === null || lastSong === null || newArtist !== lastArtist || newSong !== lastSong) {
+            lastArtist = newArtist;
+            lastSong = newSong;
+            artist = newArtist;
+            cancion = newSong;
+            hora = newHora;
 
-                    $('.like').on('click', function () {
-                        $(this).find('svg').css('fill', '#d6d8d7');
-                    });
+            if (cancion === '') {
+                document.getElementById('infoMusic').innerHTML = artist;
+            } else {
+                const secenvivo = document.getElementById('envivo');
+                var cover;
+                var coverbase = "https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=9a371ed9786b7037d2b0b088615b047a&format=json";
+                const codtit = cancion.replace('&', '%26');
+                const codart = artist.replace('&', '%26');
+                console.log('Artista: ' + artist);
+                console.log('Canción: ' + cancion);
+                console.log('escribe');
+                $('#infoMusic').html('<div class="current-song">' + cancion + ' / ' + artist + '</div><div class="share-current"><div class="like"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" stroke-width="1"> <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path> </svg> </div> <div class="share-wp"><a href="https://api.whatsapp.com/send/?text=Estoy%20escuchando%20' + codtit +'%20de%20'+ codart +'%20en%20https://stereociendigital.mx/" target="_blank"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" stroke-width="1"> <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z"></path> </svg> </div></div>'); 
+                //document.getElementById('infoMusic').innerHTML = 
 
-                    // Consulta el cover solo si hay cambio
-                    var linkcover = coverbase + '&track=' + codtit + '&artist=' + codart;
-                    fetch(linkcover)
-                        .then((res) => {
-                            if (!res.ok) {
-                                throw new Error(`HTTP error! Status: ${res.status}`);
-                            }
-                            return res.json();
-                        })
-                        .then((dataalbum) => {
-                            var lig = dataalbum.track.album;
-                            if (secenvivo) {
-                                $('.cover-background').html('');
-                                if (!lig || artist == 'PAUSA COMERCIAL') {
-                                    cover = '/img/logo-STEREO-pag.png';
-                                    $('.logo-player img').attr('src', cover);
-                                } else {
-                                    cover = dataalbum.track.album.image[2]['#text'];
-                                    $('.logo-player img').attr('src', cover);
-                                }
+                $('.like').on('click', function () {
+                    $(this).find('svg').css('fill', '#d6d8d7');
+                });
+
+                // Consulta el cover solo si hay cambio
+                var linkcover = coverbase + '&track=' + codtit + '&artist=' + codart;
+                fetch(linkcover)
+                    .then((res) => {
+                        if (!res.ok) {
+                            throw new Error(`HTTP error! Status: ${res.status}`);
+                        }
+                        return res.json();
+                    })
+                    .then((dataalbum) => {
+                        var lig = dataalbum.track.album;
+                        if (secenvivo) {
+                            $('.cover-background').html('');
+                            if (!lig || artist == 'PAUSA COMERCIAL') {
+                                cover = '/img/logo-STEREO-pag.png';
+                                $('.logo-player img').attr('src', cover);
                             } else {
-                                if (!lig || artist == 'PAUSA COMERCIAL') {
-                                    $('#radiobutton .cover-background').html('');
-                                } else {
-                                    cover = dataalbum.track.album.image[2]['#text'];
-                                    $('#radiobutton .cover-background').html('');
-                                    $('#radiobutton').append('<div class="cover-background"><img src="' + cover + '" /></div>');
-                                }
+                                cover = dataalbum.track.album.image[2]['#text'];
+                                $('.logo-player img').attr('src', cover);
                             }
-                        });
-                }
+                        } else {
+                            if (!lig || artist == 'PAUSA COMERCIAL') {
+                                $('#radiobutton .cover-background').html('');
+                            } else {
+                                cover = dataalbum.track.album.image[2]['#text'];
+                                $('#radiobutton .cover-background').html('');
+                                $('#radiobutton').append('<div class="cover-background"><img src="' + cover + '" /></div>');
+                            }
+                        }
+                    });
+            }
             }
             // Si no hay cambio, no hace nada
-            });
-        }
-        getInfoMusic();
-        setInterval( getInfoMusic, 30000);
-        
+        });
+    }
 
-        
+       
         function getInfoProg(){
             
             fetch("https://contenido.stereociendigital.mx/wp-json/wp/v2/posts?_embed&per_page=40&categories=302&_fields[]=acf&_fields[]=jetpack_featured_media_url&_fields[]=acf&_fields[]=content")
@@ -380,7 +391,7 @@ const secchome = document.getElementById('home');
                     }
                 });   
                 if (siguientePrograma) {
-                    console.log("Siguiente programa:", siguientePrograma.acf.programa);
+                 //   console.log("Siguiente programa:", siguientePrograma.acf.programa);
                     $('.envivo-next').html(siguientePrograma.acf.hora_inicio + ' - ' + siguientePrograma.acf.hora_fin);
                     $('.envivo-prog-next-tab').html(siguientePrograma.acf.programa);
                 }                                                
@@ -473,7 +484,7 @@ const playstopRadio = function(){
 
 
 $('#big-play').on('click',function(){    
-        console.log('click en radiobutton');
+       // console.log('click en radiobutton');
         playstopRadio();      
 });
 
@@ -517,36 +528,12 @@ document.addEventListener("astro:after-swap", () => {
 
 document.addEventListener('astro:page-load', ev => {
    // console.log('pageload');
-   $('.cover-background').html('');
+   //$('.cover-background').html('');
 
     /* efectos */ 
     var distance = '';    
         
-            const header = $('header');
-            /*window.addEventListener('scroll', function(e){
-               // console.log(window.scrollY );
-
-                if ($('.bar-stereo').hasClass('is-pinned') ){
-                    $('.bar-stereo').addClass('compress');
-                    $('.bar-stereo .logo').addClass('compress-logo');
-                }
-                if($(document).scrollTop() <= 1){
-                    $('.bar-stereo').css('position','sticky');
-                    $('.bar-stereo').removeClass('compress');
-                    $('.bar-stereo .logo').removeClass('compress-logo');
-                }
-                distance = $('.nav-menu').offset().top - $('.bar-stereo').offset().top;
-                console.log('distancia '+distance);
-                if( distance < 51 ){
-                    $('.bar-stereo').addClass('header-white');
-                    $('.to-dark').addClass('dark-mode');
-                    $('.compress-logo img').addClass('logo-dark-mode');
-                }else {
-                    $('.bar-stereo').removeClass('header-white');
-                    $('.to-dark').removeClass('dark-mode');
-                    $('.compress-logo img').removeClass('logo-dark-mode');
-                }
-            });*/
+            const header = $('header');            
             const navMenuTop = $('.nav-menu').offset().top;
             const barStereoHeight = $('.bar-stereo').outerHeight();
             const triggerPoint = navMenuTop - barStereoHeight;
@@ -615,16 +602,20 @@ document.addEventListener('astro:page-load', ev => {
     if ( secenvivo ){   
         //console.log('envivo');
         getInfoProg();
+        getInfoMusic();
         $('#radiobutton').addClass('en-vivo');
         //console.log(local_status);
-
         if( local_status == null || local_status == 'undefined' || local_status == '' || local_status == 'LIVE_STOP' ){  
             playstopRadio();
+        }
+        if( local_status == 'LIVE_PLAYING' || local_status == 'GETTING_STATION_INFORMATION' || local_status == 'LIVE_CONNECTING' || local_status == 'LIVE_BUFFERING' ){
+            $('.cover-background').html('');
         }
         $('.logo-player img').attr('src','/img/logo-STEREO-pag.png');
         $('#big-play').removeClass('border-4');
         
     }else{
+       // getInfoMusic();
         $('.logo-player img').attr('src','https://storage.googleapis.com/nrm-web/stereocien/STEREOCIEN_MIL2.svg');        
         $('#radiobutton').removeClass('en-vivo');
         $('#big-play').addClass('border-4');
@@ -632,38 +623,9 @@ document.addEventListener('astro:page-load', ev => {
     
     
     if ( secchome ){
-        getInfoProg();
+       // getInfoProg();
         console.log(getplayingstatus);
-        /*if( getplayingstatus == 'radio-playing'){
-             document.getElementById('big-play').innerHTML = bigButtonPause; 
-        }*/
-
-       /*
-        var elem = document.querySelector('.carousel-main');
-        var flkty = new Flickity( elem, {
-            // options
-            cellAlign: 'center',
-            prevNextButtons: true,
-        //    autoPlay: 5000,
-            pageDots: false,
-            pauseAutoPlayOnHover: true,
-            freeScroll: true,
-            wrapAround: true
-        });
-        flkty.select(2);
-        flkty.reloadCells();   
-        */
-       /* var elemnav = document.querySelector('.carousel-nav');
-        var flktynav = new Flickity( elemnav, {
-            // options
-            cellAlign: 'center',
-            contain: true,
-            asNavFor: '.carousel-main',
-            prevNextButtons: false,
-            pageDots: false, 
-            pauseAutoPlayOnHover: true
-        }); 
-        */
+        
     }
     const secprogram = document.getElementById('programacion');
     
