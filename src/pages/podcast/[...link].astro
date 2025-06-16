@@ -9,8 +9,9 @@ import Card from '../../layouts/CardsPodcast.astro';
  export function getStaticPaths() {    
     const arrpodcast = [
         {nodo: 281,title: 'Autos al Cien', link: 'autos-al-cien', imagen: 'https://images.unsplash.com/photo-1494905998402-395d579af36f?auto=format&fit=crop&w=400', descripcion: 'Descubre la innovación e información de la industria automotriz.'},
-        {nodo: 279,title: 'El Especial', link: 'el-especial', imagen: 'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?auto=format&fit=crop&w=400', descripcion: 'USA for Africa. Cuando las estrellas se alinearon. La historia del suceso y de sus protagonistas.'},
+        {nodo: 279,title: 'El Especial', link: 'el-especial', imagen: 'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?auto=format&fit=crop&w=400', descripcion: 'Nada se compara a la emoción de asistir a un concierto y encontrarte con tu artista favorito.'},
         {nodo: 280,title: 'Mascotas con Estrella', link: 'mascotas-con-estrella', imagen: 'https://images.unsplash.com/photo-1450778869180-41d0601e046e?auto=format&fit=crop&w=400', descripcion: 'Todo eso que siempre quisiste saber de tus mascotas y jamás te atreviste a preguntar.'},
+        {nodo: 827,title: 'Magazin', link: 'magazin', imagen: 'https://images.unsplash.com/photo-1450778869180-41d0601e046e?auto=format&fit=crop&w=400', descripcion: 'Recorridos llenos de nostalgia, descubrimientos y mucha música con alma.'},
     ]; 
     return arrpodcast.map((podcast) => {
       return {
