@@ -60,8 +60,8 @@ const secchome = document.getElementById('home');
         local_status = s.data.code;
         const secchome = document.getElementById('home');                 
         if( local_status == 'GETTING_STATION_INFORMATION' || local_status == 'LIVE_CONNECTING' || local_status == 'LIVE_BUFFERING' ){
-            document.getElementById('loading').classList.add('show');
-            document.getElementById('loading').classList.remove('hide');
+            /*document.getElementById('loading').classList.add('show');
+            document.getElementById('loading').classList.remove('hide');*/
             document.getElementById('play-pause').classList.remove('show');
             document.getElementById('play-pause').classList.add('hide'); 
             document.getElementById('big-play').innerHTML = buttongLoading;    
@@ -69,8 +69,8 @@ const secchome = document.getElementById('home');
          }
          if (local_status == 'LIVE_PLAYING'){                        
             document.getElementById('play-pause').innerHTML = buttonPause;
-            document.getElementById('loading').classList.remove('show');
-            document.getElementById('loading').classList.add('hide');
+            /*document.getElementById('loading').classList.remove('show');
+            document.getElementById('loading').classList.add('hide');*/
             document.getElementById('play-pause').classList.add('show');
             document.getElementById('play-pause').classList.remove('hide'); 
             document.getElementById('big-play').innerHTML = bigButtonPause;            
@@ -86,8 +86,8 @@ const secchome = document.getElementById('home');
             
          }
          if(local_status == 'LIVE_STOP' || local_status == 'LIVE_PAUSE') {
-            document.getElementById('loading').classList.remove('show');
-            document.getElementById('loading').classList.add('hide');
+            /*document.getElementById('loading').classList.remove('show');
+            document.getElementById('loading').classList.add('hide');*/
             document.getElementById('play-pause').classList.add('show');
             document.getElementById('play-pause').classList.remove('hide'); 
             document.getElementById('play-pause').innerHTML = buttonPlay;            
@@ -204,8 +204,8 @@ const secchome = document.getElementById('home');
     /* Callback function called to notify that the SDK is ready to be used */
     function onPlayerReady(){                
         console.log('streaming ready');        
-        document.getElementById('loading').classList.remove('show');
-        document.getElementById('loading').classList.add('hide');
+        /*document.getElementById('loading').classList.remove('show');
+        document.getElementById('loading').classList.add('hide');*/
         document.getElementById('play-pause').classList.add('show');
         document.getElementById('play-pause').classList.remove('hide'); 
         vol = streaming.getVolume();
