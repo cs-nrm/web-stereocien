@@ -344,7 +344,7 @@ function getInfoMusic() {
                     },
                     'json'
                     ).fail(function () {
-                    alert('No se pudo registrar el voto. Intenta de nuevo.');
+                    console.log('No se pudo registrar el voto. Intenta de nuevo.');
                     $btn.prop('disabled', false);
                     });
                 });
