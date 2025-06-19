@@ -46,10 +46,6 @@ const secchome = document.getElementById('home');
         streaming.addEventListener( 'ad-playback-complete', completeAd );
         streaming.addEventListener( 'ad-playback-start', startAd );
         streaming.addEventListener( 'ad-playback-error', errorAd );
-        streaming.addEventListener( 'track-cue-point', onTrackCuePoint );
-        streaming.addEventListener( 'list-loaded', onListLoaded );
-        streaming.addEventListener( 'list-empty', onListEmpty);
-        streaming.addEventListener( 'nowplaying-api-error', onNowPlayingApiError);
         streaming.addEventListener( 'ad-break-cue-point', adBreakCuePoint);
         streaming.addEventListener( 'autoplay', autoplay);
       }
@@ -117,44 +113,11 @@ const secchome = document.getElementById('home');
         
        
       }
-
-      function onTrackCuePoint( event ){
-        /*var cueTitle = event.data.cuePoint.cueTitle;
-        var artistName = event.data.cuePoint.artistName;         
-        //console.log('cueTitle: ' + cueTitle);
-        //console.log('cambio de cancion');
-        //console.log(event.data.cuePoint);
-
-        const codtit = cueTitle.replace('&', '%26');
-        const codart = artistName.replace('&', '%26');
-        //document.getElementById('infoMusic').innerHTML = '<div class="current-song">' + artistName + ' / ' + cueTitle + '</div><div class="share-current"><div class="like"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" stroke-width="1"> <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path> </svg> </div> <div class="share-wp"><a href="https://api.whatsapp.com/send/?text=Estoy%20escuchando%20' + codtit +'%20de%20'+ codart +'%20en%20https://beatdigital.mx/" target="_blank"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" stroke-width="1"> <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z"></path> </svg> </div></div>';
-        $('.like').on('click',function(){
-          // console.log('click');
-            $(this).find('svg').css('fill','#d6d8d7');
-       });*/
-     }
+     
 
      function adBreakCuePoint( e ){
        //console.log('PAUSA COMERCIAL');
        //document.getElementById('infoMusic').innerHTML = 'PAUSA COMERCIAL';
-    }
-
-     function onListLoaded( e ){
-       console.log( 'tdplayer::onListLoaded' );
-       console.log( e.data );
-           $.each( e.data.list, function(index, item){
-           console.log(index + ' Artist : ' + item.artistName );
-           console.log(' Title : ' + item.cueTitle );
-           console.log(' Time : ' + item.cueTimeStart );
-           } );
-     }
-
-     function onListEmpty( e ){
-           console.log( 'tdplayer::onListEmpty' );
-     }
-     
-     function onNowPlayingApiError( e ){
-       console.log( 'tdplayer::onNowPlayingApiError' + e );
     }
 
       function startAd(e){
@@ -251,6 +214,26 @@ const secchome = document.getElementById('home');
             streaming.setVolume(volume.value);
 
         });
+
+function detectarNavegador() {
+  const ua = navigator.userAgent;
+
+  let navegador = "desconocido";
+  if (ua.includes("Chrome")) navegador = "Chrome";
+  else if (ua.includes("Firefox")) navegador = "Firefox";
+  else if (ua.includes("Safari") && !ua.includes("Chrome")) navegador = "Safari";
+  else if (ua.includes("Edge")) navegador = "Edge";
+  else if (ua.includes("MSIE") || ua.includes("Trident")) navegador = "IE";
+
+  let so = "desconocido";
+  if (ua.includes("Windows")) so = "Windows";
+  else if (ua.includes("Mac")) so = "MacOS";
+  else if (ua.includes("Linux")) so = "Linux";
+  else if (ua.includes("Android")) so = "Android";
+  else if (ua.includes("iPhone") || ua.includes("iPad")) so = "iOS";
+
+  return { navegador, sistema: so };
+}        
         
 var lastArtist = null;
 var lastSong = null;
@@ -313,8 +296,57 @@ function getInfoMusic() {
                 $('#infoMusic').html('<div class="current-song">' + cancion + ' / ' + artist + '</div><div class="share-current"><div class="like"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" stroke-width="1"> <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path> </svg> </div> <div class="share-wp"><a href="https://api.whatsapp.com/send/?text=Estoy%20escuchando%20' + codtit +'%20de%20'+ codart +'%20en%20https://stereociendigital.mx/" target="_blank"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" stroke-width="1"> <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z"></path> </svg> </div></div>'); 
                 //document.getElementById('infoMusic').innerHTML = 
 
-                $('.like').on('click', function () {
-                    $(this).find('svg').css('fill', '#d6d8d7');
+               const url = 'https://contenido.stereociendigital.mx/9xjkftr7/8s4v3f1l3s.php';
+                const colorVotado = '#d6d8d7';
+
+                $('.like').on('click', function (e) {
+                    e.preventDefault();
+
+                    const $btn = $(this);
+                    const $svg = $btn.find('svg');
+                    const fillColor = $svg.css('fill')?.toLowerCase();
+
+                    // Si ya fue votado (el color ya es #d6d8d7), salir
+                    if (fillColor === colorVotado) {
+                    console.log('Ya votaste por esta canción.');
+                    return;
+                    }
+
+               
+
+                    if (!codart || !codtit || $btn.prop('disabled')) return;
+
+                    $btn.prop('disabled', true);
+
+                    function detectarDispositivo() {
+                     return /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)
+                        ? 'mobile'
+                        : 'desktop';
+                    }
+                    const { navegador, sistema } = detectarNavegador();
+                    
+                    $.post(
+                    url,
+                    { 'artista':codart, 
+                        'cancion':codtit,
+                        dispositivo: detectarDispositivo(),
+                        navegador,
+                        sistema_operativo: sistema 
+                    },
+                    function (resp) {
+                        if (resp.status === 'success') {
+                        $svg.css('fill', colorVotado);
+                        console.log('Voto registrado con éxito.');
+                        } else {
+                        console.log(resp.message || 'Error al votar.');
+                        $btn.prop('disabled', false);
+                        }
+                    },
+                    'json'
+                    ).fail(function () {
+                    alert('No se pudo registrar el voto. Intenta de nuevo.');
+                    $btn.prop('disabled', false);
+                    });
                 });
 
                 // Consulta el cover solo si hay cambio
