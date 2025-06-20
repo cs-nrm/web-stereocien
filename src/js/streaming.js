@@ -562,7 +562,7 @@ document.addEventListener("astro:after-swap", () => {
 document.addEventListener('astro:page-load', ev => {
    // console.log('pageload');
    //$('.cover-background').html('');
-    window.scrollTo({ top: 0, behavior: "smooth" });
+
     /* efectos */ 
     const { navegador, sistema } = detectarNavegador();
     const isMobileAndroid = /Mobi|Android/i.test(navigator.userAgent) && sistema === 'Android';
@@ -601,6 +601,9 @@ document.addEventListener('astro:page-load', ev => {
                     $('.compress-logo img').removeClass('logo-dark-mode');
                 }
             });
+        }else{
+            $('.bar-stereo').addClass('compress');
+
         }
     /* publicidad google refresh*/
     /*(function() {
