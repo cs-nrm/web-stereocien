@@ -562,11 +562,12 @@ document.addEventListener("astro:after-swap", () => {
 document.addEventListener('astro:page-load', ev => {
    // console.log('pageload');
    //$('.cover-background').html('');
-
+    window.scrollTo({ top: 0, behavior: "smooth" });
     /* efectos */ 
     const { navegador, sistema } = detectarNavegador();
     const isMobileAndroid = /Mobi|Android/i.test(navigator.userAgent) && sistema === 'Android';
-
+    console.log('Navegador: ' + navegador);
+    console.log('Sistema Operativo: ' + sistema);
     if (!isMobileAndroid) {
     var distance = '';    
         
