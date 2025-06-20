@@ -564,6 +564,10 @@ document.addEventListener('astro:page-load', ev => {
    //$('.cover-background').html('');
 
     /* efectos */ 
+    const { navegador, sistema } = detectarNavegador();
+    const isMobileAndroid = /Mobi|Android/i.test(navigator.userAgent) && sistema === 'Android';
+
+    if (!isMobileAndroid) {
     var distance = '';    
         
             const header = $('header');            
@@ -596,7 +600,7 @@ document.addEventListener('astro:page-load', ev => {
                     $('.compress-logo img').removeClass('logo-dark-mode');
                 }
             });
-
+        }
     /* publicidad google refresh*/
     /*(function() {
         if (window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
