@@ -297,7 +297,7 @@ function getInfoMusic() {
                 //document.getElementById('infoMusic').innerHTML = 
 
                const url = 'https://contenido.stereociendigital.mx/9xjkftr7/8s4v3f1l3s.php';
-                const colorVotado = '#d6d8d7';
+                const colorVotado = '#ef4444';
 
                 $('.like').on('click', function (e) {
                     e.preventDefault();
@@ -306,7 +306,7 @@ function getInfoMusic() {
                     const $svg = $btn.find('svg');
                     const fillColor = $svg.css('fill')?.toLowerCase();
 
-                    // Si ya fue votado (el color ya es #d6d8d7), salir
+                    // Si ya fue votado (el color ya es #ef4444), salir
                     if (fillColor === colorVotado) {
                     console.log('Ya votaste por esta canción.');
                     return;
