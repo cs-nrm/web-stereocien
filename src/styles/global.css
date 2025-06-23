@@ -324,7 +324,9 @@ article.nota-interna p a:hover{
   color: #ef4444;
   text-decoration: underline;
 }
-
+article.nota-interna iframe{
+  width: 100%;
+}
 article .wp-block-embed-twitter{
 	display: ruby-text;
 	text-align: center;
