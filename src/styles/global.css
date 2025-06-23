@@ -326,6 +326,7 @@ article.nota-interna p a:hover{
 }
 article.nota-interna iframe{
   width: 100%;
+  min-width: 200px !important;
 }
 article .wp-block-embed-twitter{
 	display: ruby-text;
@@ -371,23 +372,6 @@ article .plyr--video{
 .wp-block-embed-youtube .wp-block-embed__wrapper{
   padding-top: 0 !important;
 }
-
-/*article .plyr__video-wrapper{
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  padding-top: 56.25%;
-}
-
-article .plyr__video-wrapper iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-}*/
 
 /* player */
 .iframestyle {box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px; background-image: url('https://storage.googleapis.com/nrm-web/oye/recursos/8p7m.gif'); background-size:contain; background-color:#15181f; border: 1px solid  white; border-radius: 6px; box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;}
@@ -670,15 +654,23 @@ article .plyr__video-wrapper iframe {
         justify-content: center;
     }
     
-    .share-bar .share-button {
+    /*.share-bar .share-button {
         width: 56px;
         height: 56px;
-    }
+    }*/
     
     .share-bar .share-button .icon {
         width: 28px;
         height: 28px;
     }
+}
+@media (max-width: 480px) {
+  .share-bar .sticky-bar{
+    margin-right: 10px;
+  }
+  .share-bar .share-button {
+    width: 38px;
+  }
 }
 
 /* PROMOCIONES HOME */
