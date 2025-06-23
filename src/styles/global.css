@@ -327,6 +327,7 @@ article.nota-interna p a:hover{
 article.nota-interna iframe{
   width: 100%;
   min-width: 200px !important;
+  margin: 1rem auto;
 }
 article .wp-block-embed-twitter{
 	display: ruby-text;
