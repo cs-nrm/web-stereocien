@@ -557,13 +557,15 @@ document.addEventListener("astro:after-swap", () => {
     setTimeout(() => { (window.adsbygoogle = window.adsbygoogle || []).push({}); }, 3000);
 
     googletag.pubads().refresh();
+    window.instgrm.Embeds.process();
 });
+
 
 document.addEventListener('astro:page-load', ev => {
    // console.log('pageload');
    //$('.cover-background').html('');
-
-    /* efectos */ 
+    window.scrollTo({ top: 0, behavior: "smooth" });
+        /* efectos */ 
     const { navegador, sistema } = detectarNavegador();
     const isMobileAndroid = /Mobi|Android/i.test(navigator.userAgent) && sistema === 'Android';
     console.log('Navegador: ' + navegador);
