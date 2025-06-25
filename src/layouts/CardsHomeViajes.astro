@@ -18,7 +18,7 @@ const posts = await ressti.json();
           <h2 set:html={posts[0].title.rendered}></h2>
           <div class="resumen" set:html={posts[0].excerpt.rendered}></div>
           <span class="author font-bold roboto">por {posts[0].yoast_head_json.author}</span>
-          <div class="roboto flex flex-wrap items-center mt-4 justify-end sm:gap-4 leading-none">
+          <!--div class="roboto flex flex-wrap items-center mt-4 justify-end sm:gap-4 leading-none">
             <span class="text-xs">Patrocinado por</span>
             <div id="ad-slot7">
               <script is:inline>
@@ -33,10 +33,8 @@ const posts = await ressti.json();
               //setInterval(function(){googletag.pubads().refresh([slot7]);}, 10000);
               });
               </script>
-            </div>
-
-          
-          </div>
+            </div>  
+          </div-->
         </a>
       </div>
       <div class="wine-image">
