@@ -6,14 +6,14 @@ const currentPath = Astro.url.pathname;
   <nav class="nav-menu">
     <ul class="menu-desktop">
       <li class={`menu-section${currentPath.startsWith('/promociones') ? ' active' : ''}`}><a href="/promociones">Promociones</a></li>
-      <li class={`menu-section${currentPath.startsWith('/viajes') ? ' active' : ''}`}><a href="/viajes">Viajes</a></li>
-      <li class={`menu-section${currentPath.startsWith('/comidayguias') ? ' active' : ''}`}><a href="/comidayguias">Comida y Guías</a></li>
       <li class={`menu-section${currentPath.startsWith('/culturapop') ? ' active' : ''}`}><a href="/culturapop">Cultura Pop</a></li>
       <li class={`menu-section${currentPath.startsWith('/seriesypeliculas') ? ' active' : ''}`}><a href="/seriesypeliculas">Series y Películas</a></li>
-      <li class={`menu-section${currentPath.startsWith('/librosycultura') ? ' active' : ''}`}><a href="/librosycultura">Libros y Cultura</a></li>
-      <li class={`menu-section${currentPath.startsWith('/tecnologia') ? ' active' : ''}`}><a href="/tecnologia">Tecnología</a></li>
       <li class={`menu-section${currentPath.startsWith('/autos') ? ' active' : ''}`}><a href="/autos">Autos</a></li>
+      <li class={`menu-section${currentPath.startsWith('/viajes') ? ' active' : ''}`}><a href="/viajes">Viajes</a></li>
+      <li class={`menu-section${currentPath.startsWith('/tecnologia') ? ' active' : ''}`}><a href="/tecnologia">Tecnología</a></li>
       <li class={`menu-section${currentPath.startsWith('/mascotas') ? ' active' : ''}`}><a href="/mascotas">Mascotas</a></li>
+      <li class={`menu-section${currentPath.startsWith('/comidayguias') ? ' active' : ''}`}><a href="/comidayguias">Comida y Guías</a></li>
+      <li class={`menu-section${currentPath.startsWith('/libros') ? ' active' : ''}`}><a href="/libros">Libros</a></li>
       <li class="dd-menu">Podcast
         <ul>
           <li class={`menu-section${currentPath.startsWith('/podcast/autos-al-cien') ? ' active' : ''}`}><a href="/podcast/autos-al-cien">Autos al Cien</a></li>
@@ -25,14 +25,14 @@ const currentPath = Astro.url.pathname;
     </ul>
     <ul class="menu-mobile !hidden">
       <li class={`menu-section${currentPath.startsWith('/promociones') ? ' active' : ''}`}><a href="/promociones">Promociones</a></li>
-      <li class={`menu-section${currentPath.startsWith('/viajes') ? ' active' : ''}`}><a href="/viajes">Viajes</a></li>
-      <li class={`menu-section${currentPath.startsWith('/comidayguias') ? ' active' : ''}`}><a href="/comidayguias">Comida y Guías</a></li>
       <li class={`menu-section${currentPath.startsWith('/culturapop') ? ' active' : ''}`}><a href="/culturapop">Cultura Pop</a></li>
       <li class={`menu-section${currentPath.startsWith('/seriesypeliculas') ? ' active' : ''}`}><a href="/seriesypeliculas">Series y Películas</a></li>
-      <li class={`menu-section${currentPath.startsWith('/librosycultura') ? ' active' : ''}`}><a href="/librosycultura">Libros y Cultura</a></li>
-      <li class={`menu-section${currentPath.startsWith('/tecnologia') ? ' active' : ''}`}><a href="/tecnologia">Tecnología</a></li>
       <li class={`menu-section${currentPath.startsWith('/autos') ? ' active' : ''}`}><a href="/autos">Autos</a></li>
+      <li class={`menu-section${currentPath.startsWith('/viajes') ? ' active' : ''}`}><a href="/viajes">Viajes</a></li>
+      <li class={`menu-section${currentPath.startsWith('/tecnologia') ? ' active' : ''}`}><a href="/tecnologia">Tecnología</a></li>
       <li class={`menu-section${currentPath.startsWith('/mascotas') ? ' active' : ''}`}><a href="/mascotas">Mascotas</a></li>
+      <li class={`menu-section${currentPath.startsWith('/comidayguias') ? ' active' : ''}`}><a href="/comidayguias">Comida y Guías</a></li>
+      <li class={`menu-section${currentPath.startsWith('/libros') ? ' active' : ''}`}><a href="/libros">Libros</a></li>
       <li class={`menu-section${currentPath.startsWith('/podcast/autos-al-cien') ? ' active' : ''}`}><a href="/podcast/autos-al-cien">Autos al Cien</a></li>
       <li class={`menu-section${currentPath.startsWith('/podcast/el-especial') ? ' active' : ''}`}><a href="/podcast/el-especial">El Especial</a></li>
       <li class={`menu-section${currentPath.startsWith('/podcast/mascotas-con-estrella') ? ' active' : ''}`}><a href="/podcast/mascotas-con-estrella">Mascotas con Estrella</a></li>
@@ -147,7 +147,7 @@ const currentPath = Astro.url.pathname;
   color: #ef4444;
 }
 
-@media (max-width: 1300px){
+@media (max-width: 1170px){
   .nav-menu ul{
     flex-wrap: nowrap;
     white-space: nowrap;

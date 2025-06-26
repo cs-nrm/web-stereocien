@@ -11,7 +11,7 @@ const ressti = await fetch("https://contenido.stereociendigital.mx/wp-json/wp/v2
 const posts = await ressti.json();
 
 ---
-<a href={`/librosycultura/${posts[0].slug}/`}>
+<a href={`/libros/${posts[0].slug}/`}>
  <div class="review-container">
     <div class="book-cover">
       <img src={posts[0]._embedded['wp:featuredmedia'][0].media_details.sizes['full'].source_url} alt="">
