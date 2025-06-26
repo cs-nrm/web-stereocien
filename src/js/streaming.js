@@ -595,12 +595,12 @@ document.addEventListener('astro:page-load', ev => {
                     $('.bar-stereo').addClass('header-white');
                     $('.bar-stereo').addClass('header-white');
                     $('.to-dark').addClass('dark-mode');
-                    $('.compress-logo img').addClass('logo-dark-mode');
+                    $('.logo').find('img').attr('src','https://storage.googleapis.com/nrm-web/stereocien/logo-stereocien-color-2025.svg');
                 } else {
                     $('.bar-stereo').removeClass('header-white');
                     $('.bar-stereo').removeClass('header-white');
                     $('.to-dark').removeClass('dark-mode');
-                    $('.compress-logo img').removeClass('logo-dark-mode');
+                    $('.logo').find('img').attr('src','https://storage.googleapis.com/nrm-web/stereocien/logo-stereocien-blanco-2025.svg');
                 }
             });
         }else{
