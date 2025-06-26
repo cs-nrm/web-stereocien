@@ -5,18 +5,21 @@ import LeaderBoard from'../components/LeaderBoard.astro';
 import SuperLeader from '../components/SuperLeader.astro';
 import { Image } from 'astro:assets';
 
-const ressti = await fetch("https://contenido.stereociendigital.mx/wp-json/wp/v2/posts?_fields=date,title,slug,sticky,acf,yoast_head_json,content,excerpt,_links,_embedded&_embed&per_page=20&categories=143,683,527,524,525,169,167");
+const ressti = await fetch("https://contenido.stereociendigital.mx/wp-json/wp/v2/posts?_fields=date,title,slug,categories,sticky,acf,yoast_head_json,content,excerpt,_links,_embedded&_embed&per_page=20&categories=143,683,527,524,525,169,167");
 const poststi = await ressti.json();
+
 
 ---
 {
   poststi
   .filter((poststi:any) => poststi.acf.fijo)
   .slice(0,1)
-  .map((poststi:any) => (
+  .map((poststi:any) => {
+      const categoria = poststi._embedded['wp:term']?.[0]?.[0]?.slug || 'cultura-pop';
+    return (
 
     <div class="hero relative z-0">
-      <a href={`/culturapop/${poststi.slug}/`}>
+      <a href={`/${categoria}/${poststi.slug}/`}>
         <img src={poststi._embedded['wp:featuredmedia'][0].media_details.sizes['full'].source_url} alt="Imagen La Nota">
         <div class="gradient-overlay"></div>
         <div class="hero-content">
@@ -27,7 +30,8 @@ const poststi = await ressti.json();
         </div>
       </a>
     </div>
-  ))
+  )
+ })
 }
 
 <style>

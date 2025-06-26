@@ -20,7 +20,7 @@ const filteredPosts = posts.filter((post:any) => !post.acf?.fijo);
             <div class={`cards-filtro-${idx}`}>
               <!-- Article 1 -->
               <article class="news-card transition duration-[0.2s] hover:translate-y-[-4px]">
-                <a href={`/comidayguias/${post.slug}/`}>
+                <a href={`/comida-y-guias/${post.slug}/`}>
                   <div class=""><img src={post._embedded['wp:featuredmedia'][0].media_details.sizes['stc-size'].source_url} alt="Imagen Las de Hoy"/></div>
                   <div class="news-content p-6">
                     <h5 set:html={post.title.rendered}></h5>
@@ -36,7 +36,7 @@ const filteredPosts = posts.filter((post:any) => !post.acf?.fijo);
       </div>
 
 <div class="m-auto text-center">
-    <a href="/comidayguias" class="hover:text-white">
+    <a href="/comida-y-guias" class="hover:text-white">
         <button class="ver-mas lovelo group relative h-8 w-36 m-4 overflow-hidden bg-white hover:bg-[#ef4444] uppercase text-xs font-bold tracking-[3px]">
             <span>Ver más</span>
         </button>
