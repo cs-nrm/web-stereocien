@@ -92,7 +92,7 @@ const secchome = document.getElementById('home');
             $('#radiobutton').removeClass('playerplaying');
             $('.text-player').html('');
             setTimeout( function(){
-                $('.text-player').html('ESCUCHA LA RADIO EN VIVO <span style="color: #df104a;    font-weight: bold;    font-size: 12px;">GRATIS</span> AHORA');             
+                $('.text-player').html('ESCUCHA LA RADIO <span style="color: #df104a;    font-weight: bold;    font-size: 12px;">EN VIVO </span> AHORA');             
             },1000);
             if (musicInterval) clearInterval(musicInterval);    
             //$('.text-player').attr('id','');            
@@ -565,8 +565,22 @@ document.addEventListener('astro:page-load', ev => {
    // console.log('pageload');
    //$('.cover-background').html('');
     window.scrollTo({ top: 0, behavior: "smooth" });
+    window.addEventListener('scroll', function () {
+                const scrollY = window.scrollY;
+                
+                if ($('.bar-stereo').hasClass('is-pinned')) {
+                    $('.bar-stereo').addClass('compress');
+                    $('.bar-stereo .logo').addClass('compress-logo');
+                }
+                if (scrollY <= 1) {
+                    $('.bar-stereo').css('position', 'sticky');
+                    $('.bar-stereo').removeClass('compress');
+                    $('.bar-stereo .logo').removeClass('compress-logo');
+                }                
+            });
+
         /* efectos */ 
-    const { navegador, sistema } = detectarNavegador();
+    /*const { navegador, sistema } = detectarNavegador();
     const isMobileAndroid = /Mobi|Android/i.test(navigator.userAgent) && sistema === 'Android';
     console.log('Navegador: ' + navegador);
     console.log('Sistema Operativo: ' + sistema);

@@ -88,6 +88,12 @@ header .compress-logo img{
   height: 35px;
   transition: all 0.5s;
 }
+/*MENU*/
+.active {
+  background-color: #caccce;
+  color: white!important;
+  padding: 0 3px;
+}
 
 main {
 	width: 100%;
