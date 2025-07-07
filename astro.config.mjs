@@ -6,7 +6,7 @@ import tailwind from "@astrojs/tailwind";
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://beatdigital.mx',
+  site: 'https://stereociendigital.mx',
   integrations: [mdx(), sitemap(), tailwind()],
   devToolbar: {
     enabled: true
