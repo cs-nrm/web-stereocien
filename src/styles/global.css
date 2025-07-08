@@ -89,7 +89,7 @@ header .compress-logo img{
   transition: all 0.5s;
 }
 /*MENU*/
-.active {
+.nav-menu .active {
   background-color: #caccce;
   color: white!important;
   padding: 0 3px;
