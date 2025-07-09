@@ -42,8 +42,6 @@ const { title, description, image = '/stereocien-share.jpg', seccion } = Astro.p
 <meta name="publisher" content='NRM Comunicaciones' />
 
 <!-- Open Graph / Facebook -->
-<meta property="og:type" content="website" />
-<meta property="og:url" content={Astro.url} />
 <meta property="og:title" content={title} >
 <meta property="og:description" content={description} />
 <meta property="og:image" content='' />
@@ -56,8 +54,8 @@ const { title, description, image = '/stereocien-share.jpg', seccion } = Astro.p
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta name="twitter:site" content="@stereocienmx">
-<!--meta property="twitter:image" content={new URL(image, Astro.url)} /-->
-<link rel="canonical" href="https://stereociendigital.mx/">
+<meta property="twitter:image" content={new URL(image, Astro.url)} />
+
 <!-- sitemap -->
 <link rel="sitemap" href="/sitemap.xml" />
 <meta name="robots" content="index, follow">
