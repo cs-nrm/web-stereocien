@@ -42,17 +42,20 @@ const { title, description, image = '/stereocien-share.jpg', seccion } = Astro.p
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
 <meta property="og:url" content={Astro.url} />
-<!--meta property="og:title" content={title} /-->
+<meta property="og:title" content={title} >
 <meta property="og:description" content={description} />
-<!--meta property="og:image" content={new URL(image, Astro.url)} /-->
+<meta property="og:image" content='' />
+<meta property="og:url" content="https://stereociendigital.mx">
+<meta property="og:type" content="website">
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content={Astro.url} />
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
+<meta name="twitter:site" content="@stereocienmx">
 <!--meta property="twitter:image" content={new URL(image, Astro.url)} /-->
-
+<link rel="canonical" href="https://stereociendigital.mx/">
 <!-- sitemap -->
 <link rel="sitemap" href="/sitemap.xml" />
 
@@ -74,7 +77,7 @@ const { title, description, image = '/stereocien-share.jpg', seccion } = Astro.p
 <!-- AD MANAGER -->
 
 <!-- Begin comScore Tag -->
-<!--script is:inline>
+<script is:inline>
   var _comscore = _comscore || [];
   _comscore.push({
   c1: "2", c2: "6906652",
@@ -93,8 +96,8 @@ const { title, description, image = '/stereocien-share.jpg', seccion } = Astro.p
   <noscript>
   <img
   src="https://sb.scorecardresearch.com/p?c1=2&amp;c2=6906652&amp;cv=cv=4.4.0&amp;c
-  j=1">
-  </noscript-->
+  j=1" width="1" height="1" alt="" style="display:none;"/>
+  </noscript>
   <!-- End comScore Tag -->
 
 <script defer>
