@@ -38,6 +38,8 @@ const { title, description, image = '/stereocien-share.jpg', seccion } = Astro.p
 <title>{seccion} - {title} </title>
 <meta name="title" content={title} />
 <meta name="description" content={description} />
+<meta name="author" content='Stereo Cien' />
+<meta name="publisher" content='NRM Comunicaciones' />
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
@@ -58,7 +60,7 @@ const { title, description, image = '/stereocien-share.jpg', seccion } = Astro.p
 <link rel="canonical" href="https://stereociendigital.mx/">
 <!-- sitemap -->
 <link rel="sitemap" href="/sitemap.xml" />
-
+<meta name="robots" content="index, follow">
 
 <!-- Google tag (gtag.js) Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-8DSGT28PYF"></script>
@@ -66,14 +68,12 @@ const { title, description, image = '/stereocien-share.jpg', seccion } = Astro.p
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-8DSGT28PYF');
 </script>
 
 <!-- AD SENSE -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7423640555477330"
      crossorigin="anonymous"></script>
-
 <!-- AD MANAGER -->
 
 <!-- Begin comScore Tag -->
