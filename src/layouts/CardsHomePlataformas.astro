@@ -6,7 +6,7 @@ import SuperLeader from '../components/SuperLeader.astro';
 import { Image } from 'astro:assets';
 
 
-const ressti = await fetch("https://contenido.stereociendigital.mx/wp-json/wp/v2/posts?_fields=date,title,slug,sticky,yoast_head_json,content,excerpt,acf,_links,_embedded&_embed&per_page=2&categories=524");
+const ressti = await fetch("https://contenido.stereociendigital.mx/wp-json/wp/v2/posts?_fields=date,title,slug,sticky,yoast_head_json,content,excerpt,acf,_links,_embedded&_embed&per_page=3&categories=524");
 
 const posts = await ressti.json();
 
@@ -36,13 +36,33 @@ const posts = await ressti.json();
             </div>
         </a>
     </article>
+
+    <article>
+        <a href={`/series-y-peliculas/${posts[2].slug}/`} class="group relative flex h-60 sm:h-48 items-end overflow-hidden shadow-lg md:h-96">
+            <!--img src={post._embedded['wp:featuredmedia'][0].media_details.sizes['beat-news-size'].source_url} alt={post.title.rendered} class="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" /-->
+            <img src={posts[2].yoast_head_json.og_image[0].url} alt={posts[2].title.rendered} class="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" />
+            <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-800 via-transparent to-transparent opacity-50"></div>
+            <div class="lovelo text relative inline-block p-3 text-lg sm:text-sm text-white md:text-xl leading-tight md:leading-none">
+              <p class="mb-[15px]" set:html={posts[2].title.rendered}></p>
+              <span class="roboto text-[#ef4444] text-base" set:html={posts[2].acf.plataforma}></span>
+            </div>
+        </a>
+    </article>
+</div>
+
+<div class="m-auto text-center">
+    <a href="/series-y-peliculas" class="hover:text-white">
+        <button class="ver-mas lovelo group relative h-8 w-36 m-4 overflow-hidden bg-white hover:bg-[#ef4444] uppercase text-xs font-bold tracking-[3px]">
+            <span>Ver más</span>
+        </button>
+    </a>
 </div>
 
 <style>
 
 .platforms-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
   align-items: center;
 }

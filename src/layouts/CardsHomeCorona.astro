@@ -1,39 +1,41 @@
 ---
-const res = await fetch("https://contenido.stereociendigital.mx/wp-json/wp/v2/posts?_fields=date,title,slug,sticky,yoast_head_json,content,excerpt,_links,_embedded&_embed&per_page=6&categories=167&order_by=date&order=desc");
-const posts = await res.json();
+import DoubleBox from '../components/DoubleBox.astro';
+import BoxBanner from '../components/BoxBanner.astro';
+import LeaderBoard from'../components/LeaderBoard.astro';
+import SuperLeader from '../components/SuperLeader.astro';
+import { Image } from 'astro:assets';
 
-// Filtrar los posts donde acf.fijo es false
+
+const res = await fetch("https://contenido.stereociendigital.mx/wp-json/wp/v2/posts?_fields=date,title,slug,sticky,acf,yoast_head_json,content,excerpt,_links,_embedded&_embed&per_page=20&categories=854");
+const posts = await res.json();
 const filteredPosts = posts.filter((post:any) => !post.acf?.fijo);
+
 ---
 
-      <div class="container cards">
-        <h1 class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl">Mascotas</h1>
-        <div class="news-grid grid gap-4 grid-cols-1 md:grid-cols-2 md:gap-16 xl:gap-16">
+      <div class="container cards bg-[#f5f5f5] px-[10px]">
+        <h1 class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl">CORONA CAPITAL</h1>
+        <div class="news-grid grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-16 xl:gap-16">
         {
-          filteredPosts.slice(0, 2).map((post:any, idx:number) => (
-              <div class={`cards-filtro-${idx}`}>
+          filteredPosts.slice(0, 4).map((post:any, idx:number) => (
+            <div class={`cards-filtro-${idx}`}>
               <article class="news-card transition duration-[0.2s] hover:translate-y-[-4px]">
-                <a href={`/mascotas/${post.slug}/`}>
+                <a href={`/corona-capital/${post.slug}/`}>
                   <div class="bg-black"><img src={post._embedded['wp:featuredmedia'][0].media_details.sizes['stc-size'].source_url} alt="Imagen Las de Hoy"/></div>
                   <div class="news-content p-6">
-                    <h6 set:html={post.title.rendered}></h6>
-                    <!--div class="text-sm resumen" set:html={post.excerpt.rendered}></div-->
+                    <h5 set:html={post.title.rendered}></h5>
+                    <div class="text-sm resumen" set:html={post.excerpt.rendered}></div>
                     <span class="roboto font-bold text-xs mt-4">por {post.yoast_head_json.author}</span>
                   </div>
                 </a>  
               </article>
-              </div>
+            </div>
           ))
-        }
+          }
         </div>
       </div>
 
-
-
-
-
 <div class="m-auto text-center">
-    <a href="/mascotas" class="hover:text-white">
+    <a href="/corona-capital" class="hover:text-white">
         <button class="ver-mas lovelo group relative h-8 w-36 m-4 overflow-hidden bg-white hover:bg-[#ef4444] uppercase text-xs font-bold tracking-[3px]">
             <span>Ver más</span>
         </button>
@@ -41,24 +43,11 @@ const filteredPosts = posts.filter((post:any) => !post.acf?.fijo);
 </div>
 
 <style>
-/*.cards img{
-  mask-image: linear-gradient(225deg, hsla(var(--color-black), 1) 0, hsla(var(--color-black), 0.9) 40%, hsla(var(--color-black), 0) 80%);
-}*/
-.resumen{
-  letter-spacing: 2px;
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 6;
-  margin-bottom: 1rem;
-}
-
 .cards-filtro-3{display: none;}
 
 @media (min-width: 769px) and (max-width: 1024px){
   .cards-filtro-3{display: block;}
 }
-
 /*
 .texto-nota{
   box-shadow: none;

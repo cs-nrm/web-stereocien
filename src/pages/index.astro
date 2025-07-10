@@ -7,6 +7,8 @@ import CardGuia from '../layouts/CardsHomeGuia.astro';
 import CardMascotas from '../layouts/CardsHomeMascotas.astro';
 import CardTecnologia from '../layouts/CardsHomeTecnologia.astro';
 import CardAutos from '../layouts/CardsHomeAutos.astro';
+import CardEstilo from '../layouts/CardsHomeEstilo.astro';
+import CardCorona from '../layouts/CardsHomeCorona.astro';
 import Separator from '../components/Separator.astro';
 import HomeHeader from '../layouts/HomeHeader.astro';
 import DoubleBox from '../components/DoubleBox.astro';
@@ -51,20 +53,23 @@ import Promociones from '../layouts/SliderPromociones.astro';
                 </section>
                 <BillBoard />
                 <section>
+                    <div class="container-home p-4 mx-auto">          
+                        <h1 class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl">SERIES Y PELÍCULAS</h1>
+                        <CardsHomePlataformas />
+                    </div>
+                </section>
+                <section>
+                    <div class="container-home p-4 mx-auto">                        
+                        <CardTecnologia/>
+                    </div>
+                </section>
+                <LeaderBoard />
+                <section>
                     <Viajes />
                 </section>
                 <section>
                     <div class="container-home p-4 mx-auto">                        
                         <CardGuia />
-                    </div>
-                </section>
-                <LeaderBoard />
-                <section>
-                    <Libros />
-                </section>
-                <section>
-                    <div class="container-home p-4 mx-auto">                        
-                        <CardTecnologia/>
                     </div>
                 </section>
                 <BillBoard2 />
@@ -73,13 +78,16 @@ import Promociones from '../layouts/SliderPromociones.astro';
                         <CardAutos/>
                     </div>
                 </section>
+                <section>
+                    <Libros />
+                </section>
                 <LeaderBoard2/>
                 <section>
                     <div class="container-home p-4 mx-auto">
-                        <h1 class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl">SERIES Y PELÍCULAS</h1>
+                        <!--h1 class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl">MASCOTAS</h1-->
                         <div class="flex flex-nowrap gap-2">
                             <div class="w-full lg:w-2/3 platforms">
-                                <CardsHomePlataformas />
+                                <CardMascotas />
                             </div>
                             <div class="hidden lg:block w-full mt-8 lg:w-1/3 lg:m-0 content-center">
                                 <BoxBanner />
@@ -89,7 +97,7 @@ import Promociones from '../layouts/SliderPromociones.astro';
                 </section>
                 <section>
                     <div class="container-home p-4 mx-auto">                        
-                        <CardMascotas/>
+                        <CardEstilo/>
                     </div>
                 </section>
                 <section>
@@ -104,6 +112,11 @@ import Promociones from '../layouts/SliderPromociones.astro';
                     <div class="container-home p-4 mx-auto">
                         <h1 class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl">PROMOCIONES</h1>
                         <Promociones />        
+                    </div>
+                </section>
+                <section class="bg-[url('https://contenido.stereociendigital.mx/wp-content/uploads/2025/07/back-corona-3.png')] bg-no-repeat bg-cover">
+                    <div class="container-home p-4 mx-auto">
+                        <CardCorona />        
                     </div>
                 </section>
                 <section class="">
