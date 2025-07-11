@@ -4,7 +4,7 @@ import DoubleBox from '../../components/DoubleBox.astro';
 import BoxBanner from '../../components/BoxBanner.astro';
 import LeaderBoard from '../../components/LeaderBoard.astro';
 import SuperLeader from '../../components/SuperLeader.astro';
-import MoreEstilo from '../../components/MoreEstilo.astro';
+import MoreRelojes from '../../components/MoreRelojes.astro'; 
 import LeaderBoard2 from '../../components/LeaderBoard2.astro';
 import { any } from 'astro/zod';
 import { SITE_TITLE } from '../../consts';
@@ -52,7 +52,7 @@ export async function getStaticPaths() {
           <div class="share-bar">
             <div class="sticky-bar sticky top-[90px] left-0 right-0">
                 <div class="share-buttons">
-                    <a href={`https://www.facebook.com/sharer/sharer.php?u=https://stereociendigital.mx/estilo/${post.slug}`}
+                    <a href={`https://www.facebook.com/sharer/sharer.php?u=https://stereociendigital.mx/relojes/${post.slug}`}
                         target="_blank" 
                         class="share-button facebook"
                         title="Compartir en Facebook">
@@ -60,7 +60,7 @@ export async function getStaticPaths() {
                         <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
                         </svg>
                     </a>
-                    <a href={`https://twitter.com/intent/tweet?url=https://stereociendigital.mx/estilo/${post.slug}&text=${post.title.rendered}`} 
+                    <a href={`https://twitter.com/intent/tweet?url=https://stereociendigital.mx/relojes/${post.slug}&text=${post.title.rendered}`} 
                         target="_blank" 
                         class="share-button twitter"
                         title="Compartir en X">
@@ -69,7 +69,7 @@ export async function getStaticPaths() {
                             <path d="M4 20l6.768-6.768m2.46-2.46L20 4"></path>
                         </svg>
                     </a>
-                    <a href={`https://wa.me/?text=${post.title.rendered} https://stereociendigital.mx/estilo/${post.slug}`} 
+                    <a href={`https://wa.me/?text=${post.title.rendered} https://stereociendigital.mx/relojes/${post.slug}`} 
                         target="_blank" 
                         class="share-button whatsapp"
                         title="Compartir en WhatsApp">
@@ -90,7 +90,7 @@ export async function getStaticPaths() {
           <div class="sticky top-0 left-0 right-0">
             <BoxBanner />
             </br>
-            <MoreEstilo />
+            <MoreRelojes />
             </br>
             <DoubleBox />
           </div>
