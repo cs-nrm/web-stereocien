@@ -264,7 +264,10 @@ hr {
     100% {      transform: translate(0);    }
   }
 
-  
+ /* NOTA PRINCIPAL HOME*/
+ .hero-content .text p a:last-child {
+    display: none;
+} 
 
 
 /* PROGRAMACIÓN */
