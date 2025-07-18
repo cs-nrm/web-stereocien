@@ -693,3 +693,8 @@ article .plyr--video{
     	min-height: 480px;
 	}
 }
+@media only screen and (max-width: 500px){
+	.slider-promociones .flickity-viewport {
+    	min-height: 260px;
+	}
+}
