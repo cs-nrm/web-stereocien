@@ -7,20 +7,22 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 export interface Props {
     title: string;
     img: string;
+    tags: string;
+    description: string
 }
 
 const { title } = Astro.props;
 const { img } = Astro.props;
+const { tags } = Astro.props;
+const { description } = Astro.props;
 
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 	<head>
-		<BaseHead title={SITE_TITLE} seccion={title} description={SITE_DESCRIPTION} />
-		<!--meta property="og:image" content={new URL(img, Astro.url)}>
-        <meta property="og:title" content={title} />
-        <meta property="twitter:image" content={new URL(img, Astro.url)}-->
+		<BaseHead title={SITE_TITLE} seccion={title} description={description} />		
+        {tags && <Fragment set:html={tags} />}     
         <title>{SITE_TITLE} | {title}</title>
 	</head>
 	<body>
