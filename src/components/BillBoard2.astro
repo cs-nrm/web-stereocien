@@ -3,12 +3,13 @@
 <div class="billboard w-full my-9 table mx-auto text-center">
 	<span class="roboto text-xs text-zinc-500">PUBLICIDAD</span>
    <!--img src="https://contenido.stereociendigital.mx/wp-content/uploads/2025/04/970x250-starbucks-nitro.webp" alt="billboard" width="970" height="250"-->
-   <!--div id="ad-slot32">
+   <div id="ad-slot32" class="hidden md:block">
 	<script defer is:inline>
 	  var gptAdSlots32 = [];
 	  googletag.cmd.push(function() {
  	    var mapping32 = googletag.sizeMapping().
-	    addSize([970, 250]).
+	    //addSize([970, 250]).
+		addSize([728, 90]).
 	    build();
 	    var slot32 = googletag.defineSlot("/21799830913/StereoCien", [728, 90],'ad-slot32').
 	    defineSizeMapping(mapping32).
@@ -20,11 +21,30 @@
 	    //setInterval(function(){googletag.pubads().refresh([slot32]);}, 180000);
 	  });
 	</script>
-   </div-->
+   </div>
+
+   <div id="ad-slot321" class="block md:hidden">
+	<script defer is:inline>
+	  var gptAdSlots321 = [];
+	  googletag.cmd.push(function() {
+ 	    var mapping321 = googletag.sizeMapping().
+	    addSize([320, 50]).
+	    build();
+	    var slot321 = googletag.defineSlot("/21799830913/StereoCien", [320, 50],'ad-slot321').
+	    defineSizeMapping(mapping321).
+	    addService(googletag.pubads());
+	    googletag.pubads().setTargeting("test","responsive");
+	    googletag.enableServices();
+	    googletag.display('ad-slot321');
+	    googletag.pubads().refresh([slot321]);
+	    //setInterval(function(){googletag.pubads().refresh([slot32]);}, 180000);
+	  });
+	</script>
+   </div>
 
     
 	
-		<ins class="adsbygoogle" 
+		<!--ins class="adsbygoogle" 
 		style="display: block; text-align:center; margin:0 auto;" 
 		data-ad-client="ca-pub-7423640555477330" 
 		data-ad-slot="4971524958" 
@@ -32,7 +52,7 @@
 		data-full-width-responsive="true"></ins>
         <script defer is:inline>
             (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
+        </script-->
     
 
 </div>

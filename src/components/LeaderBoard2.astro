@@ -4,14 +4,16 @@
 <div class="leader w-full max-w-[728px] my-9 hidden md:table mx-auto text-center">
 	<span class="roboto text-xs text-zinc-500">PUBLICIDAD</span>
 	<!--img src="https://contenido.stereociendigital.mx/wp-content/uploads/2025/04/cyber-monday-flat-web-banner-260nw-733395259-copia.jpg" alt="leader" width="728" height="90"/-->
-    <!--div id="ad-slot42">
+    <div id="ad-slot42" class="hidden md:block">
 	<script defer is:inline>
 	  var gptAdSlots42 = [];
 	  googletag.cmd.push(function() {
  	    var mapping42 = googletag.sizeMapping().
-	    addSize([728, 90]).
+	    //addSize([728, 90]).
+		addSize([728, 90]).
 	    build();
-	    var slot42 = googletag.defineSlot("/21799830913/StereoCien", [728, 90],'ad-slot42').
+	    //var slot42 = googletag.defineSlot("/21799830913/StereoCien", [728, 90],'ad-slot42').
+		var slot42 = googletag.defineSlot("/21799830913/StereoCien", [728, 90],'ad-slot42').
 	    defineSizeMapping(mapping42).
 	    addService(googletag.pubads());
 	    googletag.pubads().setTargeting("test","responsive");
@@ -21,11 +23,30 @@
 	    //setInterval(function(){googletag.pubads().refresh([slot42]);}, 180000);
 	  });
 	</script>
-   </div-->
+   </div>
+
+   <div id="ad-slot421" class="block md:hidden">
+	<script defer is:inline>
+	  var gptAdSlots421 = [];
+	  googletag.cmd.push(function() {
+ 	    var mapping421 = googletag.sizeMapping().
+	    addSize([320, 50]).
+	    build();
+	    var slot421 = googletag.defineSlot("/21799830913/StereoCien", [320, 50],'ad-slot421').
+	    defineSizeMapping(mapping421).
+	    addService(googletag.pubads());
+	    googletag.pubads().setTargeting("test","responsive");
+	    googletag.enableServices();
+	    googletag.display('ad-slot421');
+	    googletag.pubads().refresh([slot421]);
+	    //setInterval(function(){googletag.pubads().refresh([slot42]);}, 180000);
+	  });
+	</script>
+   </div>
 
     
 	
-        <ins class="adsbygoogle" 
+        <!--ins class="adsbygoogle" 
 		style=" display:block;  text-align:center; margin:0 auto;" 
 		data-ad-client="ca-pub-7423640555477330" 
 		data-ad-slot="9366065535" 
@@ -33,7 +54,7 @@
 		data-full-width-responsive="true"></ins>
         <script defer is:inline>
             (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
+        </script-->
     
 
 </div>
