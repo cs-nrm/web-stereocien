@@ -334,7 +334,7 @@ article.nota-interna p a:hover{
   text-decoration: underline;
 }
 article.nota-interna iframe{
-  width: 100%;
+  width: 100% !important;
   min-width: 200px !important;
   margin: 1rem auto;
 }

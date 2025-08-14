@@ -39,7 +39,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 	<head>
 		<BaseHead title={SITE_TITLE} seccion={title} description={description} />		
         <meta name="description" content={tags.description} />        
-        <title>{tags.title}</title>
         <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
         <link rel="canonical" href={canonicalURL} class="yoast-seo-meta-tag" />
         <meta property="og:locale" content={tags.og_locale} class="yoast-seo-meta-tag" />
