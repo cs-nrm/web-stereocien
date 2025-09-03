@@ -294,7 +294,7 @@ hr {
     border: 1px solid var(--gray-beat);
 }
 .tabs.programacion-enfoque nav{
-  background-color: rgb(14, 33, 105);
+  background-color: rgb(212 146 43);
 }
 
 .tabs.programacion .tab-wrapper, .tabs.programacion-enfoque .tab-wrapper{
@@ -304,11 +304,17 @@ hr {
   font-family: "Roboto";
   font-size: 1.2rem;
 }
+.tabs.programacion-enfoque .tab-wrapper{
+  color: #13284e;
+}
 .tabs.programacion .tab-wrapper input:checked + label, .tabs.programacion .tab-wrapper label:hover,
 .tabs.programacion-enfoque .tab-wrapper input:checked + label, .tabs.programacion-enfoque .tab-wrapper label:hover{
     text-shadow: 1px 2px rgb(14 14 14 / 61%);
     text-shadow: 0 0 0px #fff, 0 0 10px var(--amarillo-beat), 0 0 20px var(--amarillo-beat), 0 0 30px var(--amarillo-beat);
     color: #ef4444;
+}
+.tabs.programacion-enfoque .tab-wrapper input:checked + label, .tabs.programacion-enfoque .tab-wrapper label:hover{
+  color: white;
 }
 
 /* CONTENIDO NOTAS */

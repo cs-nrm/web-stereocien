@@ -743,6 +743,40 @@ document.addEventListener('astro:page-load', ev => {
     
     const secchome = document.getElementById('home');
     const secenvivo = document.getElementById('envivo');
+    const secprogramacion = document.getElementById('programacion');
+
+    if( secprogramacion ){
+
+                const tabLinks = document.querySelectorAll('#estacion [role="tab"]');
+                const tabPanels = document.querySelectorAll('#estacion [role="tabpanel"]');
+                
+                tabLinks.forEach((tab, idx) => {
+                    tab.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        // Quitar selección de todos los tabs
+                        tabLinks.forEach(t => {
+                            t.setAttribute('aria-selected', 'false');
+                            t.classList.remove('bg-white', 'text-slate-700');
+                            t.classList.add('text-slate-600');
+                        });
+                        // Ocultar todos los paneles
+                        tabPanels.forEach(panel => {
+                            panel.classList.add('hidden', 'opacity-0');
+                        });
+                        // Activar el tab actual
+                        tab.setAttribute('aria-selected', 'true');
+                        tab.classList.add('bg-white', 'text-slate-700');
+                        tab.classList.remove('text-slate-600');
+                        // Mostrar el panel correspondiente
+                        const panelId = tab.getAttribute('aria-controls');
+                        const panel = document.getElementById(panelId);
+                        if (panel) {
+                            panel.classList.remove('hidden', 'opacity-0');
+                        }
+                    });
+                });
+            
+    }
 
     if ( secenvivo ){   
         //console.log('envivo');
