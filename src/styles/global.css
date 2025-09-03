@@ -274,7 +274,7 @@ hr {
 
 
 /* PROGRAMACIÓN */
-.tabs.programacion nav{
+.tabs.programacion nav, .tabs.programacion-enfoque nav{
     display: flex;
     flex-wrap: nowrap;
     font-size: calc(1em + 1vw);
@@ -293,15 +293,19 @@ hr {
     color: rgb(var(--gray-beat));
     border: 1px solid var(--gray-beat);
 }
+.tabs.programacion-enfoque nav{
+  background-color: rgb(14, 33, 105);
+}
 
-.tabs.programacion .tab-wrapper{
+.tabs.programacion .tab-wrapper, .tabs.programacion-enfoque .tab-wrapper{
   padding: 0 10px;
   text-shadow: 2px 2px 5px var(--amarrillo-beat);
   color: white;
   font-family: "Roboto";
   font-size: 1.2rem;
 }
-.tabs.programacion .tab-wrapper input:checked + label, .tabs.programacion .tab-wrapper label:hover{
+.tabs.programacion .tab-wrapper input:checked + label, .tabs.programacion .tab-wrapper label:hover,
+.tabs.programacion-enfoque .tab-wrapper input:checked + label, .tabs.programacion-enfoque .tab-wrapper label:hover{
     text-shadow: 1px 2px rgb(14 14 14 / 61%);
     text-shadow: 0 0 0px #fff, 0 0 10px var(--amarillo-beat), 0 0 20px var(--amarillo-beat), 0 0 30px var(--amarillo-beat);
     color: #ef4444;
@@ -700,4 +704,71 @@ article .plyr--video{
 	.slider-promociones .flickity-viewport {
     	min-height: 260px;
 	}
+}
+
+
+/* NOTIFICACIÓN */
+
+.ns-attached{max-width: 350px !important; left: auto !important;}
+.ns-effect-bouncyflip {
+	background: #2E75BC!important;
+	text-align: center;
+	left: auto;
+	right: 30px;
+}
+.ns-effect-bouncyflip p {
+	/*padding: .5em 0.2em .8em .2em!important;*/
+	font-size: 16px;
+}
+.ns-box {
+	padding: 5px !important;
+	z-index: 100000 !important;
+}
+	
+.ns-box a{opacity:1 !important;}
+
+.ns-box-inner a, .ns-box-inner .fondo-live div:first-child{
+	position: relative;
+	top: 205px;
+	left: -15px;
+	text-decoration: none;
+	/*text-align: right;*/
+	line-height: 0px;
+	color: #dc0d0d!important;
+	font-size: 17px;
+}
+ .ns-effect-bouncyflip .icon {
+	left: 70px !important;
+    top: -15px !important;
+}
+.ns-box-inner .fondo-live div:first-child, .ns-box-inner a{color: white !important;}
+.ns-box-inner h3{margin: 0; font-size: 1.5rem; color: #0e1c45!important;}
+.ns-box-inner i {
+    font-size: 2.3rem;
+	position: relative;
+	top: 7px;
+}
+#getting-started{
+	color: #fff;
+	position: absolute;
+	top: 125px;
+	width: 300px;
+}
+#getting-started p{font-size: 17px; padding: 0px !important; font-weight: bold; position: relative; top: 45px;}
+#getting-started span{font-size: 20px; position: relative; top: 55px;}
+#getting-started h1 { margin-bottom: 10px; color: white !important;}
+.fondo-live{
+	width: 300px;
+	height: 256px;
+	background: #fff url('https://contenido.stereociendigital.mx/wp-content/uploads/2025/09/NOTIFICACION_TOCHITO.jpg') no-repeat;
+	background-position: top center;
+}
+.fondo-live .info{position: absolute; bottom: 0; font-size: 24px; bottom:35px; width: 300px;}
+
+.ns-effect-bouncyflip .ns-close::after, .ns-effect-bouncyflip .ns-close::before{
+	background: #0f1c45 !important;
+}
+.ns-close {
+	right: -3px !important;
+	top: -3px !important;
 }
