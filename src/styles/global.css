@@ -729,17 +729,20 @@ article .plyr--video{
 
 .ns-box-inner a, .ns-box-inner .fondo-live div:first-child{
 	position: relative;
-	top: 205px;
-	left: -15px;
+	top: 195px;
 	text-decoration: none;
 	/*text-align: right;*/
 	line-height: 0px;
 	color: #dc0d0d!important;
 	font-size: 17px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
  .ns-effect-bouncyflip .icon {
-	left: 70px !important;
-    top: -15px !important;
+  position: relative !important;
+	  left:0 !important;
+    top: 0 !important;
 }
 .ns-box-inner .fondo-live div:first-child, .ns-box-inner a{color: white !important;}
 .ns-box-inner h3{margin: 0; font-size: 1.5rem; color: #0e1c45!important;}
