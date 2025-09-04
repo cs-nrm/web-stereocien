@@ -398,7 +398,7 @@ article .plyr--video{
 
 /* player */
 .iframestyle {box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px; background-image: url('https://storage.googleapis.com/nrm-web/oye/recursos/8p7m.gif'); background-size:contain; background-color:#15181f; border: 1px solid  white; border-radius: 6px; box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;}
-.loading-gif {	width: 20px; height: auto;}
+.loading-gif {	width: 170px; height: auto;}
 #infoMusic { line-height: 10px; text-shadow: 1px 1px black;}
 .text-player {text-shadow: 1px 1px black;}
 .en-vivo {font-family: 'Roboto'!important;}
