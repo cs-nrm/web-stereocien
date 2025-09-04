@@ -237,7 +237,7 @@ hr {
 /*preloader*/
 .loading{    opacity: 0.3;    transition: opacity 2s; }
 .showpreloader {    display:blocK!important;    transition: opacity 2s; }
-.preloader {    position: fixed;    left: 50%;    top: 50%;    display:none;  }
+.preloader {    position: fixed;    left: 50%; transform: translateX(-50%);  top: 33%;  }
 .circle-container {    width: 400px;    height: 200px;    /* background: red; */    /* centering the div */    position: absolute;    left: 50%;    top: 50%;    transform: translate(-50%, -50%)  }
 .circle-container:after {    content: '';    width: 20px;    height: 5px;    position: absolute;    background: #000;    border-radius: 50%;    bottom: 0;  left: 50%;    opacity: 0.4;    animation: shadow 2s linear infinite;  }
 .circle-container:nth-child(2):after {    animation-delay: -0.3s;  }  
