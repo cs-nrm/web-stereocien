@@ -5,8 +5,9 @@ import LeaderBoard from'../components/LeaderBoard.astro';
 import SuperLeader from '../components/SuperLeader.astro';
 import { Image } from 'astro:assets';
 
+const PLACEHOLDER_IMG = 'https://storage.googleapis.com/nrm-web/stereocien/img_stereocien-min.jpg';
 
-const ressti = await fetch("https://contenido.stereociendigital.mx/wp-json/wp/v2/posts?_fields=date,title,slug,sticky,yoast_head_json,content,excerpt,acf,_links,_embedded&_embed&per_page=3&categories=524");
+const ressti = await fetch("https://stereociendigital.com.mx/wp-json/wp/v2/posts?_fields=date,title,slug,sticky,yoast_head_json,content,excerpt,acf,_links,_embedded&_embed&per_page=3&categories=524");
 
 const posts = await ressti.json();
 
@@ -15,7 +16,7 @@ const posts = await ressti.json();
     <article>
         <a href={`/series-y-peliculas/${posts[0].slug}/`} class="group relative flex h-60 sm:h-48 items-end overflow-hidden shadow-lg md:h-96">
             <!--img src={post._embedded['wp:featuredmedia'][0].media_details.sizes['beat-news-size'].source_url} alt={post.title.rendered} class="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" /-->
-            <img src={posts[0].yoast_head_json.og_image[0].url} alt={posts[0].title.rendered} class="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" />
+            <img loading="lazy" src={posts[0]?.yoast_head_json.og_image?.[0]?.url || PLACEHOLDER_IMG} class="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" alt={posts[0]?._embedded?.['wp:featuredmedia']?.[0]?.alt_text||"Imagen Series y Películas"}/>
             <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-800 via-transparent to-transparent opacity-50"></div>
             <div class="roboto"></div> 
             <div class="lovelo text relative inline-block p-3 text-lg sm:text-sm text-white md:text-xl leading-tight md:leading-none">
@@ -27,8 +28,8 @@ const posts = await ressti.json();
 
     <article>
         <a href={`/series-y-peliculas/${posts[1].slug}/`} class="group relative flex h-60 sm:h-48 items-end overflow-hidden shadow-lg md:h-96">
-            <!--img src={post._embedded['wp:featuredmedia'][0].media_details.sizes['beat-news-size'].source_url} alt={post.title.rendered} class="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" /-->
-            <img src={posts[1].yoast_head_json.og_image[0].url} alt={posts[1].title.rendered} class="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" />
+            <!--img src={posts[1].yoast_head_json.og_image[0].url} alt={posts[1].title.rendered} class="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" /-->
+            <img loading="lazy" src={posts[1]?.yoast_head_json.og_image?.[0]?.url || PLACEHOLDER_IMG} class="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" alt={posts[1]?._embedded?.['wp:featuredmedia']?.[0]?.alt_text||"Imagen Series y Películas"}/>
             <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-800 via-transparent to-transparent opacity-50"></div>
             <div class="lovelo text relative inline-block p-3 text-lg sm:text-sm text-white md:text-xl leading-tight md:leading-none">
               <p class="mb-[15px]" set:html={posts[1].title.rendered}></p>
@@ -39,8 +40,7 @@ const posts = await ressti.json();
 
     <article>
         <a href={`/series-y-peliculas/${posts[2].slug}/`} class="group relative flex h-60 sm:h-48 items-end overflow-hidden shadow-lg md:h-96">
-            <!--img src={post._embedded['wp:featuredmedia'][0].media_details.sizes['beat-news-size'].source_url} alt={post.title.rendered} class="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" /-->
-            <img src={posts[2].yoast_head_json.og_image[0].url} alt={posts[2].title.rendered} class="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" />
+            <img loading="lazy" src={posts[2]?.yoast_head_json.og_image?.[0]?.url || PLACEHOLDER_IMG} class="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" alt={posts[2]?._embedded?.['wp:featuredmedia']?.[0]?.alt_text||"Imagen Series y Películas"}/>
             <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-800 via-transparent to-transparent opacity-50"></div>
             <div class="lovelo text relative inline-block p-3 text-lg sm:text-sm text-white md:text-xl leading-tight md:leading-none">
               <p class="mb-[15px]" set:html={posts[2].title.rendered}></p>

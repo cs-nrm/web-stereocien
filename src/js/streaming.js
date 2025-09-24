@@ -379,7 +379,7 @@ function getInfoMusic() {
                 $('#infoMusic').html('<div class="current-song">' + cancion + ' / ' + artist + '</div><div class="share-current"><div class="like"><svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" stroke-width="1"> <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path> </svg> </div> <div class="share-wp"><a href="https://api.whatsapp.com/send/?text=Estoy%20escuchando%20' + codtit +'%20de%20'+ codart +'%20en%20https://stereociendigital.mx/" target="_blank"> <svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" stroke-width="1"> <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z"></path> </svg> </div></div>'); 
                 //document.getElementById('infoMusic').innerHTML = 
 
-               const url = 'https://contenido.stereociendigital.mx/9xjkftr7/8s4v3f1l3s.php';
+               const url = 'https://stereociendigital.com.mx/9xjkftr7/8s4v3f1l3s.php';
                 const colorVotado = '#ef4444';
 
                 $('.like').on('click', function (e) {
@@ -471,7 +471,7 @@ function getInfoMusic() {
        
         function getInfoProg(){
             
-            fetch("https://contenido.stereociendigital.mx/wp-json/wp/v2/posts?_embed&per_page=40&categories=302&_fields[]=acf&_fields[]=jetpack_featured_media_url&_fields[]=acf&_fields[]=content")
+            fetch("https://stereociendigital.com.mx/wp-json/wp/v2/posts?_embed&per_page=40&categories=302&_fields[]=acf&_fields[]=jetpack_featured_media_url&_fields[]=acf&_fields[]=content")
             .then((res) => {
                 if (!res.ok) {
                     throw new Error

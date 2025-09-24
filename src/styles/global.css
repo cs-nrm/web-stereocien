@@ -49,6 +49,9 @@
 .lovelo{
   font-family: 'Lovelo';
 }
+.aspect-not{
+  aspect-ratio: 3 / 2;
+}
 
 body {	
   font-family: 'Libre';
@@ -769,7 +772,7 @@ article .plyr--video{
 .fondo-live{
 	width: 300px;
 	height: 256px;
-	background: #fff url('https://contenido.stereociendigital.mx/wp-content/uploads/2025/09/NOTIFICACION_TOCHITO.jpg') no-repeat;
+	background: #fff url('https://stereociendigital.com.mx/wp-content/uploads/2025/09/NOTIFICACION_TOCHITO.jpg') no-repeat;
 	background-position: top center;
 }
 .fondo-live .info{position: absolute; bottom: 0; font-size: 24px; bottom:35px; width: 300px;}

@@ -70,7 +70,7 @@ switch (post.categories[0]){
         url_seccion = 'cultura-pop';    
     break;      
 }
-
+const PLACEHOLDER_IMG = 'https://storage.googleapis.com/nrm-web/stereocien/img_stereocien-min.jpg';
 
 /*const section = post.yoast_head_json.schema['@graph'][0].articleSection; 
 console.log(section);*/
@@ -78,7 +78,7 @@ console.log(section);*/
 ---
           <article class="news-card transition duration-[0.2s] hover:translate-y-[-4px]">
             <a href={`/${url_seccion}/${post.slug}/`}>
-              <div class="bg-black"><img src={post.yoast_head_json.og_image[0].url} alt="Imagen Noticias"/></div>
+              <div class="bg-black"><img loading="lazy" class="h-auto w-full" src={post?.['_embedded']?.['wp:featuredmedia']?.[0]?.media_details?.sizes?.['stc-size']?.source_url|| PLACEHOLDER_IMG} alt={post?.['_embedded']?.['wp:featuredmedia']?.[0]?.alt_text||"Imagen Nota"}/></div>
               <div class="news-content p-6">
                 <h5 set:html={post.title.rendered}></h5>
                 <div class="text-sm resumen" set:html={post.excerpt.rendered}></div>

@@ -5,8 +5,8 @@ import LeaderBoard from'../components/LeaderBoard.astro';
 import SuperLeader from '../components/SuperLeader.astro';
 import { Image } from 'astro:assets';
 
-
-const res = await fetch("https://contenido.stereociendigital.mx/wp-json/wp/v2/posts?_fields=date,title,slug,sticky,yoast_head_json,content,excerpt,_links,_embedded&_embed&per_page=6&categories=169&order_by=date&order=desc");
+const PLACEHOLDER_IMG = 'https://storage.googleapis.com/nrm-web/stereocien/img_stereocien-min.jpg';
+const res = await fetch("https://stereociendigital.com.mx/wp-json/wp/v2/posts?_fields=date,title,slug,sticky,yoast_head_json,content,excerpt,_links,_embedded&_embed&per_page=6&categories=169&order_by=date&order=desc");
 const posts = await res.json();
 const filteredPosts = posts.filter((post:any) => !post.acf?.fijo);
 ---
@@ -20,7 +20,7 @@ const filteredPosts = posts.filter((post:any) => !post.acf?.fijo);
             <div class={`cards-filtro-${idx}`}>
               <article class="news-card transition duration-[0.2s] hover:translate-y-[-4px]">
                 <a href={`/autos/${post.slug}/`}>
-                  <div class="bg-black"><img src={post._embedded['wp:featuredmedia'][0].media_details.sizes['stc-size'].source_url} alt="Imagen Las de Hoy"/></div>
+                  <div class="bg-black"><img loading="lazy" class="aspect-not h-auto w-full" src={post?._embedded?.['wp:featuredmedia']?.[0]?.media_details?.sizes?.['stc-size']?.source_url|| PLACEHOLDER_IMG} alt={post?._embedded?.['wp:featuredmedia']?.[0]?.alt_text||"Imagen Autos"}/></div>
                   <div class="news-content p-6">
                     <h5 set:html={post.title.rendered}></h5>
                     <div class="text-sm resumen" set:html={post.excerpt.rendered}></div>
