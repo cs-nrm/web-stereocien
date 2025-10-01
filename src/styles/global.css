@@ -297,7 +297,7 @@ hr {
     border: 1px solid var(--gray-beat);
 }
 .tabs.programacion-enfoque nav{
-  background-color: rgb(212 146 43);
+  background-color: rgb(44 40 40);
 }
 
 .tabs.programacion .tab-wrapper, .tabs.programacion-enfoque .tab-wrapper{
@@ -308,7 +308,7 @@ hr {
   font-size: 1.2rem;
 }
 .tabs.programacion-enfoque .tab-wrapper{
-  color: #13284e;
+  color: #e30613;
 }
 .tabs.programacion .tab-wrapper input:checked + label, .tabs.programacion .tab-wrapper label:hover,
 .tabs.programacion-enfoque .tab-wrapper input:checked + label, .tabs.programacion-enfoque .tab-wrapper label:hover{
