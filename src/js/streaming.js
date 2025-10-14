@@ -807,9 +807,10 @@ document.addEventListener('astro:page-load', ev => {
         console.log(getplayingstatus);
         
     }
-    const secprogram = document.getElementById('programacion');
+    const secprogram = document.getElementById('slider-locutores');
+    const secprograma = document.getElementById('slider-locutores-enfoque');
     
-    if ( secprogram || secchome ){  
+    if ( secprogram || secchome || secprograma ){  
 
         var elempod = document.querySelector('.main-carousel');
         var flktypod = new Flickity( elempod, {
@@ -820,6 +821,23 @@ document.addEventListener('astro:page-load', ev => {
             pageDots: false,
             autoPlay: 5000,
         });
+
+        var elemenf = document.querySelector('.main-carousel-enfoque');
+        var flktyenf = new Flickity( elemenf, {
+            contain: true,
+            lazyLoad: 1, 
+            wrapAround: true, 
+            cellAlign: 'center',
+            pageDots: false,
+            autoPlay: 5000,
+        });
+
+        $('.panel-stereo').click(function(){
+            flktypod.resize();
+        }); 
+        $('.panel-enf').click(function(){
+            flktyenf.resize();
+        }); 
     }
     
     const imagenNota = document.getElementById("imagen-nota");
