@@ -30,6 +30,7 @@ function initGPT() {
   var gptAdSlots6 = [];       //superleader 970x90
   var gptAdSlots61 = [];      //superleader móvil
   var gptAdSlots44 = [];      //takeover
+  var gptAdSlots441 = [];     //takeover móvil
   
   googletag.cmd.push(function() {
     var mapping2 = googletag.sizeMapping().addSize([300, 250]).build();
@@ -45,6 +46,7 @@ function initGPT() {
     var mapping6 = googletag.sizeMapping().addSize([728, 90]).build();
     var mapping61 = googletag.sizeMapping().addSize([320, 50]).build();
     var mapping44 = googletag.sizeMapping().addSize([600, 800]).build();
+    var mapping441 = googletag.sizeMapping().addSize([300, 400]).build();
          
     window.slot2 = googletag.defineSlot("/21799830913/StereoCien", [300, 250],'ad-slot2').defineSizeMapping(mapping2).addService(googletag.pubads());
     window.slot3 = googletag.defineSlot("/21799830913/StereoCien", [728, 90],'ad-slot3').defineSizeMapping(mapping3).addService(googletag.pubads());
@@ -59,6 +61,7 @@ function initGPT() {
     window.slot6 = googletag.defineSlot("/21799830913/StereoCien", [728, 90],'ad-slot6').defineSizeMapping(mapping6).addService(googletag.pubads());
     window.slot61 = googletag.defineSlot("/21799830913/StereoCien", [320, 50],'ad-slot61').defineSizeMapping(mapping61).addService(googletag.pubads());
     window.slot44 = googletag.defineSlot("/21799830913/StereoCien", [600, 800],'ad-slot44').defineSizeMapping(mapping44).addService(googletag.pubads());
+    window.slot441 = googletag.defineSlot("/21799830913/StereoCien", [300, 400],'ad-slot441').defineSizeMapping(mapping441).addService(googletag.pubads());
 
     googletag.pubads().setTargeting("test","responsive");
     googletag.enableServices();
@@ -75,6 +78,7 @@ function initGPT() {
     googletag.display('ad-slot6');
     googletag.display('ad-slot61');
     googletag.display('ad-slot44');
+    googletag.display('ad-slot441');
     
     //googletag.pubads().refresh([slot3]);
     //setInterval(function(){googletag.pubads().refresh([slot3]);}, 180000);
@@ -97,6 +101,7 @@ function safeRefreshSlots() {
       if (window.slot6) googletag.pubads().refresh([window.slot6]);
       if (window.slot61) googletag.pubads().refresh([window.slot61]);
       if (window.slot44) googletag.pubads().refresh([window.slot44]);
+      if (window.slot441) googletag.pubads().refresh([window.slot441]);
       // O simplemente: googletag.pubads().refresh();
       console.log('Banners refrescados post navegación');
     } else {
