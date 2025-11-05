@@ -698,7 +698,10 @@ article .plyr--video{
     width: 38px;
   }
 }
-
+/* BUEN FIN */
+.carousel-buenfin .flickity-viewport{
+    min-height: 310px;
+}
 /* PROMOCIONES HOME */
 .slider-promociones .flickity-viewport {
     min-height: 360px;

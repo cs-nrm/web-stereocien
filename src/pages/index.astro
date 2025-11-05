@@ -30,6 +30,7 @@ import Podcast from '../layouts/CardsHomePodcast.astro';
 import NewsLetter from '../layouts/NewsLetter.astro';
 import Promociones from '../layouts/SliderPromociones.astro';
 import Notificacion from '../components/Notificacion.astro';
+import Sliderbuenfin from '../layouts/Sliderbuenfin.astro';
 
 ---
 
@@ -53,6 +54,16 @@ import Notificacion from '../components/Notificacion.astro';
                         <CardNews />
                     </div>
                 </section>
+                <section>
+                    <div>
+                        <img class="w-full h-auto hidden md:block" src="https://storage.googleapis.com/nrm-web/nrm/adManager/buen-fin%202.png"/>
+                        <img class="w-full h-auto block md:hidden" src="https://storage.googleapis.com/nrm-web/nrm/adManager/buen-fin-movil2.png"/>
+                    </div>
+                    <div class="bg-[#e20612]">
+                        <Sliderbuenfin/>
+                        <div class="flex justify-end"><img class="w-full max-w-[100px]" src="https://storage.googleapis.com/nrm-web/nrm/adManager/buen-fin-qr.png"/></div>
+                    </div>
+                </section>
                 <BillBoard />
                 <section>
                     <div class="container-home p-4 mx-auto">          
@@ -66,11 +77,11 @@ import Notificacion from '../components/Notificacion.astro';
                     </div>
                 </section>
                 <section>
-                    <div class="front-row relative overflow-hidden">
-                      <!--video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover z-0">
+                    <!--div class="front-row relative overflow-hidden">
+                      <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover z-0">
                         <source src="https://storage.googleapis.com/nrm-web/stereocien/back2compress.mp4" type="video/mp4">
                       </video-->
-                    <div class="bg-[url('https://stereociendigital.com.mx/wp-content/uploads/2025/07/CORONA_CAPITAL-scaled.jpg')] bg-no-repeat bg-cover bg-bottom"-->
+                    <div class="bg-[url('https://stereociendigital.com.mx/wp-content/uploads/2025/07/CORONA_CAPITAL-scaled.jpg')] bg-no-repeat bg-cover bg-bottom">
                         <div class="bg-[#411ED4] bg-[url('https://stereociendigital.com.mx/wp-content/uploads/2025/07/CORONA_CAPITAL_2025.png')] bg-no-repeat bg-contain 2xl:bg-cover bg-bottom">
                             <img class="max-w-[328px] m-auto" src="https://stereociendigital.com.mx/wp-content/uploads/2025/07/corona-capital-logo.png" alt="Corona Capital"/>
                         </div>
