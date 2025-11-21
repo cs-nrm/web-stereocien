@@ -19,6 +19,8 @@ import LeaderBoard2 from'../components/LeaderBoard2.astro';
 import SuperLeader from '../components/SuperLeader.astro';
 import BillBoard from '../components/BillBoard.astro';
 import BillBoard2 from '../components/BillBoard2.astro';
+import Skin1 from '../components/Skin1.astro';
+import Skin2 from '../components/Skin2.astro';
 
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import BarNrm from '../components/BarNrm.astro';
@@ -49,12 +51,12 @@ import Notificacion from '../components/Notificacion.astro';
                     <!--HomeHeader /-->
                 <!--/header-->
                         
-                <section>  
-                    <div></div>                 
+                <section class="flex items-start justify-center gap-4 px-4">  
+                    <Skin1 />                
                     <div class="container-home p-4 mx-auto">                        
                         <CardNews />
                     </div>
-                    <div></div> 
+                    <Skin2 />
                 </section>
                 <!--section>
                     <div>

@@ -787,3 +787,10 @@ article .plyr--video{
 	right: -3px !important;
 	top: -3px !important;
 }
+
+/* LEADER EXPANDIBLE */
+.billboard #ad-slot32 iframe:hover,
+.billboard #ad-slot3 iframe:hover,
+.leader #ad-slot4 iframe:hover,
+.leader #ad-slot42 iframe:hover,
+.superleader #ad-slot6 iframe:hover{height:400px;z-index:10000;position:relative; cursor: pointer;}
