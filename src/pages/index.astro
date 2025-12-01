@@ -32,6 +32,7 @@ import Podcast from '../layouts/CardsHomePodcast.astro';
 import NewsLetter from '../layouts/NewsLetter.astro';
 import Promociones from '../layouts/SliderPromociones.astro';
 import Notificacion from '../components/Notificacion.astro';
+import Navidad from '../components/Navidad.astro';
 /*import Sliderbuenfin from '../layouts/Sliderbuenfin.astro';*/
 
 ---
@@ -41,7 +42,9 @@ import Notificacion from '../components/Notificacion.astro';
     <head>
         <BaseHead title={SITE_TITLE} seccion="Home" description={SITE_DESCRIPTION} />       
     </head>
+
     <body>
+        
         <BarNrm />
         <NotaPrincipal />
         <Header title={SITE_TITLE} />
@@ -153,6 +156,7 @@ import Notificacion from '../components/Notificacion.astro';
                     </div>
                 </section>
         </main> 
+        <Navidad />
         <Modal/>
         <!--Notificacion /-->
         <Footer />
