@@ -720,10 +720,11 @@ article .plyr--video{
 
 
 /* NOTIFICACIÓN */
+/* NOTIFICACIÓN */
 
 .ns-attached{max-width: 350px !important; left: auto !important;}
 .ns-effect-bouncyflip {
-	background: #2E75BC!important;
+	background: #EB00D9!important;
 	text-align: center;
 	left: auto;
 	right: 30px;
@@ -741,23 +742,24 @@ article .plyr--video{
 
 .ns-box-inner a, .ns-box-inner .fondo-live div:first-child{
 	position: relative;
-	top: 195px;
+	top: 200px;
+	left: 70px;
 	text-decoration: none;
 	/*text-align: right;*/
 	line-height: 0px;
 	color: #dc0d0d!important;
 	font-size: 17px;
   display: flex;
-  justify-content: center;
   align-items: center;
+  gap: 20px;
 }
  .ns-effect-bouncyflip .icon {
   position: relative !important;
-	  left:0 !important;
+	left: 0 !important;
     top: 0 !important;
 }
 .ns-box-inner .fondo-live div:first-child, .ns-box-inner a{color: white !important;}
-.ns-box-inner h3{margin: 0; font-size: 1.5rem; color: #0e1c45!important;}
+.ns-box-inner h3{margin: 0; font-size: 1.5rem; color: #ffffff!important;}
 .ns-box-inner i {
     font-size: 2.3rem;
 	position: relative;
@@ -775,13 +777,14 @@ article .plyr--video{
 .fondo-live{
 	width: 300px;
 	height: 256px;
-	background: #fff url('https://stereociendigital.com.mx/wp-content/uploads/2025/09/NOTIFICACION_TOCHITO.jpg') no-repeat;
+	background: #fff url('https://storage.googleapis.com/nrm-web/mundial/notificacion_sorteo.jpg') no-repeat;
+  /*background: #fff url('https://storage.googleapis.com/nrm-web/beat/resources/img/notificacion-lou.jpg') no-repeat;*/
 	background-position: top center;
 }
 .fondo-live .info{position: absolute; bottom: 0; font-size: 24px; bottom:35px; width: 300px;}
 
 .ns-effect-bouncyflip .ns-close::after, .ns-effect-bouncyflip .ns-close::before{
-	background: #0f1c45 !important;
+	background: #fff!important;
 }
 .ns-close {
 	right: -3px !important;
