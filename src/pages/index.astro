@@ -73,6 +73,22 @@ import Navidad from '../components/Navidad.astro';
                 </section-->
                 <BillBoard />
                 <section>
+                    <div class="front-row relative overflow-hidden especiales">
+                        <!--video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover z-0">
+                            <source src="https://storage.googleapis.com/nrm-web/stereocien/portadas-especiales-1800x800.mp4" type="video/mp4">
+                        </video-->
+                        <div>
+                            <div class="w-full flex justify-center relative z-20 mb-6">
+                            <img class="max-w-[370px]" src="https://storage.googleapis.com/nrm-web/stereocien/titulorecap.png"/>
+
+                            </div>
+                            <div class="container-home relative z-10 p-4 mx-auto">                            
+                                <CardRecap />        
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section>
                     <div class="container-home p-4 mx-auto">          
                         <h1 class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl">SERIES Y PELÍCULAS</h1>
                         <CardsHomePlataformas />
@@ -83,22 +99,7 @@ import Navidad from '../components/Navidad.astro';
                         <CardTecnologia/>
                     </div>
                 </section>
-                <!--section>
-                    <div class="front-row relative overflow-hidden">
-                      <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover z-0">
-                        <source src="https://storage.googleapis.com/nrm-web/stereocien/portadas-especiales-1800x800.mp4" type="video/mp4">
-                      </video>
-                    <div>
-                        
-                        <div class="w-full flex justify-center relative z-20 mt-8 mb-6">
-                          <img class="max-w-[370px]" src="https://storage.googleapis.com/nrm-web/stereocien/logo-remind-gnp.png"/>
 
-                        </div>
-                        <div class="container-home relative z-10 p-4 mx-auto">                            
-                            <CardRecap />        
-                        </div>
-                    </div>
-                </section-->
                 <LeaderBoard />
                 <section>
                     <Viajes />

@@ -797,3 +797,11 @@ article .plyr--video{
 .leader #ad-slot4 iframe:hover,
 .leader #ad-slot42 iframe:hover,
 .superleader #ad-slot6 iframe:hover{height:400px;z-index:10000;position:relative; cursor: pointer;}
+
+/* ESPECIALES */
+.especiales{
+  background-image: url(https://storage.googleapis.com/nrm-web/stereocien/portadarecap.jpg);
+  background-size: cover;
+  background-position: top center;
+  box-shadow: var(--box-shadow);
+}
