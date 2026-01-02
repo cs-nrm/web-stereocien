@@ -1,67 +1,69 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import CardNews from '../layouts/CardsHomeNews.astro';
-import CardGuia from '../layouts/CardsHomeGuia.astro';
-import CardMascotas from '../layouts/CardsHomeMascotas.astro';
-import CardTecnologia from '../layouts/CardsHomeTecnologia.astro';
-import CardAutos from '../layouts/CardsHomeAutos.astro';
-import CardRelojes from '../layouts/CardsHomeRelojes.astro';
-import CardRecap from '../layouts/CardsHomeRecap.astro';
-import Separator from '../components/Separator.astro';
-import HomeHeader from '../layouts/HomeHeader.astro';
-import DoubleBox from '../components/DoubleBox.astro';
-import BoxBanner from '../components/BoxBanner.astro';
-import LeaderBoard from'../components/LeaderBoard.astro';
-import Modal from'../components/Modal.astro';
-import LeaderBoard2 from'../components/LeaderBoard2.astro';
-import SuperLeader from '../components/SuperLeader.astro';
-import BillBoard from '../components/BillBoard.astro';
-import BillBoard2 from '../components/BillBoard2.astro';
-import Skin1 from '../components/Skin1.astro';
-import Skin2 from '../components/Skin2.astro';
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import CardNews from "../layouts/CardsHomeNews.astro";
+import CardGuia from "../layouts/CardsHomeGuia.astro";
+import CardMascotas from "../layouts/CardsHomeMascotas.astro";
+import CardTecnologia from "../layouts/CardsHomeTecnologia.astro";
+import CardAutos from "../layouts/CardsHomeAutos.astro";
+import CardRelojes from "../layouts/CardsHomeRelojes.astro";
+import CardRecap from "../layouts/CardsHomeRecap.astro";
+import Separator from "../components/Separator.astro";
+import HomeHeader from "../layouts/HomeHeader.astro";
+import DoubleBox from "../components/DoubleBox.astro";
+import BoxBanner from "../components/BoxBanner.astro";
+import LeaderBoard from "../components/LeaderBoard.astro";
+import Modal from "../components/Modal.astro";
+import LeaderBoard2 from "../components/LeaderBoard2.astro";
+import SuperLeader from "../components/SuperLeader.astro";
+import BillBoard from "../components/BillBoard.astro";
+import BillBoard2 from "../components/BillBoard2.astro";
+import Skin1 from "../components/Skin1.astro";
+import Skin2 from "../components/Skin2.astro";
 
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
-import BarNrm from '../components/BarNrm.astro';
-import NotaPrincipal from '../layouts/CardsHomePrincipal.astro';
-import Viajes from '../layouts/CardsHomeViajes.astro';
-import Libros from '../layouts/CardsHomeLibros.astro'; 
-import CardsHomePlataformas from '../layouts/CardsHomePlataformas.astro';
-import Podcast from '../layouts/CardsHomePodcast.astro';
-import NewsLetter from '../layouts/NewsLetter.astro';
-import Promociones from '../layouts/SliderPromociones.astro';
-import Notificacion from '../components/Notificacion.astro';
-import Navidad from '../components/Navidad.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+import BarNrm from "../components/BarNrm.astro";
+import NotaPrincipal from "../layouts/CardsHomePrincipal.astro";
+import Viajes from "../layouts/CardsHomeViajes.astro";
+import Libros from "../layouts/CardsHomeLibros.astro";
+import CardsHomePlataformas from "../layouts/CardsHomePlataformas.astro";
+import Podcast from "../layouts/CardsHomePodcast.astro";
+import NewsLetter from "../layouts/NewsLetter.astro";
+import Promociones from "../layouts/SliderPromociones.astro";
+import Notificacion from "../components/Notificacion.astro";
+import Navidad from "../components/Navidad.astro";
 /*import Sliderbuenfin from '../layouts/Sliderbuenfin.astro';*/
-
 ---
 
 <!doctype html>
 <html lang="es">
     <head>
-        <BaseHead title={SITE_TITLE} seccion="Home" description={SITE_DESCRIPTION} />       
+        <BaseHead
+            title={SITE_TITLE}
+            seccion="Home"
+            description={SITE_DESCRIPTION}
+        />
     </head>
 
     <body>
-        
         <BarNrm />
         <NotaPrincipal />
         <Header title={SITE_TITLE} />
-        
+
         <main id="home">
-                <!--header-->
-                    <!--HomeHeader /-->
-                <!--/header-->
-                        
-                <section class="flex items-start justify-center gap-4 px-4">  
-                    <Skin1 />                
-                    <div class="container-home p-4 mx-auto">                        
-                        <CardNews />
-                    </div>
-                    <Skin2 />
-                </section>
-                <!--section>
+            <!--header-->
+            <!--HomeHeader /-->
+            <!--/header-->
+
+            <section class="flex items-start justify-center gap-4 px-4">
+                <Skin1 />
+                <div class="container-home p-4 mx-auto">
+                    <CardNews />
+                </div>
+                <Skin2 />
+            </section>
+            <!--section>
                     <div>
                         <img class="w-full h-auto hidden md:block" src="https://storage.googleapis.com/nrm-web/nrm/adManager/buen-fin%202.png"/>
                         <img class="w-full h-auto block md:hidden" src="https://storage.googleapis.com/nrm-web/nrm/adManager/buen-fin-movil2.png"/>
@@ -71,55 +73,63 @@ import Navidad from '../components/Navidad.astro';
                         <div class="flex justify-end"><img class="w-full max-w-[100px]" src="https://storage.googleapis.com/nrm-web/nrm/adManager/buen-fin-qr.png"/></div>
                     </div>
                 </section-->
-                <BillBoard />
-                <section>
-                    <div class="front-row relative overflow-hidden especiales">
-                        <!--video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover z-0">
+            <BillBoard />
+            <section>
+                <div class="front-row relative overflow-hidden especiales">
+                    <!--video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover z-0">
                             <source src="https://storage.googleapis.com/nrm-web/stereocien/portadas-especiales-1800x800.mp4" type="video/mp4">
                         </video-->
-                        <div>
-                            <div class="w-full flex justify-center relative z-20 mb-6">
-                            <img class="max-w-[370px]" src="https://storage.googleapis.com/nrm-web/stereocien/titulorecap.png"/>
-
-                            </div>
-                            <div class="container-home relative z-10 p-4 mx-auto">                            
-                                <CardRecap />        
-                            </div>
+                    <div>
+                        <div
+                            class="w-full flex justify-center relative z-20 mb-6"
+                        >
+                            <img
+                                class="max-w-[370px]"
+                                src="https://storage.googleapis.com/nrm-web/stereocien/titulorecap.png"
+                            />
+                        </div>
+                        <div class="container-home relative z-10 p-4 mx-auto">
+                            <CardRecap />
                         </div>
                     </div>
-                </section>
-                <section>
-                    <div class="container-home p-4 mx-auto">          
-                        <h1 class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl">SERIES Y PELÍCULAS</h1>
-                        <CardsHomePlataformas />
-                    </div>
-                </section>                
-                <section>
-                    <div class="container-home p-4 mx-auto">                        
-                        <CardTecnologia/>
-                    </div>
-                </section>
+                </div>
+            </section>
+            <section>
+                <div class="container-home p-4 mx-auto">
+                    <h1
+                        class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl"
+                    >
+                        SERIES Y PELÍCULAS
+                    </h1>
+                    <CardsHomePlataformas />
+                </div>
+            </section>
+            <section>
+                <div class="container-home p-4 mx-auto">
+                    <CardTecnologia />
+                </div>
+            </section>
 
-                <LeaderBoard />
-                <section>
-                    <Viajes />
-                </section>
-                <section>
-                    <div class="container-home p-4 mx-auto">                        
-                        <CardGuia />
-                    </div>
-                </section>
-                <BillBoard2 />
-                <section>
-                    <div class="container-home p-4 mx-auto">                        
-                        <CardAutos/>
-                    </div>
-                </section>
-                <section>
-                    <Libros />
-                </section>
-                <LeaderBoard2/>
-                <!--section>
+            <LeaderBoard />
+            <section>
+                <Viajes />
+            </section>
+            <section>
+                <div class="container-home p-4 mx-auto">
+                    <CardGuia />
+                </div>
+            </section>
+            <BillBoard2 />
+            <section>
+                <div class="container-home p-4 mx-auto">
+                    <CardAutos />
+                </div>
+            </section>
+            <section>
+                <Libros />
+            </section>
+            <LeaderBoard2 />
+            <!--section>
                     <div class="container-home p-4 mx-auto">
                         <div class="flex flex-nowrap gap-2">
                             <div class="w-full lg:w-2/3 platforms">
@@ -131,35 +141,47 @@ import Navidad from '../components/Navidad.astro';
                         </div>                   
                     </div>
                 </section-->
-                <section>
-                    <div class="container-home p-4 mx-auto">                        
-                        <CardRelojes/>
-                    </div>
-                </section>
-                <section>
-                    <div class="container-home p-4 mx-auto border-t border-b border-[#333] py-16">
-                        <h1 class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl">LOS PODCAST</h1>
-                        <div class="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 md:gap-16 xl:gap-16">
+            <section>
+                <div class="container-home p-4 mx-auto">
+                    <CardRelojes />
+                </div>
+            </section>
+            <section>
+                <div
+                    class="container-home p-4 mx-auto border-t border-b border-[#333] py-16"
+                >
+                    <h1
+                        class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl"
+                    >
+                        LOS PODCAST
+                    </h1>
+                    <div
+                        class="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 md:gap-16 xl:gap-16"
+                    >
                         <Podcast />
-                        </div>
                     </div>
-                </section>
-                <section class="">
-                    <div class="container-home p-4 mx-auto">
-                        <h1 class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl">PROMOCIONES</h1>
-                        <Promociones />        
-                    </div>
-                </section>
-                
-                <section class="">
-                    <div class="container-home p-4 mx-auto">
-                        <NewsLetter />        
-                    </div>
-                </section>
-        </main> 
+                </div>
+            </section>
+            <section class="">
+                <div class="container-home p-4 mx-auto">
+                    <h1
+                        class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl"
+                    >
+                        PROMOCIONES
+                    </h1>
+                    <Promociones />
+                </div>
+            </section>
+
+            <section class="">
+                <div class="container-home p-4 mx-auto">
+                    <NewsLetter />
+                </div>
+            </section>
+        </main>
         <Navidad />
 
-        <Modal/>
+        <!--Modal/-->
         <!--Notificacion /-->
         <Footer />
     </body>
