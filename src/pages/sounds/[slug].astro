@@ -8,6 +8,7 @@ const color1 = post?.["sounds_colors"]?.["color1"] || "";
 const color2 = post?.["sounds_colors"]?.["color2"] || "";
 const color3 = post?.["sounds_colors"]?.["color3"] || "";
 const streamurl = post?.sounds_stream_url || "";
+const mounturl = post?.sounds_mount_url || "";
 
 export async function getStaticPaths() {
   let data = await fetch("https://stereociendigital.com.mx/wp-json/wp/v2/sounds?_embed&per_page=15&_fields=title,slug");
@@ -21,718 +22,1004 @@ export async function getStaticPaths() {
 
 
 ---
-<div style={`background-color: ${color1}`}>
-    <h1 class="font-bold" style={`color: ${color2}`} set:html={post.title.rendered}></h1>
-    <img class="text-center aspect-not m-auto shadow-[0_5px_12px_10px_rgba(0,0,0,0.4)]" src={post?.sounds_logo_url} alt={post?.yoast_head_json?.['schema']?.['@graph']?.[2]?.caption||"Imagen Sounds"}/>
+<div class="sr-player-wrap">
+  <div class="sr-player" style={`--c1:${color1}; --c2:${color2}; --c3:${color3};`}>
+    <header class="sr-header">
+      <div class="sr-logo" style={`background-image:url(${post?.sounds_logo_url || ''});`}></div>
 
-   <main class="main-content">
-        <img id="logo" src="logo.png" width="300" style="padding-bottom: 15px;"/>
-        <h1 class="hero-title">Te acompañamos esta navidad</h1>
-        <br>
-        <div class="music-feature">
-            <!--h2>Música continua, sin anuncios comerciales</h2-->
-            <p>Disfruta de la mejor selección de canciones navideñas sin interrupciones</p>
-            
-            <div class="music-cards">
-                <!-- Tarjeta Noche de Paz ->
-                <div class="music-card" id="noche-de-paz">
-                    <i class="fas fa-music card-icon"></i>
-                    <h3>Noche de Paz</h3>
-                    <p>Clásicos navideños para una noche mágica</p>
-                    
-                    <!-- Botón play/pause blanco con ícono azul --
-                    <button class="play-pause-btn" data-station="noche-de-paz">
-                        <i class="fas fa-play play-icon"></i>
-                        <i class="fas fa-pause pause-icon"></i>
-                    </button>
-                    
-                    <div class="playing-indicator">
-                        <div class="pulse-dot"></div>
-                        <span>En vivo</span>
-                    </div>
-                </div-->
-                
-                <!-- Tarjeta Cono Navideño -->
-                <div class="music-card" id="cono-navideno">
-                    <!--i class="fas fa-tree card-icon"></i-->
-                    <h3>Christmas Sounds</h3>
-                    
-                    <!-- Botón play/pause blanco con ícono azul -->
-                    <button class="play-pause-btn" data-station="cono-navideno">
-                        <i class="fas fa-play play-icon"></i>
-                        <i class="fas fa-pause pause-icon"></i>
-                    </button>
-                    
-                    <div class="playing-indicator">
-                        <div class="pulse-dot"></div>
-                        <span>En vivo</span>
-                    </div>
-                </div>
-            </div>
+      <div class="sr-headtxt">
+        <h2 class="sr-station" set:html={post.title.rendered}></h2>
+        <div class="sr-live">
+          <span id="live-dot" class="sr-live-dot"></span>
+          <span class="sr-live-label">LIVE NOW</span>
         </div>
-        
-        <div class="divider"></div>
+      </div>
+    </header>
+
+    <main class="sr-main">
+      <div class="sr-artframe">
+        <div id="artwork" class="sr-art" style={`background-image:url(${post?.sounds_logo_url || ''});`}></div>
+      </div>
+
+      <div class="sr-meta">
+        <h1 id="track-title" class="sr-title"></h1>
+        <div id="track-artist" class="sr-artist"></div>
+      </div>
+
+      <div class="sr-controls">
+        <button id="fav-btn" class="sr-iconbtn" type="button" aria-label="Favorito">
+          <svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" stroke-width="1" aria-hidden="true">
+            <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path>
+            </svg>
+        </button>
+
+        <button id="play-btn" class="sr-play" type="button" aria-label="Reproducir / Pausar">
+          <svg id="icon-play" viewBox="0 0 24 24" width="56" height="56" fill="currentColor" aria-hidden="true" style="transform: translateX(2px);">
+            <path d="M8 5v14l12-7-12-7z" />
+          </svg>
+          <svg id="icon-pause" class="sr-hidden" viewBox="0 0 24 24" width="56" height="56" fill="currentColor" aria-hidden="true">
+            <path d="M6 5h4v14H6V5zm8 0h4v14h-4V5z" />
+          </svg>
+          <span id="icon-loading" class="sr-hidden sr-spinner" aria-hidden="true"></span>
+        </button>
+
+        <button id="share-btn" class="sr-iconbtn" type="button" aria-label="Compartir">
+          <svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" stroke-width="1" aria-hidden="true">
+            <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z"></path>
+            </svg>
+        </button>
+      </div>
     </main>
-    
-    <!-- Reproductor de radio -->
-    <div class="radio-player" id="radio-player" style="display: none;">
 
-        <div class="player-artwork">
-            <img id="artwork" src="" width="50"/>
-        </div>
+    <footer class="sr-footer">
+      <div class="sr-pill">
+        <span id="eq-dot" class="sr-eqdot"></span>
+        <span id="status-pill" class="sr-pilltext">LISTO</span>
+      </div>
 
-        <div class="player-controls">
-            <button class="player-btn" id="play-pause-btn">
-                <i class="fas fa-play"></i>
-            </button>
-            <button class="player-btn" id="stop-btn">
-                <i class="fas fa-stop"></i>
-            </button>
-        </div>
-        <div class="player-info">
-            <div class="station-name" id="current-station">Selecciona una estación</div>
-            <div class="player-status" id="player-status">Detenido</div>
-        </div>
-        <div class="volume-control">
-            <i class="fas fa-volume-up" style="color: #034dc5;"></i>
-            <input type="range" class="volume-slider" id="volume-slider" min="0" max="1" step="0.1" value="0.7">
-        </div>
-    </div>
+      <div class="sr-handle"></div>
+    </footer>
+  </div>
 </div>
 
-    <script is:inline define:vars={{streamurl}}>
-        console.log("Stream URL:", streamurl);
-        // ========== CONFIGURACIÓN DE ESTACIONES DE RADIO ==========
-        const radioStations = {
-            "noche-de-paz": {
-                name: "Noche de Paz Radio",
-                url: streamurl,
-                description: "Clásicos navideños las 24 horas",
-                artworkUrl: "logo-sounds.png"
-            },
-            "cono-navideno": {
-                name: "Christmas Sounds",
-                url: streamurl,
-                description: "Música alegre para toda la familia",
-                artworkUrl: "logo-sounds.png"
-            }
-        };
-        
-        // ========== VARIABLES GLOBALES ==========
-        let audioPlayer = null;
-        let currentStation = null;
-        let isPlaying = false;
-        let volume = 0.7;
-        
-        // ========== INICIALIZACIÓN ==========
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeRadioPlayer();
-            setupEventListeners();
+<script is:inline define:vars={{streamurl, mounturl, station_slug: slug}}>
+  // Single-station player (layout tipo screenshot)
+  let audioPlayer = null;
+  let isPlaying = false;
+  let metadataES = null;
+  let hasUserPressedPlay = false;
+  let isStopping = false;
+  let ignoreAudioErrorsUntil = 0;
+
+  // Artwork (iTunes) cache + fallback to station image
+  let stationArtworkBg = '';
+  let lastArtworkKey = '';
+
+  // Current track state (for vote/share)
+  let currentTitle = '';
+  let currentArtist = '';
+
+  const $ = (id) => document.getElementById(id);
+
+  function setStatus(label) {
+    const el = $('status-pill');
+    if (el) el.textContent = String(label || '').toUpperCase();
+  }
+
+  function setNowPlaying(title, artist) {
+    currentTitle = String(title || '').trim();
+    currentArtist = String(artist || '').trim();
+
+    const t = $('track-title');
+    const a = $('track-artist');
+    if (t) t.textContent = currentTitle || '';
+    if (a) a.textContent = currentArtist || '';
+  }
+
+  function setPlayingUI(playing) {
+    const playIcon = $('icon-play');
+    const pauseIcon = $('icon-pause');
+    if (playIcon && pauseIcon) {
+      if (playing) {
+        playIcon.classList.add('sr-hidden');
+        pauseIcon.classList.remove('sr-hidden');
+      } else {
+        pauseIcon.classList.add('sr-hidden');
+        playIcon.classList.remove('sr-hidden');
+      }
+    }
+
+    const dot = $('live-dot');
+    if (dot) {
+      dot.style.opacity = playing ? '1' : '0.35';
+      dot.style.boxShadow = playing ? '0 0 8px rgba(239, 68, 68, 0.8)' : 'none';
+    }
+
+    const eq = $('eq-dot');
+    if (eq) {
+      if (playing) eq.classList.add('is-playing');
+      else eq.classList.remove('is-playing');
+    }
+  }
+
+  function setLoadingUI(loading) {
+    const playBtn = $('play-btn');
+    const playIcon = $('icon-play');
+    const pauseIcon = $('icon-pause');
+    const loadingEl = $('icon-loading');
+
+    if (loadingEl) {
+      if (loading) loadingEl.classList.remove('sr-hidden');
+      else loadingEl.classList.add('sr-hidden');
+    }
+
+    // While loading, hide play/pause icons to avoid confusion.
+    if (playIcon && pauseIcon) {
+      if (loading) {
+        playIcon.classList.add('sr-hidden');
+        pauseIcon.classList.add('sr-hidden');
+      } else {
+        // When not loading, reflect current playing state.
+        if (isPlaying) {
+          playIcon.classList.add('sr-hidden');
+          pauseIcon.classList.remove('sr-hidden');
+        } else {
+          pauseIcon.classList.add('sr-hidden');
+          playIcon.classList.remove('sr-hidden');
+        }
+      }
+    }
+
+    // Prevent double-click spamming while connecting.
+    if (playBtn) playBtn.disabled = !!loading;
+  }
+
+  function parseNowPlaying(str) {
+    const s = String(str || '').trim();
+    if (!s) return { artist: '', title: '' };
+
+    // Prefer artist — title
+    if (s.includes(' — ')) {
+      const [artist, title] = s.split(' — ');
+      return { artist: (artist || '').trim(), title: (title || '').trim() };
+    }
+
+    // Also support en-dash and hyphen
+    if (s.includes(' – ')) {
+      const [artist, title] = s.split(' – ');
+      return { artist: (artist || '').trim(), title: (title || '').trim() };
+    }
+
+    if (s.includes(' - ')) {
+      const [artist, title] = s.split(' - ');
+      return { artist: (artist || '').trim(), title: (title || '').trim() };
+    }
+
+    return { artist: '', title: s };
+  }
+
+  function getMountTokenFromUrl(url) {
+    const raw = String(url || '').trim();
+    if (!raw) return '';
+
+    // If it's already a token (no scheme and no dots), return as-is.
+    // Example: "7b1nlsk8gycuv"
+    if (!/^https?:\/\//i.test(raw) && !raw.includes('.') && !raw.includes('/')) {
+      return raw;
+    }
+
+    // If it's a domain without scheme, prefix https so URL() can parse it.
+    const candidate = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+
+    try {
+      const u = new URL(candidate);
+      const parts = u.pathname.replace(/^\/+/, '').split('/');
+      return parts[0] || '';
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function getZenoSubscribeUrl() {
+    const BASE = 'https://api.zeno.fm/mounts/metadata/subscribe/';
+
+    const rawMount = String(mounturl || '').trim();
+
+    // Extract token from mounturl (token, stream URL, or subscribe URL)
+    let token = '';
+
+    if (rawMount) {
+      // If it's already a bare token
+      if (!/^https?:\/\//i.test(rawMount) && !rawMount.includes('.') && !rawMount.includes('/')) {
+        token = rawMount;
+      } else {
+        // If it's a URL (or domain/path), parse and extract token from pathname.
+        const candidate = /^https?:\/\//i.test(rawMount) ? rawMount : `https://${rawMount}`;
+        try {
+          const u = new URL(candidate);
+          const path = u.pathname || '';
+
+          // Common: /mounts/metadata/subscribe/<token>
+          const m = path.match(/\/mounts\/metadata\/subscribe\/([^/?#]+)/i);
+          if (m && m[1]) token = m[1];
+          else {
+            // Otherwise, use first path segment as token
+            const parts = path.replace(/^\/+/, '').split('/');
+            if (parts[0]) token = parts[0];
+          }
+        } catch (e) {
+          token = '';
+        }
+      }
+    }
+
+    // Fallback: derive from streamurl
+    if (!token) token = getMountTokenFromUrl(streamurl);
+
+    return token ? `${BASE}${token}` : '';
+  }
+
+  function normalizeStreamUrl(url) {
+    const raw = String(url || '').trim();
+    if (!raw) return '';
+
+    // Already a full URL.
+    if (/^https?:\/\//i.test(raw)) return raw;
+
+    // Domain without scheme (e.g. example.com/stream). Add https.
+    if (raw.includes('.') || raw.includes('/')) return `https://${raw}`;
+
+    // Bare mount token (Zeno). Build the stream URL.
+    return `https://stream.zeno.fm/${raw}`;
+  }
+
+  function freshStreamUrl(url) {
+    // Some radio endpoints break when you append query params.
+    // For "restart live" we will reset the Audio element instead.
+    return normalizeStreamUrl(url);
+  }
+
+  // ------------------------------
+  // iTunes artwork lookup (frontend)
+  // ------------------------------
+  const ART_TTL_MS = 1000 * 60 * 60 * 24; // 24 hours
+
+  function artKey(artist, title) {
+    const a = String(artist || '').trim().toLowerCase();
+    const t = String(title || '').trim().toLowerCase();
+    return `art:${a}|${t}`;
+  }
+
+  function upscaleItunes(url) {
+    return String(url || '').replace(/\/\d+x\d+bb\./, '/600x600bb.');
+  }
+
+  function setArtworkBg(bgValue) {
+    const art = $('artwork');
+    if (!art) return;
+    art.style.backgroundImage = bgValue || stationArtworkBg || art.style.backgroundImage;
+  }
+
+  async function getArtworkFromItunes(artist, title) {
+    const a = String(artist || '').trim();
+    const t = String(title || '').trim();
+    if (!a && !t) return '';
+
+    const key = artKey(a, t);
+
+    // localStorage cache
+    try {
+      const hit = JSON.parse(localStorage.getItem(key) || 'null');
+      if (hit && hit.url && hit.ts && (Date.now() - hit.ts) < ART_TTL_MS) {
+        return hit.url;
+      }
+    } catch (e) {}
+
+    const term = `${a} ${t}`.trim();
+    const qs = new URLSearchParams({
+      term,
+      entity: 'song',
+      limit: '1',
+      country: 'MX',
+      media: 'music',
+    });
+
+    try {
+      const r = await fetch(`https://itunes.apple.com/search?${qs.toString()}`);
+      const j = await r.json();
+      const item = j && j.results && j.results[0] ? j.results[0] : null;
+      const raw = item ? (item.artworkUrl100 || item.artworkUrl60 || '') : '';
+      const url = raw ? upscaleItunes(raw) : '';
+
+      try {
+        if (url) localStorage.setItem(key, JSON.stringify({ url, ts: Date.now() }));
+      } catch (e) {}
+
+      return url;
+    } catch (e) {
+      return '';
+    }
+  }
+
+  async function updateArtwork(artist, title) {
+    const a = String(artist || '').trim();
+    const t = String(title || '').trim();
+
+    // Evita llamadas si no hay info real
+    if (!a && (!t || t.toUpperCase() === 'EN VIVO')) {
+      if (stationArtworkBg) setArtworkBg(stationArtworkBg);
+      return;
+    }
+
+    const key = artKey(a, t);
+    if (key === lastArtworkKey) return;
+    lastArtworkKey = key;
+
+    const url = await getArtworkFromItunes(a, t);
+    if (url) setArtworkBg(`url(${url})`);
+    else if (stationArtworkBg) setArtworkBg(stationArtworkBg);
+  }
+
+  // ------------------------------
+  // Vote (Like) + Share
+  // ------------------------------
+  const VOTE_URL = 'https://stereociendigital.com.mx/9xjkftr7/8s4v3f1l3s.php';
+  const VOTED_COLOR = '#ef4444';
+
+  function detectarDispositivo() {
+    return /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
+  }
+
+  function detectarNavegador() {
+    const ua = navigator.userAgent;
+
+    let navegador = 'desconocido';
+    if (ua.includes('Chrome')) navegador = 'Chrome';
+    else if (ua.includes('Firefox')) navegador = 'Firefox';
+    else if (ua.includes('Safari') && !ua.includes('Chrome')) navegador = 'Safari';
+    else if (ua.includes('Edge')) navegador = 'Edge';
+    else if (ua.includes('MSIE') || ua.includes('Trident')) navegador = 'IE';
+
+    let so = 'desconocido';
+    if (ua.includes('Windows')) so = 'Windows';
+    else if (ua.includes('Mac')) so = 'MacOS';
+    else if (ua.includes('Linux')) so = 'Linux';
+    else if (ua.includes('Android')) so = 'Android';
+    else if (ua.includes('iPhone') || ua.includes('iPad')) so = 'iOS';
+
+    return { navegador, sistema: so };
+  }
+
+  function getStationSlug() {
+    // Prefer the server-provided slug (more reliable than parsing location)
+    const injected = typeof station_slug !== 'undefined' ? String(station_slug || '').trim() : '';
+    if (injected) return injected;
+
+    // Fallback: /sounds/<slug> or /sounds/<slug>/
+    const parts = window.location.pathname.split('/').filter(Boolean);
+    return parts[parts.length - 1] || 'unknown';
+  }
+
+  function voteStorageKey(station, artist, title) {
+    return `vote:${station}:${artist}:${title}`.toLowerCase();
+  }
+
+  function setLikeUI(voted) {
+    const btn = $('fav-btn');
+    if (!btn) return;
+
+    const svg = btn.querySelector('svg');
+    if (svg) {
+      svg.style.fill = voted ? VOTED_COLOR : 'none';
+    }
+
+    btn.dataset.voted = voted ? '1' : '0';
+
+    // Allow voting again on the next track.
+    // If voted for the current track, keep disabled; otherwise enable.
+    btn.disabled = !!voted;
+  }
+
+  async function sendVote(station, artist, title) {
+    const dispositivo = detectarDispositivo();
+    const { navegador, sistema } = detectarNavegador();
+
+    const body = new URLSearchParams({
+      artista: artist,
+      cancion: title,
+      estacion: station, // backend may ignore for now
+      dispositivo,
+      navegador,
+      sistema_operativo: sistema,
+    });
+
+    const resp = await fetch(VOTE_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+      body,
+    });
+
+    // endpoint returns JSON
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data?.message || `HTTP ${resp.status}`);
+    if (data?.status !== 'success') throw new Error(data?.message || 'Error al votar');
+
+    return data;
+  }
+
+  async function handleLikeClick() {
+    const btn = $('fav-btn');
+    if (!btn) return;
+
+    const station = getStationSlug();
+    const artist = String(currentArtist || '').trim();
+    const title = String(currentTitle || '').trim();
+
+    if (!artist || !title || title.toUpperCase() === 'EN VIVO' || artist.toUpperCase() === 'EN VIVO') {
+      console.log('[vote] No hay canción válida para votar.');
+      return;
+    }
+
+    const key = voteStorageKey(station, artist, title);
+
+    try {
+      if (localStorage.getItem(key) === '1' || btn.dataset.voted === '1') {
+        console.log('[vote] Ya votaste por esta canción.');
+        setLikeUI(true);
+        return;
+      }
+    } catch (e) {}
+
+    if (btn.disabled) return;
+    btn.disabled = true;
+
+    try {
+      await sendVote(station, artist, title);
+      setLikeUI(true);
+      try { localStorage.setItem(key, '1'); } catch (e) {}
+      console.log('[vote] Voto registrado con éxito.');
+    } catch (err) {
+      console.log('[vote] No se pudo registrar el voto:', err && (err.message || err));
+      btn.disabled = false;
+    }
+  }
+
+  async function handleShareClick() {
+    const station = getStationSlug();
+    const artist = String(currentArtist || '').trim();
+    const title = String(currentTitle || '').trim();
+
+    const pageUrl = window.location.href;
+    const msg = (artist && title)
+      ? `Estoy escuchando "${title}" de ${artist} en ${pageUrl}`
+      : `Estoy escuchando ${pageUrl}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: (artist && title) ? `${title} - ${artist}` : `Stereo Cien (${station})`,
+          text: msg,
+          url: pageUrl,
         });
-        
-        // ========== REPRODUCTOR DE RADIO ==========
-        function initializeRadioPlayer() {
-            audioPlayer = new Audio();
-            audioPlayer.volume = volume;
-            audioPlayer.preload = 'none';
-            
-            audioPlayer.addEventListener('playing', function() {
-                updatePlayerStatus('Reproduciendo...');
-                updatePlayPauseButton(true);
-                showPlayingIndicator(currentStation, true);
-                updateCardButton(currentStation, true);
-            });
-            
-            audioPlayer.addEventListener('pause', function() {
-                updatePlayerStatus('Pausado');
-                updatePlayPauseButton(false);
-                showPlayingIndicator(currentStation, false);
-                updateCardButton(currentStation, false);
-            });
-            
-            audioPlayer.addEventListener('waiting', function() {
-                updatePlayerStatus('Cargando...');
-            });
-            
-            audioPlayer.addEventListener('error', function(e) {
-                console.error('Error de audio:', e);
-                updatePlayerStatus('Error al cargar la radio');
-                resetPlayer();
-                //alert('No se pudo conectar a la radio. Verifica la URL o intenta con otra estación.');
-            });
-            
-            audioPlayer.addEventListener('canplay', function() {
-                updatePlayerStatus('Listo para reproducir');
-            });
-        }
-        
-        // ========== FUNCIONES PRINCIPALES ==========
-        function playStation(stationId) {
-            if (currentStation === stationId && isPlaying) {
-                pauseRadio();
-                return;
-            }
-            
-            if (currentStation && currentStation !== stationId) {
-                stopRadio();
-            }
-            
-            const station = radioStations[stationId];
-            if (!station) {
-                alert('Estación no encontrada');
-                return;
-            }
-            
-            currentStation = stationId;
-            audioPlayer.src = station.url;
-            
-            document.getElementById('radio-player').style.display = 'flex';
-            document.getElementById('current-station').textContent = station.name;
-            document.getElementById('artwork').src = station.artworkUrl;
-            updatePlayerStatus('Conectando...');
-            
-            highlightActiveCard(stationId);
-            
-            audioPlayer.play()
-                .then(() => {
-                    isPlaying = true;
-                    updatePlayerStatus('Reproduciendo...');
-                    updatePlayPauseButton(true);
-                    updateCardButton(stationId, true);
-                    showPlayingIndicator(stationId, true);
-                })
-                .catch(error => {
-                    console.error('Error al reproducir:', error);
-                    updatePlayerStatus('Error: ' + error.message);
-                    
-                    if (error.name === 'NotAllowedError') {
-                        alert('Haz clic en el botón de reproducción en el reproductor para iniciar la radio.');
-                        updatePlayerStatus('Haz clic en ▶ para reproducir');
-                    }
-                });
-        }
-        
-        function pauseRadio() {
-            if (audioPlayer && !audioPlayer.paused) {
-                audioPlayer.pause();
-                isPlaying = false;
-                updatePlayerStatus('Pausado');
-                updatePlayPauseButton(false);
-                showPlayingIndicator(currentStation, false);
-                updateCardButton(currentStation, false);
-            }
-        }
-        
-        function stopRadio() {
-            if (audioPlayer) {
-                audioPlayer.pause();
-                audioPlayer.src = '';
-                audioPlayer.load();
-                isPlaying = false;
-                updatePlayerStatus('Detenido');
-                updatePlayPauseButton(false);
-                removeAllHighlights();
-                hideAllPlayingIndicators();
-                resetAllCardButtons();
-                
-                setTimeout(() => {
-                    if (!isPlaying) {
-                        document.getElementById('radio-player').style.display = 'none';
-                    }
-                }, 3000);
-            }
-        }
-        
-        function resetPlayer() {
-            stopRadio();
-            document.getElementById('radio-player').style.display = 'none';
-        }
-        
-        // ========== FUNCIONES DE UI - BOTONES DE TARJETA ==========
-        function updateCardButton(stationId, playing) {
-            const card = document.getElementById(stationId);
-            if (card) {
-                const btn = card.querySelector('.play-pause-btn');
-                if (playing) {
-                    btn.classList.add('playing');
-                    btn.classList.add('wave');
-                } else {
-                    btn.classList.remove('playing');
-                    btn.classList.remove('wave');
-                }
-            }
-        }
-        
-        function resetAllCardButtons() {
-            document.querySelectorAll('.play-pause-btn').forEach(btn => {
-                btn.classList.remove('playing');
-                btn.classList.remove('wave');
-            });
-        }
-        
-        function highlightActiveCard(stationId) {
-            removeAllHighlights();
-            
-            const activeCard = document.getElementById(stationId);
-            if (activeCard) {
-                activeCard.classList.add('active');
-            }
-        }
-        
-        function removeAllHighlights() {
-            document.querySelectorAll('.music-card').forEach(card => {
-                card.classList.remove('active');
-            });
-        }
-        
-        function showPlayingIndicator(stationId, show) {
-            hideAllPlayingIndicators();
-            
-            const card = document.getElementById(stationId);
-            if (card) {
-                const indicator = card.querySelector('.playing-indicator');
-                indicator.style.opacity = show ? '1' : '0';
-            }
-        }
-        
-        function hideAllPlayingIndicators() {
-            document.querySelectorAll('.playing-indicator').forEach(indicator => {
-                indicator.style.opacity = '0';
-            });
-        }
-        
-        // ========== FUNCIONES DE UI - REPRODUCTOR ==========
-        function updatePlayerStatus(status) {
-            document.getElementById('player-status').textContent = status;
-        }
-        
-        function updatePlayPauseButton(playing) {
-            const btn = document.getElementById('play-pause-btn');
-            const icon = btn.querySelector('i');
-            
-            if (playing) {
-                icon.className = 'fas fa-pause';
-                btn.title = 'Pausar';
-            } else {
-                icon.className = 'fas fa-play';
-                btn.title = 'Reproducir';
-            }
-        }
-        
-        // ========== EVENT LISTENERS ==========
-        function setupEventListeners() {
-            // Botones play/pause de las tarjetas
-            document.querySelectorAll('.play-pause-btn').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const stationId = this.getAttribute('data-station');
-                    playStation(stationId);
-                });
-            });
-            
-            // Click en las tarjetas
-            document.querySelectorAll('.music-card').forEach(card => {
-                card.addEventListener('click', function(e) {
-                    // Evitar que se active al hacer clic en el botón
-                    if (!e.target.closest('.play-pause-btn')) {
-                        const stationId = this.id;
-                        playStation(stationId);
-                    }
-                });
-            });
-            
-            // Controles del reproductor
-            document.getElementById('play-pause-btn').addEventListener('click', function() {
-                if (!currentStation) return;
-                
-                if (isPlaying) {
-                    pauseRadio();
-                } else {
-                    if (audioPlayer.src) {
-                        audioPlayer.play()
-                            .then(() => {
-                                isPlaying = true;
-                                updatePlayerStatus('Reproduciendo...');
-                                updatePlayPauseButton(true);
-                                updateCardButton(currentStation, true);
-                                showPlayingIndicator(currentStation, true);
-                            });
-                    } else {
-                        playStation(currentStation);
-                    }
-                }
-            });
-            
-            document.getElementById('stop-btn').addEventListener('click', stopRadio);
-            
-            // Control de volumen
-            document.getElementById('volume-slider').addEventListener('input', function(e) {
-                volume = parseFloat(e.target.value);
-                if (audioPlayer) {
-                    audioPlayer.volume = volume;
-                }
-            });
-            
-            window.addEventListener('beforeunload', function() {
-                if (audioPlayer) {
-                    audioPlayer.pause();
-                }
-            });
-        }
-        
-    </script>
+        return;
+      } catch (e) {
+        // fall back below
+      }
+    }
 
-    <style>
-            /* Tarjetas de música - Diseño actualizado */
-        .music-feature {
-            background: rgba(232, 247, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 2rem;
-            max-width: 700px;
-            margin: 0 auto 3rem;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    // WhatsApp fallback
+    const wa = `https://api.whatsapp.com/send/?text=${encodeURIComponent(msg)}`;
+    window.open(wa, '_blank', 'noopener,noreferrer');
+  }
+
+  function syncLikeStateFromStorage() {
+    const station = getStationSlug();
+    const artist = String(currentArtist || '').trim();
+    const title = String(currentTitle || '').trim();
+
+    if (!artist || !title || title.toUpperCase() === 'EN VIVO') {
+      setLikeUI(false);
+      return;
+    }
+
+    try {
+      const key = voteStorageKey(station, artist, title);
+      setLikeUI(localStorage.getItem(key) === '1');
+    } catch (e) {
+      setLikeUI(false);
+    }
+  }
+
+  function startMetadataFeed() {
+    stopMetadataFeed();
+    const subscribeUrl = getZenoSubscribeUrl();
+    console.log('[metadata] subscribeUrl:', subscribeUrl, { mounturl, streamurl, token: subscribeUrl ? subscribeUrl.split('/').pop() : '' });
+    if (!subscribeUrl) return;
+
+    // Quick probe to see if the endpoint is reachable / CORS / content-type.
+    try {
+      const ac = new AbortController();
+      setTimeout(() => ac.abort(), 2500);
+      fetch(subscribeUrl, {
+        method: 'GET',
+        mode: 'cors',
+        signal: ac.signal,
+        headers: { 'Accept': 'text/event-stream' },
+      })
+        .then((r) => {
+          console.log('[metadata] probe:', {
+            ok: r.ok,
+            status: r.status,
+            contentType: r.headers.get('content-type'),
+          });
+        })
+        .catch((e) => {
+          console.log('[metadata] probe error:', e && (e.message || e));
+        });
+    } catch (e) {
+      console.log('[metadata] probe setup error:', e);
+    }
+
+    try {
+      metadataES = new EventSource(subscribeUrl);
+      metadataES.onopen = function () {
+        console.log('[metadata] EventSource open');
+        // Don't overwrite PLAYING status, but indicate metadata channel is alive.
+        if (!isPlaying) setStatus('LISTO');
+      };
+    } catch (e) {
+      console.warn('No se pudo iniciar EventSource:', e);
+      return;
+    }
+
+    metadataES.onmessage = function (ev) {
+      if (!hasUserPressedPlay) return;
+      console.log('[metadata] raw message:', ev.data);
+
+      try {
+        const data = JSON.parse(ev.data);
+
+        // Some stations send a single combined field like: "Artist - Title" or "Title - Artist"
+        const streamTitle = data.streamTitle || data.streamtitle || data.stream_title || data.stream_title_text || '';
+
+        const artist = data.artist || data.performer || data.artist_name || '';
+        const title = data.title || data.song || data.track || data.song_title || '';
+
+        // Build a best-effort string to parse
+        const now = (artist && title)
+          ? `${artist} — ${title}`
+          : (streamTitle || title || artist || '');
+
+        console.log('[metadata] parsed json ->', { artist, title, streamTitle, now });
+        const parsed = parseNowPlaying(now);
+        console.log('[metadata] parseNowPlaying ->', parsed);
+        console.log('[metadata] UI ->', { title: (parsed.title || 'EN VIVO'), artist: (parsed.artist || '') });
+        if (parsed.title || parsed.artist) {
+          setNowPlaying(parsed.title || 'EN VIVO', parsed.artist || '');
+          updateArtwork(parsed.artist || '', parsed.title || '');
+          syncLikeStateFromStorage();
+        }
+      } catch (err) {
+        const raw = (ev && ev.data) ? String(ev.data) : '';
+        console.log('[metadata] non-json payload ->', raw);
+        const parsed = parseNowPlaying(raw);
+        console.log('[metadata] parseNowPlaying ->', parsed);
+        console.log('[metadata] UI ->', { title: (parsed.title || 'EN VIVO'), artist: (parsed.artist || '') });
+        if (parsed.title || parsed.artist) {
+          setNowPlaying(parsed.title || 'EN VIVO', parsed.artist || '');
+          updateArtwork(parsed.artist || '', parsed.title || '');
+          syncLikeStateFromStorage();
+        }
+      }
+    };
+
+    metadataES.onerror = function (e) {
+      console.warn('[metadata] EventSource error (will auto-retry):', e);
+      // Do NOT close here; EventSource reconnects automatically.
+      // If you want to stop retries, we will close it when pausing.
+    };
+  }
+
+  function stopMetadataFeed() {
+    if (metadataES) {
+      console.log('[metadata] EventSource close');
+      metadataES.close();
+      metadataES = null;
+    }
+  }
+
+  function attachAudioListeners(player) {
+    player.addEventListener('playing', function () {
+      isPlaying = true;
+      setLoadingUI(false);
+      setStatus('REPRODUCIENDO');
+      setPlayingUI(true);
+    });
+
+    player.addEventListener('pause', function () {
+      isPlaying = false;
+      setLoadingUI(false);
+      if (isStopping) {
+        setStatus('DETENIDO');
+        isStopping = false;
+      } else {
+        setStatus('PAUSADO');
+      }
+      setPlayingUI(false);
+    });
+
+    player.addEventListener('waiting', function () {
+      // Buffering/connecting
+      setLoadingUI(true);
+      setStatus('CARGANDO');
+    });
+
+    player.addEventListener('canplay', function () {
+      setLoadingUI(false);
+      if (!isPlaying) setStatus('LISTO');
+    });
+
+    player.addEventListener('error', function (e) {
+      // During STOP/reset, browsers may emit an error when we clear src/load.
+      if (Date.now() < ignoreAudioErrorsUntil || isStopping || !player.src) {
+        console.log('[audio] ignored error during stop/reset');
+        return;
+      }
+
+      setLoadingUI(false);
+      console.error('Error de audio:', e);
+      setStatus('ERROR');
+      isPlaying = false;
+      setPlayingUI(false);
+      stopMetadataFeed();
+    });
+  }
+
+  function playRadio() {
+    if (audioPlayer && (!audioPlayer.src || audioPlayer.src === '')) {
+      const src = freshStreamUrl(streamurl);
+      if (src) audioPlayer.src = src;
+    }
+    if (!audioPlayer) return;
+    setStatus('CONECTANDO');
+    setLoadingUI(true);
+    startMetadataFeed();
+
+    audioPlayer.play().catch((error) => {
+      console.error('Error al reproducir:', error);
+      setStatus('ERROR');
+      setLoadingUI(false);
+      if (error && error.name === 'NotAllowedError') setStatus('TOCA ▶');
+    });
+  }
+
+  function stopRadio() {
+    if (!audioPlayer) return;
+
+    // For live streams, "pause" causes buffered delay. We do a hard stop.
+    isStopping = true;
+    ignoreAudioErrorsUntil = Date.now() + 1500;
+
+    try { audioPlayer.pause(); } catch (e) {}
+    stopMetadataFeed();
+
+    // Fully reset the audio element so the next Play reconnects from LIVE.
+    try {
+      audioPlayer.src = '';
+      audioPlayer.load();
+    } catch (e) {}
+
+    try {
+      audioPlayer = new Audio();
+      audioPlayer.preload = 'none';
+      attachAudioListeners(audioPlayer);
+    } catch (e) {
+      console.error('No se pudo recrear el audio element:', e);
+    }
+
+    isPlaying = false;
+    setPlayingUI(false);
+    setLoadingUI(false);
+    setStatus('DETENIDO');
+    // Clear the ignore window shortly after the reset completes.
+    setTimeout(() => { ignoreAudioErrorsUntil = 0; }, 1600);
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    audioPlayer = new Audio();
+    audioPlayer.preload = 'none';
+
+    setStatus('LISTO');
+    setNowPlaying('', '');
+    setPlayingUI(false);
+    setLoadingUI(false);
+    // initialize like UI
+    setLikeUI(false);
+
+    // Save station artwork as fallback
+    const artEl = $('artwork');
+    if (artEl) stationArtworkBg = artEl.style.backgroundImage || '';
+
+    attachAudioListeners(audioPlayer);
+
+    const playBtn = $('play-btn');
+    if (playBtn) {
+      playBtn.addEventListener('click', function () {
+        hasUserPressedPlay = true;
+        if (!audioPlayer.src) {
+          const src = freshStreamUrl(streamurl);
+          if (!src) {
+            setStatus('ERROR');
+            return;
+          }
+          audioPlayer.src = src;
         }
 
-        .music-feature h2 {
-            font-size: 1.5rem;
-            font-weight: 500;
-            margin-bottom: 1.2rem;
-            color: #FFD166;
-        }
+        if (isPlaying) stopRadio();
+        else playRadio();
+      });
+    }
 
-        .music-feature p {
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-            color: #E8F7FF;
-            line-height: 1.5;
-        }
+    // Vote (like)
+    const fav = $('fav-btn');
+    if (fav) {
+      fav.addEventListener('click', function (e) {
+        e.preventDefault();
+        handleLikeClick();
+      });
+    }
 
-        .music-cards {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-        }
+    // Share
+    const share = $('share-btn');
+    if (share) {
+      share.addEventListener('click', function (e) {
+        e.preventDefault();
+        handleShareClick();
+      });
+    }
 
-        .music-card {
-            background: rgba(15, 3, 197, 0.1);
-            border-radius: 15px;
-            padding: 1.5rem;
-            width: 200px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    window.addEventListener('beforeunload', function () {
+      try { if (audioPlayer) audioPlayer.pause(); } catch (e) {}
+      stopMetadataFeed();
+    });
+  });
+</script>
 
-        .music-card:hover {
-            transform: translateY(-8px);
-            border-color: #cf6fea;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
-            background: rgba(15, 3, 197, 0.85);
-        }
+<style>
+  :global(body) { background:#050505; }
 
-        .music-card.active {
-            border-color: #cf6fea;
-            background: rgba(15, 3, 197, 0.95);
-            box-shadow: 0 0 25px rgba(255, 209, 102, 0.4);
-            transform: translateY(-5px);
-        }
+  .sr-player-wrap{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  }
 
-        /* Íconos de las tarjetas */
-        .card-icon {
-            font-size: 3rem;
-            color: #cf6fea;
-            margin-bottom: 1rem;
-            transition: transform 0.3s, color 0.3s;
-        }
+  .sr-player{
+    width:100%;
+    max-width:500px;
+    height:auto;
+    border-radius:48px;
+    overflow:hidden;
+    position:relative;
+    border:1px solid rgba(255,255,255,.08);
+    box-shadow: 0 30px 80px rgba(0,0,0,.55);
+    background: radial-gradient(circle at 50% 30%, var(--c2, #1e293b) 0%, var(--c1, #020617) 100%);
+    display:flex;
+    flex-direction:column;
+  }
 
-        .music-card.active .card-icon {
-            color: #FFFFFF;
-            transform: scale(1.1);
-        }
+  .sr-player::before{
+    content:"";
+    position:absolute;
+    inset:-20%;
+    background: radial-gradient(circle at 50% 40%, rgba(23,115,207,.15) 0%, transparent 60%);
+    z-index:0;
+  }
 
-        .music-card h3 {
-            font-size: 1.4rem;
-            margin-bottom: 0.8rem;
-            color: #FFFFFF;
-            text-align: center;
-            font-weight: 600;
-        }
+  .sr-header{
+    position:relative;
+    z-index:1;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:40px 32px 22px;
+  }
 
-        .music-card p {
-            font-size: 0.95rem;
-            color: #B0D4E3;
-            text-align: center;
-            margin-bottom: 1.5rem;
-            line-height: 1.4;
-        }
+  .sr-logo{
+    width:48px;height:48px;
+    border-radius:14px;
+    background: rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.10);
+    background-size:cover;
+    background-position:center;
+    box-shadow: 0 10px 24px rgba(0,0,0,.35);
+    flex:0 0 auto;
+  }
 
-        /* Botón play/pause actualizado - Blanco con ícono azul */
-        .play-pause-btn {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: #FFFFFF;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            position: relative;
-            margin-top: 0.5rem;
-        }
+  .sr-headtxt{ min-width:0; }
+  .sr-station{
+    color:#fff;
+    font-size:18px;
+    font-weight:800;
+    margin:0;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
 
-        .play-pause-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-        }
+  .sr-live{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:4px;
+  }
 
-        .play-pause-btn.playing {
-            background: #FFFFFF;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-        }
+  .sr-live-dot{
+    width:6px;height:6px;
+    border-radius:999px;
+    background:#ef4444;
+    box-shadow:0 0 8px rgba(239,68,68,.8);
+  }
 
-        .play-icon {
-            padding-left: 5px;
-        }
+  .sr-live-label{
+    color: rgba(255,255,255,.55);
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.22em;
+  }
 
-        .play-pause-btn .play-icon,
-        .play-pause-btn .pause-icon {
-            font-size: 2.5rem;
-            color: #0f03c5;
-            transition: opacity 0.3s;
-        }
+  .sr-main{
+    position:relative;
+    z-index:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:0 40px;
+    gap:0;
+    flex:1;
+  }
 
-        .play-pause-btn .play-icon {
-            opacity: 1;
-        }
+  .sr-artframe{
+    width:100%;
+    aspect-ratio:1/1;
+    border-radius:22px;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.06);
+    box-shadow:0 20px 50px -12px rgba(0,0,0,.7);
+    margin-top:8px;
+  }
 
-        .play-pause-btn .pause-icon {
-            opacity: 0;
-            position: absolute;
-        }
+  .sr-art{
+    width:100%;
+    height:100%;
+    background-size:cover;
+    background-position:center;
+    transition: transform 1s;
+  }
+  .sr-artframe:hover .sr-art{ transform: scale(1.08); }
 
-        .play-pause-btn.playing .play-icon {
-            opacity: 0;
-        }
+  .sr-meta{
+    width:100%;
+    margin-top:36px;
+    text-align:center;
+  }
+  .sr-title{
+    color:#fff;
+    font-size:34px;
+    font-weight:900;
+    margin:0 0 10px 0;
+    letter-spacing:-.02em;
+  }
+  .sr-artist{
+    color: rgba(255,255,255,.35);
+    font-size:22px;
+    font-weight:600;
+    min-height: 1.2em;
+  }
 
-        .play-pause-btn.playing .pause-icon {
-            opacity: 1;
-        }
+  .sr-controls{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 24px;
+    margin-top:44px;
+  }
 
-        /* Indicador de reproducción */
-        .playing-indicator {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            color: #FFFFFF;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
+  .sr-iconbtn{
+    width:52px;height:52px;
+    border-radius:999px;
+    border:0;
+    background:transparent;
+    color: rgba(255,255,255,.35);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:.2s;
+  }
+  .sr-iconbtn:hover{ color:#fff; background: rgba(255,255,255,.10); }
 
-        .music-card.active .playing-indicator {
-            opacity: 1;
-        }
+  .sr-play{
+    width:96px;height:96px;
+    border-radius:999px;
+    border:0;
+    background:#fff;
+    color:#000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    box-shadow: 0 15px 40px rgba(255,255,255,.15);
+    transition: transform .15s;
+  }
+  .sr-play:hover{ transform: scale(1.05); }
+  .sr-play:active{ transform: scale(.95); }
 
-        .pulse-dot {
-            width: 8px;
-            height: 8px;
-            background: #FF6B6B;
-            border-radius: 50%;
-            animation: pulse 1.5s infinite;
-        }
+  .sr-footer{
+    position:relative;
+    z-index:1;
+    padding:26px 40px 34px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:18px;
+  }
 
-        @keyframes pulse {
-            0% { opacity: 0.3; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1.2); }
-            100% { opacity: 0.3; transform: scale(0.8); }
-        }
+  .sr-pill{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 14px;
+    border-radius:999px;
+    background: rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.06);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
 
-        /* Reproductor de radio */
-        .radio-player {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 1rem 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            z-index: 100;
-            border: 1px solid rgba(255, 209, 102, 0.3);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-            min-width: 300px;
-            backdrop-filter: blur(10px);
-            transition: opacity 0.3s;
-        }
+  .sr-eqdot{
+    width:10px;height:10px;border-radius:999px;
+    background:#1773cf;
+    opacity:.9;
+  }
+  .sr-eqdot.is-playing{ animation:eqPulse 1.2s ease-in-out infinite; }
 
-        .player-controls {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
+  @keyframes eqPulse{
+    0%{ transform:scale(.85); opacity:.55;}
+    50%{ transform:scale(1.15); opacity:1;}
+    100%{ transform:scale(.85); opacity:.55;}
+  }
 
-        .player-btn {
-            background: #034dc5;
-            color: #FFFFFF;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
+  .sr-pilltext{
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.15em;
+    color: rgba(255,255,255,.40);
+  }
 
-        .player-btn:hover {
-            background: #034dc5;
-            transform: scale(1.1);
-        }
+  .sr-handle{
+    width:128px;
+    height:6px;
+    border-radius:999px;
+    background: rgba(255,255,255,.10);
+  }
 
-        .player-btn:disabled {
-            background: #666;
-            color: #999;
-            cursor: not-allowed;
-            transform: none;
-        }
+  .sr-spinner{
+    width:42px;
+    height:42px;
+    border-radius:999px;
+    border:4px solid rgba(0,0,0,.18);
+    border-top-color: rgba(0,0,0,.80);
+    animation: srSpin .9s linear infinite;
+  }
 
-        .player-info {
-            flex-grow: 1;
-            text-align: left;
-        }
+  @keyframes srSpin{
+    to{ transform: rotate(360deg); }
+  }
 
-        .station-name {
-            font-weight: 600;
-            color: #034dc5;
-            margin-bottom: 0.2rem;
-            font-size: 1.1rem;
-        }
-
-        .player-status {
-            font-size: 0.85rem;
-            color: #B0D4E3;
-        }
-
-        .volume-control {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .volume-slider {
-            width: 80px;
-            accent-color: #034dc5;
-        }
-
-        /* Separador */
-        .divider {
-            height: 1px;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            margin: 2.5rem auto;
-            max-width: 800px;
-        }
-       /* Efecto de onda para botón play */
-        @keyframes wave {
-            0% {
-                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
-            }
-            100% {
-                box-shadow: 0 0 0 15px rgba(255, 255, 255, 0);
-            }
-        }
-
-        .play-pause-btn.wave {
-            animation: wave 1.5s infinite;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2rem;
-            }
-            
-            .hero-subtitle {
-                font-size: 1.4rem;
-            }
-            
-            .music-cards {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .nav-links, .footer-links {
-                gap: 1.5rem;
-            }
-            
-            header {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-            }
-            
-            .radio-player {
-                width: 90%;
-                min-width: unset;
-                flex-wrap: wrap;
-                justify-content: center;
-                padding: 0.8rem;
-            }
-            
-            .volume-control {
-                width: 100%;
-                justify-content: center;
-                margin-top: 0.5rem;
-            }
-            
-            .play-pause-btn {
-                width: 65px;
-                height: 65px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero-title {
-                font-size: 1.5rem;
-            }
-            
-            .main-content {
-                padding: 2rem 1rem;
-            }
-            
-            .music-feature {
-                padding: 1.5rem;
-            }
-            
-            .footer-links {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .play-pause-btn {
-                width: 60px;
-                height: 60px;
-            }
-            
-            .play-pause-btn .play-icon,
-            .play-pause-btn .pause-icon {
-                font-size: 1.5rem;
-            }
-        }
-    </style>
+  .sr-hidden{ display:none !important; }
+</style>
