@@ -15,11 +15,9 @@ const posts = await res.json();
 
 	{
 	posts.map((post:any)=> (
-		<div class="carousel-cell card">
+		<div id={`sounds-${post.slug}`} class="carousel-cell card">
 			<article>
-				<a href={`/sounds/${post.slug}/`}>
-					<Image loading="lazy" class="rounded-full block h-auto w-full object-fill" src={post?.sounds_logo_url || PLACEHOLDER_IMG} alt={post?._embedded?.['wp:featuredmedia']?.[0]?.alt_text||"Imagen Relojes"} width="300" height="150"/>
-				</a>
+				<Image loading="lazy" class="rounded-full block h-auto w-full object-fill" src={post?.sounds_logo_url || PLACEHOLDER_IMG} alt={post?._embedded?.['wp:featuredmedia']?.[0]?.alt_text||"Imagen Relojes"} width="300" height="150"/>
 			</article>
 		</div>
 	))    
