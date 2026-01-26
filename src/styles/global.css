@@ -608,7 +608,27 @@ article .plyr--video{
 .slider-promociones .flickity-prev-next-button.next {
     right: 8% !important;
 }
-
+.slider-sounds .flickity-viewport{
+    min-height: 250px;
+}
+.slider-sounds .flickity-button {
+    background: none !important;
+}
+.slider-sounds .flickity-button svg {
+  stroke: #000 !important;
+  fill: none !important;
+  stroke-width: 3px;
+}
+.slider-sounds .flickity-prev-next-button {
+    width: 90px !important;
+    height: 90px !important;
+}
+.slider-sounds .flickity-prev-next-button.previous {
+    left: -5px !important;
+}
+.slider-sounds .flickity-prev-next-button.next {
+    right: -5px !important;
+}
 @media (max-width: 768px) {
   .flickity-prev-next-button {
     width: 50px !important;

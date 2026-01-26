@@ -31,6 +31,7 @@ import CardsHomePlataformas from "../layouts/CardsHomePlataformas.astro";
 import Podcast from "../layouts/CardsHomePodcast.astro";
 import NewsLetter from "../layouts/NewsLetter.astro";
 import Promociones from "../layouts/SliderPromociones.astro";
+import Sounds from "../layouts/SliderSounds.astro";
 import Notificacion from "../components/Notificacion.astro";
 /*import Navidad from "../components/Navidad.astro";*/
 /*import Sliderbuenfin from '../layouts/Sliderbuenfin.astro';*/
@@ -55,7 +56,12 @@ import Notificacion from "../components/Notificacion.astro";
             <!--header-->
             <!--HomeHeader /-->
             <!--/header-->
-
+            <!--section class="">
+                <div class="container-home p-4 mx-auto">
+                    <h1 class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl">SOUNDS</h1>
+                    <Sounds />
+                </div>
+            </section-->
             <section class="flex items-start justify-center gap-4 px-4">
                 <Skin1 />
                 <div class="container-home p-4 mx-auto">
@@ -181,7 +187,7 @@ import Notificacion from "../components/Notificacion.astro";
         </main>
         <!--Navidad /-->
 
-        <!--Modal /-->
+        <Modal />
         <!--Notificacion /-->
         <Footer />
     </body>

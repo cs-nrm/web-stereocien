@@ -861,6 +861,16 @@ document.addEventListener('astro:page-load', ev => {
             autoPlay: 5000,
         });
 
+        var elemsounds = document.querySelector('.main-carousel-sounds');
+        var flktysounds = new Flickity( elemsounds, {
+            contain: true,
+            lazyLoad: 1, 
+            wrapAround: true, 
+            cellAlign: 'center',
+            pageDots: false,
+            autoPlay: 8000,
+        });
+
         var elemenf = document.querySelector('.main-carousel-enfoque');
         var flktyenf = new Flickity( elemenf, {
             contain: true,
