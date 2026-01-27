@@ -28,7 +28,13 @@ export async function getStaticPaths() {
 
 
 ---
-<BaseHead title={SITE_TITLE} seccion={title} description={description} />	
+<!doctype html>
+<head>
+  <title>Sounds by Stereo Cien</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+</head>
+<body>
 <div class="sr-player-wrap">
   <div class="sr-player" style={`--c1:${color1}; --c2:${color2}; --c3:${color3};`}>
     <header class="sr-header">
@@ -88,6 +94,8 @@ export async function getStaticPaths() {
     </footer>
   </div>
 </div>
+</body>
+</html>
 
 <script is:inline define:vars={{streamurl, mounturl, station_slug: slug}}>
   // Single-station player (layout tipo screenshot)
