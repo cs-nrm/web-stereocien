@@ -37,6 +37,7 @@ const posts = await res.json();
 </div>
 
 <style>
+	/*
 .slider-sounds{
 	mask-image: linear-gradient(to right, hsla(var(--color-black), 0) 0, hsla(var(--color-black), 1) var(--page-padding-inline), hsla(var(--color-black), 1) calc(100% - var(--page-padding-inline)), hsla(var(--color-black), 0) 100%);
 	mask-image: radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(79,79,79,0) 51%, rgba(0,0,0,0.6488970588235294) 100%);
@@ -48,11 +49,10 @@ const posts = await res.json();
 }
 
 .carousel{
-  /*background-color: #7cdada;*/
+
   padding: 1%;
   border-radius: 0.25rem;
-  /*background-image: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='https://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23cecece' fill-opacity='0.4'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E");*/
-}
+  }
 
 .carousel-cell {
   width: 20%;
@@ -111,4 +111,103 @@ const posts = await res.json();
 		height: auto;
 	}
 }
+
+*/
+
+
+.slider-sounds{
+	mask-image: linear-gradient(to right, hsla(var(--color-black), 0) 0, hsla(var(--color-black), 1) var(--page-padding-inline), hsla(var(--color-black), 1) calc(100% - var(--page-padding-inline)), hsla(var(--color-black), 0) 100%);
+	mask-image: radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(79,79,79,0) 51%, rgba(0,0,0,0.6488970588235294) 100%);
+    mask-image: radial-gradient(ellipse 82% 200% at 49% 33%,black 39%,transparent 61%);
+	mask-image: radial-gradient(ellipse 76% 226% at 50% 60%, black 56%, transparent 65%);
+}
+.slider-sounds .card article{
+	background: none;
+}
+
+.carousel{
+  padding: 1%;
+  border-radius: 0.25rem;
+}
+
+.carousel-cell {
+  width: 20%;
+  height: auto;
+  padding: 20px;
+  opacity: 0.4;
+  filter: brightness(0.6);
+  transition: opacity 0.4s ease, filter 0.4s ease, top 0.4s ease, width 0.4s ease;
+  top: 15%;
+}
+
+/* Elementos adyacentes al seleccionado (posición ±1) */
+.carousel-cell.is-selected ~ .carousel-cell:nth-child(1) img,
+.carousel-cell.is-selected + .carousel-cell img{
+  width: 80%;
+  opacity: 0.7;
+  filter: brightness(0.9);
+  top: 8%;
+}
+
+/* Elementos en los extremos (posición ±2) */
+.carousel-cell.is-selected + .carousel-cell + .carousel-cell img {
+  width: 60%;
+  opacity: 0.5;
+  filter: brightness(0.75);
+  top: 12%;
+}
+
+.carousel-cell.is-selected {
+  width: 20%;
+  opacity: 1;
+  filter: brightness(1);
+  top: 0;
+}
+
+/*.carousel-cell img{
+  width: 80%;
+  margin: 0 auto;
+  transition: width 0.4s ease;
+}*/
+
+.carousel-cell.is-selected img{
+	box-shadow: 0 0 12px 4px rgba(0,0,0,0.4);
+	width: 100%;
+	margin: 0 auto;
+}
+
+.slider-sounds.flickity-button {
+  background: transparent;
+}
+
+
+
+.slider-sounds .flickity-prev-next-button {
+  width: 100px;
+  height: 100px;
+}
+
+.slider-sounds .flickity-button:disabled {
+  display: none;
+}
+.slider-sounds .flickity-prev-next-button.previous {
+  left: -40px;
+}
+.slider-sounds .flickity-prev-next-button.next {
+  right: -40px;
+}
+.slider-sounds .flickity-prev-next-button.previous {
+    left: 8% !important;
+}
+
+@media only screen and (max-width: 768px){
+	.carousel-cell {
+		width: 60%;
+		height: auto;
+	}
+}
+
+
+
+
 </style>

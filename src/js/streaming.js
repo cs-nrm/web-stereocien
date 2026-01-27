@@ -851,7 +851,7 @@ document.addEventListener('astro:page-load', ev => {
             if (element) {
                 element.addEventListener('click', function() {
                     const soundType = buttonId.replace('sounds-', '');
-                    window.open(`/sounds/${soundType}`, '_blank', 'width=800,height=600');
+                    window.open(`/sounds/${soundType}?autoplay=1`, '_blank', 'width=500,height=900');
                     radioStop();
                 });
             }
