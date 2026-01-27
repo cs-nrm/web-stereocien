@@ -825,3 +825,9 @@ article .plyr--video{
   background-position: top center;
   box-shadow: var(--box-shadow);
 }
+
+/*ESTILOS SWIPER*/
+.swiper-3d .swiper-slide-shadow-left,
+.swiper-3d .swiper-slide-shadow-right {
+  background-image: none !important;
+}

@@ -1,4 +1,10 @@
 ---
+import BaseHead from '../../components/BaseHead.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
+const { title } = Astro.props;
+const { img } = Astro.props;
+const { tags } = Astro.props;
+const { description } = Astro.props;
 const { slug } = Astro.params;
 
 let res = await fetch(`https://stereociendigital.com.mx/wp-json/wp/v2/sounds?slug=${slug}`);
@@ -22,6 +28,7 @@ export async function getStaticPaths() {
 
 
 ---
+<BaseHead title={SITE_TITLE} seccion={title} description={description} />	
 <div class="sr-player-wrap">
   <div class="sr-player" style={`--c1:${color1}; --c2:${color2}; --c3:${color3};`}>
     <header class="sr-header">

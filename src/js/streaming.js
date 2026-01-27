@@ -840,8 +840,11 @@ document.addEventListener('astro:page-load', ev => {
         $('#big-play').addClass('border-4');
     }
     
+    const secprogram = document.getElementById('slider-locutores');
+    const secprograma = document.getElementById('slider-locutores-enfoque');
+    const secsounds = document.getElementById('carrusel-sounds');
     
-    if ( secchome ){
+    if ( secchome || secsounds){
        // getInfoProg();
         console.log(getplayingstatus);
 
@@ -858,10 +861,9 @@ document.addEventListener('astro:page-load', ev => {
         });
         
     }
-    const secprogram = document.getElementById('slider-locutores');
-    const secprograma = document.getElementById('slider-locutores-enfoque');
+
     
-    if ( secprogram || secchome || secprograma ){  
+    if ( secprogram || secchome || secprograma || secsounds ){  
 
         var elempod = document.querySelector('.main-carousel');
         var flktypod = new Flickity( elempod, {
@@ -911,6 +913,28 @@ document.addEventListener('astro:page-load', ev => {
         $('.panel-enf').click(function(){
             flktyenf.resize();
         }); 
+
+        var swiper = new Swiper(".swiper", {
+            effect: "coverflow",
+            grabCursor: true,
+            centeredSlides: true,
+            slidesPerView: "auto",
+            coverflowEffect: {
+                rotate: 0,
+                stretch: 0,
+                depth: 100,
+                modifier: 3,
+                slideShadows: true
+            },
+            speed: 400,
+            autoplay: true,
+            spaceBetween: 60,
+            loop: true,
+            pagination: {
+                
+                clickable: true
+            }
+        });
     }
     
     const imagenNota = document.getElementById("imagen-nota");

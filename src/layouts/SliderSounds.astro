@@ -60,20 +60,55 @@ const posts = await res.json();
   padding: 20px;
   opacity: 0.6;
   filter: brightness(0.8);
-  transition: opacity 0.4s ease, filter 0.4s ease, top 0.4s ease;
+  transition: opacity 0.4s ease, filter 0.4s ease, top 0.4s ease, width 0.4s ease;
   top: 10%;
 }
 
+/* Elemento seleccionado */
 .carousel-cell.is-selected {
+  width: 22%;
   opacity: 1;
   filter: brightness(1);
   top: 0;
 }
-.carousel-cell img{
+
+/* Elementos adyacentes (±1) - derecha */
+.carousel-cell.is-selected + .carousel-cell img{
+  width: 80%;
+  opacity: 0.8;
+  filter: brightness(0.9);
+  top: 5%;
+}
+
+/* Elementos adyacentes (±1) - izquierda */
+.carousel-cell:has(+ .carousel-cell.is-selected) img{
+  width: 80%;
+  opacity: 0.8;
+  filter: brightness(0.9);
+  top: 5%;
+}
+
+/* Elementos extremos (±2) - derecha */
+.carousel-cell.is-selected + .carousel-cell + .carousel-cell img{
+  width: 60%;
+  opacity: 0.7;
+  filter: brightness(0.85);
+  top: 8%;
+}
+
+/* Elementos extremos (±2) - izquierda */
+.carousel-cell:has(+ .carousel-cell + .carousel-cell.is-selected) img{
+  width: 60%;
+  opacity: 0.7;
+  filter: brightness(0.85);
+  top: 8%;
+}
+
+/*.carousel-cell img{
   width: 80%;
   margin: 0 auto;
   transition: width 0.4s ease;
-}
+}*/
 
 .carousel-cell.is-selected img{
 	box-shadow: 0 0 12px 4px rgba(0,0,0,0.4);
@@ -84,8 +119,6 @@ const posts = await res.json();
 .slider-sounds.flickity-button {
   background: transparent;
 }
-
-
 
 .slider-sounds .flickity-prev-next-button {
   width: 100px;
