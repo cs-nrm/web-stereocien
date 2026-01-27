@@ -101,6 +101,16 @@ export async function getStaticPaths() {
 
   const $ = (id) => document.getElementById(id);
 
+  function shouldAutoplay() {
+    try {
+      const params = new URLSearchParams(window.location.search || '');
+      const v = params.get('autoplay');
+      return v === '1' || v === 'true' || v === 'yes';
+    } catch (e) {
+      return false;
+    }
+  }
+
   function setStatus(label) {
     const el = $('status-pill');
     if (el) el.textContent = String(label || '').toUpperCase();
@@ -741,6 +751,12 @@ export async function getStaticPaths() {
     if (artEl) stationArtworkBg = artEl.style.backgroundImage || '';
 
     attachAudioListeners(audioPlayer);
+
+    // Optional autoplay via query param (?autoplay=1)
+    if (shouldAutoplay()) {
+      hasUserPressedPlay = true;
+      playRadio();
+    }
 
     const playBtn = $('play-btn');
     if (playBtn) {
