@@ -376,6 +376,10 @@ export async function getStaticPaths() {
   const VOTE_URL = 'https://stereociendigital.com.mx/9xjkftr7/8s4v3f1l3s.php';
   const VOTED_COLOR = '#ef4444';
 
+  // Allow re-voting for the same song after this cooldown.
+  // Default: 2 hours (change if needed).
+  const VOTE_TTL_MS = 1000 * 60 * 2;
+
   function detectarDispositivo() {
     return /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
   }
@@ -412,6 +416,44 @@ export async function getStaticPaths() {
 
   function voteStorageKey(station, artist, title) {
     return `vote:${station}:${artist}:${title}`.toLowerCase();
+  }
+
+  function getVoteRecord(key) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return { voted: false, ts: 0 };
+
+      // Legacy format: '1' -> migrate to JSON record with current timestamp.
+      if (raw === '1') {
+        const rec = { ts: Date.now() };
+        try { localStorage.setItem(key, JSON.stringify(rec)); } catch (e) {}
+        return { voted: true, ts: rec.ts };
+      }
+
+      const obj = JSON.parse(raw);
+      const ts = obj && typeof obj.ts === 'number' ? obj.ts : 0;
+      if (!ts) {
+        // Unknown format; clear it.
+        try { localStorage.removeItem(key); } catch (e) {}
+        return { voted: false, ts: 0 };
+      }
+
+      if ((Date.now() - ts) < VOTE_TTL_MS) {
+        return { voted: true, ts };
+      }
+
+      // Expired
+      try { localStorage.removeItem(key); } catch (e) {}
+      return { voted: false, ts };
+    } catch (e) {
+      return { voted: false, ts: 0 };
+    }
+  }
+
+  function setVoteRecord(key) {
+    try {
+      localStorage.setItem(key, JSON.stringify({ ts: Date.now() }));
+    } catch (e) {}
   }
 
   function setLikeUI(voted) {
@@ -473,8 +515,9 @@ export async function getStaticPaths() {
     const key = voteStorageKey(station, artist, title);
 
     try {
-      if (localStorage.getItem(key) === '1' || btn.dataset.voted === '1') {
-        console.log('[vote] Ya votaste por esta canción.');
+      const rec = getVoteRecord(key);
+      if (rec.voted || btn.dataset.voted === '1') {
+        console.log('[vote] Ya votaste por esta canción (cooldown activo).');
         setLikeUI(true);
         return;
       }
@@ -486,7 +529,7 @@ export async function getStaticPaths() {
     try {
       await sendVote(station, artist, title);
       setLikeUI(true);
-      try { localStorage.setItem(key, '1'); } catch (e) {}
+      setVoteRecord(key);
       console.log('[vote] Voto registrado con éxito.');
     } catch (err) {
       console.log('[vote] No se pudo registrar el voto:', err && (err.message || err));
@@ -534,7 +577,8 @@ export async function getStaticPaths() {
 
     try {
       const key = voteStorageKey(station, artist, title);
-      setLikeUI(localStorage.getItem(key) === '1');
+      const rec = getVoteRecord(key);
+      setLikeUI(rec.voted);
     } catch (e) {
       setLikeUI(false);
     }
