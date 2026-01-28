@@ -874,7 +874,7 @@ export async function getStaticPaths() {
 
   .sr-player{
     width:100%;
-    max-width:500px;
+    max-width:100%;
     height:auto;
     border-radius:48px;
     overflow:hidden;
@@ -1098,10 +1098,10 @@ export async function getStaticPaths() {
 
   .sr-hidden{ display:none !important; }
 
-  @media only screen and (max-width: 768px){
+  @media only screen and (min-width: 768px){
     .sr-player{
     width:100%;
-    max-width:100%;
+    max-width:500px;
     }
   }
 </style>
