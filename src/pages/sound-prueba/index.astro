@@ -1,47 +1,44 @@
 ---
-import BaseHead from '../../components/BaseHead.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts.js';
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts.js";
 
-import {getArticles} from '../../lib/api.js';
-import Card from '../../layouts/Cards.astro';
-import DoubleBox from '../../components/DoubleBox.astro';
-import BoxBanner from '../../components/BoxBanner.astro';
-import BarNrm from '../../components/BarNrm.astro';
-import SliderSoundsSwiper from '../../layouts/SliderSoundsSwiper.astro';
+import { getArticles } from "../../lib/api.js";
+import Card from "../../layouts/Cards.astro";
+import DoubleBox from "../../components/DoubleBox.astro";
+import BoxBanner from "../../components/BoxBanner.astro";
+import BarNrm from "../../components/BarNrm.astro";
+import SliderSoundsSwiper from "../../layouts/SliderSoundsSwiper.astro";
 
-export async function getStaticPaths( { paginate } ) {
-  const data = await getArticles(524);  
-  return paginate(data, { pageSize: 10 });
+export async function getStaticPaths({ paginate }) {
+	const data = await getArticles(524);
+	return paginate(data, { pageSize: 10 });
 }
 
-interface Props{
-  page: any;  
+interface Props {
+	page: any;
 }
 
-const {page=[]} = Astro.props;
+const { page = [] } = Astro.props;
 //console.log(page.data);
 ---
-<!doctype html>
-<html lang="es">
-	<head>
-		<BaseHead title={SITE_TITLE} seccion="Sounds" description={SITE_DESCRIPTION} />
-		
-	</head>
-	<body>
-    <BarNrm />
-		<Header title={SITE_TITLE} />
-		
-		<main>
-      <div class="container my-12 mx-auto px-4 md:px-12">
-				<h1 class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl">Sounds by Stereo Cien</h1>
-        <div class="">
-          <SliderSoundsSwiper/>
 
-        </div>  
-      </div>  
-		</main>
-		<Footer />
-	</body>
-</html>
+<BaseLayout title="Sounds" description={SITE_DESCRIPTION}>
+	<BarNrm />
+	<Header title={SITE_TITLE} />
+
+	<main>
+		<div class="container my-12 mx-auto px-4 md:px-12">
+			<h1
+				class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl"
+			>
+				Sounds by Stereo Cien
+			</h1>
+			<div class="">
+				<SliderSoundsSwiper />
+			</div>
+		</div>
+	</main>
+	<Footer />
+</BaseLayout>

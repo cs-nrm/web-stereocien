@@ -1,58 +1,309 @@
 ---
-import BaseHead from '../../components/BaseHead.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
-import DoubleBox from '../../components/DoubleBox.astro';
-import BoxBanner from '../../components/BoxBanner.astro';
-import BarNrm from '../../components/BarNrm.astro';
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts";
+import DoubleBox from "../../components/DoubleBox.astro";
+import BoxBanner from "../../components/BoxBanner.astro";
+import BarNrm from "../../components/BarNrm.astro";
 ---
 
-<!doctype html>
-<html lang="es">
-	<head>
-		<BaseHead title={SITE_TITLE} seccion="Términos y Condiciones" description={SITE_DESCRIPTION} />
-		 <meta charset="utf-8"/>
-	</head>
-	<body>
-        <BarNrm />
-		<Header title={SITE_TITLE} />
-		
-		<main>
-            <div class="container my-12 mx-auto">
-				<h1 class="audiowide neon-rosa text-center md:text-left pt-4 font-bold text-4xl md:text-5xl lg:text-4xl xl:text-5xl">Términos y Condiciones</h1>
-                <div class="flex flex-col lg:flex-row">
-                    <div class="sm:min-w-[calc(100%-400px)] lg:mr-10 roboto">
+<BaseLayout title="Términos y Condiciones" description={SITE_DESCRIPTION}>
+    <BarNrm />
+    <Header title={SITE_TITLE} />
 
-                        <p>Los siguientes términos y condiciones (los “Términos y Condiciones”) rigen el uso que usted le dé al sitio web&nbsp;<a href="https://www.stereocien.com.mx%20/">www.stereocien.com.mx&nbsp;</a>(“sitio web o portal”), y a cualquiera de los contenidos disponibles, Radio XHMM-FM, S.A. de C.V. (“Radio XHMM-FM”) ha puesto a su disposición el portal pudiendo cambiar los Términos y Condiciones de Uso, en cualquier momento sin ninguna notificación, sólo publicando los cambios en el Sitio Web.&nbsp;<strong>AL USAR EL SITIO WEB, USTED ACEPTA Y ESTÁ DE ACUERDO CON ESTOS TÉRMINOS Y CONDICIONES EN LO QUE SE REFIERE A SU USO</strong>. Si usted no está de acuerdo con estos Términos y Condiciones, no puede tener acceso al mismo ni usar el portal de ninguna otra manera.</p>
-                        <p><strong>1.&nbsp;</strong><strong>Derechos de Propiedad.</strong>&nbsp; Radio XHMM-FM, S.A de C.V.,&nbsp; es el único y exclusivo titular de los derechos sobre los títulos, contenido, audios, fotografías, ilustraciones, gráficos, otros medios visuales, copias, textos, códigos, datos y materiales del mismo, el diseño y la organización del Sitio Web, la compilación de los contenidos, códigos, datos y los materiales, incluyendo derechos de autor, propiedad intelectual y&nbsp; derechos patrimoniales del mismo, y en general de todo el Sitio Web. El uso del Sitio no le otorga propiedad de ninguno de los contenidos, códigos, datos o materiales a los que pueda acceder en o a través del Sitio Web.</p>
-                        <p><strong>2. Licencia Limitada.</strong>&nbsp; El uso del Sitio Web y de los servicios que se ofrecen son sólo para su uso personal, no comercial.</p>
-                        <p><strong>3. Modificaciones.-&nbsp;</strong>Nos reservamos el derecho en todo momento sin necesidad de previo aviso, por cualquier razón y a nuestra entera discreción, de modificar los términos y condiciones. Solo Publicando los cambios en dicho portal. Por lo anterior el usuario debe leer atentamente los Términos y Condiciones de Uso y Privacidad cada vez que pretenda utilizar el Portal ya que una vez publicado en el Sitio, estos cambios entrarán en vigor inmediatamente y si usted utiliza el Sitio una vez que éstos hayan entrado en vigor, significará que usted está de acuerdo en cumplir y obligarse&nbsp; con estas modificaciones.</p>
-                        <p><strong>4. Uso Prohibido.&nbsp;</strong>&nbsp;Queda prohibido cualquier distribución, publicación o explotación comercial o promocional del Sitio Web, o de cualquiera de los contenidos, códigos, datos o materiales, descargar, informar, exponer, publicar, copiar, reproducir, distribuir, transmitir, modificar, ejecutar, difundir, transferir, crear trabajos derivados, vender o de cualquier otra manera explotar cualquiera de los contenidos, códigos, datos o materiales disponibles a través del Sitio Web. Usted se obliga además a no alterar, editar, borrar, quitar, o de otra manera cambiar el significado o la apariencia, o cambiar cualquiera de los contenidos, códigos, datos o materiales disponibles a través del Sitio Web, incluyendo,&nbsp; la alteración o retiro de cualquier marca, logo, o cualquier otro contenido. Usted reconoce que no adquiere ningún derecho de propiedad al descargar algún material. Si usted hace uso distinto a lo estipulado en el sitio, podrá ser sujeto a responsabilidad legal por dicho uso no autorizado.</p>
-                        <p><strong>5. Marcas Comerciales.</strong>&nbsp;Las marcas y logos mostrados en el Sitio Web o en los contenidos disponibles a través del Sitio web son Marcas propiedad de Radio XHMM-FM, S.A. de C.V.,&nbsp; queda prohibido su mal uso, o que de&nbsp; alguna forma las desacredite. Todas las Marcas que el titular no sea Radio XHMM-FM, S.A.&nbsp; de C.V.,&nbsp; que aparezcan en el Sitio Web son propiedad de sus respectivos dueños. Es necesario el permiso expreso del titular para el uso de cualquier marca.</p>
-                        <p><strong>6. Información del Usuario.</strong>&nbsp; En el&nbsp; curso de uso que usted haga del Sitio Web y/o de los servicios puestos a su disposición en o a través del Sitio Web, se le puede pedir que nos proporcione cierta información. Las políticas de uso y recopilación de información de datos se establecen en el&nbsp;<strong>Aviso de Privacidad</strong>&nbsp;del Portal. Usted reconoce y acepta ser el único responsable de la exactitud del contenido de la Información del Usuario.</p>
-                        <p><strong>7. Claves De Acceso Y Números Confidenciales.&nbsp;</strong>El usuario es el único responsable por la guarda custodia de, contraseñas personales, claves de acceso y otros datos confidenciales con los cuales tenga acceso a los Servicios y Contenidos del Portal, así como a las páginas de terceros. Radio XHMM-FM no se hace responsable por cualquier daño o perjuicio &nbsp;que resulte del incumplimiento de lo mencionado con anterioridad.</p>
-                        <p><strong>8. Conductas Prohibidas del Usuario.&nbsp;</strong>Mientras use el Sitio Web y los diversos servicios que se ofrecen en el, está de acuerdo en que no podrá,&nbsp; hacer cualquier uso no autorizado del mismo, a dañarlo, deshabilitarlo, sobrecargarlo o interferir para que cualquier otra persona pueda usar o disfrutarlo, destruirlo, decodificarlo, o de otro modo alterar o interferir con el Sitio Web o con los servicios del Sitio Web, el usuario no tiene el derecho de colocar hiperligas de y al Portal, ni el derecho de colocar o utilizar los Servicios y Contenidos del Portal en sitios o páginas propias o de terceros con fines comerciales o sin autorización previa y por escrito de Radio XHMM-FM.</p>
-                        <p><strong>9. Comentarios, Mensajes y Blogs.</strong>&nbsp; En dicho sitio se abren foros de chateo, tableros de noticias, blogs, por lo cual el usuario se obliga a no publicar a través del Sitio Web cualquier material o contenido, que sea fraudulento, ilegal, amenazante, abusivo, hostigante, calumnioso, difamatorio, obsceno, vulgar, ofensivo, discriminatorio, pornográfico,&nbsp; que&nbsp; constituya o aliente conductas ilegales, viole, plagie o infrinja los derechos de terceros, o a fomentar el incumplimiento de esta declaración o a nuestras políticas, el usuario es completamente responsable del contenido que publique. &nbsp;Sin embargo, nos&nbsp; reservamos el derecho&nbsp; de divulgar cualquier información que sea necesaria para cumplir con cualquier ley, o de editar o quitar cualquier información o materiales, todo o en parte, que violen estos Términos y Condiciones de Uso, nuestras políticas o de la ley aplicable. Limitar ciertos artículos de los foros o restringir su acceso sin notificación, si creemos que usted está en incumplimiento a lo establecido en este párrafo, nuestros términos y condiciones o la ley aplicable, o por cualquier otra razón, sin notificación o responsabilidad.</p>
-                        <p><strong>10. Podcasts.&nbsp;</strong>El Sitio proporciona&nbsp;podcasts&nbsp; consistente en contenido seleccionado de audio que se proporciona por el Internet, a efectos de que el archivo de audio pueda ser descargado y reproducido desde la computadora del usuario o transferido a un dispositivo de audio portátil. Cierto&nbsp;software&nbsp;y&nbsp;hardware&nbsp;podrá necesitarse para que los usuarios descarguen y reproduzcan los&nbsp;Podcasts&nbsp;. No nos hacemos responsables por dicho&nbsp;software&nbsp;y/o&nbsp;hardware. Los&nbsp;<em>Podcasts&nbsp;</em>están protegidos por leyes Federales y Estatales de los Estados Unidos Mexicanos, leyes y reglamentos, y tratados, y todos los derechos en y para los&nbsp;<em>Podcasts&nbsp;</em>&nbsp;se encuentran reservados a nosotros y al proveedor de contenido. Los&nbsp;<em>Podcasts&nbsp;</em>&nbsp;se encuentran disponibles únicamente para uso exclusivamente personal, no comercial y usted podrá descargar, copiar y/o transferir los&nbsp;<em>Podcasts&nbsp;</em>. Queda prohibido estrictamente su reproducción&nbsp; modificación, elaboración de&nbsp; obras derivadas, publicación, distribución, transmisión o&nbsp; cualquier otra forma&nbsp; distinta a la expresamente autorizada. Usted podrá establecer vínculos a los&nbsp;<em>Podcasts&nbsp;</em>&nbsp;desde su página web, bitácora web o aplicaciones similares, siempre que dicha vinculación no sugiera que promovemos o apoyamos causas, ideas, sitios web, productos o servicios de terceros, utilice nuestro Contenido para propósitos comerciales o inapropiados, o de cualquier forma viole nuestros términos y condiciones. Nos reservamos el derecho de dejar de proporcionar los&nbsp;<em>Podcasts&nbsp;</em>&nbsp;y a dar por terminado o de cualquier otra forma inhabilitar su acceso a o su uso en cualquier momento y por cualquier motivo.</p>
-                        <p><strong>11. Cookies.&nbsp;</strong>El usuario que tenga acceso al Portal, acuerda recibir las&nbsp;<em>cookies</em>&nbsp;que les transmitan los servidores de Radio XHMM-FM. “<em>Cookie</em>” es un pequeño archivo de texto que un servidor web guarda en un dispositivo. Nuestros contenidos y servicios utilizan cookies por diversos motivos, tales como almacenar sus preferencias y su configuración, personalizar el contenido para usted, o analizar el uso que los usuarios hacen de los servicios, para poder mejorarlos. También utilizamos cookies como parte del proceso de registro. Una&nbsp;<em>Cookie</em>&nbsp;no puede leer los datos o información del disco duro del usuario ni leer las&nbsp;<em>Cookies</em>&nbsp;creadas por otros sitios o páginas.</p>
-                        <p><strong>12. Servicios de terceros.&nbsp;</strong>En relación a los Servicios y Contenidos que prestan terceros dentro o mediante enlaces al Portal (tales como ligas, banners y botones), Radio XHMM-FM solo se limita a&nbsp;informar al usuario sobre los mismos, y a proporcionar un medio para poner en contacto al usuario con proveedores o vendedores. Lo que&nbsp; no implica&nbsp; la aprobación, recomendación o garantía, por parte de Radio XHMM-FM, &nbsp;del contenido, productos o servicios ofertados. Por la presente, usted acepta y asume responsabilidad exclusiva por todo riesgo derivado del uso de tales páginas web o fuentes.</p>
-                        <p><strong>13. Conflictos y limitación de responsabilidad</strong>. Intentamos mantener el sitio web en funcionamiento, sin errores y seguro, pero lo utilizas bajo tu propia responsabilidad. Proporcionamos el sitio web tal cual, no garantizamos que el sitio web sea siempre seguro o esté libre de errores, ni que funcione siempre sin interrupciones, retrasos o imperfecciones. Radio XHMM-FM no se responsabiliza de las acciones, el contenido, la información o los datos de terceros y por la presente nos eximes a nosotros, nuestros directivos, empleados y agentes de cualquier demanda o daños.</p>
-                        <p><strong>14. Indemnización</strong>.- El Usuario se obliga a indemnizar, defender y sacar en paz y a salvo al Sitio web, a Radio XHMM-FM, afiliadas,&nbsp; o a cualquiera de sus directores, apoderados, empleados, ejecutivos, licenciatarios, representantes, anunciantes, proveedores, de cualquier demanda, acción, pérdida, gastos, daños y costos, que resulten del incumplimiento o violación de estos términos y condiciones.</p>
-                        <p><strong>15. Vigencia.</strong>&nbsp;La prestación del servicio del Sitio Web y de los demás Servicios tiene una duración indefinida. Radio XHMM-FM, S.A. de C.V., sin embargo, podrá dar por terminada, suspender o interrumpir en cualquier momento y sin necesidad de previo aviso, la prestación de los servicios del Portal.</p>
-                        <p><strong>16. Ley y jurisdicción aplicables.</strong>&nbsp;Para la interpretación, cumplimiento y ejecución de éstos Términos y Condiciones de Uso del Sitio Web, Radio XHMM-FM y el Usuario acuerdan que se someten a la jurisdicción de los tribunales competentes en la Ciudad de México, Distrito Federal, renunciando al fuero que en virtud de sus domicilios actuales o futuros o por cualquier otro motivo pudiera corresponderles y que se regirán por las disposiciones aplicables en las leyes de México.</p>
+    <main>
+        <div class="container my-12 mx-auto">
+            <h1
+                class="audiowide neon-rosa text-center md:text-left pt-4 font-bold text-4xl md:text-5xl lg:text-4xl xl:text-5xl"
+            >
+                Términos y Condiciones
+            </h1>
+            <div class="flex flex-col lg:flex-row">
+                <div class="sm:min-w-[calc(100%-400px)] lg:mr-10 roboto">
+                    <p>
+                        Los siguientes términos y condiciones (los “Términos y
+                        Condiciones”) rigen el uso que usted le dé al sitio
+                        web&nbsp;<a href="https://www.stereocien.com.mx%20/"
+                            >www.stereocien.com.mx&nbsp;</a
+                        >(“sitio web o portal”), y a cualquiera de los
+                        contenidos disponibles, Radio XHMM-FM, S.A. de C.V.
+                        (“Radio XHMM-FM”) ha puesto a su disposición el portal
+                        pudiendo cambiar los Términos y Condiciones de Uso, en
+                        cualquier momento sin ninguna notificación, sólo
+                        publicando los cambios en el Sitio Web.&nbsp;<strong
+                            >AL USAR EL SITIO WEB, USTED ACEPTA Y ESTÁ DE
+                            ACUERDO CON ESTOS TÉRMINOS Y CONDICIONES EN LO QUE
+                            SE REFIERE A SU USO</strong
+                        >. Si usted no está de acuerdo con estos Términos y
+                        Condiciones, no puede tener acceso al mismo ni usar el
+                        portal de ninguna otra manera.
+                    </p>
+                    <p>
+                        <strong>1.&nbsp;</strong><strong
+                            >Derechos de Propiedad.</strong
+                        >&nbsp; Radio XHMM-FM, S.A de C.V.,&nbsp; es el único y
+                        exclusivo titular de los derechos sobre los títulos,
+                        contenido, audios, fotografías, ilustraciones, gráficos,
+                        otros medios visuales, copias, textos, códigos, datos y
+                        materiales del mismo, el diseño y la organización del
+                        Sitio Web, la compilación de los contenidos, códigos,
+                        datos y los materiales, incluyendo derechos de autor,
+                        propiedad intelectual y&nbsp; derechos patrimoniales del
+                        mismo, y en general de todo el Sitio Web. El uso del
+                        Sitio no le otorga propiedad de ninguno de los
+                        contenidos, códigos, datos o materiales a los que pueda
+                        acceder en o a través del Sitio Web.
+                    </p>
+                    <p>
+                        <strong>2. Licencia Limitada.</strong>&nbsp; El uso del
+                        Sitio Web y de los servicios que se ofrecen son sólo
+                        para su uso personal, no comercial.
+                    </p>
+                    <p>
+                        <strong>3. Modificaciones.-&nbsp;</strong>Nos reservamos
+                        el derecho en todo momento sin necesidad de previo
+                        aviso, por cualquier razón y a nuestra entera
+                        discreción, de modificar los términos y condiciones.
+                        Solo Publicando los cambios en dicho portal. Por lo
+                        anterior el usuario debe leer atentamente los Términos y
+                        Condiciones de Uso y Privacidad cada vez que pretenda
+                        utilizar el Portal ya que una vez publicado en el Sitio,
+                        estos cambios entrarán en vigor inmediatamente y si
+                        usted utiliza el Sitio una vez que éstos hayan entrado
+                        en vigor, significará que usted está de acuerdo en
+                        cumplir y obligarse&nbsp; con estas modificaciones.
+                    </p>
+                    <p>
+                        <strong>4. Uso Prohibido.&nbsp;</strong>&nbsp;Queda
+                        prohibido cualquier distribución, publicación o
+                        explotación comercial o promocional del Sitio Web, o de
+                        cualquiera de los contenidos, códigos, datos o
+                        materiales, descargar, informar, exponer, publicar,
+                        copiar, reproducir, distribuir, transmitir, modificar,
+                        ejecutar, difundir, transferir, crear trabajos
+                        derivados, vender o de cualquier otra manera explotar
+                        cualquiera de los contenidos, códigos, datos o
+                        materiales disponibles a través del Sitio Web. Usted se
+                        obliga además a no alterar, editar, borrar, quitar, o de
+                        otra manera cambiar el significado o la apariencia, o
+                        cambiar cualquiera de los contenidos, códigos, datos o
+                        materiales disponibles a través del Sitio Web,
+                        incluyendo,&nbsp; la alteración o retiro de cualquier
+                        marca, logo, o cualquier otro contenido. Usted reconoce
+                        que no adquiere ningún derecho de propiedad al descargar
+                        algún material. Si usted hace uso distinto a lo
+                        estipulado en el sitio, podrá ser sujeto a
+                        responsabilidad legal por dicho uso no autorizado.
+                    </p>
+                    <p>
+                        <strong>5. Marcas Comerciales.</strong>&nbsp;Las marcas
+                        y logos mostrados en el Sitio Web o en los contenidos
+                        disponibles a través del Sitio web son Marcas propiedad
+                        de Radio XHMM-FM, S.A. de C.V.,&nbsp; queda prohibido su
+                        mal uso, o que de&nbsp; alguna forma las desacredite.
+                        Todas las Marcas que el titular no sea Radio XHMM-FM,
+                        S.A.&nbsp; de C.V.,&nbsp; que aparezcan en el Sitio Web
+                        son propiedad de sus respectivos dueños. Es necesario el
+                        permiso expreso del titular para el uso de cualquier
+                        marca.
+                    </p>
+                    <p>
+                        <strong>6. Información del Usuario.</strong>&nbsp; En
+                        el&nbsp; curso de uso que usted haga del Sitio Web y/o
+                        de los servicios puestos a su disposición en o a través
+                        del Sitio Web, se le puede pedir que nos proporcione
+                        cierta información. Las políticas de uso y recopilación
+                        de información de datos se establecen en el&nbsp;<strong
+                            >Aviso de Privacidad</strong
+                        >&nbsp;del Portal. Usted reconoce y acepta ser el único
+                        responsable de la exactitud del contenido de la
+                        Información del Usuario.
+                    </p>
+                    <p>
+                        <strong
+                            >7. Claves De Acceso Y Números Confidenciales.&nbsp;</strong
+                        >El usuario es el único responsable por la guarda
+                        custodia de, contraseñas personales, claves de acceso y
+                        otros datos confidenciales con los cuales tenga acceso a
+                        los Servicios y Contenidos del Portal, así como a las
+                        páginas de terceros. Radio XHMM-FM no se hace
+                        responsable por cualquier daño o perjuicio &nbsp;que
+                        resulte del incumplimiento de lo mencionado con
+                        anterioridad.
+                    </p>
+                    <p>
+                        <strong
+                            >8. Conductas Prohibidas del Usuario.&nbsp;</strong
+                        >Mientras use el Sitio Web y los diversos servicios que
+                        se ofrecen en el, está de acuerdo en que no podrá,&nbsp;
+                        hacer cualquier uso no autorizado del mismo, a dañarlo,
+                        deshabilitarlo, sobrecargarlo o interferir para que
+                        cualquier otra persona pueda usar o disfrutarlo,
+                        destruirlo, decodificarlo, o de otro modo alterar o
+                        interferir con el Sitio Web o con los servicios del
+                        Sitio Web, el usuario no tiene el derecho de colocar
+                        hiperligas de y al Portal, ni el derecho de colocar o
+                        utilizar los Servicios y Contenidos del Portal en sitios
+                        o páginas propias o de terceros con fines comerciales o
+                        sin autorización previa y por escrito de Radio XHMM-FM.
+                    </p>
+                    <p>
+                        <strong>9. Comentarios, Mensajes y Blogs.</strong>&nbsp;
+                        En dicho sitio se abren foros de chateo, tableros de
+                        noticias, blogs, por lo cual el usuario se obliga a no
+                        publicar a través del Sitio Web cualquier material o
+                        contenido, que sea fraudulento, ilegal, amenazante,
+                        abusivo, hostigante, calumnioso, difamatorio, obsceno,
+                        vulgar, ofensivo, discriminatorio, pornográfico,&nbsp;
+                        que&nbsp; constituya o aliente conductas ilegales,
+                        viole, plagie o infrinja los derechos de terceros, o a
+                        fomentar el incumplimiento de esta declaración o a
+                        nuestras políticas, el usuario es completamente
+                        responsable del contenido que publique. &nbsp;Sin
+                        embargo, nos&nbsp; reservamos el derecho&nbsp; de
+                        divulgar cualquier información que sea necesaria para
+                        cumplir con cualquier ley, o de editar o quitar
+                        cualquier información o materiales, todo o en parte, que
+                        violen estos Términos y Condiciones de Uso, nuestras
+                        políticas o de la ley aplicable. Limitar ciertos
+                        artículos de los foros o restringir su acceso sin
+                        notificación, si creemos que usted está en
+                        incumplimiento a lo establecido en este párrafo,
+                        nuestros términos y condiciones o la ley aplicable, o
+                        por cualquier otra razón, sin notificación o
+                        responsabilidad.
+                    </p>
+                    <p>
+                        <strong>10. Podcasts.&nbsp;</strong>El Sitio
+                        proporciona&nbsp;podcasts&nbsp; consistente en contenido
+                        seleccionado de audio que se proporciona por el
+                        Internet, a efectos de que el archivo de audio pueda ser
+                        descargado y reproducido desde la computadora del
+                        usuario o transferido a un dispositivo de audio
+                        portátil.
+                        Cierto&nbsp;software&nbsp;y&nbsp;hardware&nbsp;podrá
+                        necesitarse para que los usuarios descarguen y
+                        reproduzcan los&nbsp;Podcasts&nbsp;. No nos hacemos
+                        responsables por
+                        dicho&nbsp;software&nbsp;y/o&nbsp;hardware. Los&nbsp;<em
+                            >Podcasts&nbsp;</em
+                        >están protegidos por leyes Federales y Estatales de los
+                        Estados Unidos Mexicanos, leyes y reglamentos, y
+                        tratados, y todos los derechos en y para los&nbsp;<em
+                            >Podcasts&nbsp;</em
+                        >&nbsp;se encuentran reservados a nosotros y al
+                        proveedor de contenido. Los&nbsp;<em>Podcasts&nbsp;</em
+                        >&nbsp;se encuentran disponibles únicamente para uso
+                        exclusivamente personal, no comercial y usted podrá
+                        descargar, copiar y/o transferir los&nbsp;<em
+                            >Podcasts&nbsp;</em
+                        >. Queda prohibido estrictamente su reproducción&nbsp;
+                        modificación, elaboración de&nbsp; obras derivadas,
+                        publicación, distribución, transmisión o&nbsp; cualquier
+                        otra forma&nbsp; distinta a la expresamente autorizada.
+                        Usted podrá establecer vínculos a los&nbsp;<em
+                            >Podcasts&nbsp;</em
+                        >&nbsp;desde su página web, bitácora web o aplicaciones
+                        similares, siempre que dicha vinculación no sugiera que
+                        promovemos o apoyamos causas, ideas, sitios web,
+                        productos o servicios de terceros, utilice nuestro
+                        Contenido para propósitos comerciales o inapropiados, o
+                        de cualquier forma viole nuestros términos y
+                        condiciones. Nos reservamos el derecho de dejar de
+                        proporcionar los&nbsp;<em>Podcasts&nbsp;</em>&nbsp;y a
+                        dar por terminado o de cualquier otra forma inhabilitar
+                        su acceso a o su uso en cualquier momento y por
+                        cualquier motivo.
+                    </p>
+                    <p>
+                        <strong>11. Cookies.&nbsp;</strong>El usuario que tenga
+                        acceso al Portal, acuerda recibir las&nbsp;<em
+                            >cookies</em
+                        >&nbsp;que les transmitan los servidores de Radio
+                        XHMM-FM. “<em>Cookie</em>” es un pequeño archivo de
+                        texto que un servidor web guarda en un dispositivo.
+                        Nuestros contenidos y servicios utilizan cookies por
+                        diversos motivos, tales como almacenar sus preferencias
+                        y su configuración, personalizar el contenido para
+                        usted, o analizar el uso que los usuarios hacen de los
+                        servicios, para poder mejorarlos. También utilizamos
+                        cookies como parte del proceso de registro. Una&nbsp;<em
+                            >Cookie</em
+                        >&nbsp;no puede leer los datos o información del disco
+                        duro del usuario ni leer las&nbsp;<em>Cookies</em
+                        >&nbsp;creadas por otros sitios o páginas.
+                    </p>
+                    <p>
+                        <strong>12. Servicios de terceros.&nbsp;</strong>En
+                        relación a los Servicios y Contenidos que prestan
+                        terceros dentro o mediante enlaces al Portal (tales como
+                        ligas, banners y botones), Radio XHMM-FM solo se limita
+                        a&nbsp;informar al usuario sobre los mismos, y a
+                        proporcionar un medio para poner en contacto al usuario
+                        con proveedores o vendedores. Lo que&nbsp; no
+                        implica&nbsp; la aprobación, recomendación o garantía,
+                        por parte de Radio XHMM-FM, &nbsp;del contenido,
+                        productos o servicios ofertados. Por la presente, usted
+                        acepta y asume responsabilidad exclusiva por todo riesgo
+                        derivado del uso de tales páginas web o fuentes.
+                    </p>
+                    <p>
+                        <strong
+                            >13. Conflictos y limitación de responsabilidad</strong
+                        >. Intentamos mantener el sitio web en funcionamiento,
+                        sin errores y seguro, pero lo utilizas bajo tu propia
+                        responsabilidad. Proporcionamos el sitio web tal cual,
+                        no garantizamos que el sitio web sea siempre seguro o
+                        esté libre de errores, ni que funcione siempre sin
+                        interrupciones, retrasos o imperfecciones. Radio XHMM-FM
+                        no se responsabiliza de las acciones, el contenido, la
+                        información o los datos de terceros y por la presente
+                        nos eximes a nosotros, nuestros directivos, empleados y
+                        agentes de cualquier demanda o daños.
+                    </p>
+                    <p>
+                        <strong>14. Indemnización</strong>.- El Usuario se
+                        obliga a indemnizar, defender y sacar en paz y a salvo
+                        al Sitio web, a Radio XHMM-FM, afiliadas,&nbsp; o a
+                        cualquiera de sus directores, apoderados, empleados,
+                        ejecutivos, licenciatarios, representantes, anunciantes,
+                        proveedores, de cualquier demanda, acción, pérdida,
+                        gastos, daños y costos, que resulten del incumplimiento
+                        o violación de estos términos y condiciones.
+                    </p>
+                    <p>
+                        <strong>15. Vigencia.</strong>&nbsp;La prestación del
+                        servicio del Sitio Web y de los demás Servicios tiene
+                        una duración indefinida. Radio XHMM-FM, S.A. de C.V.,
+                        sin embargo, podrá dar por terminada, suspender o
+                        interrumpir en cualquier momento y sin necesidad de
+                        previo aviso, la prestación de los servicios del Portal.
+                    </p>
+                    <p>
+                        <strong>16. Ley y jurisdicción aplicables.</strong
+                        >&nbsp;Para la interpretación, cumplimiento y ejecución
+                        de éstos Términos y Condiciones de Uso del Sitio Web,
+                        Radio XHMM-FM y el Usuario acuerdan que se someten a la
+                        jurisdicción de los tribunales competentes en la Ciudad
+                        de México, Distrito Federal, renunciando al fuero que en
+                        virtud de sus domicilios actuales o futuros o por
+                        cualquier otro motivo pudiera corresponderles y que se
+                        regirán por las disposiciones aplicables en las leyes de
+                        México.
+                    </p>
+                </div>
+                <div
+                    class="bg-zinc-700 p-5 rounded-md sm:min-w-[350px] relative text-center md:text-left"
+                >
+                    <div class="sticky top-0 left-0 right-0">
+                        <h3 class="text-xl font-extrabold">PUBLICIDAD</h3>
+                        <BoxBanner />
                     </div>
-                    <div class="bg-zinc-700 p-5 rounded-md sm:min-w-[350px] relative text-center md:text-left">
-                        <div class="sticky top-0 left-0 right-0">
-                            <h3 class="text-xl font-extrabold">PUBLICIDAD</h3>
-                            <BoxBanner />
-                            </br>
-                            <DoubleBox />
-                        </div>
-                    </div>
+                    <DoubleBox />
                 </div>
             </div>
-		</main>
-		<Footer />
-	</body>
-</html>
+        </div>
+    </main>
+</BaseLayout>
+<Footer />

@@ -1,0 +1,110 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+
+export interface Props {
+    title: string;
+    description: string;
+    // Optional tags if passed, otherwise we can rely on BaseHead or defaults
+    tags?: {
+        title: string;
+        description: string;
+        og_image: { url: string };
+        og_description: string;
+        og_locale: string;
+        og_type: string;
+        article_published_time: string;
+        article_modified_time: string;
+    };
+}
+
+const { title, description, tags } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <BaseHead
+            title={SITE_TITLE}
+            seccion={title}
+            description={description}
+        />
+        {
+            tags && (
+                <>
+                    <meta name="description" content={tags.description} />
+                    <meta
+                        property="og:locale"
+                        content={tags.og_locale}
+                        class="yoast-seo-meta-tag"
+                    />
+                    <meta
+                        property="og:type"
+                        content={tags.og_type}
+                        class="yoast-seo-meta-tag"
+                    />
+                    <meta
+                        property="og:title"
+                        content={tags.title}
+                        class="yoast-seo-meta-tag"
+                    />
+                    <meta
+                        property="og:description"
+                        content={tags.og_description}
+                        class="yoast-seo-meta-tag"
+                    />
+                    <meta
+                        property="article:published_time"
+                        content={tags.article_published_time}
+                        class="yoast-seo-meta-tag"
+                    />
+                    <meta
+                        property="article:modified_time"
+                        content={tags.article_modified_time}
+                        class="yoast-seo-meta-tag"
+                    />
+                    <meta
+                        property="og:image"
+                        content={tags.og_image[0].url}
+                        class="yoast-seo-meta-tag"
+                    />
+                </>
+            )
+        }
+        <meta
+            name="robots"
+            content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+        />
+        <link rel="canonical" href={canonicalURL} class="yoast-seo-meta-tag" />
+        <meta
+            property="og:url"
+            content={canonicalURL}
+            class="yoast-seo-meta-tag"
+        />
+        <meta
+            property="og:site_name"
+            content="Stereo Cien"
+            class="yoast-seo-meta-tag"
+        />
+        <meta
+            property="article:publisher"
+            content="https://www.facebook.com/StereoCienMx"
+            class="yoast-seo-meta-tag"
+        />
+        <meta name="author" content="Stereo Cien" class="yoast-seo-meta-tag" />
+        <meta
+            name="twitter:card"
+            content="summary_large_image"
+            class="yoast-seo-meta-tag"
+        />
+        <meta
+            name="twitter:creator"
+            content="@stereocienmx"
+            class="yoast-seo-meta-tag"
+        />
+    </head>
+    <body>
+        <slot />
+    </body>
+</html>

@@ -1,108 +1,121 @@
 ---
 export interface Props {
     post: {
-      imagePath: string;
-      title: {
-         rendered: string;
-      }
-      content: string;
-      excerpt:{
-        rendered: string;
-      }
-      slug: string;
-      categories : {};
-      yoast_head_json: {
-         og_image: [
-            {
-               url: string;
-            }
-         ]
-         article_published_time: string;
-         author:string;         
-      }
-
-
-
-
+        imagePath: string;
+        title: {
+            rendered: string;
+        };
+        content: string;
+        excerpt: {
+            rendered: string;
+        };
+        slug: string;
+        categories: {};
+        yoast_head_json: {
+            og_image: [
+                {
+                    url: string;
+                },
+            ];
+            article_published_time: string;
+            author: string;
+        };
     };
-    
 }
 
 const { post } = Astro.props;
 
 var url_seccion;
-console.log(post.categories[0]);
-switch (post.categories[0]){
-    case 143:        
-        url_seccion = 'cultura-pop';
-    break;
-    case 525:        
-        url_seccion = 'libros';
-    break;
+//console.log(post.categories[0]);
+switch (post.categories[0]) {
+    case 143:
+        url_seccion = "cultura-pop";
+        break;
+    case 525:
+        url_seccion = "libros";
+        break;
     case 524:
-        url_seccion = 'series-y-peliculas';
-    break;
+        url_seccion = "series-y-peliculas";
+        break;
     case 527:
-        url_seccion = 'comida-y-guias';
-    break;
+        url_seccion = "comida-y-guias";
+        break;
     case 169:
-        url_seccion = 'autos';
-    break;
+        url_seccion = "autos";
+        break;
     case 167:
-        url_seccion = 'mascotas';
-    break;
+        url_seccion = "mascotas";
+        break;
     case 528:
-        url_seccion = 'tecnologia';
-    break;
+        url_seccion = "tecnologia";
+        break;
     case 683:
-        url_seccion = 'viajes';
-    break;
+        url_seccion = "viajes";
+        break;
     case 275:
-        url_seccion = 'promociones';
-    break;
+        url_seccion = "promociones";
+        break;
     case 853:
-        url_seccion = 'relojes';
-    break;
+        url_seccion = "relojes";
+        break;
     case 854:
-        url_seccion = 'corona-capital';
-    break;
+        url_seccion = "corona-capital";
+        break;
     case 3972:
-        url_seccion = 'remind';
-    break;
+        url_seccion = "remind";
+        break;
     case 4817:
-        url_seccion = 'recap-2025';
-    break;
+        url_seccion = "recap-2025";
+        break;
     default:
-        url_seccion = 'cultura-pop';    
-    break;      
+        url_seccion = "cultura-pop";
+        break;
 }
-const PLACEHOLDER_IMG = 'https://storage.googleapis.com/nrm-web/stereocien/img_stereocien-min.jpg';
+const PLACEHOLDER_IMG =
+    "https://storage.googleapis.com/nrm-web/stereocien/img_stereocien-min.jpg";
 
 /*const section = post.yoast_head_json.schema['@graph'][0].articleSection; 
 console.log(section);*/
-
 ---
-          <article class="news-card transition duration-[0.2s] hover:translate-y-[-4px]">
-            <a href={`/${url_seccion}/${post.slug}/`}>
-              <div class="bg-black"><img loading="lazy" class="h-auto w-full" src={post?.['_embedded']?.['wp:featuredmedia']?.[0]?.media_details?.sizes?.['stc-size']?.source_url|| PLACEHOLDER_IMG} alt={post?.['_embedded']?.['wp:featuredmedia']?.[0]?.alt_text||"Imagen Nota"}/></div>
-              <div class="news-content p-6">
-                <h5 set:html={post.title.rendered}></h5>
-                <div class="text-sm resumen" set:html={post.excerpt.rendered}></div>
-                <span class="roboto font-bold text-xs mt-4">por {post.yoast_head_json.author}</span>
-              </div>
-            </a>  
-          </article>
 
+<article class="news-card transition duration-[0.2s] hover:translate-y-[-4px]">
+    <a href={`/${url_seccion}/${post.slug}/`}>
+        <div class="bg-black">
+            <img
+                loading="lazy"
+                class="h-auto w-full"
+                src={post?.["_embedded"]?.["wp:featuredmedia"]?.[0]
+                    ?.media_details?.sizes?.["stc-size"]?.source_url ||
+                    PLACEHOLDER_IMG}
+                alt={post?.["_embedded"]?.["wp:featuredmedia"]?.[0]?.alt_text ||
+                    "Imagen Nota"}
+            />
+        </div>
+        <div class="news-content p-6">
+            <h5 set:html={post.title.rendered} />
+            <div class="text-sm resumen" set:html={post.excerpt.rendered} />
+            <span class="roboto font-bold text-xs mt-4"
+                >por {post.yoast_head_json.author}</span
+            >
+        </div>
+    </a>
+</article>
 
 <style>
-    .carduno img{
+    .carduno img {
         box-shadow: none;
         width: 100%;
         height: 100%;
-        mask-image: linear-gradient(225deg, hsla(var(--color-black), 1) 0, hsla(var(--color-black), 0.9) 40%, hsla(var(--color-black), 0) 80%);
-        }
+        mask-image: linear-gradient(
+            225deg,
+            hsla(var(--color-black), 1) 0,
+            hsla(var(--color-black), 0.9) 40%,
+            hsla(var(--color-black), 0) 80%
+        );
+    }
 
-    .carduno h2, .carddos h2{
+    .carduno h2,
+    .carddos h2 {
         display: -webkit-box;
         -webkit-margin-before: 0;
         margin-block-start: 0;

@@ -17,552 +17,553 @@ const secchome = document.getElementById('home');
 
 function initGPT() {
     googletag.destroySlots();
-  var gptAdSlots2 = [];       //boxbanner
-  var gptAdSlots3 = [];       //billboard 970x250
-  var gptAdSlots31 = [];      //billboard móvil
-  var gptAdSlots32 = [];      //billboard2 móvil
-  var gptAdSlots321 = [];     //billboard2 móvil
-  var gptAdSlots4 = [];       //leaderboard 728x90
-  var gptAdSlots41 = [];      //leaderboard móvil
-  var gptAdSlots42 = [];      //leaderboard2
-  var gptAdSlots421 = [];     //leaderboard2 móvil
-  var gptAdSlots5 = [];       //doublebox
-  var gptAdSlots6 = [];       //superleader 970x90
-  var gptAdSlots61 = [];      //superleader móvil
-  var gptAdSlots44 = [];      //takeover
-  var gptAdSlots441 = [];     //takeover móvil
-  
-  googletag.cmd.push(function() {
-    var mapping2 = googletag.sizeMapping().addSize([300, 250]).build();
-    var mapping3 = googletag.sizeMapping().addSize([728, 90]).build();
-    var mapping31 = googletag.sizeMapping().addSize([320, 50]).build();
-    var mapping32 = googletag.sizeMapping().addSize([728, 90]).build();
-    var mapping321 = googletag.sizeMapping().addSize([320, 50]).build();
-    var mapping4 = googletag.sizeMapping().addSize([728, 90]).build();
-    var mapping41 = googletag.sizeMapping().addSize([320, 50]).build();
-    var mapping42 = googletag.sizeMapping().addSize([728, 90]).build();
-    var mapping421 = googletag.sizeMapping().addSize([320, 50]).build();   
-    var mapping5 = googletag.sizeMapping().addSize([300, 600]).build();
-    var mapping6 = googletag.sizeMapping().addSize([728, 90]).build();
-    var mapping61 = googletag.sizeMapping().addSize([320, 50]).build();
-    var mapping44 = googletag.sizeMapping().addSize([600, 800]).build();
-    var mapping441 = googletag.sizeMapping().addSize([300, 400]).build();
+    var gptAdSlots2 = [];       //boxbanner
+    var gptAdSlots3 = [];       //billboard 970x250
+    var gptAdSlots31 = [];      //billboard móvil
+    var gptAdSlots32 = [];      //billboard2 móvil
+    var gptAdSlots321 = [];     //billboard2 móvil
+    var gptAdSlots4 = [];       //leaderboard 728x90
+    var gptAdSlots41 = [];      //leaderboard móvil
+    var gptAdSlots42 = [];      //leaderboard2
+    var gptAdSlots421 = [];     //leaderboard2 móvil
+    var gptAdSlots5 = [];       //doublebox
+    var gptAdSlots6 = [];       //superleader 970x90
+    var gptAdSlots61 = [];      //superleader móvil
+    var gptAdSlots44 = [];      //takeover
+    var gptAdSlots441 = [];     //takeover móvil
 
-    var mapping201 = googletag.sizeMapping().addSize([300, 250]).build();
-    var mapping202 = googletag.sizeMapping().addSize([300, 250]).build();
-    var mapping203 = googletag.sizeMapping().addSize([300, 250]).build();
-    var mapping204 = googletag.sizeMapping().addSize([300, 250]).build();
-    var mapping205 = googletag.sizeMapping().addSize([300, 250]).build();
-    var mapping1 = googletag.sizeMapping().addSize([1, 1]).build();
-    var mapping11 = googletag.sizeMapping().addSize([1, 1]).build();
-         
-    window.slot2 = googletag.defineSlot("/21799830913/StereoCien", [300, 250],'ad-slot2').defineSizeMapping(mapping2).addService(googletag.pubads());
-    window.slot3 = googletag.defineSlot("/21799830913/StereoCien", [728, 90],'ad-slot3').defineSizeMapping(mapping3).addService(googletag.pubads());
-    window.slot31 = googletag.defineSlot("/21799830913/StereoCien", [320, 50],'ad-slot31').defineSizeMapping(mapping31).addService(googletag.pubads());
-    window.slot32 = googletag.defineSlot("/21799830913/StereoCien", [728, 90],'ad-slot32').defineSizeMapping(mapping32).addService(googletag.pubads());
-    window.slot321 = googletag.defineSlot("/21799830913/StereoCien", [320, 50],'ad-slot321').defineSizeMapping(mapping321).addService(googletag.pubads());
-    window.slot4 = googletag.defineSlot("/21799830913/StereoCien", [728, 90],'ad-slot4').defineSizeMapping(mapping4).addService(googletag.pubads());
-    window.slot41 = googletag.defineSlot("/21799830913/StereoCien", [320, 50],'ad-slot41').defineSizeMapping(mapping41).addService(googletag.pubads());
-    window.slot42 = googletag.defineSlot("/21799830913/StereoCien", [728, 90],'ad-slot42').defineSizeMapping(mapping42).addService(googletag.pubads());
-    window.slot421 = googletag.defineSlot("/21799830913/StereoCien", [320, 50],'ad-slot421').defineSizeMapping(mapping421).addService(googletag.pubads());
-    window.slot5 = googletag.defineSlot("/21799830913/StereoCien", [300, 600],'ad-slot5').defineSizeMapping(mapping5).addService(googletag.pubads());
-    window.slot6 = googletag.defineSlot("/21799830913/StereoCien", [728, 90],'ad-slot6').defineSizeMapping(mapping6).addService(googletag.pubads());
-    window.slot61 = googletag.defineSlot("/21799830913/StereoCien", [320, 50],'ad-slot61').defineSizeMapping(mapping61).addService(googletag.pubads());
-    window.slot44 = googletag.defineSlot("/21799830913/StereoCien", [600, 800],'ad-slot44').defineSizeMapping(mapping44).addService(googletag.pubads());
-    window.slot441 = googletag.defineSlot("/21799830913/StereoCien", [300, 400],'ad-slot441').defineSizeMapping(mapping441).addService(googletag.pubads());
-    window.slot201 = googletag.defineSlot("/21799830913/Beat/Box", [300, 250],'ad-slot201').defineSizeMapping(mapping201).addService(googletag.pubads());
-    window.slot202 = googletag.defineSlot("/21799830913/Beat/Box2", [300, 250],'ad-slot202').defineSizeMapping(mapping202).addService(googletag.pubads());
-    window.slot203 = googletag.defineSlot("/21799830913/Beat/Box3", [300, 250],'ad-slot203').defineSizeMapping(mapping203).addService(googletag.pubads());
-    window.slot204 = googletag.defineSlot("/21799830913/Beat/Box4", [300, 250],'ad-slot204').defineSizeMapping(mapping204).addService(googletag.pubads());
-    window.slot204 = googletag.defineSlot("/21799830913/Beat/Box5", [300, 250],'ad-slot205').defineSizeMapping(mapping205).addService(googletag.pubads());
-    window.slot1 = googletag.defineSlot("/21799830913/StereoCien/SkinLeft", [1, 1],'ad-slot1').defineSizeMapping(mapping1).addService(googletag.pubads());
-    window.slot11 = googletag.defineSlot("/21799830913/StereoCien/SkinLeft", [1, 1],'ad-slot11').defineSizeMapping(mapping11).addService(googletag.pubads());
+    googletag.cmd.push(function () {
+        var mapping2 = googletag.sizeMapping().addSize([300, 250]).build();
+        var mapping3 = googletag.sizeMapping().addSize([728, 90]).build();
+        var mapping31 = googletag.sizeMapping().addSize([320, 50]).build();
+        var mapping32 = googletag.sizeMapping().addSize([728, 90]).build();
+        var mapping321 = googletag.sizeMapping().addSize([320, 50]).build();
+        var mapping4 = googletag.sizeMapping().addSize([728, 90]).build();
+        var mapping41 = googletag.sizeMapping().addSize([320, 50]).build();
+        var mapping42 = googletag.sizeMapping().addSize([728, 90]).build();
+        var mapping421 = googletag.sizeMapping().addSize([320, 50]).build();
+        var mapping5 = googletag.sizeMapping().addSize([300, 600]).build();
+        var mapping6 = googletag.sizeMapping().addSize([728, 90]).build();
+        var mapping61 = googletag.sizeMapping().addSize([320, 50]).build();
+        var mapping44 = googletag.sizeMapping().addSize([600, 800]).build();
+        var mapping441 = googletag.sizeMapping().addSize([300, 400]).build();
 
-    googletag.pubads().setTargeting("test","responsive");
-    googletag.enableServices();
-    googletag.display('ad-slot2');
-    googletag.display('ad-slot3');
-    googletag.display('ad-slot31');
-    googletag.display('ad-slot32');
-    googletag.display('ad-slot321');
-    googletag.display('ad-slot4');
-    googletag.display('ad-slot41');
-    googletag.display('ad-slot42');
-    googletag.display('ad-slot421');
-    googletag.display('ad-slot5');
-    googletag.display('ad-slot6');
-    googletag.display('ad-slot61');
-    googletag.display('ad-slot44');
-    googletag.display('ad-slot441');
-    googletag.display('ad-slot201');
-    googletag.display('ad-slot202');
-    googletag.display('ad-slot203');
-    googletag.display('ad-slot204');
-    googletag.display('ad-slot205');
-    googletag.display('ad-slot1');
-    googletag.display('ad-slot11');
-    
-    //googletag.pubads().refresh([slot3]);
-    //setInterval(function(){googletag.pubads().refresh([slot3]);}, 180000);
-  });
+        var mapping201 = googletag.sizeMapping().addSize([300, 250]).build();
+        var mapping202 = googletag.sizeMapping().addSize([300, 250]).build();
+        var mapping203 = googletag.sizeMapping().addSize([300, 250]).build();
+        var mapping204 = googletag.sizeMapping().addSize([300, 250]).build();
+        var mapping205 = googletag.sizeMapping().addSize([300, 250]).build();
+        var mapping1 = googletag.sizeMapping().addSize([1, 1]).build();
+        var mapping11 = googletag.sizeMapping().addSize([1, 1]).build();
+
+        window.slot2 = googletag.defineSlot("/21799830913/StereoCien", [300, 250], 'ad-slot2').defineSizeMapping(mapping2).addService(googletag.pubads());
+        window.slot3 = googletag.defineSlot("/21799830913/StereoCien", [728, 90], 'ad-slot3').defineSizeMapping(mapping3).addService(googletag.pubads());
+        window.slot31 = googletag.defineSlot("/21799830913/StereoCien", [320, 50], 'ad-slot31').defineSizeMapping(mapping31).addService(googletag.pubads());
+        window.slot32 = googletag.defineSlot("/21799830913/StereoCien", [728, 90], 'ad-slot32').defineSizeMapping(mapping32).addService(googletag.pubads());
+        window.slot321 = googletag.defineSlot("/21799830913/StereoCien", [320, 50], 'ad-slot321').defineSizeMapping(mapping321).addService(googletag.pubads());
+        window.slot4 = googletag.defineSlot("/21799830913/StereoCien", [728, 90], 'ad-slot4').defineSizeMapping(mapping4).addService(googletag.pubads());
+        window.slot41 = googletag.defineSlot("/21799830913/StereoCien", [320, 50], 'ad-slot41').defineSizeMapping(mapping41).addService(googletag.pubads());
+        window.slot42 = googletag.defineSlot("/21799830913/StereoCien", [728, 90], 'ad-slot42').defineSizeMapping(mapping42).addService(googletag.pubads());
+        window.slot421 = googletag.defineSlot("/21799830913/StereoCien", [320, 50], 'ad-slot421').defineSizeMapping(mapping421).addService(googletag.pubads());
+        window.slot5 = googletag.defineSlot("/21799830913/StereoCien", [300, 600], 'ad-slot5').defineSizeMapping(mapping5).addService(googletag.pubads());
+        window.slot6 = googletag.defineSlot("/21799830913/StereoCien", [728, 90], 'ad-slot6').defineSizeMapping(mapping6).addService(googletag.pubads());
+        window.slot61 = googletag.defineSlot("/21799830913/StereoCien", [320, 50], 'ad-slot61').defineSizeMapping(mapping61).addService(googletag.pubads());
+        window.slot44 = googletag.defineSlot("/21799830913/StereoCien", [600, 800], 'ad-slot44').defineSizeMapping(mapping44).addService(googletag.pubads());
+        window.slot441 = googletag.defineSlot("/21799830913/StereoCien", [300, 400], 'ad-slot441').defineSizeMapping(mapping441).addService(googletag.pubads());
+        window.slot201 = googletag.defineSlot("/21799830913/Beat/Box", [300, 250], 'ad-slot201').defineSizeMapping(mapping201).addService(googletag.pubads());
+        window.slot202 = googletag.defineSlot("/21799830913/Beat/Box2", [300, 250], 'ad-slot202').defineSizeMapping(mapping202).addService(googletag.pubads());
+        window.slot203 = googletag.defineSlot("/21799830913/Beat/Box3", [300, 250], 'ad-slot203').defineSizeMapping(mapping203).addService(googletag.pubads());
+        window.slot204 = googletag.defineSlot("/21799830913/Beat/Box4", [300, 250], 'ad-slot204').defineSizeMapping(mapping204).addService(googletag.pubads());
+        window.slot204 = googletag.defineSlot("/21799830913/Beat/Box5", [300, 250], 'ad-slot205').defineSizeMapping(mapping205).addService(googletag.pubads());
+        window.slot1 = googletag.defineSlot("/21799830913/StereoCien/SkinLeft", [1, 1], 'ad-slot1').defineSizeMapping(mapping1).addService(googletag.pubads());
+        window.slot11 = googletag.defineSlot("/21799830913/StereoCien/SkinLeft", [1, 1], 'ad-slot11').defineSizeMapping(mapping11).addService(googletag.pubads());
+
+        googletag.pubads().setTargeting("test", "responsive");
+        googletag.enableServices();
+        googletag.display('ad-slot2');
+        googletag.display('ad-slot3');
+        googletag.display('ad-slot31');
+        googletag.display('ad-slot32');
+        googletag.display('ad-slot321');
+        googletag.display('ad-slot4');
+        googletag.display('ad-slot41');
+        googletag.display('ad-slot42');
+        googletag.display('ad-slot421');
+        googletag.display('ad-slot5');
+        googletag.display('ad-slot6');
+        googletag.display('ad-slot61');
+        googletag.display('ad-slot44');
+        googletag.display('ad-slot441');
+        googletag.display('ad-slot201');
+        googletag.display('ad-slot202');
+        googletag.display('ad-slot203');
+        googletag.display('ad-slot204');
+        googletag.display('ad-slot205');
+        googletag.display('ad-slot1');
+        googletag.display('ad-slot11');
+
+        //googletag.pubads().refresh([slot3]);
+        //setInterval(function(){googletag.pubads().refresh([slot3]);}, 180000);
+    });
 }
 initGPT();
 function safeRefreshSlots() {
     if (window.googletag && googletag.apiReady && googletag.pubads) {
-      // Repite para cada slot, si tienes más
-      if (window.slot2) googletag.pubads().refresh([window.slot2]);
-      if (window.slot3) googletag.pubads().refresh([window.slot3]);
-      if (window.slot31) googletag.pubads().refresh([window.slot31]);
-      if (window.slot32) googletag.pubads().refresh([window.slot32]);
-      if (window.slot321) googletag.pubads().refresh([window.slot321]);
-      if (window.slot4) googletag.pubads().refresh([window.slot4]);
-      if (window.slot41) googletag.pubads().refresh([window.slot41]);
-      if (window.slot42) googletag.pubads().refresh([window.slot42]);
-      if (window.slot421) googletag.pubads().refresh([window.slot421]);
-      if (window.slot5) googletag.pubads().refresh([window.slot5]);
-      if (window.slot6) googletag.pubads().refresh([window.slot6]);
-      if (window.slot61) googletag.pubads().refresh([window.slot61]);
-      if (window.slot44) googletag.pubads().refresh([window.slot44]);
-      if (window.slot441) googletag.pubads().refresh([window.slot441]);
-      if (window.slot201) googletag.pubads().refresh([window.slot201]);
-      if (window.slot202) googletag.pubads().refresh([window.slot202]);
-      if (window.slot203) googletag.pubads().refresh([window.slot203]);
-      if (window.slot204) googletag.pubads().refresh([window.slot204]);
-      if (window.slot205) googletag.pubads().refresh([window.slot205]);
-      if (window.slot1) googletag.pubads().refresh([window.slot1]);
-      if (window.slot11) googletag.pubads().refresh([window.slot11]);
-      // O simplemente: googletag.pubads().refresh();
-      console.log('Banners refrescados post navegación');
+        // Repite para cada slot, si tienes más
+        if (window.slot2) googletag.pubads().refresh([window.slot2]);
+        if (window.slot3) googletag.pubads().refresh([window.slot3]);
+        if (window.slot31) googletag.pubads().refresh([window.slot31]);
+        if (window.slot32) googletag.pubads().refresh([window.slot32]);
+        if (window.slot321) googletag.pubads().refresh([window.slot321]);
+        if (window.slot4) googletag.pubads().refresh([window.slot4]);
+        if (window.slot41) googletag.pubads().refresh([window.slot41]);
+        if (window.slot42) googletag.pubads().refresh([window.slot42]);
+        if (window.slot421) googletag.pubads().refresh([window.slot421]);
+        if (window.slot5) googletag.pubads().refresh([window.slot5]);
+        if (window.slot6) googletag.pubads().refresh([window.slot6]);
+        if (window.slot61) googletag.pubads().refresh([window.slot61]);
+        if (window.slot44) googletag.pubads().refresh([window.slot44]);
+        if (window.slot441) googletag.pubads().refresh([window.slot441]);
+        if (window.slot201) googletag.pubads().refresh([window.slot201]);
+        if (window.slot202) googletag.pubads().refresh([window.slot202]);
+        if (window.slot203) googletag.pubads().refresh([window.slot203]);
+        if (window.slot204) googletag.pubads().refresh([window.slot204]);
+        if (window.slot205) googletag.pubads().refresh([window.slot205]);
+        if (window.slot1) googletag.pubads().refresh([window.slot1]);
+        if (window.slot11) googletag.pubads().refresh([window.slot11]);
+        // O simplemente: googletag.pubads().refresh();
+        console.log('Banners refrescados post navegación');
     } else {
-      setTimeout(safeRefreshSlots, 400);
+        setTimeout(safeRefreshSlots, 400);
     }
-  }
+}
 
 
 //function initPlayer(){
-    function initPlayerSDK(){
-        var tdPlayerConfig = {
-             coreModules: [{
-               id: 'MediaPlayer',
-               playerId: 'td_container' ,
-               audioAdaptive: false,
-               plugins: [ {id:"vastAd"}]
-             }],
-             // The callbacks are defined in your source code.
-             playerReady: onPlayerReady,
-             moduleError: onModuleError,
-             audioAdaptive: true,
-             analytics: {
-                active: true,
-                debug: false,
-                appInstallerId: 'stereocienpag',            
-                trackingId: 'G-W7YEMEWBX1',
-                trackingEvents: [ 'play', 'stop', 'pause', 'resume', 'all' ],
-                sampleRate: 100,     
-                category: 'Reproduccion Radio Pag' 
-             }
-            };
-        // The call to loadModules() as been removed.
-        streaming = new TDSdk( tdPlayerConfig );
-        streaming.addEventListener( 'stream-status', getStatus );
-        streaming.addEventListener( 'ad-playback-complete', completeAd );
-        streaming.addEventListener( 'ad-playback-start', startAd );
-        streaming.addEventListener( 'ad-playback-error', errorAd );
-        streaming.addEventListener( 'ad-break-cue-point', adBreakCuePoint);
-        streaming.addEventListener( 'autoplay', autoplay);
-      }
-    
-     var musicInterval = null; // Agrega esto al inicio del archivo o cerca de lastArtist/lastSong
+function initPlayerSDK() {
+    var tdPlayerConfig = {
+        coreModules: [{
+            id: 'MediaPlayer',
+            playerId: 'td_container',
+            audioAdaptive: false,
+            plugins: [{ id: "vastAd" }]
+        }],
+        // The callbacks are defined in your source code.
+        playerReady: onPlayerReady,
+        moduleError: onModuleError,
+        audioAdaptive: true,
+        analytics: {
+            active: true,
+            debug: false,
+            appInstallerId: 'stereocienpag',
+            trackingId: 'G-W7YEMEWBX1',
+            trackingEvents: ['play', 'stop', 'pause', 'resume', 'all'],
+            sampleRate: 100,
+            category: 'Reproduccion Radio Pag'
+        }
+    };
+    // The call to loadModules() as been removed.
+    streaming = new TDSdk(tdPlayerConfig);
+    streaming.addEventListener('stream-status', getStatus);
+    streaming.addEventListener('ad-playback-complete', completeAd);
+    streaming.addEventListener('ad-playback-start', startAd);
+    streaming.addEventListener('ad-playback-error', errorAd);
+    streaming.addEventListener('ad-break-cue-point', adBreakCuePoint);
+    streaming.addEventListener('autoplay', autoplay);
+}
 
-    function getStatus(s){
-        local_status = s.data.code;
-        const secchome = document.getElementById('home');                 
-        if( local_status == 'GETTING_STATION_INFORMATION' || local_status == 'LIVE_CONNECTING' || local_status == 'LIVE_BUFFERING' ){
-            /*document.getElementById('loading').classList.add('show');
-            document.getElementById('loading').classList.remove('hide');*/
-            document.getElementById('play-pause').classList.remove('show');
-            document.getElementById('play-pause').classList.add('hide'); 
-            document.getElementById('big-play').innerHTML = buttongLoading;    
-            
-         }
-         if (local_status == 'LIVE_PLAYING'){                        
-            document.getElementById('play-pause').innerHTML = buttonPause;
-            /*document.getElementById('loading').classList.remove('show');
-            document.getElementById('loading').classList.add('hide');*/
-            document.getElementById('play-pause').classList.add('show');
-            document.getElementById('play-pause').classList.remove('hide'); 
-            document.getElementById('big-play').innerHTML = bigButtonPause;            
-            $('.text-player').html('<div style="font-weight:bold;">Ahora suena...</div><div id="infoMusic" style="line-height:11px; font-size:12px;"></div>');
-            $('.text-player').addClass('playing');
-            $('#radiobutton').addClass('playerplaying');
-            // Limpia cualquier intervalo anterior
-            if (musicInterval) clearInterval(musicInterval);
-            setTimeout(function(){
-                getInfoMusic(); // Primera consulta inmediata
-            }, 1000); // Espera 1 segundo antes de la primera consulta
-            musicInterval = setInterval(getInfoMusic, 30000); // Intervalo solo cuando está LIVE_PLAYING
-            
-         }
-         if(local_status == 'LIVE_STOP' || local_status == 'LIVE_PAUSE') {
-            /*document.getElementById('loading').classList.remove('show');
-            document.getElementById('loading').classList.add('hide');*/
-            document.getElementById('play-pause').classList.add('show');
-            document.getElementById('play-pause').classList.remove('hide'); 
-            document.getElementById('play-pause').innerHTML = buttonPlay;            
-            document.getElementById('big-play').innerHTML = bigButtonPlay; 
-            $('.text-player').removeClass('playing');
-            $('#radiobutton').removeClass('playerplaying');
-            $('.text-player').html('');
-            setTimeout( function(){
-                $('.text-player').html('ESCUCHA LA RADIO <span style="color: #df104a;    font-weight: bold;    font-size: 12px;">EN VIVO </span> AHORA');             
-            },1000);
-            if (musicInterval) clearInterval(musicInterval);    
-            //$('.text-player').attr('id','');            
-         }
+var musicInterval = null; // Agrega esto al inicio del archivo o cerca de lastArtist/lastSong
 
-     }
-     
+function getStatus(s) {
+    local_status = s.data.code;
+    const secchome = document.getElementById('home');
+    if (local_status == 'GETTING_STATION_INFORMATION' || local_status == 'LIVE_CONNECTING' || local_status == 'LIVE_BUFFERING') {
+        /*document.getElementById('loading').classList.add('show');
+        document.getElementById('loading').classList.remove('hide');*/
+        document.getElementById('play-pause').classList.remove('show');
+        document.getElementById('play-pause').classList.add('hide');
+        document.getElementById('big-play').innerHTML = buttongLoading;
 
-    function completeAd(e){                
-        streaming.play({
-            station:'XEOYAM',
-            trackingParameters:{
-            Dist: 'WebStereocien'
-            }
-        }); 
-        $('#td_container').removeClass('pub_active');
-        $('#full-cover').css('display','none');
-        
-       
-      }
-     
-
-     function adBreakCuePoint( e ){
-       //console.log('PAUSA COMERCIAL');
-       //document.getElementById('infoMusic').innerHTML = 'PAUSA COMERCIAL';
     }
-
-      function startAd(e){
-        $('#td_container').addClass('pub_active');
-        $('#full-cover').css('display','block');
-        document.getElementById('big-play').innerHTML = buttongLoading;    
-        $('.text-player').html('<div style="font-style: italic; line-height:11px; font-weight:bold; font-size:11px;">Iniciamos después del anuncio...</div>'); 
-      }
-      
-      var start = function(){
-        //console.log('trata la pub primero');    
-        streaming.playAd( 'vastAd', { url:'https://pubads.g.doubleclick.net/gampad/ads?sz=600x360&iu=/21799830913/StereoCien/VideoVast&ciu_szs=600x360&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&url=[referrer_url]&description_url=[description_url]&correlator=[timestamp]' } );	        
-      };
-
-
-      function pause(){
-        streaming.stop();
-      }
-
-      
-      function play(){
-        streaming.play({
-            station:'XEOYAM',
-            trackingParameters:{
-            Dist: 'WebStereocien'
-            }
-        });        
-      }      
-   
-
-      function stop(){
-      //  console.log('stopped');
-        streaming.stop();
-      }
-
-      function errorAd(e){        
-        streaming.play({
-            station:'XEOYAM',
-            trackingParameters:{
-            Dist: 'WebStereocien'
-            }
-        });
-        console.log(e);
-        console.log('error ad');
-        
-      }
-    /* Callback function called to notify that the SDK is ready to be used */
-    function onPlayerReady(){                
-        console.log('streaming ready');        
+    if (local_status == 'LIVE_PLAYING') {
+        document.getElementById('play-pause').innerHTML = buttonPause;
         /*document.getElementById('loading').classList.remove('show');
         document.getElementById('loading').classList.add('hide');*/
         document.getElementById('play-pause').classList.add('show');
-        document.getElementById('play-pause').classList.remove('hide'); 
-        vol = streaming.getVolume();
-     //   console.log(vol);
+        document.getElementById('play-pause').classList.remove('hide');
+        document.getElementById('big-play').innerHTML = bigButtonPause;
+        $('.text-player').html('<div style="font-weight:bold;">Ahora suena...</div><div id="infoMusic" style="line-height:11px; font-size:12px;"></div>');
+        $('.text-player').addClass('playing');
+        $('#radiobutton').addClass('playerplaying');
+        // Limpia cualquier intervalo anterior
+        if (musicInterval) clearInterval(musicInterval);
+        setTimeout(function () {
+            getInfoMusic(); // Primera consulta inmediata
+        }, 1000); // Espera 1 segundo antes de la primera consulta
+        musicInterval = setInterval(getInfoMusic, 30000); // Intervalo solo cuando está LIVE_PLAYING
 
     }
-
-  
-    /* Callback function called to notify that the player configuration has an error. */
-    function onConfigurationError( e ) {
-        console.log(e);
-        console.log(e.data.errors);
-        //Error code : object.data.errors[0].code
-        //Error message : object.data.errors[0].message
-    }
-    /* Callback function called to notify that a module has not been loaded properly */
-    function onModuleError( object ){
-        console.log(object);
-        console.log(object.data.errors);
-        //Error code : object.data.errors[0].code
-        //Error message : object.data.errors[0].message
-    }
-    
-    /* Callback function called to notify that an Ad-Blocker was detected */
-    function onAdBlockerDetected(){
-        console.log( 'AdBlockerDetected' );
+    if (local_status == 'LIVE_STOP' || local_status == 'LIVE_PAUSE') {
+        /*document.getElementById('loading').classList.remove('show');
+        document.getElementById('loading').classList.add('hide');*/
+        document.getElementById('play-pause').classList.add('show');
+        document.getElementById('play-pause').classList.remove('hide');
+        document.getElementById('play-pause').innerHTML = buttonPlay;
+        document.getElementById('big-play').innerHTML = bigButtonPlay;
+        $('.text-player').removeClass('playing');
+        $('#radiobutton').removeClass('playerplaying');
+        $('.text-player').html('');
+        setTimeout(function () {
+            $('.text-player').html('ESCUCHA LA RADIO <span style="color: #df104a;    font-weight: bold;    font-size: 12px;">EN VIVO </span> AHORA');
+        }, 1000);
+        if (musicInterval) clearInterval(musicInterval);
+        //$('.text-player').attr('id','');            
     }
 
-    const autoplay = function(){        
-        streaming.play({
-            station:'XEOYAM',
-            trackingParameters:{
-                Dist: 'WebStereocien',
-                autoplay: 1
-            }
-        });
-    }
+}
 
-    initPlayerSDK();        
-        volume = document.getElementById('vol');
-        volume.addEventListener('input', function(){
-            //console.log(volume.value);
-            streaming.setVolume(volume.value);
 
-        });
+function completeAd(e) {
+    streaming.play({
+        station: 'XEOYAM',
+        trackingParameters: {
+            Dist: 'WebStereocien'
+        }
+    });
+    $('#td_container').removeClass('pub_active');
+    $('#full-cover').css('display', 'none');
+
+
+}
+
+
+function adBreakCuePoint(e) {
+    //console.log('PAUSA COMERCIAL');
+    //document.getElementById('infoMusic').innerHTML = 'PAUSA COMERCIAL';
+}
+
+function startAd(e) {
+    $('#td_container').addClass('pub_active');
+    $('#full-cover').css('display', 'block');
+    document.getElementById('big-play').innerHTML = buttongLoading;
+    $('.text-player').html('<div style="font-style: italic; line-height:11px; font-weight:bold; font-size:11px;">Iniciamos después del anuncio...</div>');
+}
+
+var start = function () {
+    //console.log('trata la pub primero');    
+    streaming.playAd('vastAd', { url: 'https://pubads.g.doubleclick.net/gampad/ads?sz=600x360&iu=/21799830913/StereoCien/VideoVast&ciu_szs=600x360&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&url=[referrer_url]&description_url=[description_url]&correlator=[timestamp]' });
+};
+
+
+function pause() {
+    streaming.stop();
+}
+
+
+function play() {
+    streaming.play({
+        station: 'XEOYAM',
+        trackingParameters: {
+            Dist: 'WebStereocien'
+        }
+    });
+}
+
+
+function stop() {
+    //  console.log('stopped');
+    streaming.stop();
+}
+
+function errorAd(e) {
+    streaming.play({
+        station: 'XEOYAM',
+        trackingParameters: {
+            Dist: 'WebStereocien'
+        }
+    });
+    console.log(e);
+    console.log('error ad');
+
+}
+/* Callback function called to notify that the SDK is ready to be used */
+function onPlayerReady() {
+    console.log('streaming ready');
+    /*document.getElementById('loading').classList.remove('show');
+    document.getElementById('loading').classList.add('hide');*/
+    document.getElementById('play-pause').classList.add('show');
+    document.getElementById('play-pause').classList.remove('hide');
+    vol = streaming.getVolume();
+    //   console.log(vol);
+
+}
+
+
+/* Callback function called to notify that the player configuration has an error. */
+function onConfigurationError(e) {
+    console.log(e);
+    console.log(e.data.errors);
+    //Error code : object.data.errors[0].code
+    //Error message : object.data.errors[0].message
+}
+/* Callback function called to notify that a module has not been loaded properly */
+function onModuleError(object) {
+    console.log(object);
+    console.log(object.data.errors);
+    //Error code : object.data.errors[0].code
+    //Error message : object.data.errors[0].message
+}
+
+/* Callback function called to notify that an Ad-Blocker was detected */
+function onAdBlockerDetected() {
+    console.log('AdBlockerDetected');
+}
+
+const autoplay = function () {
+    streaming.play({
+        station: 'XEOYAM',
+        trackingParameters: {
+            Dist: 'WebStereocien',
+            autoplay: 1
+        }
+    });
+}
+
+initPlayerSDK();
+volume = document.getElementById('vol');
+volume.addEventListener('input', function () {
+    //console.log(volume.value);
+    streaming.setVolume(volume.value);
+
+});
 
 function detectarNavegador() {
-  const ua = navigator.userAgent;
+    const ua = navigator.userAgent;
 
-  let navegador = "desconocido";
-  if (ua.includes("Chrome")) navegador = "Chrome";
-  else if (ua.includes("Firefox")) navegador = "Firefox";
-  else if (ua.includes("Safari") && !ua.includes("Chrome")) navegador = "Safari";
-  else if (ua.includes("Edge")) navegador = "Edge";
-  else if (ua.includes("MSIE") || ua.includes("Trident")) navegador = "IE";
+    let navegador = "desconocido";
+    if (ua.includes("Chrome")) navegador = "Chrome";
+    else if (ua.includes("Firefox")) navegador = "Firefox";
+    else if (ua.includes("Safari") && !ua.includes("Chrome")) navegador = "Safari";
+    else if (ua.includes("Edge")) navegador = "Edge";
+    else if (ua.includes("MSIE") || ua.includes("Trident")) navegador = "IE";
 
-  let so = "desconocido";
-  if (ua.includes("Windows")) so = "Windows";
-  else if (ua.includes("Mac")) so = "MacOS";
-  else if (ua.includes("Linux")) so = "Linux";
-  else if (ua.includes("Android")) so = "Android";
-  else if (ua.includes("iPhone") || ua.includes("iPad")) so = "iOS";
+    let so = "desconocido";
+    if (ua.includes("Windows")) so = "Windows";
+    else if (ua.includes("Mac")) so = "MacOS";
+    else if (ua.includes("Linux")) so = "Linux";
+    else if (ua.includes("Android")) so = "Android";
+    else if (ua.includes("iPhone") || ua.includes("iPad")) so = "iOS";
 
-  return { navegador, sistema: so };
-}        
-        
+    return { navegador, sistema: so };
+}
+
 var lastArtist = null;
 var lastSong = null;
 
 function getInfoMusic() {
     fetch("https://cdn.nrm.com.mx/cdn/stereociendigital/playlist/cancion.json")
-    .then((res) => {
-        if (!res.ok) {
-            throw new Error(`HTTP error! Status: ${res.status}`);
-        }
-        return res.json();
-    })
-    .then((data) => {
-        let newArtist = '';
-        let newSong = '';
-        let newHora = '';
-
-        switch (data.categoria) {
-            case 'ST2000':
-            case "ST70'S":
-            case "ST80'S":
-            case "ST90'S":
-            case 'STCIEN':
-            case 'STCURREN':
-            case 'STDISCO':
-            case 'STEREO CIEN 2020':
-            case 'STEXITOS':
-            case 'ST-BEATLES':
-            case 'STNAVIDAD':
-                newArtist = data.artista;
-                newSong = data.title;
-                newHora = data.hora_real;
-                break;
-            default:
-                newArtist = 'PAUSA COMERCIAL';
-                newSong = '';
-                newHora = '';
-                break;
-        }
-
-        // Actualiza siempre en la primera llamada o si hay cambio
-        if (lastArtist === null || lastSong === null || newArtist !== lastArtist || newSong !== lastSong) {
-            lastArtist = newArtist;
-            lastSong = newSong;
-            artist = newArtist;
-            cancion = newSong;
-            hora = newHora;
-
-            if (cancion === '') {
-                document.getElementById('infoMusic').innerHTML = artist;
-            } else {
-                const secenvivo = document.getElementById('envivo');
-                var cover;
-                var coverbase = "https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=9a371ed9786b7037d2b0b088615b047a&format=json";
-                const codtit = cancion.replace('&', '%26');
-                const codart = artist.replace('&', '%26');
-                console.log('Artista: ' + artist);
-                console.log('Canción: ' + cancion);
-                console.log('escribe');
-                $('#infoMusic').html('<div class="current-song">' + cancion + ' / ' + artist + '</div><div class="share-current"><div class="like"><svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" stroke-width="1"> <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path> </svg> </div> <div class="share-wp"><a href="https://api.whatsapp.com/send/?text=Estoy%20escuchando%20' + codtit +'%20de%20'+ codart +'%20en%20https://stereociendigital.mx/" target="_blank"> <svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" stroke-width="1"> <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z"></path> </svg> </div></div>'); 
-                //document.getElementById('infoMusic').innerHTML = 
-
-               const url = 'https://stereociendigital.com.mx/9xjkftr7/8s4v3f1l3s.php';
-                const colorVotado = '#ef4444';
-
-                $('.like').on('click', function (e) {
-                    e.preventDefault();
-
-                    const $btn = $(this);
-                    const $svg = $btn.find('svg');
-                    const fillColor = $svg.css('fill')?.toLowerCase();
-
-                    // Si ya fue votado (el color ya es #ef4444), salir
-                    if (fillColor === colorVotado) {
-                    console.log('Ya votaste por esta canción.');
-                    return;
-                    }
-
-               
-
-                    if (!codart || !codtit || $btn.prop('disabled')) return;
-
-                    $btn.prop('disabled', true);
-
-                    function detectarDispositivo() {
-                     return /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)
-                        ? 'mobile'
-                        : 'desktop';
-                    }
-                    const { navegador, sistema } = detectarNavegador();
-                    
-                    $.post(
-                    url,
-                    { 'artista':codart, 
-                        'cancion':codtit,
-                        dispositivo: detectarDispositivo(),
-                        navegador,
-                        sistema_operativo: sistema 
-                    },
-                    function (resp) {
-                        if (resp.status === 'success') {
-                        $svg.css('fill', colorVotado);
-                        console.log('Voto registrado con éxito.');
-                        } else {
-                        console.log(resp.message || 'Error al votar.');
-                        $btn.prop('disabled', false);
-                        }
-                    },
-                    'json'
-                    ).fail(function () {
-                    console.log('No se pudo registrar el voto. Intenta de nuevo.');
-                    $btn.prop('disabled', false);
-                    });
-                });
-
-                // Consulta el cover solo si hay cambio
-                var linkcover = coverbase + '&track=' + codtit + '&artist=' + codart;
-                fetch(linkcover)
-                    .then((res) => {
-                        if (!res.ok) {
-                            throw new Error(`HTTP error! Status: ${res.status}`);
-                        }
-                        return res.json();
-                    })
-                    .then((dataalbum) => {
-                        var lig = dataalbum.track.album;
-                        if (secenvivo) {
-                            $('.cover-background').html('');
-                            if (!lig || artist == 'PAUSA COMERCIAL') {
-                                cover = '/img/logo-STEREO-pag.png';
-                                $('.logo-player img').attr('src', cover);
-                            } else {
-                                cover = dataalbum.track.album.image[2]['#text'];
-                                $('.logo-player img').attr('src', cover);
-                            }
-                        } else {
-                            if (!lig || artist == 'PAUSA COMERCIAL') {
-                                $('#radiobutton .cover-background').html('');
-                            } else {
-                                cover = dataalbum.track.album.image[2]['#text'];
-                                $('#radiobutton .cover-background').html('');
-                                $('#radiobutton').append('<div class="cover-background"><img src="' + cover + '" /></div>');
-                            }
-                        }
-                    });
+        .then((res) => {
+            if (!res.ok) {
+                throw new Error(`HTTP error! Status: ${res.status}`);
             }
+            return res.json();
+        })
+        .then((data) => {
+            let newArtist = '';
+            let newSong = '';
+            let newHora = '';
+
+            switch (data.categoria) {
+                case 'ST2000':
+                case "ST70'S":
+                case "ST80'S":
+                case "ST90'S":
+                case 'STCIEN':
+                case 'STCURREN':
+                case 'STDISCO':
+                case 'STEREO CIEN 2020':
+                case 'STEXITOS':
+                case 'ST-BEATLES':
+                case 'STNAVIDAD':
+                    newArtist = data.artista;
+                    newSong = data.title;
+                    newHora = data.hora_real;
+                    break;
+                default:
+                    newArtist = 'PAUSA COMERCIAL';
+                    newSong = '';
+                    newHora = '';
+                    break;
+            }
+
+            // Actualiza siempre en la primera llamada o si hay cambio
+            if (lastArtist === null || lastSong === null || newArtist !== lastArtist || newSong !== lastSong) {
+                lastArtist = newArtist;
+                lastSong = newSong;
+                artist = newArtist;
+                cancion = newSong;
+                hora = newHora;
+
+                if (cancion === '') {
+                    document.getElementById('infoMusic').innerHTML = artist;
+                } else {
+                    const secenvivo = document.getElementById('envivo');
+                    var cover;
+                    var coverbase = "https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=9a371ed9786b7037d2b0b088615b047a&format=json";
+                    const codtit = cancion.replace('&', '%26');
+                    const codart = artist.replace('&', '%26');
+                    console.log('Artista: ' + artist);
+                    console.log('Canción: ' + cancion);
+                    console.log('escribe');
+                    $('#infoMusic').html('<div class="current-song">' + cancion + ' / ' + artist + '</div><div class="share-current"><div class="like"><svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" stroke-width="1"> <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path> </svg> </div> <div class="share-wp"><a href="https://api.whatsapp.com/send/?text=Estoy%20escuchando%20' + codtit + '%20de%20' + codart + '%20en%20https://stereociendigital.mx/" target="_blank"> <svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" stroke-width="1"> <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z"></path> </svg> </div></div>');
+                    //document.getElementById('infoMusic').innerHTML = 
+
+                    const url = 'https://stereociendigital.com.mx/9xjkftr7/8s4v3f1l3s.php';
+                    const colorVotado = '#ef4444';
+
+                    $('.like').on('click', function (e) {
+                        e.preventDefault();
+
+                        const $btn = $(this);
+                        const $svg = $btn.find('svg');
+                        const fillColor = $svg.css('fill')?.toLowerCase();
+
+                        // Si ya fue votado (el color ya es #ef4444), salir
+                        if (fillColor === colorVotado) {
+                            console.log('Ya votaste por esta canción.');
+                            return;
+                        }
+
+
+
+                        if (!codart || !codtit || $btn.prop('disabled')) return;
+
+                        $btn.prop('disabled', true);
+
+                        function detectarDispositivo() {
+                            return /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)
+                                ? 'mobile'
+                                : 'desktop';
+                        }
+                        const { navegador, sistema } = detectarNavegador();
+
+                        $.post(
+                            url,
+                            {
+                                'artista': codart,
+                                'cancion': codtit,
+                                dispositivo: detectarDispositivo(),
+                                navegador,
+                                sistema_operativo: sistema
+                            },
+                            function (resp) {
+                                if (resp.status === 'success') {
+                                    $svg.css('fill', colorVotado);
+                                    console.log('Voto registrado con éxito.');
+                                } else {
+                                    console.log(resp.message || 'Error al votar.');
+                                    $btn.prop('disabled', false);
+                                }
+                            },
+                            'json'
+                        ).fail(function () {
+                            console.log('No se pudo registrar el voto. Intenta de nuevo.');
+                            $btn.prop('disabled', false);
+                        });
+                    });
+
+                    // Consulta el cover solo si hay cambio
+                    var linkcover = coverbase + '&track=' + codtit + '&artist=' + codart;
+                    fetch(linkcover)
+                        .then((res) => {
+                            if (!res.ok) {
+                                throw new Error(`HTTP error! Status: ${res.status}`);
+                            }
+                            return res.json();
+                        })
+                        .then((dataalbum) => {
+                            var lig = dataalbum.track.album;
+                            if (secenvivo) {
+                                $('.cover-background').html('');
+                                if (!lig || artist == 'PAUSA COMERCIAL') {
+                                    cover = '/img/logo-STEREO-pag.png';
+                                    $('.logo-player img').attr('src', cover);
+                                } else {
+                                    cover = dataalbum.track.album.image[2]['#text'];
+                                    $('.logo-player img').attr('src', cover);
+                                }
+                            } else {
+                                if (!lig || artist == 'PAUSA COMERCIAL') {
+                                    $('#radiobutton .cover-background').html('');
+                                } else {
+                                    cover = dataalbum.track.album.image[2]['#text'];
+                                    $('#radiobutton .cover-background').html('');
+                                    $('#radiobutton').append('<div class="cover-background"><img src="' + cover + '" /></div>');
+                                }
+                            }
+                        });
+                }
             }
             // Si no hay cambio, no hace nada
         });
-    }
+}
 
-       
-        function getInfoProg(){
-            
-            fetch("https://stereociendigital.com.mx/wp-json/wp/v2/posts?_embed&per_page=40&categories=302&_fields[]=acf&_fields[]=jetpack_featured_media_url&_fields[]=acf&_fields[]=content")
-            .then((res) => {
-                if (!res.ok) {
-                    throw new Error
-                        ('HTTP error! Status: ${res.status}');
-                }
-                return res.json();
-            })
-            .then((data) => {                
-                //console.log(data);
-                const fecha = new Date();                
-                //const hora = fecha.getHours() + ':' + fecha.getUTCMinutes() + ':' + fecha.getSeconds();
-                const dias = ['domingo','lunes','martes','miercoles','jueves','viernes','sabado'];
-                const dia = dias[fecha.getDay()];                
-                const hora = dayjs(fecha).format('HH:mm:ss');
-                let siguientePrograma = null;
-                data.map(function(prog,i,el){                    
-                    if(prog.acf[dia] === true){
-                        var h_i;
-                        if( prog.acf.hora_fin >= hora &&  prog.acf.hora_inicio <= hora){
-                            $('.banner-prog img').attr('src', prog.jetpack_featured_media_url);
-                            $('.envivo-prog').html(prog.acf.programa);
-                            $('.envivo-now').html( prog.acf.hora_inicio + ' - ' + prog.acf.hora_fin);
-                            $('.envivo-prog-tab').html(prog.acf.programa);                            
-                            $('.envivo-desc').html(prog.content.rendered);                            
-                        }
 
-                        if (prog.acf.hora_inicio > hora) {
-                            if (!siguientePrograma || prog.acf.hora_inicio < siguientePrograma.acf.hora_inicio) {
-                                siguientePrograma = prog;
-                            }
-                        }                        
+function getInfoProg() {
+
+    fetch("https://stereociendigital.com.mx/wp-json/wp/v2/posts?_embed&per_page=40&categories=302&_fields[]=acf&_fields[]=jetpack_featured_media_url&_fields[]=acf&_fields[]=content")
+        .then((res) => {
+            if (!res.ok) {
+                throw new Error
+                    ('HTTP error! Status: ${res.status}');
+            }
+            return res.json();
+        })
+        .then((data) => {
+            //console.log(data);
+            const fecha = new Date();
+            //const hora = fecha.getHours() + ':' + fecha.getUTCMinutes() + ':' + fecha.getSeconds();
+            const dias = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+            const dia = dias[fecha.getDay()];
+            const hora = dayjs(fecha).format('HH:mm:ss');
+            let siguientePrograma = null;
+            data.map(function (prog, i, el) {
+                if (prog.acf[dia] === true) {
+                    var h_i;
+                    if (prog.acf.hora_fin >= hora && prog.acf.hora_inicio <= hora) {
+                        $('.banner-prog img').attr('src', prog.jetpack_featured_media_url);
+                        $('.envivo-prog').html(prog.acf.programa);
+                        $('.envivo-now').html(prog.acf.hora_inicio + ' - ' + prog.acf.hora_fin);
+                        $('.envivo-prog-tab').html(prog.acf.programa);
+                        $('.envivo-desc').html(prog.content.rendered);
                     }
-                });   
-                if (siguientePrograma) {
-                 //   console.log("Siguiente programa:", siguientePrograma.acf.programa);
-                    $('.envivo-next').html(siguientePrograma.acf.hora_inicio + ' - ' + siguientePrograma.acf.hora_fin);
-                    $('.envivo-prog-next-tab').html(siguientePrograma.acf.programa);
-                }                                                
-            });           
-        }
-        
-        //setTimeout(getInfoProg, 20000);
-        //setInterval( getInfoProg, 300000);       
 
-const radioActive = function(){
+                    if (prog.acf.hora_inicio > hora) {
+                        if (!siguientePrograma || prog.acf.hora_inicio < siguientePrograma.acf.hora_inicio) {
+                            siguientePrograma = prog;
+                        }
+                    }
+                }
+            });
+            if (siguientePrograma) {
+                //   console.log("Siguiente programa:", siguientePrograma.acf.programa);
+                $('.envivo-next').html(siguientePrograma.acf.hora_inicio + ' - ' + siguientePrograma.acf.hora_fin);
+                $('.envivo-prog-next-tab').html(siguientePrograma.acf.programa);
+            }
+        });
+}
+
+//setTimeout(getInfoProg, 20000);
+//setInterval( getInfoProg, 300000);       
+
+const radioActive = function () {
     $('#player-inner').addClass('active');
     $('#player-v-podcast').removeClass('active');
     $('#player-v-video').removeClass('active');
     $('.player-float').removeClass('hide');
 }
 
-const podcastActive = function(){
+const podcastActive = function () {
     //transitionPlayer();
     $('#player-inner').removeClass('active');
     $('#player-v-podcast').addClass('active');
@@ -572,84 +573,84 @@ const podcastActive = function(){
     //$('#radiobutton').addClass('playerplaying'); 
 }
 
-const videoActive = function(){
+const videoActive = function () {
     $('#player-inner').removeClass('active');
     $('#player-v-podcast').removeClass('active');
     $('#player-v-video').addClass('active');
 }
 
-const radioStop = function(){
-        transitionPlayer();
-        streaming.stop();
-        $('#player').attr('data-status','init');                
-        //hidebarra();
-        $('#player-inner').removeClass('active');
+const radioStop = function () {
+    transitionPlayer();
+    streaming.stop();
+    $('#player').attr('data-status', 'init');
+    //hidebarra();
+    $('#player-inner').removeClass('active');
 }
 
-const initPlayer = function(){
+const initPlayer = function () {
     transitionPlayer();
     $('#player-v-podcast').removeClass('active');
     $('#player-v-video').removeClass('active');
     $('.player-float').removeClass('hide');
-    $('#radiobutton').removeClass('playerplaying'); 
+    $('#radiobutton').removeClass('playerplaying');
     $('.player-float').removeClass('hide');
-    $('.player-float').addClass('active');    
+    $('.player-float').addClass('active');
 }
 
-const transitionPlayer = function(){
+const transitionPlayer = function () {
     $('#radiobutton').width('0px');
-    setTimeout( function(){
+    setTimeout(function () {
         $('#radiobutton').width('250px');
     }, 500);
 }
 
 
-const playerstatus = function(){
-    var state  = $('#player').attr('data-status');
+const playerstatus = function () {
+    var state = $('#player').attr('data-status');
     return state;
 };
 
-const playstopRadio = function(){
-            transitionPlayer();
-            const getplayingstatus = playerstatus();                        
-            if(getplayingstatus == 'podcast-playing'){
-                //transitionBarra();
-                const containerpodcast  = document.getElementById('iframepodcast');
-                containerpodcast.innerHTML ='';                
-            }                
-                                               
-            if(getplayingstatus == 'video-playing'){
-                
-            }
+const playstopRadio = function () {
+    transitionPlayer();
+    const getplayingstatus = playerstatus();
+    if (getplayingstatus == 'podcast-playing') {
+        //transitionBarra();
+        const containerpodcast = document.getElementById('iframepodcast');
+        containerpodcast.innerHTML = '';
+    }
 
-            if( local_status == null || local_status == 'undefined' || local_status == '' ){                                
-                //console.log('aqui debe iniciar');
-                start();     
-                $('#player').attr('data-status','radio-playing');
-                //transitionBarra();                 
-                radioActive();   
-            }else if(local_status == 'LIVE_STOP'){
-                //console.log('else play');
-                play();
-                $('#player').attr('data-status','radio-playing');
-            }else if( local_status == 'LIVE_PLAYING' || local_status == 'GETTING_STATION_INFORMATION' || local_status == 'LIVE_CONNECTING' || local_status == 'LIVE_BUFFERING'){                
-                radioStop();
-            }
+    if (getplayingstatus == 'video-playing') {
+
+    }
+
+    if (local_status == null || local_status == 'undefined' || local_status == '') {
+        //console.log('aqui debe iniciar');
+        start();
+        $('#player').attr('data-status', 'radio-playing');
+        //transitionBarra();                 
+        radioActive();
+    } else if (local_status == 'LIVE_STOP') {
+        //console.log('else play');
+        play();
+        $('#player').attr('data-status', 'radio-playing');
+    } else if (local_status == 'LIVE_PLAYING' || local_status == 'GETTING_STATION_INFORMATION' || local_status == 'LIVE_CONNECTING' || local_status == 'LIVE_BUFFERING') {
+        radioStop();
+    }
 };
 
 
-$('#big-play').on('click',function(){    
-       // console.log('click en radiobutton');
-        playstopRadio();      
+$('#big-play').on('click', function () {
+    // console.log('click en radiobutton');
+    playstopRadio();
 });
 
 
-$('#return-live').on('click',function(){    
-       playstopRadio();    
+$('#return-live').on('click', function () {
+    playstopRadio();
 });
 
-$('.radio-link').on('click',function(){    
-       playstopRadio();    
+$('.radio-link').on('click', function () {
+    playstopRadio();
 });
 
 
@@ -660,12 +661,12 @@ $('.radio-link').on('click',function(){
 
 
 
-  
 
-/* NAVIGATION */ 
+
+/* NAVIGATION */
 document.addEventListener('astro:before-preparation', ev => {
-  //  console.log('insert spin');    
-    document.querySelector('main').classList.add('loading');    
+    //  console.log('insert spin');    
+    document.querySelector('main').classList.add('loading');
     document.querySelector('.preloader').classList.add('showpreloader');
 });
 
@@ -687,24 +688,24 @@ document.addEventListener("astro:after-swap", () => {
 
 
 document.addEventListener('astro:page-load', ev => {
-   // console.log('pageload');
-   //$('.cover-background').html('');
+    // console.log('pageload');
+    //$('.cover-background').html('');
     window.scrollTo({ top: 0, behavior: "smooth" });
     window.addEventListener('scroll', function () {
-                const scrollY = window.scrollY;
-                
-                if ($('.bar-stereo').hasClass('is-pinned')) {
-                    $('.bar-stereo').addClass('compress');
-                    $('.bar-stereo .logo').addClass('compress-logo');
-                }
-                if (scrollY <= 1) {
-                    $('.bar-stereo').css('position', 'sticky');
-                    $('.bar-stereo').removeClass('compress');
-                    $('.bar-stereo .logo').removeClass('compress-logo');
-                }                
-            });
+        const scrollY = window.scrollY;
 
-        /* efectos */ 
+        if ($('.bar-stereo').hasClass('is-pinned')) {
+            $('.bar-stereo').addClass('compress');
+            $('.bar-stereo .logo').addClass('compress-logo');
+        }
+        if (scrollY <= 1) {
+            $('.bar-stereo').css('position', 'sticky');
+            $('.bar-stereo').removeClass('compress');
+            $('.bar-stereo .logo').removeClass('compress-logo');
+        }
+    });
+
+    /* efectos */
     /*const { navegador, sistema } = detectarNavegador();
     const isMobileAndroid = /Mobi|Android/i.test(navigator.userAgent) && sistema === 'Android';
     console.log('Navegador: ' + navegador);
@@ -759,160 +760,160 @@ document.addEventListener('astro:page-load', ev => {
     var ts = Math.round((new Date()).getTime() / 1000 * Math.random() * 10);
     // cowensole.log(ts);
     self.COMSCORE && COMSCORE.beacon({
-            c1: "2", c2: "6906652",
-            options: {
-                enableFirstPartyCookie: true,
-                bypassUserConsentRequirementFor1PCookie: true
-            }
+        c1: "2", c2: "6906652",
+        options: {
+            enableFirstPartyCookie: true,
+            bypassUserConsentRequirementFor1PCookie: true
+        }
     });
 
-    fetch('/pageview_candidate.txt?'+ts)
-    .then(function(resp){
-        console.log(resp);            
-    });  
+    fetch('/pageview_candidate.txt?' + ts)
+        .then(function (resp) {
+            console.log(resp);
+        });
 
     /* =======COMSCORE*/
 
     initGPT();
     safeRefreshSlots();
-    
-   const getplayingstatus = playerstatus();
-    document.querySelector('main').classList.remove('loading');    
+
+    const getplayingstatus = playerstatus();
+    document.querySelector('main').classList.remove('loading');
     document.querySelector('.preloader').classList.remove('showpreloader');
-    
+
     const secchome = document.getElementById('home');
     const secenvivo = document.getElementById('envivo');
     const secprogramacion = document.getElementById('programacion');
 
-    if( secprogramacion ){
+    if (secprogramacion) {
 
-                const tabLinks = document.querySelectorAll('#estacion [role="tab"]');
-                const tabPanels = document.querySelectorAll('#estacion [role="tabpanel"]');
-                
-                tabLinks.forEach((tab, idx) => {
-                    tab.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        // Quitar selección de todos los tabs
-                        tabLinks.forEach(t => {
-                            t.setAttribute('aria-selected', 'false');
-                            t.classList.remove('bg-white', 'text-slate-700');
-                            t.classList.add('text-slate-600');
-                        });
-                        // Ocultar todos los paneles
-                        tabPanels.forEach(panel => {
-                            panel.classList.add('hidden', 'opacity-0');
-                        });
-                        // Activar el tab actual
-                        tab.setAttribute('aria-selected', 'true');
-                        tab.classList.add('bg-white', 'text-slate-700');
-                        tab.classList.remove('text-slate-600');
-                        // Mostrar el panel correspondiente
-                        const panelId = tab.getAttribute('aria-controls');
-                        const panel = document.getElementById(panelId);
-                        if (panel) {
-                            panel.classList.remove('hidden', 'opacity-0');
-                        }
-                    });
+        const tabLinks = document.querySelectorAll('#estacion [role="tab"]');
+        const tabPanels = document.querySelectorAll('#estacion [role="tabpanel"]');
+
+        tabLinks.forEach((tab, idx) => {
+            tab.addEventListener('click', function (e) {
+                e.preventDefault();
+                // Quitar selección de todos los tabs
+                tabLinks.forEach(t => {
+                    t.setAttribute('aria-selected', 'false');
+                    t.classList.remove('bg-white', 'text-slate-700');
+                    t.classList.add('text-slate-600');
                 });
-            
+                // Ocultar todos los paneles
+                tabPanels.forEach(panel => {
+                    panel.classList.add('hidden', 'opacity-0');
+                });
+                // Activar el tab actual
+                tab.setAttribute('aria-selected', 'true');
+                tab.classList.add('bg-white', 'text-slate-700');
+                tab.classList.remove('text-slate-600');
+                // Mostrar el panel correspondiente
+                const panelId = tab.getAttribute('aria-controls');
+                const panel = document.getElementById(panelId);
+                if (panel) {
+                    panel.classList.remove('hidden', 'opacity-0');
+                }
+            });
+        });
+
     }
 
-    if ( secenvivo ){   
+    if (secenvivo) {
         //console.log('envivo');
         getInfoProg();
         getInfoMusic();
-        setInterval( getInfoProg, 60000);
+        setInterval(getInfoProg, 60000);
         $('#radiobutton').addClass('en-vivo');
         //console.log(local_status);
-        if( local_status == null || local_status == 'undefined' || local_status == '' || local_status == 'LIVE_STOP' ){  
+        if (local_status == null || local_status == 'undefined' || local_status == '' || local_status == 'LIVE_STOP') {
             playstopRadio();
         }
-        if( local_status == 'LIVE_PLAYING' || local_status == 'GETTING_STATION_INFORMATION' || local_status == 'LIVE_CONNECTING' || local_status == 'LIVE_BUFFERING' ){
+        if (local_status == 'LIVE_PLAYING' || local_status == 'GETTING_STATION_INFORMATION' || local_status == 'LIVE_CONNECTING' || local_status == 'LIVE_BUFFERING') {
             $('.cover-background').html('');
         }
-        $('.logo-player img').attr('src','/img/logo-STEREO-pag.png');
+        $('.logo-player img').attr('src', '/img/logo-STEREO-pag.png');
         $('#big-play').removeClass('border-4');
-        
-    }else{
-       // getInfoMusic();
-        $('.logo-player img').attr('src','https://storage.googleapis.com/nrm-web/stereocien/STEREOCIEN_MIL2.svg');        
+
+    } else {
+        // getInfoMusic();
+        $('.logo-player img').attr('src', 'https://storage.googleapis.com/nrm-web/stereocien/STEREOCIEN_MIL2.svg');
         $('#radiobutton').removeClass('en-vivo');
         $('#big-play').addClass('border-4');
     }
-    
+
     const secprogram = document.getElementById('slider-locutores');
     const secprograma = document.getElementById('slider-locutores-enfoque');
     const secsounds = document.getElementById('carrusel-sounds');
-    
-    if ( secchome || secsounds){
-       // getInfoProg();
+
+    if (secchome || secsounds) {
+        // getInfoProg();
         console.log(getplayingstatus);
 
-        const soundButtons = ['sounds-love', 'sounds-acoustic', 'sounds-retro', 'sounds-soundtracks', 'sounds-covers','sounds-jazz-blues','sounds-world-music', 'sounds-nu-disco','sounds-back-to-disco','sounds-en-espanol'];
+        const soundButtons = ['sounds-love', 'sounds-acoustic', 'sounds-retro', 'sounds-soundtracks', 'sounds-covers', 'sounds-jazz-blues', 'sounds-world-music', 'sounds-nu-disco', 'sounds-back-to-disco', 'sounds-en-espanol'];
         soundButtons.forEach(buttonId => {
             const element = document.getElementById(buttonId);
             if (element) {
-                element.addEventListener('click', function() {
+                element.addEventListener('click', function () {
                     const soundType = buttonId.replace('sounds-', '');
                     window.open(`/sound-prueba/${soundType}?autoplay=1`, '_blank', 'width=500,height=900');
                     radioStop();
                 });
             }
         });
-        
+
     }
 
-    
-    if ( secprogram || secchome || secprograma || secsounds ){  
+
+    if (secprogram || secchome || secprograma || secsounds) {
 
         var elempod = document.querySelector('.main-carousel');
-        var flktypod = new Flickity( elempod, {
+        var flktypod = new Flickity(elempod, {
             contain: true,
-            lazyLoad: 1, 
-            wrapAround: true, 
+            lazyLoad: 1,
+            wrapAround: true,
             cellAlign: 'center',
             pageDots: false,
             autoPlay: 5000,
         });
 
         var elemsounds = document.querySelector('.main-carousel-sounds');
-        var flktysounds = new Flickity( elemsounds, {
+        var flktysounds = new Flickity(elemsounds, {
             contain: true,
-            lazyLoad: 1, 
-            wrapAround: true, 
+            lazyLoad: 1,
+            wrapAround: true,
             cellAlign: 'center',
             pageDots: false,
             autoPlay: 8000,
         });
 
         var elemenf = document.querySelector('.main-carousel-enfoque');
-        var flktyenf = new Flickity( elemenf, {
+        var flktyenf = new Flickity(elemenf, {
             contain: true,
-            lazyLoad: 1, 
-            wrapAround: true, 
+            lazyLoad: 1,
+            wrapAround: true,
             cellAlign: 'center',
             pageDots: false,
             autoPlay: 5000,
         });
 
         var elembuenfin = document.querySelector('.carousel-buenfin');
-        var flktybuenfin = new Flickity( elembuenfin, {
+        var flktybuenfin = new Flickity(elembuenfin, {
             // options
             cellAlign: 'right',
             prevNextButtons: true,
-        //    autoPlay: 5000,
+            //    autoPlay: 5000,
             pageDots: false,
             pauseAutoPlayOnHover: true,
             freeScroll: true,
             wrapAround: true
-        }); 
+        });
 
-        $('.panel-stereo').click(function(){
+        $('.panel-stereo').click(function () {
             flktypod.resize();
-        }); 
-        $('.panel-enf').click(function(){
+        });
+        $('.panel-enf').click(function () {
             flktyenf.resize();
-        }); 
+        });
 
         var swiper = new Swiper(".swiper", {
             effect: "coverflow",
@@ -931,116 +932,116 @@ document.addEventListener('astro:page-load', ev => {
             spaceBetween: 60,
             loop: true,
             pagination: {
-                
+
                 clickable: true
             }
         });
     }
-    
+
     const imagenNota = document.getElementById("imagen-nota");
-    if( imagenNota ){
+    if (imagenNota) {
         const imgNotaOriginal = imagenNota.getElementsByTagName('img');
         const imgNotaOriginal2 = imgNotaOriginal[0].getAttribute('src');
-        imagenNota.style.backgroundImage = "url("+imgNotaOriginal2+")";
+        imagenNota.style.backgroundImage = "url(" + imgNotaOriginal2 + ")";
     }
-    
-    
-    if( getplayingstatus == 'podcast-playing'){
-        const containerpodcast  = document.getElementById('iframepodcast');
+
+
+    if (getplayingstatus == 'podcast-playing') {
+        const containerpodcast = document.getElementById('iframepodcast');
         //containerpodcast.innerHTML ='';
         initPlayer();
         //hidebarra();
     }
 
-   /* $('#big-play').on('click', function(){
-        playstopRadio();
-    });*/
-    
-    $('.audiopod').each(function(){   
-        $(this).on('click',function(){
+    /* $('#big-play').on('click', function(){
+         playstopRadio();
+     });*/
+
+    $('.audiopod').each(function () {
+        $(this).on('click', function () {
             const getstatus = playerstatus();
             const podactive = $(this).find('.play-pause-podcast');
             const podcaststatus = podactive.attr('data-podcast-status');
-            const containerpodcast  = document.getElementById('iframepodcast');
-            
+            const containerpodcast = document.getElementById('iframepodcast');
+
             transitionPlayer();
             podcastActive();
-            setTimeout( function(){
-                $('#radiobutton').addClass('playerplaying'); 
-            },600);
-            
-            
-            if (getstatus == 'radio-playing'){
-                radioStop();                
-            }            
-                                                
+            setTimeout(function () {
+                $('#radiobutton').addClass('playerplaying');
+            }, 600);
+
+
+            if (getstatus == 'radio-playing') {
+                radioStop();
+            }
+
             podactive.html('<img class="loading-gif" src="https://storage.googleapis.com/nrm-web/oye/recursos/loading-normal.gif" />');
-            
-            $('.close-podcast').on('click',function(){
+
+            $('.close-podcast').on('click', function () {
                 initPlayer();
-                const playerpodcast = document.getElementById('iframepodcast').getElementsByTagName('iframe')[0];                
-                const ply =  new playerjs.Player(playerpodcast);
-                ply.on('ready', ()=> {
+                const playerpodcast = document.getElementById('iframepodcast').getElementsByTagName('iframe')[0];
+                const ply = new playerjs.Player(playerpodcast);
+                ply.on('ready', () => {
                     ply.pause();
-                    podactive.attr('data-podcast-status','ready');
+                    podactive.attr('data-podcast-status', 'ready');
                 });
-                $('.audiopod').each(function(){
+                $('.audiopod').each(function () {
                     $('.audiopod').find('.play-pause-podcast').html(buttonPodcastPlay);
-                    $('.audiopod').find('.play-pause-podcast').attr('data-podcast-status','ready');
+                    $('.audiopod').find('.play-pause-podcast').attr('data-podcast-status', 'ready');
                 });
-                
+
             });
-            
-            if (getstatus == 'podcast-playing'){
-                
-                const playerpodcast = document.getElementById('iframepodcast').getElementsByTagName('iframe')[0];                
-                const ply =  new playerjs.Player(playerpodcast);
-                ply.on('ready', ()=> {
+
+            if (getstatus == 'podcast-playing') {
+
+                const playerpodcast = document.getElementById('iframepodcast').getElementsByTagName('iframe')[0];
+                const ply = new playerjs.Player(playerpodcast);
+                ply.on('ready', () => {
                     ply.pause();
-                    podactive.attr('data-podcast-status','ready');
+                    podactive.attr('data-podcast-status', 'ready');
                 });
-                $('.audiopod').each(function(){
+                $('.audiopod').each(function () {
                     $('.audiopod').find('.play-pause-podcast').html(buttonPodcastPlay);
-                    $('.audiopod').find('.play-pause-podcast').attr('data-podcast-status','ready');
+                    $('.audiopod').find('.play-pause-podcast').attr('data-podcast-status', 'ready');
                 });
             }
             //console.log(podcaststatus);            
-            if(podcaststatus == 'ready'){
+            if (podcaststatus == 'ready') {
                 //transitionBarra();
                 const ifr = $(this).find('.data-iframe').attr('data-iframe');
                 const ifrsrc = ifr.split('src="');
                 const src = ifrsrc[1].split('"');
                 //const playerpodcast = document.getElementById('playerpodcast');
                 //<iframe src="https://omny.fm/shows/beat-trends/amor-de-lejos-amor-de-ya-no-aplica/embed?size=square&style=cover&image=0&description=1&download=1&playlistImages=1&playlistShare=1&share=1&subscribe=0&background=efefef&foreground=2b2b2c&highlight=fff" allow="autoplay; clipboard-write" width="300" height="300" frameborder="0" title="Amor de lejos, amor de… Ya no aplica"></iframe>           
-                containerpodcast.innerHTML ='';
+                containerpodcast.innerHTML = '';
                 const playerpodcast = document.createElement('iframe');
-                playerpodcast.setAttribute('src',src[0]+"?image=0&share=0&download=1&description=0&background=efefef&foreground=2b2b2c&highlight=fff");
-                playerpodcast.setAttribute('width','300');
-                playerpodcast.setAttribute('height','190');
-                playerpodcast.setAttribute('frameborder','0');
-                playerpodcast.setAttribute('allow','autoplay');
-                playerpodcast.setAttribute('transition:persist','');
+                playerpodcast.setAttribute('src', src[0] + "?image=0&share=0&download=1&description=0&background=efefef&foreground=2b2b2c&highlight=fff");
+                playerpodcast.setAttribute('width', '300');
+                playerpodcast.setAttribute('height', '190');
+                playerpodcast.setAttribute('frameborder', '0');
+                playerpodcast.setAttribute('allow', 'autoplay');
+                playerpodcast.setAttribute('transition:persist', '');
                 //console.log(playerpodcast);
-                containerpodcast.appendChild(playerpodcast);            
-                const ply =  new playerjs.Player(playerpodcast);
-                 
-                ply.on('ready', ()=> {
-                    podactive.attr('data-podcast-status','active');
-                    $('#player').attr('data-status','podcast-playing');
+                containerpodcast.appendChild(playerpodcast);
+                const ply = new playerjs.Player(playerpodcast);
+
+                ply.on('ready', () => {
+                    podactive.attr('data-podcast-status', 'active');
+                    $('#player').attr('data-status', 'podcast-playing');
                     playerpodcast.classList.add('iframestyle');
-                    ply.play(); 
-                    
-                    ply.on('play', ()=>{
-                        podactive.html(buttonPodcastPause); 
+                    ply.play();
+
+                    ply.on('play', () => {
+                        podactive.html(buttonPodcastPause);
                     });
-    
-                    ply.on('pause', ()=>{
-                        podactive.html(buttonPodcastPlay); 
+
+                    ply.on('pause', () => {
+                        podactive.html(buttonPodcastPlay);
                     });
-                    
-                });   
+
+                });
             }
-            else if(podcaststatus == 'active'){
+            else if (podcaststatus == 'active') {
                 /*if( getplayingstatus == 'podcast-playing'){
                     const containerpodcast  = document.getElementById('iframepodcast');
                     containerpodcast.innerHTML ='';
@@ -1050,150 +1051,150 @@ document.addEventListener('astro:page-load', ev => {
                 //hidebarra();                
                 const playerpodcast = document.getElementById('iframepodcast').getElementsByTagName('iframe')[0];
                 //console.log(playerpodcast);
-                const ply =  new playerjs.Player(playerpodcast);
-                ply.on('ready', ()=> {
+                const ply = new playerjs.Player(playerpodcast);
+                ply.on('ready', () => {
                     ply.pause();
-                    podactive.attr('data-podcast-status','ready');
-                });                
-                
+                    podactive.attr('data-podcast-status', 'ready');
+                });
+
             }
 
         });
     });
-    
-    $('.wp-block-image').each(function(){        
-        const datasrc = $(this).find('img').attr('data-src');        
-        $(this).find('img').attr('src',datasrc);
+
+    $('.wp-block-image').each(function () {
+        const datasrc = $(this).find('img').attr('data-src');
+        $(this).find('img').attr('src', datasrc);
     });
 
-    
-        
-  
+
+
+
 
     const containvideo = document.getElementById('content-w-video');
-    if (containvideo){
+    if (containvideo) {
         //console.log('sccion pop');  
         //console.log(navigator.userAgent);
-        if(navigator.userAgent.indexOf("iPhone") != -1){
-            
-        $('.wp-block-embed-youtube .wp-block-embed__wrapper iframe').each(function(t,el){
-           // console.log($(this));   
-            //const ele = $(this).attr('id','el-'+t);     
-            $(this).on('click',function(){
-                const getstatus = playerstatus();
-                if( getstatus == 'radio-playing'){
-                    radioStop();   
-                    //hidebarra();
-                    $('#player').attr('data-status','video-playing');
-                }
-            });            
-            
-        });        
+        if (navigator.userAgent.indexOf("iPhone") != -1) {
 
-        }else{                      
-        $('.wp-block-embed-youtube .wp-block-embed__wrapper').each(function(){
-           // console.log($(this).find('iframe'));            
-            const plyr = new Plyr($(this).find('iframe').parent(),{
-                debug:true,
-                controls:[
-                    'play-large', // The large play button in the center
-                    'restart', // Restart playback
-                    'rewind', // Rewind by the seek time (default 10 seconds)
-                    'play', // Play/pause playback
-                    'fast-forward', // Fast forward by the seek time (default 10 seconds)
-                    'progress', // The progress bar and scrubber for playback and buffering
-                    'current-time', // The current time of playback
-                    'duration', // The full duration of the media
-                    'mute', // Toggle mute
-                    'volume', // Volume control
-                    'captions', // Toggle captions
-                    'settings', // Settings menu
-                    'pip', // Picture-in-picture (currently Safari only)
-                    'airplay', // Airplay (currently Safari only)
-                    'download', // Show a download button with a link to either the current source or a custom URL you specify in your options
-                    'fullscreen', 
-                ],
-                playsinline: true
+            $('.wp-block-embed-youtube .wp-block-embed__wrapper iframe').each(function (t, el) {
+                // console.log($(this));   
+                //const ele = $(this).attr('id','el-'+t);     
+                $(this).on('click', function () {
+                    const getstatus = playerstatus();
+                    if (getstatus == 'radio-playing') {
+                        radioStop();
+                        //hidebarra();
+                        $('#player').attr('data-status', 'video-playing');
+                    }
+                });
 
             });
-            //console.log(plyr);
-            plyr.on('playing',function(){
-                const getstatus = playerstatus();
-                if( getstatus == 'radio-playing'){
-                    radioStop();   
-                    //hidebarra();
-                    $('#player').attr('data-status','video-playing');
-                }
+
+        } else {
+            $('.wp-block-embed-youtube .wp-block-embed__wrapper').each(function () {
+                // console.log($(this).find('iframe'));            
+                const plyr = new Plyr($(this).find('iframe').parent(), {
+                    debug: false,
+                    controls: [
+                        'play-large', // The large play button in the center
+                        'restart', // Restart playback
+                        'rewind', // Rewind by the seek time (default 10 seconds)
+                        'play', // Play/pause playback
+                        'fast-forward', // Fast forward by the seek time (default 10 seconds)
+                        'progress', // The progress bar and scrubber for playback and buffering
+                        'current-time', // The current time of playback
+                        'duration', // The full duration of the media
+                        'mute', // Toggle mute
+                        'volume', // Volume control
+                        'captions', // Toggle captions
+                        'settings', // Settings menu
+                        'pip', // Picture-in-picture (currently Safari only)
+                        'airplay', // Airplay (currently Safari only)
+                        'download', // Show a download button with a link to either the current source or a custom URL you specify in your options
+                        'fullscreen',
+                    ],
+                    playsinline: true
+
+                });
+                //console.log(plyr);
+                plyr.on('playing', function () {
+                    const getstatus = playerstatus();
+                    if (getstatus == 'radio-playing') {
+                        radioStop();
+                        //hidebarra();
+                        $('#player').attr('data-status', 'video-playing');
+                    }
+                });
+
+                $('#radiobutton').on('click', function () {
+                    plyr.pause();
+                });
             });
-            
-            $('#radiobutton').on('click', function(){
-                plyr.pause();
-            });     
-        }); 
         }
-        
-        
+
+
         /*voto*/
-        $('.voto-pop').each(function(){
-            $(this).on('click', function(){
+        $('.voto-pop').each(function () {
+            $(this).on('click', function () {
                 //console.log($(this).attr('data-voto-id'));
-                const id = $(this).attr('data-voto-id');                                
+                const id = $(this).attr('data-voto-id');
                 /*const params = {
                     "search": id, 
                     "per_page": 1000                    
                 };*/
                 const params = {
-                    "item_id":id,
-                    "user_id":15,
-                    "type":"post",
-                    "user_ip":"0.0.0.0",
-                    "status":"like"
+                    "item_id": id,
+                    "user_id": 15,
+                    "type": "post",
+                    "user_ip": "0.0.0.0",
+                    "status": "like"
                 };
-                
+
                 const Rparamas = {
                     method: 'POST',
                     headers: {
                         'Authorization': 'Bearer GoW1bJVNjV3SCoUfVblUJs6ddelYSrGmmadoZglqcWrFELxbvrksHfsIOKeYZcgFN0jKNFtpiJEB7YN8rwUsLONosH06pWU1UZ2zIL10n0kUM26ufABMlqyh',
                         'Content-Type': 'application/json'
-                    },                    
-                    body: JSON.stringify( params )
+                    },
+                    body: JSON.stringify(params)
                 };
-                    
+
                 fetch('https://contenido.beatdigital.mx/wp-json/wp-ulike-pro/v1/vote/', Rparamas)
-                .then((res) => {
-                    if (!res.ok) {
-                        throw new Error
-                            ('HTTP error! Status: ${res.status}');
-                    }
-                    return res.json();
-                })
-                .then((data) => { 
+                    .then((res) => {
+                        if (!res.ok) {
+                            throw new Error
+                                ('HTTP error! Status: ${res.status}');
+                        }
+                        return res.json();
+                    })
+                    .then((data) => {
                         //console.log(data);
                         $(this).addClass('voted');
-                        $(this).find('svg').attr('fill','white');
+                        $(this).find('svg').attr('fill', 'white');
                         Toastify({
                             text: "Gracias por tu voto",
                             className: "info",
                             style: {
-                              background: "linear-gradient(to right, #ec4899, #a855f7)",
-                              'border-radius': '6px',
-                              'box-shadow':'var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)' 
+                                background: "linear-gradient(to right, #ec4899, #a855f7)",
+                                'border-radius': '6px',
+                                'box-shadow': 'var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)'
                             },
-                            offset:{
-                                x:'10rem',
-                                y:'20rem'
+                            offset: {
+                                x: '10rem',
+                                y: '20rem'
                             }
                         }).showToast();
-                });
+                    });
 
-            });            
+            });
         });
-        
-        /*------------------- */
-        
-    } 
 
-        
-       
+        /*------------------- */
+
+    }
+
+
+
 });
 
