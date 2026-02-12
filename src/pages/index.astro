@@ -36,10 +36,12 @@ import Sounds2 from "../layouts/SliderSounds.astro";
 import Notificacion from "../components/Notificacion.astro";
 /*import Navidad from "../components/Navidad.astro";*/
 /*import Sliderbuenfin from '../layouts/Sliderbuenfin.astro';*/
+import DiaRadio from "../components/DiaRadio.astro";
 ---
 
 <BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
     <BarNrm />
+    <DiaRadio />
     <NotaPrincipal />
     <Header title={SITE_TITLE} />
 
@@ -53,6 +55,7 @@ import Notificacion from "../components/Notificacion.astro";
                 <Sounds />
             </div>
         </section-->
+
         <section class="flex items-start justify-center gap-4 px-4">
             <Skin1 />
             <div class="container-home p-4 mx-auto">
