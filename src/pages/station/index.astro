@@ -9,7 +9,7 @@ import Card from "../../layouts/Cards.astro";
 import DoubleBox from "../../components/DoubleBox.astro";
 import BoxBanner from "../../components/BoxBanner.astro";
 import BarNrm from "../../components/BarNrm.astro";
-import SliderSoundsSwiper from "../../layouts/SliderSoundsSwiper.astro";
+import SliderSounds from "../../layouts/SliderSounds.astro";
 
 export async function getStaticPaths({ paginate }) {
 	const data = await getArticles(524);
@@ -30,13 +30,9 @@ const { page = [] } = Astro.props;
 
 	<main>
 		<div class="container my-12 mx-auto px-4 md:px-12">
-			<h1
-				class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl"
-			>
-				Sounds by Stereo Cien
-			</h1>
+	
 			<div class="">
-				<SliderSoundsSwiper />
+				<SliderSounds />
 			</div>
 		</div>
 	</main>

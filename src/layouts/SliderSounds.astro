@@ -9,8 +9,45 @@ const PLACEHOLDER_IMG = 'https://storage.googleapis.com/nrm-web/stereocien/img_s
 const res = await fetch("https://stereociendigital.com.mx/wp-json/wp/v2/sounds?per_page=100&orderby=sounds_order&order=asc");
 const posts = await res.json();
 
+
 ---
-<div class="slider-sounds">
+<div class="about-title-container">
+  <h1 class="about-title">SOUNDS</h1>
+  <h3 class="about-subtitle">by Stereo Cien</h3>
+</div>
+
+
+<div class="carousel-container">
+	<button class="nav-arrow left">‹</button>
+	<div id="carrusel-sounds" class="carousel-track">
+  	{
+    posts.map((post:any, i:number)=> (
+      <div id={`sounds-${post.slug}`} class="card" data-index={i}>
+          <img loading="lazy" class="block h-auto w-full object-fill" src={post?.sounds_logo_url || PLACEHOLDER_IMG} alt={post?._embedded?.['wp:featuredmedia']?.[0]?.alt_text||"Imagen Relojes"} width="300" height="150"/>
+      </div>
+    ))    
+    }
+	</div>
+	<button class="nav-arrow right">›</button>
+</div>
+
+<div class="member-info">
+	<h2 class="member-name">David Kimmmm</h2>
+	<p class="member-role">Founder</p>
+</div>
+
+<!--div class="dots">
+	<div class="dot active" data-index="0"></div>
+	<div class="dot" data-index="1"></div>
+	<div class="dot" data-index="2"></div>
+	<div class="dot" data-index="3"></div>
+	<div class="dot" data-index="4"></div>
+	<div class="dot" data-index="5"></div>
+</div-->
+
+
+
+<!--div class="slider-sounds">
 	<div class="carousel main-carousel-sounds cards promos">
 
 	{
@@ -24,223 +61,420 @@ const posts = await res.json();
 	}
 	</div> 
 
-
-	<!--div class="carousel carousel-nav">
-	{
-	posts.map((post:any)=> (
-		<div class="carousel-cell">
-			<Image class="block h-auto w-full object-fill" src={post._embedded['wp:featuredmedia'][0].media_details.sizes['thumbnail'].source_url} width="150" height="150" alt={post.title.rendered}/>
-		</div>
-	))    
-	}  
-	</div-->
-</div>
+</div-->
 
 <style>
-	/*
-.slider-sounds{
-	mask-image: linear-gradient(to right, hsla(var(--color-black), 0) 0, hsla(var(--color-black), 1) var(--page-padding-inline), hsla(var(--color-black), 1) calc(100% - var(--page-padding-inline)), hsla(var(--color-black), 0) 100%);
-	mask-image: radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(79,79,79,0) 51%, rgba(0,0,0,0.6488970588235294) 100%);
-    mask-image: radial-gradient(ellipse 82% 200% at 49% 33%,black 39%,transparent 61%);
-	mask-image: radial-gradient(ellipse 76% 226% at 50% 60%, black 56%, transparent 65%);
+.about-title-container{
+  position: relative;
+  max-width: fit-content;
+  margin: 0 auto;
 }
-.slider-sounds .card article{
-	background: none;
+.about-title {
+  text-align: center;
+	font-size: 7.5rem;
+	font-weight: 900;
+	text-transform: uppercase;
+	letter-spacing: -0.02em;
+	position: relative;
+	top: 45px;
+	left: 50%;
+	transform: translateX(-50%);
+	pointer-events: none;
+	white-space: nowrap;
+	font-family: "Arial Black", "Arial Bold", Arial, sans-serif;
+	background: linear-gradient(
+		to bottom,
+		rgb(8 42 123 / 35%) 30%,
+		rgb(255 255 255 / 0%) 76%
+	);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+.about-subtitle {
+    font-size: 0.8rem;
+    color: #acb3c5;
+    text-align: right;
+    position: absolute;
+    right: 0;
 }
 
-.carousel{
+.carousel-container {
+	width: 100%;
+	max-width: 1200px;
+	height: 330px;
+	position: relative;
+	perspective: 1000px;
+	margin-top: 40px;
+  overflow-x: hidden;
+  margin: 0 auto;
+}
 
-  padding: 1%;
-  border-radius: 0.25rem;
+.carousel-track {
+	width: 100%;
+	height: 100%;
+	display: flex;
+  flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+	transform-style: preserve-3d;
+	transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.card {
+	position: absolute;
+	width: 280px;
+	/*height: 380px;*/
+	background: white;
+	border-radius: 20px;
+	overflow: hidden;
+	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+	transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	cursor: pointer;
+}
+
+.card img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.card.center {
+	z-index: 10;
+	transform: scale(1.1) translateZ(0);
+}
+
+.card.center img {
+	filter: none;
+}
+
+.card.left-201 {
+	z-index: 1;
+	transform: translateX(-400px) scale(0.8) translateZ(-300px);
+	opacity: 0.7;
+}
+
+.card.left-201 img {
+	filter: grayscale(100%);
+}
+
+.card.left-101 {
+	z-index: 5;
+	transform: translateX(-200px) scale(0.9) translateZ(-100px);
+	opacity: 0.9;
+}
+
+.card.left-101 img {
+	filter: grayscale(100%);
+}
+
+.card.right-101 {
+	z-index: 5;
+	transform: translateX(200px) scale(0.9) translateZ(-100px);
+	opacity: 0.9;
+}
+
+.card.right-101 img {
+	filter: grayscale(100%);
+}
+
+.card.right-201 {
+	z-index: 1;
+	transform: translateX(400px) scale(0.8) translateZ(-300px);
+	opacity: 0.7;
+}
+
+.card.right-201 img {
+	filter: grayscale(100%);
+}
+
+.card.hidden {
+	opacity: 0;
+	pointer-events: none;
+}
+
+.member-info {
+	text-align: center;
+	margin-top: 40px;
+	transition: all 0.5s ease-out;
+}
+
+.member-name {
+	color: rgb(8, 42, 123);
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-bottom: 10px;
+	position: relative;
+	display: inline-block;
+}
+
+.member-name::before,
+.member-name::after {
+	content: "";
+	position: absolute;
+	top: 100%;
+	width: 100px;
+	height: 2px;
+	background: rgb(8, 42, 123);
+}
+
+.member-name::before {
+	left: -120px;
+}
+
+.member-name::after {
+	right: -120px;
+}
+
+.member-role {
+  width: 60%;
+	color: #848696;
+	font-size: 1rem;
+	font-weight: 500;
+	opacity: 0.8;
+	letter-spacing: 0.1em;
+	padding: 10px 0;
+	margin-top: -15px;
+	position: relative;
+  margin: 0 auto;
+}
+.dots {
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+	margin-top: 60px;
+}
+
+.dot {
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	background: rgba(8, 42, 123, 0.2);
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.dot.active {
+	background: rgb(8, 42, 123);
+	transform: scale(1.2);
+}
+
+.nav-arrow {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	background: rgba(8, 42, 123, 0.6);
+	color: white;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	z-index: 20;
+	transition: all 0.3s ease;
+	font-size: 1.5rem;
+	border: none;
+	outline: none;
+	padding-bottom: 4px;
+}
+
+.nav-arrow:hover {
+	background: rgba(0, 0, 0, 0.8);
+	transform: translateY(-50%) scale(1.1);
+}
+
+.nav-arrow.left {
+	left: 20px;
+	padding-right: 3px;
+}
+
+.nav-arrow.right {
+	right: 20px;
+	padding-left: 3px;
+}
+
+@media (max-width: 768px) {
+  .carousel-container{
+    width: 100%;  
+    max-width: 100%;
   }
+	.about-title {
+		font-size: 5.5rem;
+	}
 
-.carousel-cell {
-  width: 20%;
-  height: auto;
-  padding: 20px;
-  opacity: 0.6;
-  filter: brightness(0.8);
-  transition: opacity 0.4s ease, filter 0.4s ease, top 0.4s ease, width 0.4s ease;
-  top: 10%;
-}
+	.card {
+		width: 200px;
+		/*height: 280px;*/
+	}
 
-/* Elemento seleccionado */
-.carousel-cell.is-selected {
-  width: 22%;
-  opacity: 1;
-  filter: brightness(1);
-  top: 0;
-}
+	.card.left-201 {
+		transform: translateX(-250px) scale(0.8) translateZ(-300px);
+	}
 
-/* Elementos adyacentes (±1) - derecha */
-.carousel-cell.is-selected + .carousel-cell img{
-  width: 80%;
-  opacity: 0.8;
-  filter: brightness(0.9);
-  top: 5%;
-}
+	.card.left-101 {
+		transform: translateX(-120px) scale(0.9) translateZ(-100px);
+	}
 
-/* Elementos adyacentes (±1) - izquierda */
-.carousel-cell:has(+ .carousel-cell.is-selected) img{
-  width: 80%;
-  opacity: 0.8;
-  filter: brightness(0.9);
-  top: 5%;
-}
+	.card.right-101 {
+		transform: translateX(120px) scale(0.9) translateZ(-100px);
+	}
 
-/* Elementos extremos (±2) - derecha */
-.carousel-cell.is-selected + .carousel-cell + .carousel-cell img{
-  width: 60%;
-  opacity: 0.7;
-  filter: brightness(0.85);
-  top: 8%;
-}
+	.card.right-201 {
+		transform: translateX(250px) scale(0.8) translateZ(-300px);
+	}
 
-/* Elementos extremos (±2) - izquierda */
-.carousel-cell:has(+ .carousel-cell + .carousel-cell.is-selected) img{
-  width: 60%;
-  opacity: 0.7;
-  filter: brightness(0.85);
-  top: 8%;
-}
+	.member-name {
+		font-size: 2rem;
+	}
 
-/*.carousel-cell img{
-  width: 80%;
-  margin: 0 auto;
-  transition: width 0.4s ease;
-}*/
+	.member-role {
+		font-size: 0.8rem;
+    width: 60%;
+	}
 
-.carousel-cell.is-selected img{
-	box-shadow: 0 0 12px 4px rgba(0,0,0,0.4);
-	width: 100%;
-	margin: 0 auto;
-}
+	.member-name::before,
+	.member-name::after {
+		width: 50px;
+	}
 
-.slider-sounds.flickity-button {
-  background: transparent;
-}
+	.member-name::before {
+		left: -70px;
+	}
 
-.slider-sounds .flickity-prev-next-button {
-  width: 100px;
-  height: 100px;
-}
-
-.slider-sounds .flickity-button:disabled {
-  display: none;
-}
-.slider-sounds .flickity-prev-next-button.previous {
-  left: -40px;
-}
-.slider-sounds .flickity-prev-next-button.next {
-  right: -40px;
-}
-.slider-sounds .flickity-prev-next-button.previous {
-    left: 8% !important;
-}
-
-@media only screen and (max-width: 768px){
-	.carousel-cell {
-		width: 60%;
-		height: auto;
+	.member-name::after {
+		right: -70px;
 	}
 }
-
-*/
-
-
-.slider-sounds{
-	mask-image: linear-gradient(to right, hsla(var(--color-black), 0) 0, hsla(var(--color-black), 1) var(--page-padding-inline), hsla(var(--color-black), 1) calc(100% - var(--page-padding-inline)), hsla(var(--color-black), 0) 100%);
-	mask-image: radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(79,79,79,0) 51%, rgba(0,0,0,0.6488970588235294) 100%);
-    mask-image: radial-gradient(ellipse 82% 200% at 49% 33%,black 39%,transparent 61%);
-	mask-image: radial-gradient(ellipse 76% 226% at 50% 60%, black 56%, transparent 65%);
-}
-.slider-sounds .card article{
-	background: none;
-}
-
-.carousel{
-  padding: 1%;
-  border-radius: 0.25rem;
-}
-
-.carousel-cell {
-  width: 20%;
-  height: auto;
-  padding: 20px;
-  opacity: 0.4;
-  filter: brightness(0.6);
-  transition: opacity 0.4s ease, filter 0.4s ease, top 0.4s ease, width 0.4s ease;
-  top: 15%;
-}
-
-/* Elementos adyacentes al seleccionado (posición ±1) */
-.carousel-cell.is-selected ~ .carousel-cell:nth-child(1) img,
-.carousel-cell.is-selected + .carousel-cell img{
-  width: 80%;
-  opacity: 0.7;
-  filter: brightness(0.9);
-  top: 8%;
-}
-
-/* Elementos en los extremos (posición ±2) */
-.carousel-cell.is-selected + .carousel-cell + .carousel-cell img {
-  width: 60%;
-  opacity: 0.5;
-  filter: brightness(0.75);
-  top: 12%;
-}
-
-.carousel-cell.is-selected {
-  width: 20%;
-  opacity: 1;
-  filter: brightness(1);
-  top: 0;
-}
-
-/*.carousel-cell img{
-  width: 80%;
-  margin: 0 auto;
-  transition: width 0.4s ease;
-}*/
-
-.carousel-cell.is-selected img{
-	box-shadow: 0 0 12px 4px rgba(0,0,0,0.4);
-	width: 100%;
-	margin: 0 auto;
-}
-
-.slider-sounds.flickity-button {
-  background: transparent;
-}
-
-
-
-.slider-sounds .flickity-prev-next-button {
-  width: 100px;
-  height: 100px;
-}
-
-.slider-sounds .flickity-button:disabled {
-  display: none;
-}
-.slider-sounds .flickity-prev-next-button.previous {
-  left: -40px;
-}
-.slider-sounds .flickity-prev-next-button.next {
-  right: -40px;
-}
-.slider-sounds .flickity-prev-next-button.previous {
-    left: 8% !important;
-}
-
-@media only screen and (max-width: 768px){
-	.carousel-cell {
-		width: 60%;
-		height: auto;
-	}
-}
-
-
-
 
 </style>
+
+<script is:inline>  
+  const teamMembers = [
+	{ name: "Back to Disco", role: "El espíritu sofisticado de los 70’s reinterpretado desde la curaduría histórica de Stereo Cien." },
+	{ name: "World Music", role: "Una experiencia auditiva global que celebra cultura, viaje y sofisticación." },
+  { name: "Nu Disco", role: "Fusión de modernidad y alma vintage, mezclada para una audiencia urbana premium." },
+	{ name: "Love", role: "Sonidos elegantes que acompañan momentos íntimos y sofisticados." },
+	{ name: "Live", role: "Sesiones en vivo y música auténtica que generan cercanía con el talento y cultura musical." },
+	{ name: "Jazz and Blues", role: "Clásicos y contemporáneos para una audiencia adulta sofisticada y de alto poder adquisitivo." }
+];
+
+const cards = document.querySelectorAll(".card");
+const dots = document.querySelectorAll(".dot");
+const memberName = document.querySelector(".member-name");
+const memberRole = document.querySelector(".member-role");
+const leftArrow = document.querySelector(".nav-arrow.left");
+const rightArrow = document.querySelector(".nav-arrow.right");
+let currentIndex = 0;
+let isAnimating = false;
+
+function updateCarousel(newIndex) {
+	if (isAnimating) return;
+	isAnimating = true;
+
+	currentIndex = (newIndex + cards.length) % cards.length;
+
+	cards.forEach((card, i) => {
+		const offset = (i - currentIndex + cards.length) % cards.length;
+
+		card.classList.remove(
+			"center",
+			"left-101",
+			"left-201",
+			"right-101",
+			"right-201",
+			"hidden"
+		);
+
+		if (offset === 0) {
+			card.classList.add("center");
+		} else if (offset === 1) {
+			card.classList.add("right-101");
+		} else if (offset === 2) {
+			card.classList.add("right-201");
+		} else if (offset === cards.length - 1) {
+			card.classList.add("left-101");
+		} else if (offset === cards.length - 2) {
+			card.classList.add("left-201");
+		} else {
+			card.classList.add("hidden");
+		}
+	});
+
+	dots.forEach((dot, i) => {
+		dot.classList.toggle("active", i === currentIndex);
+	});
+
+	memberName.style.opacity = "0";
+	memberRole.style.opacity = "0";
+
+	setTimeout(() => {
+		memberName.textContent = teamMembers[currentIndex].name;
+		memberRole.textContent = teamMembers[currentIndex].role;
+		memberName.style.opacity = "1";
+		memberRole.style.opacity = "1";
+	}, 300);
+
+	setTimeout(() => {
+		isAnimating = false;
+	}, 800);
+}
+
+leftArrow.addEventListener("click", () => {
+	updateCarousel(currentIndex - 1);
+});
+
+rightArrow.addEventListener("click", () => {
+	updateCarousel(currentIndex + 1);
+});
+
+dots.forEach((dot, i) => {
+	dot.addEventListener("click", () => {
+		updateCarousel(i);
+	});
+});
+
+cards.forEach((card, i) => {
+	card.addEventListener("click", () => {
+		updateCarousel(i);
+	});
+});
+
+document.addEventListener("keydown", (e) => {
+	if (e.key === "ArrowLeft") {
+		updateCarousel(currentIndex - 1);
+	} else if (e.key === "ArrowRight") {
+		updateCarousel(currentIndex + 1);
+	}
+});
+
+let touchStartX = 0;
+let touchEndX = 0;
+
+document.addEventListener("touchstart", (e) => {
+	touchStartX = e.changedTouches[0].screenX;
+});
+
+document.addEventListener("touchend", (e) => {
+	touchEndX = e.changedTouches[0].screenX;
+	handleSwipe();
+});
+
+function handleSwipe() {
+	const swipeThreshold = 50;
+	const diff = touchStartX - touchEndX;
+
+	if (Math.abs(diff) > swipeThreshold) {
+		if (diff > 0) {
+			updateCarousel(currentIndex + 1);
+		} else {
+			updateCarousel(currentIndex - 1);
+		}
+	}
+}
+
+updateCarousel(0);
+</script>
