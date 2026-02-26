@@ -849,13 +849,22 @@ document.addEventListener('astro:page-load', ev => {
         // getInfoProg();
         console.log(getplayingstatus);
 
+        // maintain a single popup window for sound links
+        let soundWin = null;
+
         const soundButtons = ['sounds-love', 'sounds-acoustic-moods', 'sounds-retro', 'sounds-soundtracks', 'sounds-covers', 'sounds-jazz-blues', 'sounds-world-music', 'sounds-nu-disco', 'sounds-back-to-disco', 'sounds-latin', 'sounds-live'];
         soundButtons.forEach(buttonId => {
             const element = document.getElementById(buttonId);
             if (element) {
                 element.addEventListener('click', function () {
                     const soundType = buttonId.replace('sounds-', '');
-                    window.open(`/station/${soundType}?autoplay=1`, '_blank', 'width=500,height=900');
+                    const url = `/station/${soundType}?autoplay=1&utm_campaign=${soundType}`;
+                    if (!soundWin || soundWin.closed) {
+                        soundWin = window.open(url, 'soundPopup', 'width=500,height=900');
+                    } else {
+                        soundWin.location.href = url;
+                        soundWin.focus();
+                    }
                     radioStop();
                 });
             }
