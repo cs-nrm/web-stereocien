@@ -38,6 +38,8 @@ import Notificacion from "../components/Notificacion.astro";
 /*import Sliderbuenfin from '../layouts/Sliderbuenfin.astro';*/
 import DiaRadio from "../components/DiaRadio.astro";
 import SliderSounds from "../layouts/SliderSounds.astro";
+import CardsHomeEmblema from "../layouts/CardsHomeEmblema.astro";
+import CardsHomeVidavinyl from "../layouts/CardsHomeVidavinyl.astro";
 ---
 
 <BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
@@ -63,6 +65,16 @@ import SliderSounds from "../layouts/SliderSounds.astro";
                 <CardNews />
             </div>
             <Skin2 />
+        </section>
+        <section>
+            <div class="bg-[url('https://storage.googleapis.com/nrm-web/stereocien/portada-emblema-movil.png')] lg:bg-[url('https://storage.googleapis.com/nrm-web/stereocien/portada-emblema2.png')] bg-no-repeat bg-cover bg-top">
+                <div class="titulo">
+                    <img class="max-w-[328px] m-auto" src="https://storage.googleapis.com/nrm-web/stereocien/logo-emblema.png" alt="Tecate Emblema"/>
+                </div>
+                <div class="container-home p-4 mx-auto">
+                    <CardsHomeEmblema />
+                </div>
+            </div>
         </section>
         <!--section>
                 <div>
@@ -130,6 +142,18 @@ import SliderSounds from "../layouts/SliderSounds.astro";
             <Libros />
         </section>
         <LeaderBoard2 />
+        <!--section>
+            <div class="bg-[url('https://storage.googleapis.com/nrm-web/stereocien/vinyl-mobil.png')] lg:bg-[url('https://storage.googleapis.com/nrm-web/stereocien/portada-vidavinyl.jpg')] bg-no-repeat bg-cover bg-top">
+                <h1 class="text-center p-4 my-4 font-bold text-2xl lg:text-4xl">
+                    VIDA VINYL
+                </h1>
+                <div class="container-home p-4 mx-auto">
+                    <CardsHomeVidavinyl />
+                </div>
+            </div>
+            <div class="mt-4 p-2 md:p-0"><a href="https://udiscover.mx/" target="_blank"><img class="w-full max-w-[728px] h-auto m-auto " src="https://storage.googleapis.com/nrm-web/stereocien/leader-Udiscover.jpg"/></a></div>
+        </section-->
+
         <!--section>
                 <div class="container-home p-4 mx-auto">
                     <div class="flex flex-nowrap gap-2">
