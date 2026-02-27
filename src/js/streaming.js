@@ -858,7 +858,7 @@ document.addEventListener('astro:page-load', ev => {
             if (element) {
                 element.addEventListener('click', function () {
                     const soundType = buttonId.replace('sounds-', '');
-                    const url = `/station/${soundType}?autoplay=1&utm_campaign=${soundType}`;
+                    const url = `/station/${soundType}?utm_source=stereocien&utm_medium=web&utm_campaign=${soundType}&autoplay=1`;
                     if (!soundWin || soundWin.closed) {
                         soundWin = window.open(url, 'soundPopup', 'width=500,height=900');
                     } else {
