@@ -1,14 +1,15 @@
 ---
-import BaseHead from '../../components/BaseHead.astro';
-import Header from "../../components/Header.astro";
-import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
+import BaseHead from "../../components/BaseHead.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts";
 const { title } = Astro.props;
 const { img } = Astro.props;
 const { tags } = Astro.props;
 const { description } = Astro.props;
 const { slug } = Astro.params;
 
-let res = await fetch(`https://stereociendigital.com.mx/wp-json/wp/v2/sounds?slug=${slug}`);
+let res = await fetch(
+  `https://stereociendigital.com.mx/wp-json/wp/v2/sounds?slug=${slug}`,
+);
 let [post] = await res.json();
 
 const color1 = post?.["sounds_colors"]?.["color1"] || "";
@@ -18,90 +19,163 @@ const streamurl = post?.sounds_stream_url || "";
 const mounturl = post?.sounds_mount_url || "";
 
 // use the post data to populate meta tags / header
-const pageTitle = post?.title?.rendered || 'Sounds by Stereo Cien';
+const pageTitle = post?.title?.rendered || "Sounds by Stereo Cien";
 const pageDescription = post?.excerpt?.rendered || SITE_DESCRIPTION;
 
 export async function getStaticPaths() {
-  let data = await fetch("https://stereociendigital.com.mx/wp-json/wp/v2/sounds?_embed&per_page=15&_fields=title,slug");
+  let data = await fetch(
+    "https://stereociendigital.com.mx/wp-json/wp/v2/sounds?_embed&per_page=15&_fields=title,slug",
+  );
   let posts = await data.json();
 
-  return posts.map((post:any) => ({
+  return posts.map((post: any) => ({
     params: { slug: post.slug },
     props: { post: post },
   }));
 }
-
-
 ---
-<!doctype html>
-<head>
-  <BaseHead title={pageTitle} seccion={pageTitle} description={pageDescription} />
-</head>
-<Header title={SITE_TITLE} />
+
+<BaseHead
+  title="Sounds by Stereo Cien"
+  seccion={post.title.rendered}
+  description=""
+/>
+
 <body>
-<div class="sr-player-wrap">
-  <div class="sr-player" style={`--c1:${color1}; --c2:${color2}; --c3:${color3};`}>
-    <header class="sr-header">
-      <div class="sr-logo" style={`background-image:url(${post?.sounds_logo_url || ''});`}></div>
-
-      <div class="sr-headtxt">
-        <h2 class="sr-station" set:html={post.title.rendered}></h2>
-        <div class="sr-live">
-          <span id="live-dot" class="sr-live-dot"></span>
-          <span class="sr-live-label">LIVE NOW</span>
+  <div class="sr-player-wrap">
+    <div
+      class="sr-player"
+      style={`--c1:${color1}; --c2:${color2}; --c3:${color3};`}
+    >
+      <header class="sr-header">
+        <div
+          class="sr-logo"
+          style={`background-image:url(${post?.sounds_logo_url || ""});`}
+        >
         </div>
-      </div>
-    </header>
 
-    <main class="sr-main">
-      <div class="sr-artframe">
-        <div id="artwork" class="sr-art" style={`background-image:url(${post?.sounds_logo_url || ''});`}></div>
-      </div>
+        <div class="sr-headtxt">
+          <h2 class="sr-station" set:html={post.title.rendered} />
+          <div class="sr-live">
+            <span id="live-dot" class="sr-live-dot"></span>
+            <span class="sr-live-label">LIVE NOW</span>
+          </div>
+        </div>
+      </header>
 
-      <div class="sr-meta">
-        <h1 id="track-title" class="sr-title"></h1>
-        <div id="track-artist" class="sr-artist"></div>
-      </div>
+      <main class="sr-main">
+        <div class="sr-artframe">
+          <div
+            id="artwork"
+            class="sr-art"
+            style={`background-image:url(${post?.sounds_logo_url || ""});`}
+          >
+          </div>
+        </div>
 
-      <div class="sr-controls">
-        <button id="fav-btn" class="sr-iconbtn" type="button" aria-label="Favorito">
-          <svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" stroke-width="1" aria-hidden="true">
-            <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path>
+        <div class="sr-meta">
+          <h1 id="track-title" class="sr-title"></h1>
+          <div id="track-artist" class="sr-artist"></div>
+        </div>
+
+        <div class="sr-controls">
+          <button
+            id="fav-btn"
+            class="sr-iconbtn"
+            type="button"
+            aria-label="Favorito"
+          >
+            <svg
+              xmlns="https://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              width="28"
+              height="28"
+              stroke-width="1"
+              aria-hidden="true"
+            >
+              <path
+                d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"
+              ></path>
             </svg>
-        </button>
+          </button>
 
-        <button id="play-btn" class="sr-play" type="button" aria-label="Reproducir / Pausar">
-          <svg id="icon-play" viewBox="0 0 24 24" width="56" height="56" fill="currentColor" aria-hidden="true" style="transform: translateX(2px);">
-            <path d="M8 5v14l12-7-12-7z" />
-          </svg>
-          <svg id="icon-pause" class="sr-hidden" viewBox="0 0 24 24" width="56" height="56" fill="currentColor" aria-hidden="true">
-            <path d="M6 5h4v14H6V5zm8 0h4v14h-4V5z" />
-          </svg>
-          <span id="icon-loading" class="sr-hidden sr-spinner" aria-hidden="true"></span>
-        </button>
-
-        <button id="share-btn" class="sr-iconbtn" type="button" aria-label="Compartir">
-          <svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" stroke-width="1" aria-hidden="true">
-            <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z"></path>
+          <button
+            id="play-btn"
+            class="sr-play"
+            type="button"
+            aria-label="Reproducir / Pausar"
+          >
+            <svg
+              id="icon-play"
+              viewBox="0 0 24 24"
+              width="56"
+              height="56"
+              fill="currentColor"
+              aria-hidden="true"
+              style="transform: translateX(2px);"
+            >
+              <path d="M8 5v14l12-7-12-7z"></path>
             </svg>
-        </button>
-      </div>
-    </main>
+            <svg
+              id="icon-pause"
+              class="sr-hidden"
+              viewBox="0 0 24 24"
+              width="56"
+              height="56"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M6 5h4v14H6V5zm8 0h4v14h-4V5z"></path>
+            </svg>
+            <span
+              id="icon-loading"
+              class="sr-hidden sr-spinner"
+              aria-hidden="true"></span>
+          </button>
 
-    <footer class="sr-footer">
-      <div class="sr-pill">
-        <span id="eq-dot" class="sr-eqdot"></span>
-        <span id="status-pill" class="sr-pilltext">LISTO</span>
-      </div>
+          <button
+            id="share-btn"
+            class="sr-iconbtn"
+            type="button"
+            aria-label="Compartir"
+          >
+            <svg
+              xmlns="https://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              width="28"
+              height="28"
+              stroke-width="1"
+              aria-hidden="true"
+            >
+              <path
+                d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </main>
 
-      <div class="sr-handle"></div>
-    </footer>
+      <footer class="sr-footer">
+        <div class="sr-pill">
+          <span id="eq-dot" class="sr-eqdot"></span>
+          <span id="status-pill" class="sr-pilltext">LISTO</span>
+        </div>
+
+        <div class="sr-handle"></div>
+      </footer>
+    </div>
   </div>
-</div>
 </body>
-</html>
 
-<script is:inline define:vars={{streamurl, mounturl, station_slug: slug}}>
+<script is:inline define:vars={{ streamurl, mounturl, station_slug: slug }}>
   // Single-station player (layout tipo screenshot)
   let audioPlayer = null;
   let isPlaying = false;
@@ -111,90 +185,90 @@ export async function getStaticPaths() {
   let ignoreAudioErrorsUntil = 0;
 
   // Artwork (iTunes) cache + fallback to station image
-  let stationArtworkBg = '';
-  let lastArtworkKey = '';
+  let stationArtworkBg = "";
+  let lastArtworkKey = "";
 
   // Current track state (for vote/share)
-  let currentTitle = '';
-  let currentArtist = '';
+  let currentTitle = "";
+  let currentArtist = "";
 
   const $ = (id) => document.getElementById(id);
 
   function shouldAutoplay() {
     try {
-      const params = new URLSearchParams(window.location.search || '');
-      const v = params.get('autoplay');
-      return v === '1' || v === 'true' || v === 'yes';
+      const params = new URLSearchParams(window.location.search || "");
+      const v = params.get("autoplay");
+      return v === "1" || v === "true" || v === "yes";
     } catch (e) {
       return false;
     }
   }
 
   function setStatus(label) {
-    const el = $('status-pill');
-    if (el) el.textContent = String(label || '').toUpperCase();
+    const el = $("status-pill");
+    if (el) el.textContent = String(label || "").toUpperCase();
   }
 
   function setNowPlaying(title, artist) {
-    currentTitle = String(title || '').trim();
-    currentArtist = String(artist || '').trim();
+    currentTitle = String(title || "").trim();
+    currentArtist = String(artist || "").trim();
 
-    const t = $('track-title');
-    const a = $('track-artist');
-    if (t) t.textContent = currentTitle || '';
-    if (a) a.textContent = currentArtist || '';
+    const t = $("track-title");
+    const a = $("track-artist");
+    if (t) t.textContent = currentTitle || "";
+    if (a) a.textContent = currentArtist || "";
   }
 
   function setPlayingUI(playing) {
-    const playIcon = $('icon-play');
-    const pauseIcon = $('icon-pause');
+    const playIcon = $("icon-play");
+    const pauseIcon = $("icon-pause");
     if (playIcon && pauseIcon) {
       if (playing) {
-        playIcon.classList.add('sr-hidden');
-        pauseIcon.classList.remove('sr-hidden');
+        playIcon.classList.add("sr-hidden");
+        pauseIcon.classList.remove("sr-hidden");
       } else {
-        pauseIcon.classList.add('sr-hidden');
-        playIcon.classList.remove('sr-hidden');
+        pauseIcon.classList.add("sr-hidden");
+        playIcon.classList.remove("sr-hidden");
       }
     }
 
-    const dot = $('live-dot');
+    const dot = $("live-dot");
     if (dot) {
-      dot.style.opacity = playing ? '1' : '0.35';
-      dot.style.boxShadow = playing ? '0 0 8px rgba(239, 68, 68, 0.8)' : 'none';
+      dot.style.opacity = playing ? "1" : "0.35";
+      dot.style.boxShadow = playing ? "0 0 8px rgba(239, 68, 68, 0.8)" : "none";
     }
 
-    const eq = $('eq-dot');
+    const eq = $("eq-dot");
     if (eq) {
-      if (playing) eq.classList.add('is-playing');
-      else eq.classList.remove('is-playing');
+      if (playing) eq.classList.add("is-playing");
+      else eq.classList.remove("is-playing");
     }
   }
 
   function setLoadingUI(loading) {
-    const playBtn = $('play-btn');
-    const playIcon = $('icon-play');
-    const pauseIcon = $('icon-pause');
-    const loadingEl = $('icon-loading');
+    const playBtn = $("play-btn");
+    const playIcon = $("icon-play");
+    const pauseIcon = $("icon-pause");
+    const loadingEl = $("icon-loading");
 
     if (loadingEl) {
-      if (loading) loadingEl.classList.remove('sr-hidden');
-      else loadingEl.classList.add('sr-hidden');
+      if (loading) loadingEl.classList.remove("sr-hidden");
+      else loadingEl.classList.add("sr-hidden");
     }
 
     // While loading, hide play/pause icons to avoid confusion.
     if (playIcon && pauseIcon) {
       if (loading) {
-        playIcon.classList.add('sr-hidden');
-        pauseIcon.classList.add('sr-hidden');
+        playIcon.classList.add("sr-hidden");
+        pauseIcon.classList.add("sr-hidden");
       } else {
         // When not loading, reflect current playing state.
         if (isPlaying) {
-          playIcon.classList.add('sr-hidden');
-          pauseIcon.classList.remove('sr-hidden');
+          playIcon.classList.add("sr-hidden");
+          pauseIcon.classList.remove("sr-hidden");
         } else {
-          pauseIcon.classList.add('sr-hidden');
-          playIcon.classList.remove('sr-hidden');
+          pauseIcon.classList.add("sr-hidden");
+          playIcon.classList.remove("sr-hidden");
         }
       }
     }
@@ -204,36 +278,40 @@ export async function getStaticPaths() {
   }
 
   function parseNowPlaying(str) {
-    const s = String(str || '').trim();
-    if (!s) return { artist: '', title: '' };
+    const s = String(str || "").trim();
+    if (!s) return { artist: "", title: "" };
 
     // Prefer artist — title
-    if (s.includes(' — ')) {
-      const [artist, title] = s.split(' — ');
-      return { artist: (artist || '').trim(), title: (title || '').trim() };
+    if (s.includes(" — ")) {
+      const [artist, title] = s.split(" — ");
+      return { artist: (artist || "").trim(), title: (title || "").trim() };
     }
 
     // Also support en-dash and hyphen
-    if (s.includes(' – ')) {
-      const [artist, title] = s.split(' – ');
-      return { artist: (artist || '').trim(), title: (title || '').trim() };
+    if (s.includes(" – ")) {
+      const [artist, title] = s.split(" – ");
+      return { artist: (artist || "").trim(), title: (title || "").trim() };
     }
 
-    if (s.includes(' - ')) {
-      const [artist, title] = s.split(' - ');
-      return { artist: (artist || '').trim(), title: (title || '').trim() };
+    if (s.includes(" - ")) {
+      const [artist, title] = s.split(" - ");
+      return { artist: (artist || "").trim(), title: (title || "").trim() };
     }
 
-    return { artist: '', title: s };
+    return { artist: "", title: s };
   }
 
   function getMountTokenFromUrl(url) {
-    const raw = String(url || '').trim();
-    if (!raw) return '';
+    const raw = String(url || "").trim();
+    if (!raw) return "";
 
     // If it's already a token (no scheme and no dots), return as-is.
     // Example: "7b1nlsk8gycuv"
-    if (!/^https?:\/\//i.test(raw) && !raw.includes('.') && !raw.includes('/')) {
+    if (
+      !/^https?:\/\//i.test(raw) &&
+      !raw.includes(".") &&
+      !raw.includes("/")
+    ) {
       return raw;
     }
 
@@ -242,42 +320,48 @@ export async function getStaticPaths() {
 
     try {
       const u = new URL(candidate);
-      const parts = u.pathname.replace(/^\/+/, '').split('/');
-      return parts[0] || '';
+      const parts = u.pathname.replace(/^\/+/, "").split("/");
+      return parts[0] || "";
     } catch (e) {
-      return '';
+      return "";
     }
   }
 
   function getZenoSubscribeUrl() {
-    const BASE = 'https://api.zeno.fm/mounts/metadata/subscribe/';
+    const BASE = "https://api.zeno.fm/mounts/metadata/subscribe/";
 
-    const rawMount = String(mounturl || '').trim();
+    const rawMount = String(mounturl || "").trim();
 
     // Extract token from mounturl (token, stream URL, or subscribe URL)
-    let token = '';
+    let token = "";
 
     if (rawMount) {
       // If it's already a bare token
-      if (!/^https?:\/\//i.test(rawMount) && !rawMount.includes('.') && !rawMount.includes('/')) {
+      if (
+        !/^https?:\/\//i.test(rawMount) &&
+        !rawMount.includes(".") &&
+        !rawMount.includes("/")
+      ) {
         token = rawMount;
       } else {
         // If it's a URL (or domain/path), parse and extract token from pathname.
-        const candidate = /^https?:\/\//i.test(rawMount) ? rawMount : `https://${rawMount}`;
+        const candidate = /^https?:\/\//i.test(rawMount)
+          ? rawMount
+          : `https://${rawMount}`;
         try {
           const u = new URL(candidate);
-          const path = u.pathname || '';
+          const path = u.pathname || "";
 
           // Common: /mounts/metadata/subscribe/<token>
           const m = path.match(/\/mounts\/metadata\/subscribe\/([^/?#]+)/i);
           if (m && m[1]) token = m[1];
           else {
             // Otherwise, use first path segment as token
-            const parts = path.replace(/^\/+/, '').split('/');
+            const parts = path.replace(/^\/+/, "").split("/");
             if (parts[0]) token = parts[0];
           }
         } catch (e) {
-          token = '';
+          token = "";
         }
       }
     }
@@ -285,18 +369,18 @@ export async function getStaticPaths() {
     // Fallback: derive from streamurl
     if (!token) token = getMountTokenFromUrl(streamurl);
 
-    return token ? `${BASE}${token}` : '';
+    return token ? `${BASE}${token}` : "";
   }
 
   function normalizeStreamUrl(url) {
-    const raw = String(url || '').trim();
-    if (!raw) return '';
+    const raw = String(url || "").trim();
+    if (!raw) return "";
 
     // Already a full URL.
     if (/^https?:\/\//i.test(raw)) return raw;
 
     // Domain without scheme (e.g. example.com/stream). Add https.
-    if (raw.includes('.') || raw.includes('/')) return `https://${raw}`;
+    if (raw.includes(".") || raw.includes("/")) return `https://${raw}`;
 
     // Bare mount token (Zeno). Build the stream URL.
     return `https://stream.zeno.fm/${raw}`;
@@ -314,32 +398,37 @@ export async function getStaticPaths() {
   const ART_TTL_MS = 1000 * 60 * 60 * 24; // 24 hours
 
   function artKey(artist, title) {
-    const a = String(artist || '').trim().toLowerCase();
-    const t = String(title || '').trim().toLowerCase();
+    const a = String(artist || "")
+      .trim()
+      .toLowerCase();
+    const t = String(title || "")
+      .trim()
+      .toLowerCase();
     return `art:${a}|${t}`;
   }
 
   function upscaleItunes(url) {
-    return String(url || '').replace(/\/\d+x\d+bb\./, '/600x600bb.');
+    return String(url || "").replace(/\/\d+x\d+bb\./, "/600x600bb.");
   }
 
   function setArtworkBg(bgValue) {
-    const art = $('artwork');
+    const art = $("artwork");
     if (!art) return;
-    art.style.backgroundImage = bgValue || stationArtworkBg || art.style.backgroundImage;
+    art.style.backgroundImage =
+      bgValue || stationArtworkBg || art.style.backgroundImage;
   }
 
   async function getArtworkFromItunes(artist, title) {
-    const a = String(artist || '').trim();
-    const t = String(title || '').trim();
-    if (!a && !t) return '';
+    const a = String(artist || "").trim();
+    const t = String(title || "").trim();
+    if (!a && !t) return "";
 
     const key = artKey(a, t);
 
     // localStorage cache
     try {
-      const hit = JSON.parse(localStorage.getItem(key) || 'null');
-      if (hit && hit.url && hit.ts && (Date.now() - hit.ts) < ART_TTL_MS) {
+      const hit = JSON.parse(localStorage.getItem(key) || "null");
+      if (hit && hit.url && hit.ts && Date.now() - hit.ts < ART_TTL_MS) {
         return hit.url;
       }
     } catch (e) {}
@@ -347,35 +436,36 @@ export async function getStaticPaths() {
     const term = `${a} ${t}`.trim();
     const qs = new URLSearchParams({
       term,
-      entity: 'song',
-      limit: '1',
-      country: 'MX',
-      media: 'music',
+      entity: "song",
+      limit: "1",
+      country: "MX",
+      media: "music",
     });
 
     try {
       const r = await fetch(`https://itunes.apple.com/search?${qs.toString()}`);
       const j = await r.json();
       const item = j && j.results && j.results[0] ? j.results[0] : null;
-      const raw = item ? (item.artworkUrl100 || item.artworkUrl60 || '') : '';
-      const url = raw ? upscaleItunes(raw) : '';
+      const raw = item ? item.artworkUrl100 || item.artworkUrl60 || "" : "";
+      const url = raw ? upscaleItunes(raw) : "";
 
       try {
-        if (url) localStorage.setItem(key, JSON.stringify({ url, ts: Date.now() }));
+        if (url)
+          localStorage.setItem(key, JSON.stringify({ url, ts: Date.now() }));
       } catch (e) {}
 
       return url;
     } catch (e) {
-      return '';
+      return "";
     }
   }
 
   async function updateArtwork(artist, title) {
-    const a = String(artist || '').trim();
-    const t = String(title || '').trim();
+    const a = String(artist || "").trim();
+    const t = String(title || "").trim();
 
     // Evita llamadas si no hay info real
-    if (!a && (!t || t.toUpperCase() === 'EN VIVO')) {
+    if (!a && (!t || t.toUpperCase() === "EN VIVO")) {
       if (stationArtworkBg) setArtworkBg(stationArtworkBg);
       return;
     }
@@ -392,45 +482,51 @@ export async function getStaticPaths() {
   // ------------------------------
   // Vote (Like) + Share
   // ------------------------------
-  const VOTE_URL = 'https://stereociendigital.com.mx/9xjkftr7/8s4v3f1l3s.php';
-  const VOTED_COLOR = '#ef4444';
+  const VOTE_URL = "https://stereociendigital.com.mx/9xjkftr7/8s4v3f1l3s.php";
+  const VOTED_COLOR = "#ef4444";
 
   // Allow re-voting for the same song after this cooldown.
   // Default: 2 hours (change if needed).
   const VOTE_TTL_MS = 1000 * 60 * 2;
 
   function detectarDispositivo() {
-    return /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
+    return /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)
+      ? "mobile"
+      : "desktop";
   }
 
   function detectarNavegador() {
     const ua = navigator.userAgent;
 
-    let navegador = 'desconocido';
-    if (ua.includes('Chrome')) navegador = 'Chrome';
-    else if (ua.includes('Firefox')) navegador = 'Firefox';
-    else if (ua.includes('Safari') && !ua.includes('Chrome')) navegador = 'Safari';
-    else if (ua.includes('Edge')) navegador = 'Edge';
-    else if (ua.includes('MSIE') || ua.includes('Trident')) navegador = 'IE';
+    let navegador = "desconocido";
+    if (ua.includes("Chrome")) navegador = "Chrome";
+    else if (ua.includes("Firefox")) navegador = "Firefox";
+    else if (ua.includes("Safari") && !ua.includes("Chrome"))
+      navegador = "Safari";
+    else if (ua.includes("Edge")) navegador = "Edge";
+    else if (ua.includes("MSIE") || ua.includes("Trident")) navegador = "IE";
 
-    let so = 'desconocido';
-    if (ua.includes('Windows')) so = 'Windows';
-    else if (ua.includes('Mac')) so = 'MacOS';
-    else if (ua.includes('Linux')) so = 'Linux';
-    else if (ua.includes('Android')) so = 'Android';
-    else if (ua.includes('iPhone') || ua.includes('iPad')) so = 'iOS';
+    let so = "desconocido";
+    if (ua.includes("Windows")) so = "Windows";
+    else if (ua.includes("Mac")) so = "MacOS";
+    else if (ua.includes("Linux")) so = "Linux";
+    else if (ua.includes("Android")) so = "Android";
+    else if (ua.includes("iPhone") || ua.includes("iPad")) so = "iOS";
 
     return { navegador, sistema: so };
   }
 
   function getStationSlug() {
     // Prefer the server-provided slug (more reliable than parsing location)
-    const injected = typeof station_slug !== 'undefined' ? String(station_slug || '').trim() : '';
+    const injected =
+      typeof station_slug !== "undefined"
+        ? String(station_slug || "").trim()
+        : "";
     if (injected) return injected;
 
     // Fallback: /sounds/<slug> or /sounds/<slug>/
-    const parts = window.location.pathname.split('/').filter(Boolean);
-    return parts[parts.length - 1] || 'unknown';
+    const parts = window.location.pathname.split("/").filter(Boolean);
+    return parts[parts.length - 1] || "unknown";
   }
 
   function voteStorageKey(station, artist, title) {
@@ -443,26 +539,32 @@ export async function getStaticPaths() {
       if (!raw) return { voted: false, ts: 0 };
 
       // Legacy format: '1' -> migrate to JSON record with current timestamp.
-      if (raw === '1') {
+      if (raw === "1") {
         const rec = { ts: Date.now() };
-        try { localStorage.setItem(key, JSON.stringify(rec)); } catch (e) {}
+        try {
+          localStorage.setItem(key, JSON.stringify(rec));
+        } catch (e) {}
         return { voted: true, ts: rec.ts };
       }
 
       const obj = JSON.parse(raw);
-      const ts = obj && typeof obj.ts === 'number' ? obj.ts : 0;
+      const ts = obj && typeof obj.ts === "number" ? obj.ts : 0;
       if (!ts) {
         // Unknown format; clear it.
-        try { localStorage.removeItem(key); } catch (e) {}
+        try {
+          localStorage.removeItem(key);
+        } catch (e) {}
         return { voted: false, ts: 0 };
       }
 
-      if ((Date.now() - ts) < VOTE_TTL_MS) {
+      if (Date.now() - ts < VOTE_TTL_MS) {
         return { voted: true, ts };
       }
 
       // Expired
-      try { localStorage.removeItem(key); } catch (e) {}
+      try {
+        localStorage.removeItem(key);
+      } catch (e) {}
       return { voted: false, ts };
     } catch (e) {
       return { voted: false, ts: 0 };
@@ -476,15 +578,15 @@ export async function getStaticPaths() {
   }
 
   function setLikeUI(voted) {
-    const btn = $('fav-btn');
+    const btn = $("fav-btn");
     if (!btn) return;
 
-    const svg = btn.querySelector('svg');
+    const svg = btn.querySelector("svg");
     if (svg) {
-      svg.style.fill = voted ? VOTED_COLOR : 'none';
+      svg.style.fill = voted ? VOTED_COLOR : "none";
     }
 
-    btn.dataset.voted = voted ? '1' : '0';
+    btn.dataset.voted = voted ? "1" : "0";
 
     // Allow voting again on the next track.
     // If voted for the current track, keep disabled; otherwise enable.
@@ -505,29 +607,37 @@ export async function getStaticPaths() {
     });
 
     const resp = await fetch(VOTE_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+      },
       body,
     });
 
     // endpoint returns JSON
     const data = await resp.json();
     if (!resp.ok) throw new Error(data?.message || `HTTP ${resp.status}`);
-    if (data?.status !== 'success') throw new Error(data?.message || 'Error al votar');
+    if (data?.status !== "success")
+      throw new Error(data?.message || "Error al votar");
 
     return data;
   }
 
   async function handleLikeClick() {
-    const btn = $('fav-btn');
+    const btn = $("fav-btn");
     if (!btn) return;
 
     const station = getStationSlug();
-    const artist = String(currentArtist || '').trim();
-    const title = String(currentTitle || '').trim();
+    const artist = String(currentArtist || "").trim();
+    const title = String(currentTitle || "").trim();
 
-    if (!artist || !title || title.toUpperCase() === 'EN VIVO' || artist.toUpperCase() === 'EN VIVO') {
-      console.log('[vote] No hay canción válida para votar.');
+    if (
+      !artist ||
+      !title ||
+      title.toUpperCase() === "EN VIVO" ||
+      artist.toUpperCase() === "EN VIVO"
+    ) {
+      console.log("[vote] No hay canción válida para votar.");
       return;
     }
 
@@ -535,8 +645,8 @@ export async function getStaticPaths() {
 
     try {
       const rec = getVoteRecord(key);
-      if (rec.voted || btn.dataset.voted === '1') {
-        console.log('[vote] Ya votaste por esta canción (cooldown activo).');
+      if (rec.voted || btn.dataset.voted === "1") {
+        console.log("[vote] Ya votaste por esta canción (cooldown activo).");
         setLikeUI(true);
         return;
       }
@@ -549,27 +659,34 @@ export async function getStaticPaths() {
       await sendVote(station, artist, title);
       setLikeUI(true);
       setVoteRecord(key);
-      console.log('[vote] Voto registrado con éxito.');
+      console.log("[vote] Voto registrado con éxito.");
     } catch (err) {
-      console.log('[vote] No se pudo registrar el voto:', err && (err.message || err));
+      console.log(
+        "[vote] No se pudo registrar el voto:",
+        err && (err.message || err),
+      );
       btn.disabled = false;
     }
   }
 
   async function handleShareClick() {
     const station = getStationSlug();
-    const artist = String(currentArtist || '').trim();
-    const title = String(currentTitle || '').trim();
+    const artist = String(currentArtist || "").trim();
+    const title = String(currentTitle || "").trim();
 
     const pageUrl = window.location.href;
-    const msg = (artist && title)
-      ? `Estoy escuchando "${title}" de ${artist} en ${pageUrl}`
-      : `Estoy escuchando ${pageUrl}`;
+    const msg =
+      artist && title
+        ? `Estoy escuchando "${title}" de ${artist} en ${pageUrl}`
+        : `Estoy escuchando ${pageUrl}`;
 
     if (navigator.share) {
       try {
         await navigator.share({
-          title: (artist && title) ? `${title} - ${artist}` : `Stereo Cien (${station})`,
+          title:
+            artist && title
+              ? `${title} - ${artist}`
+              : `Stereo Cien (${station})`,
           text: msg,
           url: pageUrl,
         });
@@ -581,15 +698,15 @@ export async function getStaticPaths() {
 
     // WhatsApp fallback
     const wa = `https://api.whatsapp.com/send/?text=${encodeURIComponent(msg)}`;
-    window.open(wa, '_blank', 'noopener,noreferrer');
+    window.open(wa, "_blank", "noopener,noreferrer");
   }
 
   function syncLikeStateFromStorage() {
     const station = getStationSlug();
-    const artist = String(currentArtist || '').trim();
-    const title = String(currentTitle || '').trim();
+    const artist = String(currentArtist || "").trim();
+    const title = String(currentTitle || "").trim();
 
-    if (!artist || !title || title.toUpperCase() === 'EN VIVO') {
+    if (!artist || !title || title.toUpperCase() === "EN VIVO") {
       setLikeUI(false);
       return;
     }
@@ -606,7 +723,11 @@ export async function getStaticPaths() {
   function startMetadataFeed() {
     stopMetadataFeed();
     const subscribeUrl = getZenoSubscribeUrl();
-    console.log('[metadata] subscribeUrl:', subscribeUrl, { mounturl, streamurl, token: subscribeUrl ? subscribeUrl.split('/').pop() : '' });
+    console.log("[metadata] subscribeUrl:", subscribeUrl, {
+      mounturl,
+      streamurl,
+      token: subscribeUrl ? subscribeUrl.split("/").pop() : "",
+    });
     if (!subscribeUrl) return;
 
     // Quick probe to see if the endpoint is reachable / CORS / content-type.
@@ -614,80 +735,98 @@ export async function getStaticPaths() {
       const ac = new AbortController();
       setTimeout(() => ac.abort(), 2500);
       fetch(subscribeUrl, {
-        method: 'GET',
-        mode: 'cors',
+        method: "GET",
+        mode: "cors",
         signal: ac.signal,
-        headers: { 'Accept': 'text/event-stream' },
+        headers: { Accept: "text/event-stream" },
       })
         .then((r) => {
-          console.log('[metadata] probe:', {
+          console.log("[metadata] probe:", {
             ok: r.ok,
             status: r.status,
-            contentType: r.headers.get('content-type'),
+            contentType: r.headers.get("content-type"),
           });
         })
         .catch((e) => {
-          console.log('[metadata] probe error:', e && (e.message || e));
+          console.log("[metadata] probe error:", e && (e.message || e));
         });
     } catch (e) {
-      console.log('[metadata] probe setup error:', e);
+      console.log("[metadata] probe setup error:", e);
     }
 
     try {
       metadataES = new EventSource(subscribeUrl);
       metadataES.onopen = function () {
-        console.log('[metadata] EventSource open');
+        console.log("[metadata] EventSource open");
         // Don't overwrite PLAYING status, but indicate metadata channel is alive.
-        if (!isPlaying) setStatus('LISTO');
+        if (!isPlaying) setStatus("LISTO");
       };
     } catch (e) {
-      console.warn('No se pudo iniciar EventSource:', e);
+      console.warn("No se pudo iniciar EventSource:", e);
       return;
     }
 
     metadataES.onmessage = function (ev) {
       if (!hasUserPressedPlay) return;
-      console.log('[metadata] raw message:', ev.data);
+      console.log("[metadata] raw message:", ev.data);
 
       try {
         const data = JSON.parse(ev.data);
 
         // Some stations send a single combined field like: "Artist - Title" or "Title - Artist"
-        const streamTitle = data.streamTitle || data.streamtitle || data.stream_title || data.stream_title_text || '';
+        const streamTitle =
+          data.streamTitle ||
+          data.streamtitle ||
+          data.stream_title ||
+          data.stream_title_text ||
+          "";
 
-        const artist = data.artist || data.performer || data.artist_name || '';
-        const title = data.title || data.song || data.track || data.song_title || '';
+        const artist = data.artist || data.performer || data.artist_name || "";
+        const title =
+          data.title || data.song || data.track || data.song_title || "";
 
         // Build a best-effort string to parse
-        const now = (artist && title)
-          ? `${artist} — ${title}`
-          : (streamTitle || title || artist || '');
+        const now =
+          artist && title
+            ? `${artist} — ${title}`
+            : streamTitle || title || artist || "";
 
-        console.log('[metadata] parsed json ->', { artist, title, streamTitle, now });
+        console.log("[metadata] parsed json ->", {
+          artist,
+          title,
+          streamTitle,
+          now,
+        });
         const parsed = parseNowPlaying(now);
-        console.log('[metadata] parseNowPlaying ->', parsed);
-        console.log('[metadata] UI ->', { title: (parsed.title || 'EN VIVO'), artist: (parsed.artist || '') });
+        console.log("[metadata] parseNowPlaying ->", parsed);
+        console.log("[metadata] UI ->", {
+          title: parsed.title || "EN VIVO",
+          artist: parsed.artist || "",
+        });
         if (parsed.title || parsed.artist) {
-          setNowPlaying(parsed.title || 'EN VIVO', parsed.artist || '');
-          updateArtwork(parsed.artist || '', parsed.title || '');
+          setNowPlaying(parsed.title || "EN VIVO", parsed.artist || "");
+          updateArtwork(parsed.artist || "", parsed.title || "");
           syncLikeStateFromStorage();
         }
       } catch (err) {
-        const raw = (ev && ev.data) ? String(ev.data) : '';
-        console.log('[metadata] non-json payload ->', raw);
+        const raw = ev && ev.data ? String(ev.data) : "";
+        console.log("[metadata] non-json payload ->", raw);
         const parsed = parseNowPlaying(raw);
-        console.log('[metadata] parseNowPlaying ->', parsed);
-        console.log('[metadata] UI ->', { title: (parsed.title || 'EN VIVO'), artist: (parsed.artist || '') });
+        console.log("[metadata] parseNowPlaying ->", parsed);
+        console.log("[metadata] UI ->", {
+          title: parsed.title || "EN VIVO",
+          artist: parsed.artist || "",
+        });
         if (parsed.title || parsed.artist) {
-          setNowPlaying(parsed.title || 'EN VIVO', parsed.artist || '');
-          updateArtwork(parsed.artist || '', parsed.title || '');
+          setNowPlaying(parsed.title || "EN VIVO", parsed.artist || "");
+          updateArtwork(parsed.artist || "", parsed.title || "");
           syncLikeStateFromStorage();
         }
       }
     };
 
     metadataES.onerror = function (e) {
-      console.warn('[metadata] EventSource error (will auto-retry):', e);
+      console.warn("[metadata] EventSource error (will auto-retry):", e);
       // Do NOT close here; EventSource reconnects automatically.
       // If you want to stop retries, we will close it when pausing.
     };
@@ -695,53 +834,53 @@ export async function getStaticPaths() {
 
   function stopMetadataFeed() {
     if (metadataES) {
-      console.log('[metadata] EventSource close');
+      console.log("[metadata] EventSource close");
       metadataES.close();
       metadataES = null;
     }
   }
 
   function attachAudioListeners(player) {
-    player.addEventListener('playing', function () {
+    player.addEventListener("playing", function () {
       isPlaying = true;
       setLoadingUI(false);
-      setStatus('REPRODUCIENDO');
+      setStatus("REPRODUCIENDO");
       setPlayingUI(true);
     });
 
-    player.addEventListener('pause', function () {
+    player.addEventListener("pause", function () {
       isPlaying = false;
       setLoadingUI(false);
       if (isStopping) {
-        setStatus('DETENIDO');
+        setStatus("DETENIDO");
         isStopping = false;
       } else {
-        setStatus('PAUSADO');
+        setStatus("PAUSADO");
       }
       setPlayingUI(false);
     });
 
-    player.addEventListener('waiting', function () {
+    player.addEventListener("waiting", function () {
       // Buffering/connecting
       setLoadingUI(true);
-      setStatus('CARGANDO');
+      setStatus("CARGANDO");
     });
 
-    player.addEventListener('canplay', function () {
+    player.addEventListener("canplay", function () {
       setLoadingUI(false);
-      if (!isPlaying) setStatus('LISTO');
+      if (!isPlaying) setStatus("LISTO");
     });
 
-    player.addEventListener('error', function (e) {
+    player.addEventListener("error", function (e) {
       // During STOP/reset, browsers may emit an error when we clear src/load.
       if (Date.now() < ignoreAudioErrorsUntil || isStopping || !player.src) {
-        console.log('[audio] ignored error during stop/reset');
+        console.log("[audio] ignored error during stop/reset");
         return;
       }
 
       setLoadingUI(false);
-      console.error('Error de audio:', e);
-      setStatus('ERROR');
+      console.error("Error de audio:", e);
+      setStatus("ERROR");
       isPlaying = false;
       setPlayingUI(false);
       stopMetadataFeed();
@@ -749,20 +888,20 @@ export async function getStaticPaths() {
   }
 
   function playRadio() {
-    if (audioPlayer && (!audioPlayer.src || audioPlayer.src === '')) {
+    if (audioPlayer && (!audioPlayer.src || audioPlayer.src === "")) {
       const src = freshStreamUrl(streamurl);
       if (src) audioPlayer.src = src;
     }
     if (!audioPlayer) return;
-    setStatus('CONECTANDO');
+    setStatus("CONECTANDO");
     setLoadingUI(true);
     startMetadataFeed();
 
     audioPlayer.play().catch((error) => {
-      console.error('Error al reproducir:', error);
-      setStatus('ERROR');
+      console.error("Error al reproducir:", error);
+      setStatus("ERROR");
       setLoadingUI(false);
-      if (error && error.name === 'NotAllowedError') setStatus('TOCA ▶');
+      if (error && error.name === "NotAllowedError") setStatus("TOCA ▶");
     });
   }
 
@@ -773,45 +912,49 @@ export async function getStaticPaths() {
     isStopping = true;
     ignoreAudioErrorsUntil = Date.now() + 1500;
 
-    try { audioPlayer.pause(); } catch (e) {}
+    try {
+      audioPlayer.pause();
+    } catch (e) {}
     stopMetadataFeed();
 
     // Fully reset the audio element so the next Play reconnects from LIVE.
     try {
-      audioPlayer.src = '';
+      audioPlayer.src = "";
       audioPlayer.load();
     } catch (e) {}
 
     try {
       audioPlayer = new Audio();
-      audioPlayer.preload = 'none';
+      audioPlayer.preload = "none";
       attachAudioListeners(audioPlayer);
     } catch (e) {
-      console.error('No se pudo recrear el audio element:', e);
+      console.error("No se pudo recrear el audio element:", e);
     }
 
     isPlaying = false;
     setPlayingUI(false);
     setLoadingUI(false);
-    setStatus('DETENIDO');
+    setStatus("DETENIDO");
     // Clear the ignore window shortly after the reset completes.
-    setTimeout(() => { ignoreAudioErrorsUntil = 0; }, 1600);
+    setTimeout(() => {
+      ignoreAudioErrorsUntil = 0;
+    }, 1600);
   }
 
-  document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener("DOMContentLoaded", function () {
     audioPlayer = new Audio();
-    audioPlayer.preload = 'none';
+    audioPlayer.preload = "none";
 
-    setStatus('LISTO');
-    setNowPlaying('', '');
+    setStatus("LISTO");
+    setNowPlaying("", "");
     setPlayingUI(false);
     setLoadingUI(false);
     // initialize like UI
     setLikeUI(false);
 
     // Save station artwork as fallback
-    const artEl = $('artwork');
-    if (artEl) stationArtworkBg = artEl.style.backgroundImage || '';
+    const artEl = $("artwork");
+    if (artEl) stationArtworkBg = artEl.style.backgroundImage || "";
 
     attachAudioListeners(audioPlayer);
 
@@ -821,14 +964,14 @@ export async function getStaticPaths() {
       playRadio();
     }
 
-    const playBtn = $('play-btn');
+    const playBtn = $("play-btn");
     if (playBtn) {
-      playBtn.addEventListener('click', function () {
+      playBtn.addEventListener("click", function () {
         hasUserPressedPlay = true;
         if (!audioPlayer.src) {
           const src = freshStreamUrl(streamurl);
           if (!src) {
-            setStatus('ERROR');
+            setStatus("ERROR");
             return;
           }
           audioPlayer.src = src;
@@ -840,273 +983,326 @@ export async function getStaticPaths() {
     }
 
     // Vote (like)
-    const fav = $('fav-btn');
+    const fav = $("fav-btn");
     if (fav) {
-      fav.addEventListener('click', function (e) {
+      fav.addEventListener("click", function (e) {
         e.preventDefault();
         handleLikeClick();
       });
     }
 
     // Share
-    const share = $('share-btn');
+    const share = $("share-btn");
     if (share) {
-      share.addEventListener('click', function (e) {
+      share.addEventListener("click", function (e) {
         e.preventDefault();
         handleShareClick();
       });
     }
 
-    window.addEventListener('beforeunload', function () {
-      try { if (audioPlayer) audioPlayer.pause(); } catch (e) {}
+    window.addEventListener("beforeunload", function () {
+      try {
+        if (audioPlayer) audioPlayer.pause();
+      } catch (e) {}
       stopMetadataFeed();
     });
   });
 </script>
 
 <style>
-  :global(body) { background:#050505; }
-
-  .sr-player-wrap{
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:16px;
-    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  :global(body) {
+    background: #050505;
   }
 
-  .sr-player{
-    width:100%;
-    max-width:100%;
-    height:auto;
-    border-radius:48px;
-    overflow:hidden;
-    position:relative;
-    border:1px solid rgba(255,255,255,.08);
-    box-shadow: 0 30px 80px rgba(0,0,0,.55);
-    background: radial-gradient(circle at 50% 30%, var(--c2, #1e293b) 0%, var(--c1, #020617) 100%);
-    display:flex;
-    flex-direction:column;
+  .sr-player-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    font-family:
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      Segoe UI,
+      Roboto,
+      Helvetica,
+      Arial,
+      "Apple Color Emoji",
+      "Segoe UI Emoji";
   }
 
-  .sr-player::before{
-    content:"";
-    position:absolute;
-    inset:-20%;
-    background: radial-gradient(circle at 50% 40%, rgba(23,115,207,.15) 0%, transparent 60%);
-    z-index:0;
+  .sr-player {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 48px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+    background: radial-gradient(
+      circle at 50% 30%,
+      var(--c2, #1e293b) 0%,
+      var(--c1, #020617) 100%
+    );
+    display: flex;
+    flex-direction: column;
   }
 
-  .sr-header{
-    position:relative;
-    z-index:1;
-    display:flex;
-    align-items:center;
-    gap:14px;
-    padding:40px 32px 22px;
+  .sr-player::before {
+    content: "";
+    position: absolute;
+    inset: -20%;
+    background: radial-gradient(
+      circle at 50% 40%,
+      rgba(23, 115, 207, 0.15) 0%,
+      transparent 60%
+    );
+    z-index: 0;
   }
 
-  .sr-logo{
-    width:48px;height:48px;
-    border-radius:14px;
-    background: rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.10);
-    background-size:cover;
-    background-position:center;
-    box-shadow: 0 10px 24px rgba(0,0,0,.35);
-    flex:0 0 auto;
+  .sr-header {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0px 32px 22px;
   }
 
-  .sr-headtxt{ min-width:0; }
-  .sr-station{
-    color:#fff;
-    font-size:18px;
-    font-weight:800;
-    margin:0;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
+  .sr-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+    flex: 0 0 auto;
   }
 
-  .sr-live{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    margin-top:4px;
+  .sr-headtxt {
+    min-width: 0;
+  }
+  .sr-station {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 800;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  .sr-live-dot{
-    width:6px;height:6px;
-    border-radius:999px;
-    background:#ef4444;
-    box-shadow:0 0 8px rgba(239,68,68,.8);
+  .sr-live {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
   }
 
-  .sr-live-label{
-    color: rgba(255,255,255,.55);
-    font-size:11px;
-    font-weight:800;
-    letter-spacing:.22em;
+  .sr-live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: #ef4444;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
   }
 
-  .sr-main{
-    position:relative;
-    z-index:1;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    padding:0 40px;
-    gap:0;
-    flex:1;
+  .sr-live-label {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.22em;
   }
 
-  .sr-artframe{
-    width:100%;
-    aspect-ratio:1/1;
-    border-radius:22px;
-    overflow:hidden;
-    border:1px solid rgba(255,255,255,.06);
-    box-shadow:0 20px 50px -12px rgba(0,0,0,.7);
-    margin-top:8px;
+  .sr-main {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 40px;
+    gap: 0;
+    flex: 1;
   }
 
-  .sr-art{
-    width:100%;
-    height:100%;
-    background-size:cover;
-    background-position:center;
+  .sr-artframe {
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 22px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.7);
+    margin-top: 40px;
+  }
+
+  .sr-art {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
     transition: transform 1s;
   }
-  .sr-artframe:hover .sr-art{ transform: scale(1.08); }
-
-  .sr-meta{
-    width:100%;
-    margin-top:20px;
-    text-align:center;
+  .sr-artframe:hover .sr-art {
+    transform: scale(1.08);
   }
-  .sr-title{
-    color:#fff;
-    font-size:34px;
-    font-weight:900;
-    margin:0 0 10px 0;
-    letter-spacing:-.02em;
+
+  .sr-meta {
+    width: 100%;
+    margin-top: 20px;
+    text-align: center;
+  }
+  .sr-title {
+    color: #fff;
+    font-size: 34px;
+    font-weight: 900;
+    margin: 0 0 10px 0;
+    letter-spacing: -0.02em;
     line-height: 1.2;
   }
-  .sr-artist{
-    color: rgba(255,255,255,.35);
-    font-size:22px;
-    font-weight:600;
+  .sr-artist {
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 22px;
+    font-weight: 600;
     min-height: 1.2em;
   }
 
-  .sr-controls{
-    width:100%;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:0 24px;
-    margin-top:20px;
+  .sr-controls {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    margin-top: 20px;
   }
 
-  .sr-iconbtn{
-    width:52px;height:52px;
-    border-radius:999px;
-    border:0;
-    background:transparent;
-    color: rgba(255,255,255,.35);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
-    transition:.2s;
+  .sr-iconbtn {
+    width: 52px;
+    height: 52px;
+    border-radius: 999px;
+    border: 0;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s;
   }
-  .sr-iconbtn:hover{ color:#fff; background: rgba(255,255,255,.10); }
-
-  .sr-play{
-    width:96px;height:96px;
-    border-radius:999px;
-    border:0;
-    background:#fff;
-    color:#000;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
-    box-shadow: 0 15px 40px rgba(255,255,255,.15);
-    transition: transform .15s;
-  }
-  .sr-play:hover{ transform: scale(1.05); }
-  .sr-play:active{ transform: scale(.95); }
-
-  .sr-footer{
-    position:relative;
-    z-index:1;
-    padding:26px 40px 34px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:18px;
+  .sr-iconbtn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
   }
 
-  .sr-pill{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:8px 14px;
-    border-radius:999px;
-    background: rgba(255,255,255,.05);
-    border:1px solid rgba(255,255,255,.06);
+  .sr-play {
+    width: 96px;
+    height: 96px;
+    border-radius: 999px;
+    border: 0;
+    background: #fff;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 15px 40px rgba(255, 255, 255, 0.15);
+    transition: transform 0.15s;
+  }
+  .sr-play:hover {
+    transform: scale(1.05);
+  }
+  .sr-play:active {
+    transform: scale(0.95);
+  }
+
+  .sr-footer {
+    position: relative;
+    z-index: 1;
+    padding: 26px 40px 34px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .sr-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
   }
 
-  .sr-eqdot{
-    width:10px;height:10px;border-radius:999px;
-    background:#1773cf;
-    opacity:.9;
+  .sr-eqdot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: #1773cf;
+    opacity: 0.9;
   }
-  .sr-eqdot.is-playing{ animation:eqPulse 1.2s ease-in-out infinite; }
-
-  @keyframes eqPulse{
-    0%{ transform:scale(.85); opacity:.55;}
-    50%{ transform:scale(1.15); opacity:1;}
-    100%{ transform:scale(.85); opacity:.55;}
+  .sr-eqdot.is-playing {
+    animation: eqPulse 1.2s ease-in-out infinite;
   }
 
-  .sr-pilltext{
-    font-size:11px;
-    font-weight:800;
-    letter-spacing:.15em;
-    color: rgba(255,255,255,.40);
+  @keyframes eqPulse {
+    0% {
+      transform: scale(0.85);
+      opacity: 0.55;
+    }
+    50% {
+      transform: scale(1.15);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(0.85);
+      opacity: 0.55;
+    }
   }
 
-  .sr-handle{
-    width:128px;
-    height:6px;
-    border-radius:999px;
-    background: rgba(255,255,255,.10);
+  .sr-pilltext {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    color: rgba(255, 255, 255, 0.4);
   }
 
-  .sr-spinner{
-    width:42px;
-    height:42px;
-    border-radius:999px;
-    border:4px solid rgba(0,0,0,.18);
-    border-top-color: rgba(0,0,0,.80);
-    animation: srSpin .9s linear infinite;
+  .sr-handle {
+    width: 128px;
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
   }
 
-  @keyframes srSpin{
-    to{ transform: rotate(360deg); }
+  .sr-spinner {
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+    border: 4px solid rgba(0, 0, 0, 0.18);
+    border-top-color: rgba(0, 0, 0, 0.8);
+    animation: srSpin 0.9s linear infinite;
   }
 
-  .sr-hidden{ display:none !important; }
+  @keyframes srSpin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
 
-  @media only screen and (min-width: 768px){
-    .sr-player{
-    width:100%;
-    max-width:500px;
+  .sr-hidden {
+    display: none !important;
+  }
+
+  @media only screen and (min-width: 768px) {
+    .sr-player {
+      width: 100%;
+      max-width: 500px;
     }
   }
 </style>
