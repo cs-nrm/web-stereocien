@@ -1,0 +1,88 @@
+<div class="countdown">
+    <div id="countdown"></div>
+    <div class="count-img"><img src="https://storage.googleapis.com/nrm-web/mundial/logo-fiestafutbol2.png"/></div>
+</div>
+<style>
+.countdown {
+  font-family: Arial, sans-serif;
+  font-size: min(6vw, 70px);
+  font-weight: bold;
+  text-align: center;
+  color: #fff;
+  background: url(https://storage.googleapis.com/nrm-web/nrm/images/back-mundial.png) no-repeat center center;
+  background-size: cover;
+  /*padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  height: 250px;*/
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  justify-content: center;
+  background-position-x: left;
+}
+
+
+.countdown span {
+  display: inline-block;
+  margin: 0 10px;
+}
+
+.countdown span:first-child {
+  margin-left: 0;
+}
+
+.countdown span:last-child {
+  margin-right: 0;
+}
+
+.countdown span:before,
+.countdown span:after {
+  content: ":";
+  color: #fff;
+}
+
+.countdown span:last-child:before,
+.countdown span:last-child:after {
+  content: "";
+}
+.countdown span:before {
+  margin-right: -5px;
+}
+
+.countdown span:after {
+  margin-left: -5px;
+}
+@media (max-width: 1280px) {
+    .count-img{
+        width: 30%;
+    }
+}
+</style>
+
+<script is:inline>
+    // Establece la fecha objetivo para el conteo regresivo (formato: año, mes - 1, día, hora, minuto, segundo)
+var targetDate = new Date(2026, 5, 11, 23, 0, 0);
+
+function updateCountdown() {
+  var currentDate = new Date();
+  var timeRemaining = targetDate - currentDate;
+
+  var days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+  //document.getElementById('countdown').innerHTML = days + 'días' + hours + 'h ' + minutes + 'm ' + seconds + 's';
+  document.getElementById('countdown').innerHTML = '¡A ' + days + ' días!';
+
+  if (timeRemaining <= 100) {
+    clearInterval(countdownInterval);
+    document.getElementById('countdown').innerHTML = '¡Tiempo terminado!';
+  }
+}
+
+// Actualiza el contador cada segundo
+var countdownInterval = setInterval(updateCountdown, 1000);
+
+</script>

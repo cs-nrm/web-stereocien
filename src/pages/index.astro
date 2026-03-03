@@ -40,6 +40,7 @@ import DiaRadio from "../components/DiaRadio.astro";
 import SliderSounds from "../layouts/SliderSounds.astro";
 import CardsHomeEmblema from "../layouts/CardsHomeEmblema.astro";
 import CardsHomeVidavinyl from "../layouts/CardsHomeVidavinyl.astro";
+import ConteoMundial from "../components/ConteoMundial.astro";
 ---
 
 <BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
@@ -65,6 +66,11 @@ import CardsHomeVidavinyl from "../layouts/CardsHomeVidavinyl.astro";
                 <CardNews />
             </div>
             <Skin2 />
+        </section>
+        <section>
+            <div class="container-home p-4 mx-auto">
+                <ConteoMundial/>
+            </div>
         </section>
         <section>
             <div class="bg-[url('https://storage.googleapis.com/nrm-web/stereocien/portada-emblema-movil.png')] lg:bg-[url('https://storage.googleapis.com/nrm-web/stereocien/portada-emblema2.png')] bg-no-repeat bg-cover bg-top">
