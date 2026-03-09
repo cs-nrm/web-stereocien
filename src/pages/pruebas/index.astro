@@ -1,0 +1,46 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts.js";
+
+import { getArticles } from "../../lib/api.js";
+import Card from "../../layouts/Cards.astro";
+import DoubleBox from "../../components/DoubleBox.astro";
+import BoxBanner from "../../components/BoxBanner.astro";
+import BarNrm from "../../components/BarNrm.astro";
+import CardsHomeVidavinyl from "../../layouts/CardsHomeVidavinyl.astro";
+
+export async function getStaticPaths({ paginate }) {
+	const data = await getArticles(524);
+	return paginate(data, { pageSize: 10 });
+}
+
+interface Props {
+	page: any;
+}
+
+const { page = [] } = Astro.props;
+//console.log(page.data);
+---
+
+<BaseLayout title="Vidavinyl" description={SITE_DESCRIPTION}>
+	<BarNrm />
+	<Header title={SITE_TITLE} />
+
+	<main>
+		<div class="container my-12 mx-auto px-4 md:px-12">
+	
+            <div class="bg-[url('https://storage.googleapis.com/nrm-web/stereocien/vinyl-mobil.png')] lg:bg-[url('https://storage.googleapis.com/nrm-web/stereocien/portada-vidavinyl.jpg')] bg-no-repeat bg-cover bg-top">
+                <h1 class="text-center p-4 my-4 font-bold text-2xl lg:text-4xl">
+                    VIDA VINYL
+                </h1>
+                <div class="container-home p-4 mx-auto">
+                    <CardsHomeVidavinyl />
+                </div>
+            </div>
+            <div class="mt-4 p-2 md:p-0"><a href="https://udiscover.mx/" target="_blank"><img class="w-full max-w-[728px] h-auto m-auto " src="https://storage.googleapis.com/nrm-web/stereocien/leader-Udiscover.jpg"/></a></div>
+		</div>
+	</main>
+	<Footer />
+</BaseLayout>
