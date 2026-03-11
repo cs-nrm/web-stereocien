@@ -24,6 +24,16 @@ const posts = await res.json();
     posts.map((post:any, i:number)=> (
       <div id={`sounds-${post.slug}`} class="card" data-index={i}>
           <img loading="lazy" class="block h-auto w-full object-fill" src={post?.sounds_logo_url || PLACEHOLDER_IMG} alt={post?._embedded?.['wp:featuredmedia']?.[0]?.alt_text||"Imagen Relojes"} width="300" height="150"/>
+          <a
+            class="play-overlay"
+            href={`/station/${post.slug}`}
+            target="_blank"
+            rel="noopener"
+            aria-label={`Reproducir ${post?.title?.rendered || post.slug}`}
+            onclick="event.stopPropagation();"
+          >
+            <span class="play-icon">▶</span>
+          </a>
       </div>
     ))    
     }
@@ -32,8 +42,8 @@ const posts = await res.json();
 </div>
 
 <div class="member-info">
-	<h2 class="member-name">David Kimmmm</h2>
-	<p class="member-role">Founder</p>
+	<h2 class="member-name">Programa</h2>
+	<p class="member-role">Descripción</p>
 </div>
 
 <!--div class="dots">
@@ -125,6 +135,7 @@ const posts = await res.json();
 .card {
 	position: absolute;
 	width: 280px;
+	height: 280px;
 	/*height: 380px;*/
 	background: white;
 	border-radius: 20px;
@@ -139,6 +150,38 @@ const posts = await res.json();
 	height: 100%;
 	object-fit: cover;
 	transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.play-overlay{
+	position:absolute;
+	top:50%;
+	left:50%;
+	transform:translate(-50%,-50%);
+	width:72px;
+	height:72px;
+	border-radius:999px;
+	background:rgba(0,0,0,0.55);
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	z-index: 12;
+	text-decoration:none;
+	transition: transform 0.2s ease, background 0.2s ease;
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+}
+.play-overlay:hover{
+	background:rgba(0,0,0,0.7);
+	transform:translate(-50%,-50%) scale(1.06);
+}
+.play-icon{
+	color:#fff;
+	font-size:28px;
+	line-height:1;
+	margin-left:3px;
+}
+@media (max-width: 768px){
+	.play-overlay{ width:60px; height:60px; }
+	.play-icon{ font-size:24px; }
 }
 
 .card.center {
@@ -308,7 +351,7 @@ const posts = await res.json();
 
 	.card {
 		width: 200px;
-		/*height: 280px;*/
+		height: 200px;
 	}
 
 	.card.left-201 {
