@@ -188,6 +188,35 @@ export async function getStaticPaths() {
   let stationArtworkBg = "";
   let lastArtworkKey = "";
 
+  const SPECIAL_COVERS = {
+    "back-to-disco": {
+      base: "https://storage.googleapis.com/nrm-web/stereocien/sounds/backtodisco/",
+      count: 5,
+    },
+    "nu-disco": {
+      base: "https://storage.googleapis.com/nrm-web/stereocien/sounds/nudisco/",
+      count: 5,
+    },
+  };
+
+  let specialCoverUrl = "";
+
+  function isSpecialCoverStation() {
+    const s =
+      typeof station_slug !== "undefined" ? String(station_slug || "").trim() : "";
+    return !!(s && SPECIAL_COVERS[s]);
+  }
+
+  function pickSpecialCoverUrl() {
+    const s =
+      typeof station_slug !== "undefined" ? String(station_slug || "").trim() : "";
+    const cfg = s ? SPECIAL_COVERS[s] : null;
+    if (!cfg) return "";
+    const n = Math.max(1, Math.min(999, Number(cfg.count) || 1));
+    const idx = Math.floor(Math.random() * n) + 1;
+    return `${cfg.base}portada${idx}.jpeg`;
+  }
+
   // Current track state (for vote/share)
   let currentTitle = "";
   let currentArtist = "";
@@ -443,7 +472,8 @@ export async function getStaticPaths() {
     });
 
     try {
-      const r = await fetch(`https://itunes.apple.com/search?${qs.toString()}`);
+      const proxyUrl = `/wp-json/sounds/v1/itunes?${qs.toString()}`;
+      const r = await fetch(proxyUrl);
       const j = await r.json();
       const item = j && j.results && j.results[0] ? j.results[0] : null;
       const raw = item ? item.artworkUrl100 || item.artworkUrl60 || "" : "";
@@ -461,6 +491,12 @@ export async function getStaticPaths() {
   }
 
   async function updateArtwork(artist, title) {
+    if (isSpecialCoverStation()) {
+      if (specialCoverUrl) setArtworkBg(`url(${specialCoverUrl})`);
+      else if (stationArtworkBg) setArtworkBg(stationArtworkBg);
+      return;
+    }
+
     const a = String(artist || "").trim();
     const t = String(title || "").trim();
 
@@ -768,6 +804,10 @@ export async function getStaticPaths() {
 
     metadataES.onmessage = function (ev) {
       if (!hasUserPressedPlay) return;
+      if (isSpecialCoverStation()) {
+        if (specialCoverUrl) setArtworkBg(`url(${specialCoverUrl})`);
+        return;
+      }
       console.log("[metadata] raw message:", ev.data);
 
       try {
@@ -955,6 +995,16 @@ export async function getStaticPaths() {
     // Save station artwork as fallback
     const artEl = $("artwork");
     if (artEl) stationArtworkBg = artEl.style.backgroundImage || "";
+
+    if (isSpecialCoverStation()) {
+      specialCoverUrl = pickSpecialCoverUrl();
+      if (specialCoverUrl) {
+        stationArtworkBg = `url(${specialCoverUrl})`;
+        setArtworkBg(stationArtworkBg);
+      }
+      setNowPlaying("EN VIVO", "");
+      syncLikeStateFromStorage();
+    }
 
     attachAudioListeners(audioPlayer);
 
