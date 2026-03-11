@@ -472,7 +472,7 @@ export async function getStaticPaths() {
     });
 
     try {
-      const proxyUrl = `/wp-json/sounds/v1/itunes?${qs.toString()}`;
+      const proxyUrl = `https://stereociendigital.com.mx/wp-json/sounds/v1/itunes?${qs.toString()}`;
       const r = await fetch(proxyUrl);
       const j = await r.json();
       const item = j && j.results && j.results[0] ? j.results[0] : null;
