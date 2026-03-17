@@ -873,7 +873,7 @@ document.addEventListener('astro:page-load', ev => {
     }
 
 
-    if (secprogram || secchome || secprograma || secsounds) {
+    if (secprogram || secchome || secprograma) {
 
         var elempod = document.querySelector('.main-carousel');
         var flktypod = new Flickity(elempod, {
