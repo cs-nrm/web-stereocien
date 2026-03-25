@@ -24,11 +24,12 @@ const posts = await res.json();
     posts.map((post:any, i:number)=> (
       <div id={`sounds-${post.slug}`} class="card" data-index={i}>
           <img loading="lazy" class="block h-auto w-full object-fill" src={post?.sounds_logo_url || PLACEHOLDER_IMG} alt={post?._embedded?.['wp:featuredmedia']?.[0]?.alt_text||"Imagen Relojes"} width="300" height="150"/>
-          <div
-            class="play-overlay"
-            aria-label={`Reproducir ${post?.title?.rendered || post.slug}`}
-          >
-            <span class="play-icon">▶</span>
+          <div class="play-overlay" aria-label={`Reproducir ${post?.title?.rendered || post.slug}`}>
+            <span class="play-icon">
+				<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+					<path d="M6 4v16a1 1 0 0 0 1.524 .852l13 -8a1 1 0 0 0 0 -1.704l-13 -8a1 1 0 0 0 -1.524 .852z" />
+				</svg>
+			</span>
           </div>
       </div>
     ))    
