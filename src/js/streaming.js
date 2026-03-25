@@ -17,6 +17,8 @@ const secchome = document.getElementById('home');
 
 function initGPT() {
     googletag.destroySlots();
+    var gptAdSlots14 = [];      //takeover
+    var gptAdSlots141 = [];     //takeover móvil
     var gptAdSlots2 = [];       //boxbanner
     var gptAdSlots3 = [];       //billboard 970x250
     var gptAdSlots31 = [];      //billboard móvil
@@ -29,12 +31,13 @@ function initGPT() {
     var gptAdSlots5 = [];       //doublebox
     var gptAdSlots6 = [];       //superleader 970x90
     var gptAdSlots61 = [];      //superleader móvil
-    var gptAdSlots44 = [];      //takeover
-    var gptAdSlots441 = [];     //takeover móvil
+
 
     googletag.cmd.push(function () {
+        var mapping14 = googletag.sizeMapping().addSize([600, 800]).build();
+        var mapping141 = googletag.sizeMapping().addSize([320, 480]).build();
         var mapping2 = googletag.sizeMapping().addSize([300, 250]).build();
-        var mapping3 = googletag.sizeMapping().addSize([728, 90]).build();
+        var mapping3 = googletag.sizeMapping().addSize([970, 250]).build();
         var mapping31 = googletag.sizeMapping().addSize([320, 50]).build();
         var mapping32 = googletag.sizeMapping().addSize([728, 90]).build();
         var mapping321 = googletag.sizeMapping().addSize([320, 50]).build();
@@ -43,10 +46,9 @@ function initGPT() {
         var mapping42 = googletag.sizeMapping().addSize([728, 90]).build();
         var mapping421 = googletag.sizeMapping().addSize([320, 50]).build();
         var mapping5 = googletag.sizeMapping().addSize([300, 600]).build();
-        var mapping6 = googletag.sizeMapping().addSize([728, 90]).build();
+        var mapping6 = googletag.sizeMapping().addSize([970, 90]).build();
         var mapping61 = googletag.sizeMapping().addSize([320, 50]).build();
-        var mapping44 = googletag.sizeMapping().addSize([600, 800]).build();
-        var mapping441 = googletag.sizeMapping().addSize([320, 480]).build();
+
 
         var mapping201 = googletag.sizeMapping().addSize([300, 250]).build();
         var mapping202 = googletag.sizeMapping().addSize([300, 250]).build();
@@ -56,8 +58,10 @@ function initGPT() {
         var mapping1 = googletag.sizeMapping().addSize([1, 1]).build();
         var mapping11 = googletag.sizeMapping().addSize([1, 1]).build();
 
+        window.slot14 = googletag.defineSlot("/21799830913/StereoCien", [600, 800], 'ad-slot14').defineSizeMapping(mapping14).addService(googletag.pubads());
+        window.slot141 = googletag.defineSlot("/21799830913/StereoCien", [320, 480], 'ad-slot141').defineSizeMapping(mapping141).addService(googletag.pubads());
         window.slot2 = googletag.defineSlot("/21799830913/StereoCien", [300, 250], 'ad-slot2').defineSizeMapping(mapping2).addService(googletag.pubads());
-        window.slot3 = googletag.defineSlot("/21799830913/StereoCien", [728, 90], 'ad-slot3').defineSizeMapping(mapping3).addService(googletag.pubads());
+        window.slot3 = googletag.defineSlot("/21799830913/StereoCien", [970, 250], 'ad-slot3').defineSizeMapping(mapping3).addService(googletag.pubads());
         window.slot31 = googletag.defineSlot("/21799830913/StereoCien", [320, 50], 'ad-slot31').defineSizeMapping(mapping31).addService(googletag.pubads());
         window.slot32 = googletag.defineSlot("/21799830913/StereoCien", [728, 90], 'ad-slot32').defineSizeMapping(mapping32).addService(googletag.pubads());
         window.slot321 = googletag.defineSlot("/21799830913/StereoCien", [320, 50], 'ad-slot321').defineSizeMapping(mapping321).addService(googletag.pubads());
@@ -66,10 +70,9 @@ function initGPT() {
         window.slot42 = googletag.defineSlot("/21799830913/StereoCien", [728, 90], 'ad-slot42').defineSizeMapping(mapping42).addService(googletag.pubads());
         window.slot421 = googletag.defineSlot("/21799830913/StereoCien", [320, 50], 'ad-slot421').defineSizeMapping(mapping421).addService(googletag.pubads());
         window.slot5 = googletag.defineSlot("/21799830913/StereoCien", [300, 600], 'ad-slot5').defineSizeMapping(mapping5).addService(googletag.pubads());
-        window.slot6 = googletag.defineSlot("/21799830913/StereoCien", [728, 90], 'ad-slot6').defineSizeMapping(mapping6).addService(googletag.pubads());
+        window.slot6 = googletag.defineSlot("/21799830913/StereoCien", [970, 90], 'ad-slot6').defineSizeMapping(mapping6).addService(googletag.pubads());
         window.slot61 = googletag.defineSlot("/21799830913/StereoCien", [320, 50], 'ad-slot61').defineSizeMapping(mapping61).addService(googletag.pubads());
-        window.slot44 = googletag.defineSlot("/21799830913/StereoCien", [600, 800], 'ad-slot44').defineSizeMapping(mapping44).addService(googletag.pubads());
-        window.slot441 = googletag.defineSlot("/21799830913/StereoCien", [320, 480], 'ad-slot441').defineSizeMapping(mapping441).addService(googletag.pubads());
+
         window.slot201 = googletag.defineSlot("/21799830913/Beat/Box", [300, 250], 'ad-slot201').defineSizeMapping(mapping201).addService(googletag.pubads());
         window.slot202 = googletag.defineSlot("/21799830913/Beat/Box2", [300, 250], 'ad-slot202').defineSizeMapping(mapping202).addService(googletag.pubads());
         window.slot203 = googletag.defineSlot("/21799830913/Beat/Box3", [300, 250], 'ad-slot203').defineSizeMapping(mapping203).addService(googletag.pubads());
@@ -80,6 +83,8 @@ function initGPT() {
 
         googletag.pubads().setTargeting("test", "responsive");
         googletag.enableServices();
+        googletag.display('ad-slot14');
+        googletag.display('ad-slot141');
         googletag.display('ad-slot2');
         googletag.display('ad-slot3');
         googletag.display('ad-slot31');
@@ -92,8 +97,6 @@ function initGPT() {
         googletag.display('ad-slot5');
         googletag.display('ad-slot6');
         googletag.display('ad-slot61');
-        googletag.display('ad-slot44');
-        googletag.display('ad-slot441');
         googletag.display('ad-slot201');
         googletag.display('ad-slot202');
         googletag.display('ad-slot203');
@@ -110,6 +113,8 @@ initGPT();
 function safeRefreshSlots() {
     if (window.googletag && googletag.apiReady && googletag.pubads) {
         // Repite para cada slot, si tienes más
+        if (window.slot14) googletag.pubads().refresh([window.slot14]);
+        if (window.slot141) googletag.pubads().refresh([window.slot141]);
         if (window.slot2) googletag.pubads().refresh([window.slot2]);
         if (window.slot3) googletag.pubads().refresh([window.slot3]);
         if (window.slot31) googletag.pubads().refresh([window.slot31]);
@@ -122,8 +127,6 @@ function safeRefreshSlots() {
         if (window.slot5) googletag.pubads().refresh([window.slot5]);
         if (window.slot6) googletag.pubads().refresh([window.slot6]);
         if (window.slot61) googletag.pubads().refresh([window.slot61]);
-        if (window.slot44) googletag.pubads().refresh([window.slot44]);
-        if (window.slot441) googletag.pubads().refresh([window.slot441]);
         if (window.slot201) googletag.pubads().refresh([window.slot201]);
         if (window.slot202) googletag.pubads().refresh([window.slot202]);
         if (window.slot203) googletag.pubads().refresh([window.slot203]);

@@ -67,7 +67,7 @@ import ConteoMundial from "../components/ConteoMundial.astro";
             </div>
             <Skin2 />
         </section>
-
+        <LeaderBoard />
         <section>
             <div class="bg-[url('https://storage.googleapis.com/nrm-web/stereocien/portada-emblema-movil.png')] lg:bg-[url('https://storage.googleapis.com/nrm-web/stereocien/portada-emblema2.png')] bg-no-repeat bg-cover bg-top">
                 <div class="titulo">
@@ -88,20 +88,14 @@ import ConteoMundial from "../components/ConteoMundial.astro";
                     <div class="flex justify-end"><img class="w-full max-w-[100px]" src="https://storage.googleapis.com/nrm-web/nrm/adManager/buen-fin-qr.png"/></div>
                 </div>
             </section-->
-        <BillBoard />
         <!--section>
             <div class="front-row relative overflow-hidden especiales">
                 <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover z-0">
-                        <source src="https://storage.googleapis.com/nrm-web/stereocien/portadas-especiales-1800x800.mp4" type="video/mp4">
-                    </video>
+                    <source src="https://storage.googleapis.com/nrm-web/stereocien/portadas-especiales-1800x800.mp4" type="video/mp4">
+                </video>
                 <div>
-                    <div
-                        class="w-full flex justify-center relative z-20 mb-6"
-                    >
-                        <img
-                            class="max-w-[370px]"
-                            src="https://storage.googleapis.com/nrm-web/stereocien/titulorecap.png"
-                        />
+                    <div class="w-full flex justify-center relative z-20 mb-6">
+                        <img class="max-w-[370px]" src="https://storage.googleapis.com/nrm-web/stereocien/titulorecap.png"/>
                     </div>
                     <div class="container-home relative z-10 p-4 mx-auto">
                         <CardRecap />
@@ -111,21 +105,18 @@ import ConteoMundial from "../components/ConteoMundial.astro";
         </section-->
         <section>
             <div class="container-home p-4 mx-auto">
-                <h1
-                    class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl"
-                >
+                <h1 class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl">
                     SERIES Y PELÍCULAS
                 </h1>
                 <CardsHomePlataformas />
             </div>
         </section>
+        <BillBoard2 />
         <section>
             <div class="container-home p-4 mx-auto">
                 <CardTecnologia />
             </div>
         </section>
-
-        <!--LeaderBoard /-->
         <section>
             <div class="container-home p-4 mx-auto">
                 <ConteoMundial/>
@@ -179,26 +170,18 @@ import ConteoMundial from "../components/ConteoMundial.astro";
             </div>
         </section>
         <section>
-            <div
-                class="container-home p-4 mx-auto border-t border-b border-[#333] py-16"
-            >
-                <h1
-                    class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl"
-                >
+            <div class="container-home p-4 mx-auto border-t border-b border-[#333] py-16">
+                <h1 class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl">
                     LOS PODCAST
                 </h1>
-                <div
-                    class="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 md:gap-16 xl:gap-16"
-                >
+                <div class="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 md:gap-16 xl:gap-16">
                     <Podcast />
                 </div>
             </div>
         </section>
         <section class="">
             <div class="container-home p-4 mx-auto">
-                <h1
-                    class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl"
-                >
+                <h1 class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl">
                     PROMOCIONES
                 </h1>
                 <Promociones />
@@ -210,6 +193,7 @@ import ConteoMundial from "../components/ConteoMundial.astro";
                 <NewsLetter />
             </div>
         </section>
+        <BillBoard />
     </main>
     <!--Navidad /-->
 
