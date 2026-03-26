@@ -102,7 +102,8 @@ function initGPT() {
         if (document.getElementById('ad-slot-doublebox'))   adFallback(['ad-slot-doublebox'],   'ad-slot-doublebox-adsense');
     });
 }
-initGPT();
+// initAdFallbackListener se registra UNA SOLA VEZ aquí (no dentro de initGPT)
+// initGPT() NO se llama aquí — astro:page-load lo maneja en carga inicial y en navegaciones
 googletag.cmd.push(initAdFallbackListener);
 
 
