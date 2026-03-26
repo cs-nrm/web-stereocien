@@ -70,7 +70,7 @@ function initGPT() {
         var mappingSuperLeader = googletag.sizeMapping().addSize([768, 0], [970,  90]).addSize([0, 0], [320,  50]).build();
         var mappingBox         = googletag.sizeMapping().addSize([0, 0],   [300, 250]).build();
         var mappingDoubleBox   = googletag.sizeMapping().addSize([0, 0],   [300, 600]).build();
-        var mappingTakeover    = googletag.sizeMapping().addSize([768, 0], [600, 800]).addSize([0, 0], [320, 480]).build();
+        var mappingTakeover    = googletag.sizeMapping().addSize([0, 0],   [600, 800]).addSize([0, 0], [320, 480]).build();
         var mappingSkin        = googletag.sizeMapping().addSize([0, 0],   [1,   1  ]).build();
 
         window.slotBillboard   = googletag.defineSlot("/21799830913/StereoCien", [[970, 250], [320,  50]], 'ad-slot-billboard').defineSizeMapping(mappingBillboard).addService(googletag.pubads());
