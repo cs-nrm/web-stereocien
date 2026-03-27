@@ -3,198 +3,407 @@ const currentPath = Astro.url.pathname;
 ---
 
 <div class="hidden md:flex bar-stereo is-pinned">
-    <div class="white-space sec-menu"></div>
-    <div class="logo sec-menu"><a href="/"><img src="https://storage.googleapis.com/nrm-web/oye/recursos/logo-stereocien-2025%20.svg" /></a></div>
-    <div class="header-buttons sec-menu">
-      <div class="relative flex items-center gap-1 justify-end z-0">  
-        <input type="checkbox" id="hamburger-check" class="peer hidden"/> 
-        <label class="radio-button" for="hamburger-check">
-          <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.4 2.3 6.2 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/></svg>
-          Radio
-        </label> 
-        <label class="hidden peer-checked:block cursor-pointer flex flex-col items-center justify-center" for="hamburger-check">
-          <!--div class="bg-[#ef4444] h-1 w-6 mt-1 rotate-45 translate-y-[-4px]"></div>
+  <div class="white-space sec-menu"></div>
+  <div class="logo sec-menu">
+    <a href="/"
+      ><img
+        src="https://storage.googleapis.com/nrm-web/oye/recursos/logo-stereocien-2025%20.svg"
+      /></a>
+  </div>
+  <div class="header-buttons sec-menu">
+    <div class="relative flex items-center gap-1 justify-end z-0">
+      <input type="checkbox" id="hamburger-check" class="peer hidden" />
+      <label class="radio-button" for="hamburger-check">
+        <svg
+          xmlns="https://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          ><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"></path><path
+            d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"></path><circle
+            cx="12"
+            cy="12"
+            r="2"></circle><path d="M16.2 7.8c2.3 2.4 2.3 6.2 0 8.5"
+          ></path><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"></path></svg
+        >
+        Radio
+      </label>
+      <label
+        class="hidden peer-checked:block cursor-pointer flex flex-col items-center justify-center"
+        for="hamburger-check"
+      >
+        <!--div class="bg-[#ef4444] h-1 w-6 mt-1 rotate-45 translate-y-[-4px]"></div>
           <div class="bg-[#ef4444] h-1 w-6 mt-1 -rotate-45 -translate-y-[14px] "></div-->
-          <svg xmlns="https://www.w3.org/2000/svg" class="flecha-svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#01216b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 15l6 -6l6 6" />
-          </svg>
-        </label>
-        <label class="block peer-checked:hidden cursor-pointer flex flex-col items-center justify-center transform duration-3000" for="hamburger-check">
-          <!--div class="bg-[#ef4444] hover:bg-[#f87171] h-1 w-6 mt-1"></div>
+        <svg
+          xmlns="https://www.w3.org/2000/svg"
+          class="flecha-svg"
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#01216b"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M6 15l6 -6l6 6"></path>
+        </svg>
+      </label>
+      <label
+        class="block peer-checked:hidden cursor-pointer flex flex-col items-center justify-center transform duration-3000"
+        for="hamburger-check"
+      >
+        <!--div class="bg-[#ef4444] hover:bg-[#f87171] h-1 w-6 mt-1"></div>
           <div class="bg-[#ef4444] hover:bg-[#f87171] h-1 w-6 mt-1"></div>
           <div class="bg-[#ef4444] hover:bg-[#f87171] h-1 w-6 mt-1"></div-->
-          <svg xmlns="https://www.w3.org/2000/svg" class="flecha-svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#01216b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 9l6 6l6 -6" />
-          </svg>
-        </label>  
-    
-        <div class="hidden z-10 peer-checked:table rounded absolute w-full p-4 bg-black top-10 right-0">
-          <ul class="hh flex flex-row justify-center items-center gap-2">
-            <li class={`menu-section${currentPath.startsWith('/en-vivo') ? ' active' : ''}`}><a href="/en-vivo" class="text-xs sm:text-base flex flex-nowrap flex-row items-center text-white gap-2 hover:text-#ef4444"><span class="live-icon"></span> <span class="min-w-[60px] sm:min-w-[85px]">En Vivo</span></a></li>
-            <li class={`menu-section${currentPath.startsWith('/programacion') ? ' active' : ''}`}><a href="/programacion" class="text-xs sm:text-base flex flex-nowrap items-center text-white gap-2 hover:text-#ef4444"><svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
-              <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-              <path d="M16 3v4"></path>
-              <path d="M8 3v4"></path>
-              <path d="M4 11h16"></path>
-              <path d="M7 14h.013"></path>
-              <path d="M10.01 14h.005"></path>
-              <path d="M13.01 14h.005"></path>
-              <path d="M16.015 14h.005"></path>
-              <path d="M13.015 17h.005"></path>
-              <path d="M7.01 17h.005"></path>
-              <path d="M10.01 17h.005"></path>
-            </svg> <span>Programación</span></a></li>
-            <li class={`menu-section${currentPath.startsWith('/noticiero') ? ' active' : ''}`}><a href="https://enfoquenoticias.com.mx/" target="_blank" class="text-xs sm:text-base flex flex-nowrap items-center text-white gap-2 hover:text-#ef4444">
-            <svg xmlns="https://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M16 6h3a1 1 0 0 1 1 1v11a2 2 0 0 1 -4 0v-13a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1v12a3 3 0 0 0 3 3h11" />
-              <path d="M8 8l4 0" />
-              <path d="M8 12l4 0" />
-              <path d="M8 16l4 0" />
-            </svg><span>Enfoque</span></a></li>
-          </ul>
-        </div>
+        <svg
+          xmlns="https://www.w3.org/2000/svg"
+          class="flecha-svg"
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#01216b"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M6 9l6 6l6 -6"></path>
+        </svg>
+      </label>
+
+      <div
+        class="hidden z-10 peer-checked:table rounded absolute w-full p-4 bg-black top-10 right-0"
+      >
+        <ul class="hh flex flex-row justify-center items-center gap-2">
+          <li
+            class={`menu-section${currentPath.startsWith("/en-vivo") ? " active" : ""}`}
+          >
+            <a
+              href="/en-vivo"
+              class="text-xs sm:text-base flex flex-nowrap flex-row items-center text-white gap-2 hover:text-#ef4444"
+              ><span class="live-icon"></span>
+              <span class="min-w-[60px] sm:min-w-[85px]">En Vivo</span></a>
+          </li>
+          <li
+            class={`menu-section${currentPath.startsWith("/programacion") ? " active" : ""}`}
+          >
+            <a
+              href="/programacion"
+              class="text-xs sm:text-base flex flex-nowrap items-center text-white gap-2 hover:text-#ef4444"
+              ><svg
+                xmlns="https://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                width="24"
+                height="24"
+                stroke-width="2"
+              >
+                <path
+                  d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"
+                ></path>
+                <path d="M16 3v4"></path>
+                <path d="M8 3v4"></path>
+                <path d="M4 11h16"></path>
+                <path d="M7 14h.013"></path>
+                <path d="M10.01 14h.005"></path>
+                <path d="M13.01 14h.005"></path>
+                <path d="M16.015 14h.005"></path>
+                <path d="M13.015 17h.005"></path>
+                <path d="M7.01 17h.005"></path>
+                <path d="M10.01 17h.005"></path>
+              </svg>
+              <span>Programación</span></a>
+          </li>
+          <li
+            class={`menu-section${currentPath.startsWith("/noticiero") ? " active" : ""}`}
+          >
+            <a
+              href="https://enfoquenoticias.com.mx/"
+              target="_blank"
+              class="text-xs sm:text-base flex flex-nowrap items-center text-white gap-2 hover:text-#ef4444"
+            >
+              <svg
+                xmlns="https://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#fff"
+                stroke-width="1"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M16 6h3a1 1 0 0 1 1 1v11a2 2 0 0 1 -4 0v-13a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1v12a3 3 0 0 0 3 3h11"
+                ></path>
+                <path d="M8 8l4 0"></path>
+                <path d="M8 12l4 0"></path>
+                <path d="M8 16l4 0"></path>
+              </svg><span>Enfoque</span></a>
+          </li>
+        </ul>
       </div>
-        <!--span class="text-xs text-white to-dark">Escuchar:</span>
+    </div>
+    <!--span class="text-xs text-white to-dark">Escuchar:</span>
       <button class="radio-button">
         <span class="live-icon"></span>
         <a href="/en-vivo">Radio en Vivo </a>
       </button>
       <a target="_blank" href=="https://enfoquenoticias.com.mx/"><button class="radio-button text-xs text-white to-dark">Noticias</button></a-->
-    </div>
+  </div>
 </div>
 <div class="flex md:hidden bar-stereo-mobile">
-    <div class="white-space sec-menu"></div>
-    <div class="logo sec-menu"><a href="/"><img src="https://storage.googleapis.com/nrm-web/oye/recursos/logo-stereocien-2025%20.svg" /></a></div>
-    <div class="header-buttons sec-menu">
-      <div class="relative flex items-center gap-1 justify-end z-0">  
-        <input type="checkbox" id="hamburger-check2" class="peer hidden"/> 
-        <label class="radio-button" for="hamburger-check2">
-          <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.4 2.3 6.2 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/></svg>
-          Radio
-        </label> 
-        <label class="hidden peer-checked:block cursor-pointer flex flex-col items-center justify-center" for="hamburger-check">
-          <!--div class="bg-[#ef4444] h-1 w-6 mt-1 rotate-45 translate-y-[-4px]"></div>
+  <div class="white-space sec-menu"></div>
+  <div class="logo sec-menu">
+    <a href="/"
+      ><img
+        src="https://storage.googleapis.com/nrm-web/oye/recursos/logo-stereocien-2025%20.svg"
+      /></a>
+  </div>
+  <div class="header-buttons sec-menu">
+    <div class="relative flex items-center gap-1 justify-end z-0">
+      <input type="checkbox" id="hamburger-check2" class="peer hidden" />
+      <label class="radio-button" for="hamburger-check2">
+        <svg
+          xmlns="https://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          ><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"></path><path
+            d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"></path><circle
+            cx="12"
+            cy="12"
+            r="2"></circle><path d="M16.2 7.8c2.3 2.4 2.3 6.2 0 8.5"
+          ></path><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"></path></svg
+        >
+        Radio
+      </label>
+      <label
+        class="hidden peer-checked:block cursor-pointer flex flex-col items-center justify-center"
+        for="hamburger-check"
+      >
+        <!--div class="bg-[#ef4444] h-1 w-6 mt-1 rotate-45 translate-y-[-4px]"></div>
           <div class="bg-[#ef4444] h-1 w-6 mt-1 -rotate-45 -translate-y-[14px] "></div-->
-          <svg xmlns="https://www.w3.org/2000/svg" class="flecha-svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#01216b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 15l6 -6l6 6" />
-          </svg>
-        </label>
-        <label class="block peer-checked:hidden cursor-pointer flex flex-col items-center justify-center transform duration-3000" for="hamburger-check">
-          <!--div class="bg-[#ef4444] hover:bg-[#f87171] h-1 w-6 mt-1"></div>
+        <svg
+          xmlns="https://www.w3.org/2000/svg"
+          class="flecha-svg"
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#01216b"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M6 15l6 -6l6 6"></path>
+        </svg>
+      </label>
+      <label
+        class="block peer-checked:hidden cursor-pointer flex flex-col items-center justify-center transform duration-3000"
+        for="hamburger-check"
+      >
+        <!--div class="bg-[#ef4444] hover:bg-[#f87171] h-1 w-6 mt-1"></div>
           <div class="bg-[#ef4444] hover:bg-[#f87171] h-1 w-6 mt-1"></div>
           <div class="bg-[#ef4444] hover:bg-[#f87171] h-1 w-6 mt-1"></div-->
-          <svg xmlns="https://www.w3.org/2000/svg" class="flecha-svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#01216b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 9l6 6l6 -6" />
-          </svg>
-        </label>  
-    
-        <div class="hidden z-10 peer-checked:table rounded absolute w-full p-4 bg-black top-10 right-0">
-          <ul class="hh flex flex-row justify-center items-center gap-2">
-            <li class={`menu-section${currentPath.startsWith('/en-vivo') ? ' active' : ''}`}><a href="/en-vivo" class="text-xs sm:text-base flex flex-nowrap flex-row items-center text-white gap-2 hover:text-#ef4444"><span class="live-icon"></span> <span class="min-w-[60px] sm:min-w-[85px]">En Vivo</span></a></li>
-            <li class={`menu-section${currentPath.startsWith('/programacion') ? ' active' : ''}`}><a href="/programacion" class="text-xs sm:text-base flex flex-nowrap items-center text-white gap-2 hover:text-#ef4444"><svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
-              <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-              <path d="M16 3v4"></path>
-              <path d="M8 3v4"></path>
-              <path d="M4 11h16"></path>
-              <path d="M7 14h.013"></path>
-              <path d="M10.01 14h.005"></path>
-              <path d="M13.01 14h.005"></path>
-              <path d="M16.015 14h.005"></path>
-              <path d="M13.015 17h.005"></path>
-              <path d="M7.01 17h.005"></path>
-              <path d="M10.01 17h.005"></path>
-            </svg> <span>Programación</span></a></li>
-            <li class={`menu-section${currentPath.startsWith('/noticiero') ? ' active' : ''}`}><a href="https://enfoquenoticias.com.mx/" target="_blank" class="text-xs sm:text-base flex flex-nowrap items-center text-white gap-2 hover:text-#ef4444">
-            <svg xmlns="https://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M16 6h3a1 1 0 0 1 1 1v11a2 2 0 0 1 -4 0v-13a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1v12a3 3 0 0 0 3 3h11" />
-              <path d="M8 8l4 0" />
-              <path d="M8 12l4 0" />
-              <path d="M8 16l4 0" />
-            </svg><span>Noticiero</span></a></li>
-          </ul>
-        </div>
+        <svg
+          xmlns="https://www.w3.org/2000/svg"
+          class="flecha-svg"
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#01216b"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M6 9l6 6l6 -6"></path>
+        </svg>
+      </label>
+
+      <div
+        class="hidden z-10 peer-checked:table rounded absolute w-full p-4 bg-black top-10 right-0"
+      >
+        <ul class="hh flex flex-row justify-center items-center gap-2">
+          <li
+            class={`menu-section${currentPath.startsWith("/en-vivo") ? " active" : ""}`}
+          >
+            <a
+              href="/en-vivo"
+              class="text-xs sm:text-base flex flex-nowrap flex-row items-center text-white gap-2 hover:text-#ef4444"
+              ><span class="live-icon"></span>
+              <span class="min-w-[60px] sm:min-w-[85px]">En Vivo</span></a>
+          </li>
+          <li
+            class={`menu-section${currentPath.startsWith("/programacion") ? " active" : ""}`}
+          >
+            <a
+              href="/programacion"
+              class="text-xs sm:text-base flex flex-nowrap items-center text-white gap-2 hover:text-#ef4444"
+              ><svg
+                xmlns="https://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                width="24"
+                height="24"
+                stroke-width="2"
+              >
+                <path
+                  d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"
+                ></path>
+                <path d="M16 3v4"></path>
+                <path d="M8 3v4"></path>
+                <path d="M4 11h16"></path>
+                <path d="M7 14h.013"></path>
+                <path d="M10.01 14h.005"></path>
+                <path d="M13.01 14h.005"></path>
+                <path d="M16.015 14h.005"></path>
+                <path d="M13.015 17h.005"></path>
+                <path d="M7.01 17h.005"></path>
+                <path d="M10.01 17h.005"></path>
+              </svg>
+              <span>Programación</span></a>
+          </li>
+          <li
+            class={`menu-section${currentPath.startsWith("/noticiero") ? " active" : ""}`}
+          >
+            <a
+              href="https://enfoquenoticias.com.mx/"
+              target="_blank"
+              class="text-xs sm:text-base flex flex-nowrap items-center text-white gap-2 hover:text-#ef4444"
+            >
+              <svg
+                xmlns="https://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#fff"
+                stroke-width="1"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M16 6h3a1 1 0 0 1 1 1v11a2 2 0 0 1 -4 0v-13a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1v12a3 3 0 0 0 3 3h11"
+                ></path>
+                <path d="M8 8l4 0"></path>
+                <path d="M8 12l4 0"></path>
+                <path d="M8 16l4 0"></path>
+              </svg><span>Noticiero</span></a>
+          </li>
+        </ul>
       </div>
-        <!--span class="text-xs text-white to-dark">Escuchar:</span>
+    </div>
+    <!--span class="text-xs text-white to-dark">Escuchar:</span>
       <button class="radio-button">
         <span class="live-icon"></span>
         <a href="/en-vivo">Radio en Vivo </a>
       </button>
       <a target="_blank" href=="https://enfoquenoticias.com.mx/"><button class="radio-button text-xs text-white to-dark">Noticias</button></a-->
-    </div>
+  </div>
 </div>
 
 <style>
-.flecha-svg{
-  transition: transform .4s;
-}
-.bar-stereo {
-  background: white;
-  padding: 1rem 1.5rem;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  font-family: 'Roboto';
-  overflow: hidden;
-  position: sticky;
-  top: -1px;
-  z-index: 10001;
-  /*height: 140px;*/
-  transition: height 0.5s;
-  overflow: initial;
-}
-.bar-stereo-mobile {
-  background: white;
-  padding: 1rem 1.5rem;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  font-family: 'Roboto';
-  overflow: hidden;
-  position: sticky;
-  top: -1px;
-  z-index: 10001;
-  height: 50px;
-  overflow: initial;
-}
-.bar-stereo-mobile .logo img{
-  height: 50px !important;
-}
+  .flecha-svg {
+    transition: transform 0.4s;
+  }
+  .bar-stereo {
+    background: white;
+    padding: 1rem 1.5rem;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "Roboto";
+    overflow: hidden;
+    position: sticky;
+    top: -1px;
+    z-index: 10001;
+    /*height: 140px;*/
+    transition: height 0.5s;
+    overflow: initial;
+  }
+  .bar-stereo-mobile {
+    background: white;
+    padding: 1rem 1.5rem;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "Roboto";
+    overflow: hidden;
+    position: sticky;
+    top: -1px;
+    z-index: 10001;
+    height: 50px;
+    overflow: initial;
+  }
+  .bar-stereo-mobile .logo img {
+    height: 50px !important;
+  }
 
-.sec-menu{width: 50%;}
+  .sec-menu {
+    width: 50%;
+  }
 
-.header-white {background: white; color: black; transition: all 0.2s;}
+  .header-white {
+    background: white;
+    color: black;
+    transition: all 0.2s;
+  }
 
-.compress{  height: 50px; transition: height 0.5s; position: fixed; width: 100%;}
+  .compress {
+    height: 50px;
+    transition: height 0.5s;
+    position: fixed;
+    width: 100%;
+  }
 
-.logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  display: flex;
-  justify-content: center;
-}
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
 
-.logo img{
-  height: 110px;
-  transition: all 0.5s;
-}
+  .logo img {
+    height: 110px;
+    transition: all 0.5s;
+  }
 
-.compress-logo img{
-  height: 50px;
-  transition: all 0.5s;
-}
+  .compress-logo img {
+    height: 50px;
+    transition: all 0.5s;
+  }
 
-.header-buttons {
-  display: flex;
-  align-items: center;
-  gap: 0rem;
-  justify-content: end;
-}
+  .header-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0rem;
+    justify-content: end;
+  }
 
-li a:hover{
-  color: #717171;
-}
+  li a:hover {
+    color: #717171;
+  }
 
-/*button {
+  /*button {
   background: none;
   border: none;
   color: white;
@@ -210,48 +419,51 @@ button:hover {
   color: #d1d1d1;
 }*/
 
-.dark-mode{
-    color:black;
+  .dark-mode {
+    color: black;
     transition: all 0.2s;
     stroke: black;
-}
+  }
 
-.logo-dark-mode{
-  filter: invert(80%);
-  
-  transition: all 0.4s;
-}
+  .logo-dark-mode {
+    filter: invert(80%);
 
-.radio-button {
-  color: #01216b;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 17px;
-  font-weight: bold;
-  cursor: pointer;
-  padding: 0.5rem;
-  padding-top: 0.8rem;
-  transition: color 0.2s;
-}
+    transition: all 0.4s;
+  }
 
-.radio-button:hover {
-  color: #717171;
-}
+  .radio-button {
+    color: #01216b;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0.5rem;
+    padding-top: 0.8rem;
+    transition: color 0.2s;
+  }
 
-@media (max-width: 1024px) {
-    .white-space{
-        display: none;
+  .radio-button:hover {
+    color: #717171;
+  }
+
+  @media (max-width: 1024px) {
+    .white-space {
+      display: none;
     }
-    .logo{
-        justify-content: flex-start;
+    .logo {
+      justify-content: flex-start;
     }
-}
-@media (max-width: 450px) {
-  .hh{flex-direction: column; align-items: flex-end;}
-}
+  }
+  @media (max-width: 450px) {
+    .hh {
+      flex-direction: column;
+      align-items: flex-end;
+    }
+  }
 
-.live-icon {
+  .live-icon {
     display: inline-block;
     position: relative;
     top: calc(50% - 5px);
@@ -262,8 +474,8 @@ button:hover {
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 50%;
     z-index: 1;
-}
-.live-icon:before {
+  }
+  .live-icon:before {
     content: "";
     display: block;
     position: absolute;
@@ -274,15 +486,39 @@ button:hover {
     -webkit-animation: live 2s ease-in-out infinite;
     animation: live 2s ease-in-out infinite;
     z-index: -1;
-}
-@keyframes live {
-  0% {
-    transform: scale(1, 1);
   }
-  100% {
-    transform: scale(3.5, 3.5);
-    background-color: rgba(red, 0);
+  @keyframes live {
+    0% {
+      transform: scale(1, 1);
+    }
+    100% {
+      transform: scale(3.5, 3.5);
+      background-color: rgba(red, 0);
+    }
   }
-}
-
 </style>
+
+<script>
+  function handleScroll() {
+    const barStereo = document.querySelector(".bar-stereo");
+    if (barStereo) {
+      const logo = barStereo.querySelector(".logo");
+      if (window.scrollY > 10) {
+        barStereo.classList.add("compress");
+        if (logo) logo.classList.add("compress-logo");
+      } else {
+        barStereo.classList.remove("compress");
+        if (logo) logo.classList.remove("compress-logo");
+      }
+    }
+  }
+
+  // Ejecutar en el evento de scroll
+  window.addEventListener("scroll", handleScroll);
+
+  // Asegurar que el estado inicial sea correcto y funcione con ViewTransitions
+  document.addEventListener("astro:page-load", handleScroll);
+
+  // Ejecutar también cuando el DOM está listo
+  document.addEventListener("DOMContentLoaded", handleScroll);
+</script>

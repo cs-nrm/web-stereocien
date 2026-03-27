@@ -6,6 +6,8 @@ import { SITE_TITLE, SITE_DESCRIPTION } from "../../../consts.js";
 /*import {getArticles} from '../../../lib/api.js';*/
 import Card from "../../../layouts/CardsPodcast.astro";
 import BarNrm from "../../../components/BarNrm.astro";
+import LeaderBoard from "../../../components/LeaderBoard.astro";
+import BarStereo from "../../../components/BarStereo.astro";
 
 export async function getStaticPaths({ paginate }) {
   const arrpodcast = [
@@ -74,11 +76,12 @@ const { podcast, pod } = Astro.props;
 ---
 
 <BaseLayout title="Podcast" description={SITE_DESCRIPTION}>
-  <BarNrm />
+  <BarStereo />
   <Header title={SITE_TITLE} />
 
   <main>
     <div class="container my-12 mx-auto px-4 md:px-12">
+      <LeaderBoard />
       <div class="flex flex-wrap justify-center">
         <div class="w-full md:w-1/3 lg:w-1/4">
           <img class="content-center shadow-xl" src={pod.imagen} />

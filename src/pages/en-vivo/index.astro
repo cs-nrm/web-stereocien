@@ -5,14 +5,17 @@ import Footer from "../../components/Footer.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts";
 import { Tabs } from "astro-tabs";
 import BarNrm from "../../components/BarNrm.astro";
+import BarStereo from "../../components/BarStereo.astro";
+import LeaderBoard from "../../components/LeaderBoard.astro";
 ---
 
 <BaseLayout title="En Vivo" description={SITE_DESCRIPTION}>
-    <BarNrm />
+    <BarStereo />
     <Header title={SITE_TITLE} />
 
     <main id="envivo">
         <div class="mx-auto">
+            <LeaderBoard />
             <div class="md:flex md:flex-col lg:flex-row">
                 <div class="banner-prog">
                     <img src="" />

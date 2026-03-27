@@ -10,6 +10,7 @@ import DoubleBox from "../../components/DoubleBox.astro";
 import BoxBanner from "../../components/BoxBanner.astro";
 import BarNrm from "../../components/BarNrm.astro";
 import SliderSounds from "../../layouts/SliderSounds.astro";
+import BarStereo from "../../components/BarStereo.astro";
 
 export async function getStaticPaths({ paginate }) {
 	const data = await getArticles(524);
@@ -25,7 +26,7 @@ const { page = [] } = Astro.props;
 ---
 
 <BaseLayout title="Sounds" description={SITE_DESCRIPTION}>
-	<BarNrm />
+	<BarStereo />
 	<Header title={SITE_TITLE} />
 
 	<main>

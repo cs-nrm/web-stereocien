@@ -35,7 +35,8 @@ const PLACEHOLDER_IMG =
   description={post.yoast_head_json.og_description}
 >
   <section class="w-full py-4 poppins" id="content-w-video">
-    <div class="container my-12 mx-auto px-4 md:px-12">
+    <div class="container mb-12 mx-auto px-4 md:px-12">
+      <LeaderBoard />
       <div class="my-4">
         <h1 class="font-bold" set:html={post.title.rendered} />
         <div
@@ -57,9 +58,8 @@ const PLACEHOLDER_IMG =
             "Imagen Tecnología"}
         />
       </div>
-      <LeaderBoard />
 
-      <div class="flex flex-col lg:flex-row">
+      <div class="flex flex-col lg:flex-row mt-8">
         <article
           class="nota-interna sm:min-w-[calc(100%-400px)] text-elipsis lg:mr-10 flex flex-row"
         >
@@ -149,8 +149,8 @@ const PLACEHOLDER_IMG =
       </div>
     </div>
   </section>
+  <SuperLeader />
 </Layout>
-<!--SuperLeader /-->
 
 <link
   rel="stylesheet"

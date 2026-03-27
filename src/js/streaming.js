@@ -647,7 +647,7 @@ document.addEventListener("astro:after-swap", () => {
 document.addEventListener('astro:page-load', ev => {
     // console.log('pageload');
     //$('.cover-background').html('');
-    window.scrollTo({ top: 0, behavior: "smooth" });
+ /* window.scrollTo({ top: 0, behavior: "smooth" });
     window.addEventListener('scroll', function () {
         const scrollY = window.scrollY;
 
@@ -661,7 +661,7 @@ document.addEventListener('astro:page-load', ev => {
             $('.bar-stereo .logo').removeClass('compress-logo');
         }
     });
-
+*/
     /* efectos */
     /*const { navegador, sistema } = detectarNavegador();
     const isMobileAndroid = /Mobi|Android/i.test(navigator.userAgent) && sistema === 'Android';

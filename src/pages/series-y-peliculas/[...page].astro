@@ -9,6 +9,8 @@ import Card from "../../layouts/Cards.astro";
 import DoubleBox from "../../components/DoubleBox.astro";
 import BoxBanner from "../../components/BoxBanner.astro";
 import BarNrm from "../../components/BarNrm.astro";
+import BarStereo from "../../components/BarStereo.astro";
+import LeaderBoard from "../../components/LeaderBoard.astro";
 
 export async function getStaticPaths({ paginate }) {
   const data = await getArticles(524);
@@ -24,11 +26,12 @@ const { page = [] } = Astro.props;
 ---
 
 <BaseLayout title="Series y Películas" description={SITE_DESCRIPTION}>
-  <BarNrm />
+  <BarStereo />
   <Header title={SITE_TITLE} />
 
   <main>
     <div class="container my-12 mx-auto px-4 md:px-12">
+      <LeaderBoard  />
       <h1
         class="text-center p-4 my-4 font-bold text-xl md:text-2xl lg:text-4xl"
       >
@@ -74,8 +77,8 @@ const { page = [] } = Astro.props;
         >
           <div class="sticky top-[50px] left-0 right-0">
             <BoxBanner />
-          </div>
-          <DoubleBox />
+            </br>
+            <DoubleBox />
         </div>
       </div>
     </div>
