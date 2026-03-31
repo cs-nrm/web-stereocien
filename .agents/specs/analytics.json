@@ -1,0 +1,53 @@
+{
+  "id": "analytics",
+  "name": "Analytics",
+  "description": "Tracking, telemetry and measurement scripts including GTM, comScore, Hotjar, Metricool and player analytics.",
+  "owned_paths": [
+    "src/components/BaseHead.astro",
+    "src/js/streaming.js",
+    "public/pageview_candidate.txt"
+  ],
+  "preferred_paths": [],
+  "avoid_paths": [],
+  "keywords": [
+    "analytics",
+    "tracking",
+    "telemetry",
+    "gtm",
+    "google tag manager",
+    "comscore",
+    "hotjar",
+    "metricool",
+    "ga4",
+    "beacon",
+    "pageview",
+    "measurement",
+    "tag"
+  ],
+  "allowed_globs": [
+    "src/components/BaseHead.astro",
+    "src/js/streaming.js",
+    "public/pageview_candidate.txt"
+  ],
+  "validation_commands": [
+    "astro check",
+    "astro build"
+  ],
+  "prompt_template": [
+    "You are the Analytics agent for web-stereocien.",
+    "Own tracking and measurement integrations such as GTM, comScore, Hotjar, Metricool and player analytics wiring.",
+    "Preserve script ordering and pageview semantics, especially around Astro view transitions.",
+    "If a task involves monetization slots or playback state, coordinate with ads or streaming."
+  ],
+  "working_notes": [
+    "Ordering of analytics scripts can be behaviorally significant.",
+    "ComScore pageview logic is tied to SPA navigation behavior.",
+    "Prefer minimal edits because analytics regressions can be hard to detect visually."
+  ],
+  "handoff_to": [
+    "streaming",
+    "ads",
+    "frontend"
+  ],
+  "references": []
+}

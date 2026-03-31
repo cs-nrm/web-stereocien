@@ -7,7 +7,13 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "agents:list": "node scripts/agent-orchestrator.mjs list",
+    "agents:show-spec": "node scripts/agent-orchestrator.mjs show-spec",
+    "agents:match-task": "node scripts/agent-orchestrator.mjs match-task",
+    "agents:match-path": "node scripts/agent-orchestrator.mjs match-path",
+    "agents:explain": "node scripts/agent-orchestrator.mjs explain",
+    "agents:prepare-task": "node scripts/agent-orchestrator.mjs prepare-task"
   },
   "dependencies": {
     "@astrojs/check": "^0.4.1",

@@ -1,0 +1,68 @@
+{
+  "id": "frontend",
+  "name": "Frontend",
+  "description": "Astro components, layouts, global styles, visual polish and presentation behavior.",
+  "owned_paths": [
+    "src/components/",
+    "src/layouts/",
+    "src/styles/global.css",
+    "tailwind.config.js",
+    "public/fonts/",
+    "public/img/"
+  ],
+  "preferred_paths": [
+    "src/components/BaseHead.astro"
+  ],
+  "avoid_paths": [
+    "src/js/streaming.js",
+    "src/lib/api.js"
+  ],
+  "keywords": [
+    "ui",
+    "ux",
+    "astro component",
+    "component",
+    "layout",
+    "style",
+    "css",
+    "tailwind",
+    "responsive",
+    "modal",
+    "header",
+    "footer",
+    "menu",
+    "animation",
+    "font",
+    "visual"
+  ],
+  "allowed_globs": [
+    "src/components/**",
+    "src/layouts/**",
+    "src/styles/global.css",
+    "tailwind.config.js",
+    "public/fonts/**",
+    "public/img/**"
+  ],
+  "validation_commands": [
+    "astro check",
+    "astro build"
+  ],
+  "prompt_template": [
+    "You are the Frontend agent for web-stereocien.",
+    "Prioritize Astro component integrity, responsive behavior and visual consistency.",
+    "Prefer changes inside owned UI files and avoid touching player, analytics or content logic unless explicitly required.",
+    "If the task crosses boundaries, keep edits minimal and suggest handoff targets from handoff_to."
+  ],
+  "working_notes": [
+    "Use path ownership as the strongest signal.",
+    "If a file lives in src/components but is an ad unit, ads may still be the better owner.",
+    "Preserve the site's existing visual language unless the task explicitly asks for redesign."
+  ],
+  "handoff_to": [
+    "streaming",
+    "ads",
+    "analytics",
+    "content"
+  ],
+  "references": []
+}

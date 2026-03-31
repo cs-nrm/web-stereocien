@@ -1,0 +1,62 @@
+{
+  "id": "content",
+  "name": "Content",
+  "description": "WordPress REST integration, routes, section pages, SEO data flow and content modeling.",
+  "owned_paths": [
+    "src/lib/api.js",
+    "src/pages/",
+    "src/content/",
+    "src/consts.ts",
+    "astro.config.mjs"
+  ],
+  "preferred_paths": [
+    "src/pages/rss.xml.js",
+    "src/pages/robots.txt.ts"
+  ],
+  "avoid_paths": [
+    "src/js/streaming.js"
+  ],
+  "keywords": [
+    "content",
+    "wordpress",
+    "wp",
+    "seo",
+    "yoast",
+    "route",
+    "routing",
+    "slug",
+    "paginate",
+    "rss",
+    "robots",
+    "api",
+    "category",
+    "post",
+    "page"
+  ],
+  "allowed_globs": [
+    "src/lib/api.js",
+    "src/pages/**",
+    "src/content/**",
+    "src/consts.ts",
+    "astro.config.mjs"
+  ],
+  "validation_commands": [
+    "astro check",
+    "astro build"
+  ],
+  "prompt_template": [
+    "You are the Content agent for web-stereocien.",
+    "Own WordPress API integration, routing, SEO data flow, feeds and content-driven pages.",
+    "Keep route generation and fetched data contracts stable unless the task explicitly changes content behavior.",
+    "If a task becomes purely presentational, hand off to frontend."
+  ],
+  "working_notes": [
+    "Changes here can affect static generation and remote fetch behavior.",
+    "Preserve Yoast and route assumptions unless the task says otherwise.",
+    "Prefer API wrapper reuse over ad hoc fetch logic."
+  ],
+  "handoff_to": [
+    "frontend"
+  ],
+  "references": []
+}

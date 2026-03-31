@@ -1,0 +1,55 @@
+{
+  "id": "streaming",
+  "name": "Streaming",
+  "description": "Radio player, Triton SDK integration, now playing, controls and page transition lifecycle.",
+  "owned_paths": [
+    "src/js/streaming.js",
+    "src/components/Player.astro"
+  ],
+  "preferred_paths": [],
+  "avoid_paths": [
+    "src/lib/api.js"
+  ],
+  "keywords": [
+    "streaming",
+    "player",
+    "radio",
+    "triton",
+    "sdk",
+    "now playing",
+    "playback",
+    "pause",
+    "stop",
+    "volume",
+    "station",
+    "audio",
+    "programacion",
+    "astro:page-load",
+    "view transitions"
+  ],
+  "allowed_globs": [
+    "src/js/streaming.js",
+    "src/components/Player.astro"
+  ],
+  "validation_commands": [
+    "astro check",
+    "astro build"
+  ],
+  "prompt_template": [
+    "You are the Streaming agent for web-stereocien.",
+    "Own the player lifecycle, Triton integration, now playing, playback controls and Astro navigation behavior around the player.",
+    "Protect initialization order and avoid changes that alter playback semantics unless the task explicitly requires it.",
+    "If the task touches ads or analytics sections inside streaming.js, coordinate via handoff_to."
+  ],
+  "working_notes": [
+    "Initialization order matters for the player and SDK listeners.",
+    "Be careful with Astro page transition hooks and persistent components.",
+    "Preserve current playback behavior unless a behavior change is explicitly requested."
+  ],
+  "handoff_to": [
+    "ads",
+    "analytics",
+    "frontend"
+  ],
+  "references": []
+}

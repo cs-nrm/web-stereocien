@@ -1,0 +1,77 @@
+{
+  "id": "ads",
+  "name": "Ads",
+  "description": "Google Publisher Tags, AdSense fallback behavior, ad slots and monetization surfaces.",
+  "owned_paths": [
+    "src/components/LeaderBoard.astro",
+    "src/components/LeaderBoard2.astro",
+    "src/components/BillBoard.astro",
+    "src/components/BillBoard2.astro",
+    "src/components/SuperLeader.astro",
+    "src/components/DoubleBox.astro",
+    "src/components/BoxBanner.astro",
+    "src/components/Skin1.astro",
+    "src/components/Skin2.astro",
+    "src/components/Modal.astro",
+    "src/components/Board.astro",
+    "public/ads.txt"
+  ],
+  "preferred_paths": [
+    "src/components/BaseHead.astro",
+    "src/js/streaming.js"
+  ],
+  "avoid_paths": [],
+  "keywords": [
+    "ads",
+    "ad",
+    "gpt",
+    "google publisher tags",
+    "adsense",
+    "fallback",
+    "slot",
+    "billboard",
+    "leaderboard",
+    "doublebox",
+    "takeover",
+    "skin",
+    "monetization",
+    "googletag"
+  ],
+  "allowed_globs": [
+    "src/components/LeaderBoard.astro",
+    "src/components/LeaderBoard2.astro",
+    "src/components/BillBoard.astro",
+    "src/components/BillBoard2.astro",
+    "src/components/SuperLeader.astro",
+    "src/components/DoubleBox.astro",
+    "src/components/BoxBanner.astro",
+    "src/components/Skin1.astro",
+    "src/components/Skin2.astro",
+    "src/components/Modal.astro",
+    "src/components/Board.astro",
+    "src/components/BaseHead.astro",
+    "src/js/streaming.js",
+    "public/ads.txt"
+  ],
+  "validation_commands": [
+    "astro check",
+    "astro build"
+  ],
+  "prompt_template": [
+    "You are the Ads agent for web-stereocien.",
+    "Own monetization surfaces including GPT, AdSense fallback behavior, slot wiring and takeover units.",
+    "Protect script order, slot IDs and fallback behavior because these integrations are brittle.",
+    "If a task affects shared player or analytics concerns, coordinate through handoff_to."
+  ],
+  "working_notes": [
+    "Exact DOM IDs matter for slot rendering and fallback behavior.",
+    "BaseHead script order is critical for ads bootstrapping.",
+    "Modal ownership belongs to ads when used as a takeover surface."
+  ],
+  "handoff_to": [
+    "frontend",
+    "analytics",
+    "streaming"
+  ],
+  "references": []
+}

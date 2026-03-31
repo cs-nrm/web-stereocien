@@ -1,0 +1,28 @@
+{
+  "version": "1.0",
+  "project": "web-stereocien",
+  "description": "Universal agent registry for task routing and delegation.",
+  "defaultAgent": "frontend",
+  "agents": [
+    {
+      "id": "frontend",
+      "spec": ".agents/specs/frontend.json"
+    },
+    {
+      "id": "streaming",
+      "spec": ".agents/specs/streaming.json"
+    },
+    {
+      "id": "analytics",
+      "spec": ".agents/specs/analytics.json"
+    },
+    {
+      "id": "content",
+      "spec": ".agents/specs/content.json"
+    },
+    {
+      "id": "ads",
+      "spec": ".agents/specs/ads.json"
+    }
+  ]
+}

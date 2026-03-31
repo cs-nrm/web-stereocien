@@ -1,3 +1,4 @@
+// ===== [PLAYER - GLOBALS + SVG CONSTANTS] =====
 var streaming;
 var local_status;
 const buttonPause = '<svg xmlns="https://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-player-pause" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#01216a" fill="#01216a" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /><path d="M14 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /></svg>';
@@ -15,98 +16,8 @@ const radioButton = document.getElementById('radiobutton');
 const player = document.getElementById('player');
 const secchome = document.getElementById('home');
 
-// ===== Ad Fallback: GPT → AdSense =====
-window._adFallbackStates = window._adFallbackStates || {};
 
-function adFallback(slots, fallbackId) {
-    var state = { slots: slots, fallbackId: fallbackId, loaded: {}, rendered: 0 };
-    slots.forEach(function(id) { state.loaded[id] = false; });
-    window._adFallbackStates[fallbackId] = state;
-}
-
-function initAdFallbackListener() {
-    googletag.pubads().addEventListener('slotRenderEnded', function(event) {
-        var id = event.slot.getSlotElementId();
-        var states = Object.values(window._adFallbackStates);
-        for (var i = 0; i < states.length; i++) {
-            var state = states[i];
-            if (!state.slots.includes(id)) continue;
-            if (!event.isEmpty) state.loaded[id] = true;
-            state.rendered++;
-            if (state.rendered < state.slots.length) break;
-            var showGPT = state.slots.every(function(s) { return state.loaded[s]; });
-            state.slots.forEach(function(s) {
-                var el = document.getElementById(s);
-                if (el) el.style.display = showGPT ? '' : 'none';
-            });
-            var fb = document.getElementById(state.fallbackId);
-            if (fb) {
-                fb.style.display = showGPT ? 'none' : 'block';
-                if (!showGPT) {
-                    var schedulePush = function() {
-                        if (fb.offsetWidth > 0) {
-                            try { (window.adsbygoogle = window.adsbygoogle || []).push({}); }
-                            catch (e) { console.error('adFallback: adsbygoogle push failed', e); }
-                        } else {
-                            setTimeout(schedulePush, 50);
-                        }
-                    };
-                    requestAnimationFrame(schedulePush);
-                }
-            }
-            break;
-        }
-    });
-}
-
-function initGPT() {
-    googletag.cmd.push(function () {
-        googletag.destroySlots();
-        window._adFallbackStates = {};
-
-        var mappingBillboard   = googletag.sizeMapping().addSize([768, 0], [970, 250]).addSize([0, 0], [320,  50]).build();
-        var mappingLeader      = googletag.sizeMapping().addSize([768, 0], [728,  90]).addSize([0, 0], [320,  50]).build();
-        var mappingBillboard2  = googletag.sizeMapping().addSize([768, 0], [728,  90]).addSize([0, 0], [320,  50]).build();
-        var mappingSuperLeader = googletag.sizeMapping().addSize([768, 0], [970,  90]).addSize([0, 0], [320,  50]).build();
-        var mappingBox         = googletag.sizeMapping().addSize([0, 0],   [300, 250]).build();
-        var mappingDoubleBox   = googletag.sizeMapping().addSize([0, 0],   [300, 600]).build();
-        var mappingTakeover    = googletag.sizeMapping().addSize([0, 0],   [600, 800]).addSize([0, 0], [320, 480]).build();
-        var mappingSkin        = googletag.sizeMapping().addSize([0, 0],   [1,   1  ]).build();
-
-        window.slotBillboard   = googletag.defineSlot("/21799830913/StereoCien", [[970, 250], [320,  50]], 'ad-slot-billboard').defineSizeMapping(mappingBillboard).addService(googletag.pubads());
-        window.slotLeader      = googletag.defineSlot("/21799830913/StereoCien", [[728,  90], [320,  50]], 'ad-slot-leader').defineSizeMapping(mappingLeader).addService(googletag.pubads());
-        window.slotBillboard2  = googletag.defineSlot("/21799830913/StereoCien", [[728,  90], [320,  50]], 'ad-slot-billboard2').defineSizeMapping(mappingBillboard2).addService(googletag.pubads());
-        window.slotSuperLeader = googletag.defineSlot("/21799830913/StereoCien", [[970,  90], [320,  50]], 'ad-slot-superleader').defineSizeMapping(mappingSuperLeader).addService(googletag.pubads());
-        window.slotBox         = googletag.defineSlot("/21799830913/StereoCien", [300, 250],               'ad-slot-box').defineSizeMapping(mappingBox).addService(googletag.pubads());
-        window.slotDoubleBox   = googletag.defineSlot("/21799830913/StereoCien", [300, 600],               'ad-slot-doublebox').defineSizeMapping(mappingDoubleBox).addService(googletag.pubads());
-        window.slotTakeover    = googletag.defineSlot("/21799830913/StereoCien", [[600, 800], [320, 480]], 'ad-slot-takeover').defineSizeMapping(mappingTakeover).addService(googletag.pubads());
-        window.slotSkin        = googletag.defineSlot("/21799830913/StereoCien/SkinLeft", [1, 1],          'ad-slot-skin').defineSizeMapping(mappingSkin).addService(googletag.pubads());
-
-        googletag.pubads().setTargeting("test", "responsive");
-        googletag.enableServices();
-
-        if (document.getElementById('ad-slot-billboard'))   googletag.display('ad-slot-billboard');
-        if (document.getElementById('ad-slot-leader'))      googletag.display('ad-slot-leader');
-        if (document.getElementById('ad-slot-billboard2'))  googletag.display('ad-slot-billboard2');
-        if (document.getElementById('ad-slot-superleader')) googletag.display('ad-slot-superleader');
-        if (document.getElementById('ad-slot-box'))         googletag.display('ad-slot-box');
-        if (document.getElementById('ad-slot-doublebox'))   googletag.display('ad-slot-doublebox');
-        if (document.getElementById('ad-slot-takeover'))    googletag.display('ad-slot-takeover');
-        if (document.getElementById('ad-slot-skin'))        googletag.display('ad-slot-skin');
-
-        if (document.getElementById('ad-slot-billboard'))   adFallback(['ad-slot-billboard'],   'ad-slot-billboard-adsense');
-        if (document.getElementById('ad-slot-leader'))      adFallback(['ad-slot-leader'],      'ad-slot-leader-adsense');
-        if (document.getElementById('ad-slot-billboard2'))  adFallback(['ad-slot-billboard2'],  'ad-slot-billboard2-adsense');
-        if (document.getElementById('ad-slot-superleader')) adFallback(['ad-slot-superleader'], 'ad-slot-superleader-adsense');
-        if (document.getElementById('ad-slot-box'))         adFallback(['ad-slot-box'],         'ad-slot-box-adsense');
-        if (document.getElementById('ad-slot-doublebox'))   adFallback(['ad-slot-doublebox'],   'ad-slot-doublebox-adsense');
-    });
-}
-// initAdFallbackListener se registra UNA SOLA VEZ aquí (no dentro de initGPT)
-// initGPT() NO se llama aquí — astro:page-load lo maneja en carga inicial y en navegaciones
-googletag.cmd.push(initAdFallbackListener);
-
-
+// ===== [PLAYER - SDK INIT] =====
 //function initPlayer(){
 function initPlayerSDK() {
     var tdPlayerConfig = {
@@ -140,6 +51,7 @@ function initPlayerSDK() {
     streaming.addEventListener('autoplay', autoplay);
 }
 
+// ===== [PLAYER - STATUS + CALLBACKS] =====
 var musicInterval = null; // Agrega esto al inicio del archivo o cerca de lastArtist/lastSong
 
 function getStatus(s) {
@@ -325,6 +237,7 @@ function detectarNavegador() {
     return { navegador, sistema: so };
 }
 
+// ===== [PLAYER - NOW PLAYING + VOTING] =====
 var lastArtist = null;
 var lastSong = null;
 
@@ -477,6 +390,7 @@ function getInfoMusic() {
 }
 
 
+// ===== [PLAYER - PROGRAMACION EN VIVO] =====
 function getInfoProg() {
 
     fetch("https://stereociendigital.com.mx/wp-json/wp/v2/posts?_embed&per_page=40&categories=302&_fields[]=_links&_fields[]=_embedded&_fields[]=acf&_fields[]=content")
@@ -524,6 +438,7 @@ function getInfoProg() {
 //setTimeout(getInfoProg, 20000);
 //setInterval( getInfoProg, 300000);       
 
+// ===== [PLAYER - CONTROLES] =====
 const radioActive = function () {
     $('#player-inner').addClass('active');
     $('#player-v-podcast').removeClass('active');
@@ -631,7 +546,7 @@ $('.radio-link').on('click', function () {
 
 
 
-/* NAVIGATION */
+// ===== [NAVIGATION - VIEW TRANSITIONS] =====
 document.addEventListener('astro:before-preparation', ev => {
     //  console.log('insert spin');    
     document.querySelector('main').classList.add('loading');
@@ -712,31 +627,6 @@ document.addEventListener('astro:page-load', ev => {
     })();
     googletag.pubads().refresh();
     */
-
-    /* =======COMSCORE*/
-    var ts = Math.round((new Date()).getTime() / 1000 * Math.random() * 10);
-    // cowensole.log(ts);
-    self.COMSCORE && COMSCORE.beacon({
-        c1: "2", c2: "6906652",
-        options: {
-            enableFirstPartyCookie: true,
-            bypassUserConsentRequirementFor1PCookie: true
-        }
-    });
-
-    fetch('/pageview_candidate.txt?' + ts)
-        .then(function (resp) {
-            console.log(resp);
-        });
-
-    /* =======COMSCORE*/
-
-    if (window.googletag && googletag.apiReady) {
-        initGPT();
-    } else {
-        window.googletag = window.googletag || { cmd: [] };
-        googletag.cmd.push(function() { initGPT(); });
-    }
 
     const getplayingstatus = playerstatus();
     document.querySelector('main').classList.remove('loading');
