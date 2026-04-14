@@ -7,6 +7,43 @@ function adFallback(slots, fallbackId) {
     window._adFallbackStates[fallbackId] = state;
 }
 
+function scheduleAdsensePush(fb) {
+    // Eliminar cualquier <ins> previo (por navegación SPA)
+    var old = fb.querySelector('ins.adsbygoogle');
+    if (old) old.remove();
+
+    // Crear <ins> fresco con las dimensiones del contenedor
+    var ins = document.createElement('ins');
+    ins.className = 'adsbygoogle';
+    ins.style.display = 'block';
+    ins.style.width = (fb.dataset.adWidth || '300') + 'px';
+    ins.style.maxWidth = '100%';
+    ins.style.height = (fb.dataset.adHeight || '250') + 'px';
+    ins.dataset.adClient = fb.dataset.adClient;
+    ins.dataset.adSlot = fb.dataset.adSlot;
+    ins.dataset.adFormat = fb.dataset.adFormat || 'auto';
+    fb.appendChild(ins);
+
+    var attempts = 0;
+    var maxAttempts = 10;
+    var delay = 80;
+
+    var checkAndPush = function() {
+        var insWidth = ins.offsetWidth;
+        if (insWidth > 0) {
+            try { (window.adsbygoogle = window.adsbygoogle || []).push({}); }
+            catch (e) { console.error('adFallback: adsbygoogle push failed', e); }
+        } else {
+            attempts++;
+            if (attempts < maxAttempts) {
+                setTimeout(checkAndPush, delay);
+            }
+        }
+    };
+
+    setTimeout(checkAndPush, 50);
+}
+
 function initAdFallbackListener() {
     googletag.pubads().addEventListener('slotRenderEnded', function(event) {
         var id = event.slot.getSlotElementId();
@@ -26,15 +63,7 @@ function initAdFallbackListener() {
             if (fb) {
                 fb.style.display = showGPT ? 'none' : 'block';
                 if (!showGPT) {
-                    var schedulePush = function() {
-                        if (fb.offsetWidth > 0) {
-                            try { (window.adsbygoogle = window.adsbygoogle || []).push({}); }
-                            catch (e) { console.error('adFallback: adsbygoogle push failed', e); }
-                        } else {
-                            setTimeout(schedulePush, 50);
-                        }
-                    };
-                    requestAnimationFrame(schedulePush);
+                    scheduleAdsensePush(fb);
                 }
             }
             break;
