@@ -85,14 +85,14 @@ function initGPT() {
         var mappingTakeover    = googletag.sizeMapping().addSize([768, 0],   [600, 800]).addSize([0, 0], [320, 480]).build();
         var mappingSkin        = googletag.sizeMapping().addSize([0, 0],   [1,   1  ]).build();
 
-        window.slotBillboard   = googletag.defineSlot("/21799830913/StereoCien", [[970, 250], [320,  50]], 'ad-slot-billboard').defineSizeMapping(mappingBillboard).addService(googletag.pubads());
-        window.slotLeader      = googletag.defineSlot("/21799830913/StereoCien", [[728,  90], [320,  50]], 'ad-slot-leader').defineSizeMapping(mappingLeader).addService(googletag.pubads());
-        window.slotBillboard2  = googletag.defineSlot("/21799830913/StereoCien", [[728,  90], [320,  50]], 'ad-slot-billboard2').defineSizeMapping(mappingBillboard2).addService(googletag.pubads());
-        window.slotSuperLeader = googletag.defineSlot("/21799830913/StereoCien", [[970,  90], [320,  50]], 'ad-slot-superleader').defineSizeMapping(mappingSuperLeader).addService(googletag.pubads());
-        window.slotBox         = googletag.defineSlot("/21799830913/StereoCien", [300, 250],               'ad-slot-box').defineSizeMapping(mappingBox).addService(googletag.pubads());
-        window.slotDoubleBox   = googletag.defineSlot("/21799830913/StereoCien", [300, 600],               'ad-slot-doublebox').defineSizeMapping(mappingDoubleBox).addService(googletag.pubads());
-        window.slotTakeover    = googletag.defineSlot("/21799830913/StereoCien", [[600, 800], [320, 480]], 'ad-slot-takeover').defineSizeMapping(mappingTakeover).addService(googletag.pubads());
-        window.slotSkin        = googletag.defineSlot("/21799830913/StereoCien/SkinLeft", [1, 1],          'ad-slot-skin').defineSizeMapping(mappingSkin).addService(googletag.pubads());
+        window.slotBillboard   = googletag.defineSlot("/23349147378/StereoCien", [[970, 250], [320,  50]], 'ad-slot-billboard').defineSizeMapping(mappingBillboard).addService(googletag.pubads());
+        window.slotLeader      = googletag.defineSlot("/23349147378/StereoCien", [[728,  90], [320,  50]], 'ad-slot-leader').defineSizeMapping(mappingLeader).addService(googletag.pubads());
+        window.slotBillboard2  = googletag.defineSlot("/23349147378/StereoCien", [[728,  90], [320,  50]], 'ad-slot-billboard2').defineSizeMapping(mappingBillboard2).addService(googletag.pubads());
+        window.slotSuperLeader = googletag.defineSlot("/23349147378/StereoCien", [[970,  90], [320,  50]], 'ad-slot-superleader').defineSizeMapping(mappingSuperLeader).addService(googletag.pubads());
+        window.slotBox         = googletag.defineSlot("/23349147378/StereoCien", [300, 250],               'ad-slot-box').defineSizeMapping(mappingBox).addService(googletag.pubads());
+        window.slotDoubleBox   = googletag.defineSlot("/23349147378/StereoCien", [300, 600],               'ad-slot-doublebox').defineSizeMapping(mappingDoubleBox).addService(googletag.pubads());
+        window.slotTakeover    = googletag.defineSlot("/23349147378/StereoCien", [[600, 800], [320, 480]], 'ad-slot-takeover').defineSizeMapping(mappingTakeover).addService(googletag.pubads());
+        window.slotSkin        = googletag.defineSlot("/23349147378/StereoCien/SkinLeft", [1, 1],          'ad-slot-skin').defineSizeMapping(mappingSkin).addService(googletag.pubads());
 
         googletag.pubads().setTargeting("test", "responsive");
         googletag.enableServices();
