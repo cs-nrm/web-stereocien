@@ -13,7 +13,7 @@ const posts = await res.json();
 ---
 <div class="about-title-container">
   <h1 class="about-title">SOUNDS</h1>
-  <h3 class="about-subtitle">by Stereo Cien</h3>
+  <h3 class="about-subtitle">by Stereo Cien</h3> 
 </div>
 
 
@@ -78,7 +78,7 @@ const posts = await res.json();
 }
 .about-title {
   text-align: center;
-	font-size: 7.5rem;
+	font-size: 5.5rem;
 	font-weight: 900;
 	text-transform: uppercase;
 	letter-spacing: -0.02em;
@@ -99,7 +99,7 @@ const posts = await res.json();
 	color: transparent;
 }
 .about-subtitle {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     color: #acb3c5;
     text-align: right;
     position: absolute;
@@ -131,13 +131,14 @@ const posts = await res.json();
 
 .card {
 	position: absolute;
-	width: 280px;
-	height: 280px;
+	width: 250px;
+	height: 250px;
 	/*height: 380px;*/
 	background: white;
 	border-radius: 20px;
 	overflow: hidden;
-	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+	/*box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);*/
+	box-shadow: 0 14px 17px rgba(0, 0, 0, 0.15);
 	transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 	cursor: default;
 	pointer-events: auto;
@@ -248,13 +249,13 @@ const posts = await res.json();
 
 .member-info {
 	text-align: center;
-	margin-top: 40px;
+	margin-top: 0px;
 	transition: all 0.5s ease-out;
 }
 
 .member-name {
 	color: rgb(8, 42, 123);
-	font-size: 2.5rem;
+	font-size: 2rem;
 	font-weight: 700;
 	margin-bottom: 10px;
 	position: relative;
@@ -282,14 +283,16 @@ const posts = await res.json();
 .member-role {
   width: 60%;
 	color: #848696;
-	font-size: 1rem;
+	font-size: 0.9rem;
 	font-weight: 500;
 	opacity: 0.8;
 	letter-spacing: 0.1em;
 	padding: 10px 0;
 	margin-top: -15px;
 	position: relative;
-  margin: 0 auto;
+  	margin: 0 auto;
+	line-height: 1.2;
+	min-height: 60px;
 }
 .dots {
 	display: flex;
@@ -354,7 +357,7 @@ const posts = await res.json();
     max-width: 100%;
   }
 	.about-title {
-		font-size: 5.5rem;
+		font-size: 4.5rem;
 	}
 
 	.card {
