@@ -78,6 +78,7 @@ function initGPT() {
 
         var mappingBillboard   = googletag.sizeMapping().addSize([768, 0], [970, 250]).addSize([0, 0], [320,  50]).build();
         var mappingLeader      = googletag.sizeMapping().addSize([768, 0], [728,  90]).addSize([0, 0], [320,  50]).build();
+        var mappingLeader2     = googletag.sizeMapping().addSize([768, 0], [728,  90]).addSize([0, 0], [320,  50]).build();
         var mappingBillboard2  = googletag.sizeMapping().addSize([768, 0], [728,  90]).addSize([0, 0], [320,  50]).build();
         var mappingSuperLeader = googletag.sizeMapping().addSize([768, 0], [970,  90]).addSize([0, 0], [320,  50]).build();
         var mappingBox         = googletag.sizeMapping().addSize([0, 0],   [300, 250]).build();
@@ -87,6 +88,7 @@ function initGPT() {
 
         window.slotBillboard   = googletag.defineSlot("/23349147378/StereoCien", [[970, 250], [320,  50]], 'ad-slot-billboard').defineSizeMapping(mappingBillboard).addService(googletag.pubads());
         window.slotLeader      = googletag.defineSlot("/23349147378/StereoCien", [[728,  90], [320,  50]], 'ad-slot-leader').defineSizeMapping(mappingLeader).addService(googletag.pubads());
+        window.slotLeader2     = googletag.defineSlot("/23349147378/StereoCien", [[728,  90], [320,  50]], 'ad-slot-leader2').defineSizeMapping(mappingLeader2).addService(googletag.pubads());
         window.slotBillboard2  = googletag.defineSlot("/23349147378/StereoCien", [[728,  90], [320,  50]], 'ad-slot-billboard2').defineSizeMapping(mappingBillboard2).addService(googletag.pubads());
         window.slotSuperLeader = googletag.defineSlot("/23349147378/StereoCien", [[970,  90], [320,  50]], 'ad-slot-superleader').defineSizeMapping(mappingSuperLeader).addService(googletag.pubads());
         window.slotBox         = googletag.defineSlot("/23349147378/StereoCien", [300, 250],               'ad-slot-box').defineSizeMapping(mappingBox).addService(googletag.pubads());
@@ -99,6 +101,7 @@ function initGPT() {
 
         if (document.getElementById('ad-slot-billboard'))   googletag.display('ad-slot-billboard');
         if (document.getElementById('ad-slot-leader'))      googletag.display('ad-slot-leader');
+        if (document.getElementById('ad-slot-leader2'))     googletag.display('ad-slot-leader2');
         if (document.getElementById('ad-slot-billboard2'))  googletag.display('ad-slot-billboard2');
         if (document.getElementById('ad-slot-superleader')) googletag.display('ad-slot-superleader');
         if (document.getElementById('ad-slot-box'))         googletag.display('ad-slot-box');
@@ -108,6 +111,7 @@ function initGPT() {
 
         if (document.getElementById('ad-slot-billboard'))   adFallback(['ad-slot-billboard'],   'ad-slot-billboard-adsense');
         if (document.getElementById('ad-slot-leader'))      adFallback(['ad-slot-leader'],      'ad-slot-leader-adsense');
+        if (document.getElementById('ad-slot-leader2'))     adFallback(['ad-slot-leader2'],     'ad-slot-leader-adsense2');
         if (document.getElementById('ad-slot-billboard2'))  adFallback(['ad-slot-billboard2'],  'ad-slot-billboard2-adsense');
         if (document.getElementById('ad-slot-superleader')) adFallback(['ad-slot-superleader'], 'ad-slot-superleader-adsense');
         if (document.getElementById('ad-slot-box'))         adFallback(['ad-slot-box'],         'ad-slot-box-adsense');
