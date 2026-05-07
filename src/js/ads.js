@@ -85,6 +85,7 @@ function initGPT() {
         var mappingDoubleBox   = googletag.sizeMapping().addSize([0, 0],   [300, 600]).build();
         var mappingTakeover    = googletag.sizeMapping().addSize([768, 0],   [600, 800]).addSize([0, 0], [320, 480]).build();
         var mappingSkin        = googletag.sizeMapping().addSize([0, 0],   [1,   1  ]).build();
+        var mappingVideoNota   = googletag.sizeMapping().addSize([0, 0],   [400,   311  ]).build();
 
         window.slotBillboard   = googletag.defineSlot("/23349147378/StereoCien", [[970, 250], [320,  50]], 'ad-slot-billboard').defineSizeMapping(mappingBillboard).addService(googletag.pubads());
         window.slotLeader      = googletag.defineSlot("/23349147378/StereoCien", [[728,  90], [320,  50]], 'ad-slot-leader').defineSizeMapping(mappingLeader).addService(googletag.pubads());
@@ -95,6 +96,7 @@ function initGPT() {
         window.slotDoubleBox   = googletag.defineSlot("/23349147378/StereoCien", [300, 600],               'ad-slot-doublebox').defineSizeMapping(mappingDoubleBox).addService(googletag.pubads());
         window.slotTakeover    = googletag.defineSlot("/23349147378/StereoCien", [[600, 800], [320, 480]], 'ad-slot-takeover').defineSizeMapping(mappingTakeover).addService(googletag.pubads());
         window.slotSkin        = googletag.defineSlot("/23349147378/StereoCien/SkinLeft", [1, 1],          'ad-slot-skin').defineSizeMapping(mappingSkin).addService(googletag.pubads());
+        window.slotVideoNota   = googletag.defineSlot("/23349147378/StereoCien", [400, 311],               'ad-slot-videonota').defineSizeMapping(mappingVideoNota).addService(googletag.pubads());
 
         googletag.pubads().setTargeting("test", "responsive");
         googletag.enableServices();
@@ -108,6 +110,7 @@ function initGPT() {
         if (document.getElementById('ad-slot-doublebox'))   googletag.display('ad-slot-doublebox');
         if (document.getElementById('ad-slot-takeover'))    googletag.display('ad-slot-takeover');
         if (document.getElementById('ad-slot-skin'))        googletag.display('ad-slot-skin');
+        if (document.getElementById('ad-slot-videonota'))   googletag.display('ad-slot-videonota');
 
         if (document.getElementById('ad-slot-billboard'))   adFallback(['ad-slot-billboard'],   'ad-slot-billboard-adsense');
         if (document.getElementById('ad-slot-leader'))      adFallback(['ad-slot-leader'],      'ad-slot-leader-adsense');
