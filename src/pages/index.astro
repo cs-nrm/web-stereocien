@@ -42,6 +42,7 @@ import CardsHomeEmblema from "../layouts/CardsHomeEmblema.astro";
 import CardsHomeVidavinyl from "../layouts/CardsHomeVidavinyl.astro";
 import ConteoMundial from "../components/ConteoMundial.astro";
 import BarStereo from "../components/BarStereo.astro";
+import CardsHomeCorona from "../layouts/CardsHomeCorona.astro";
 ---
 
 <BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
@@ -71,16 +72,18 @@ import BarStereo from "../components/BarStereo.astro";
             <Skin2 />
         </section>
         <LeaderBoard2 />
-        <!--section>
-            <div class="bg-[url('https://storage.googleapis.com/nrm-web/stereocien/portada-emblema-movil.png')] lg:bg-[url('https://storage.googleapis.com/nrm-web/stereocien/portada-emblema2.png')] bg-no-repeat bg-cover bg-top">
-                <div class="titulo">
-                    <img class="max-w-[328px] m-auto" src="https://storage.googleapis.com/nrm-web/stereocien/logo-emblema.png" alt="Tecate Emblema"/>
-                </div>
-                <div class="container-home p-4 mx-auto">
-                    <CardsHomeEmblema />
+        <section>
+            <div class="fondo-corona">
+                <div class="fondo-cuadrado">
+                    <div class="titulo">
+                        <img class="max-w-[328px] m-auto py-5" src="https://storage.googleapis.com/nrm-web/stereocien/logo-corona-capital.png" alt="Tecate Emblema"/>
+                    </div>
+                    <div class="container-home p-4 mx-auto">
+                        <CardsHomeCorona />
+                    </div>
                 </div>
             </div>
-        </section-->
+        </section>
         <!--section>
                 <div>
                     <img class="w-full h-auto hidden md:block" src="https://storage.googleapis.com/nrm-web/nrm/adManager/buen-fin%202.png"/>
@@ -203,3 +206,14 @@ import BarStereo from "../components/BarStereo.astro";
     <!--Notificacion /-->
     <Footer />
 </BaseLayout>
+
+<style>
+    .fondo-corona{
+        background: #052B60;
+        background: linear-gradient(0deg,rgba(5, 43, 96, 1) 0%, rgba(10, 83, 196, 1) 54%, rgba(11, 97, 234, 1) 100%);
+    }
+    .fondo-cuadrado{
+        background-image: url('https://networksites.livenationinternational.com/networksites/fgakpnsq/grid.webp');
+        background-size: cover;
+    }
+</style>

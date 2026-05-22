@@ -6,7 +6,7 @@ import SuperLeader from '../components/SuperLeader.astro';
 import { Image } from 'astro:assets';
 
 const PLACEHOLDER_IMG = 'https://storage.googleapis.com/nrm-web/stereocien/img_stereocien-min.jpg';
-const res = await fetch("https://stereociendigital.com.mx/wp-json/wp/v2/posts?_fields=date,title,slug,sticky,acf,yoast_head_json,content,excerpt,_links,_embedded&_embed&per_page=20&categories=854");
+const res = await fetch("https://stereociendigital.com.mx/wp-json/wp/v2/posts?_fields=date,title,slug,sticky,acf,yoast_head_json,content,excerpt,_links,_embedded&_embed&per_page=20&categories=9189");
 const posts = await res.json();
 const filteredPosts = posts.filter((post:any) => !post.acf?.fijo);
 
@@ -44,11 +44,14 @@ const filteredPosts = posts.filter((post:any) => !post.acf?.fijo);
 
 <style>
 .cards-filtro-3{display: none;}
-.cards-filtro-0{background:#F5F42F; padding: 10px;}
-.cards-filtro-1{background:#FD77E1; padding: 10px;}
-.cards-filtro-2{background:#FA6421; padding: 10px;}
-.cards-filtro-3{background:#7BDAB2; padding: 10px;}
+.cards-filtro-0{background:#e7ff00; padding: 10px;}
+.cards-filtro-1{background:#04095d; padding: 10px;}
+.cards-filtro-2{background:#e7ff00; padding: 10px;}
+.cards-filtro-3{background:#04095d; padding: 10px;}
 
+.cards-filtro-1 a, .cards-filtro-3 a{color: #e7ff00;}
+.cards-filtro-2 a, .cards-filtro-0 a{color: #04095d;}
+{color: #e7ff00;}
 @media (min-width: 769px) and (max-width: 1024px){
   .cards-filtro-3{display: block;}
 }

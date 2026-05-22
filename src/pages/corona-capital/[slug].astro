@@ -17,7 +17,7 @@ interface Props {
 const { post } = Astro.props;
 
 export async function getStaticPaths() {
-  const posts = await getArticles(854);
+  const posts = await getArticles(9189);
 
   return posts.map((post: any) => ({
     params: { slug: post.slug },

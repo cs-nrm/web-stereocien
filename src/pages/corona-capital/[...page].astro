@@ -14,7 +14,7 @@ import BarStereo from "../../components/BarStereo.astro";
 import LeaderBoard from "../../components/LeaderBoard.astro";
 
 export async function getStaticPaths({ paginate }) {
-  const data = await getArticles(854);
+  const data = await getArticles(9189);
   return paginate(data, { pageSize: 20 });
 }
 
