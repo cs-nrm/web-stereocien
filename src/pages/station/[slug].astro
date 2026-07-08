@@ -786,6 +786,27 @@ export async function getStaticPaths() {
     }
   }
 
+  // El feed de metadata de Zeno refleja el track casi en tiempo real del lado del servidor,
+  // pero el audio que se escucha va detrás por el buffer del stream (~17-20s, medido en
+  // producción). Retrasamos la actualización visual del "now playing" ese mismo tiempo para
+  // que el título/artista/artwork coincidan con lo que realmente se está escuchando.
+  const METADATA_DISPLAY_DELAY_MS = 18000;
+  let metadataApplyTimers = [];
+
+  function clearPendingMetadataApply() {
+    metadataApplyTimers.forEach((id) => clearTimeout(id));
+    metadataApplyTimers = [];
+  }
+
+  function applyNowPlayingDelayed(title, artist) {
+    const id = setTimeout(() => {
+      setNowPlaying(title, artist);
+      updateArtwork(artist, title);
+      syncLikeStateFromStorage();
+    }, METADATA_DISPLAY_DELAY_MS);
+    metadataApplyTimers.push(id);
+  }
+
   function startMetadataFeed() {
     stopMetadataFeed();
     const subscribeUrl = getZenoSubscribeUrl();
@@ -874,9 +895,7 @@ export async function getStaticPaths() {
           artist: parsed.artist || "",
         });
         if (parsed.title || parsed.artist) {
-          setNowPlaying(parsed.title || "EN VIVO", parsed.artist || "");
-          updateArtwork(parsed.artist || "", parsed.title || "");
-          syncLikeStateFromStorage();
+          applyNowPlayingDelayed(parsed.title || "EN VIVO", parsed.artist || "");
         }
       } catch (err) {
         const raw = ev && ev.data ? String(ev.data) : "";
@@ -888,9 +907,7 @@ export async function getStaticPaths() {
           artist: parsed.artist || "",
         });
         if (parsed.title || parsed.artist) {
-          setNowPlaying(parsed.title || "EN VIVO", parsed.artist || "");
-          updateArtwork(parsed.artist || "", parsed.title || "");
-          syncLikeStateFromStorage();
+          applyNowPlayingDelayed(parsed.title || "EN VIVO", parsed.artist || "");
         }
       }
     };
@@ -903,6 +920,7 @@ export async function getStaticPaths() {
   }
 
   function stopMetadataFeed() {
+    clearPendingMetadataApply();
     if (metadataES) {
       console.log("[metadata] EventSource close");
       metadataES.close();
@@ -943,12 +961,24 @@ export async function getStaticPaths() {
     if (fav) fav.disabled = isAdActive;
     if (share) share.disabled = isAdActive;
 
+    const playBtn = $("play-btn");
+    const playIcon = $("icon-play");
+    const pauseIcon = $("icon-pause");
+    const loadingEl = $("icon-loading");
+
     if (isAdActive) {
       isAdPending = false;
       stopMetadataFeed();
-      setLoadingUI(false);
+      // Spinner de carga mientras dura el anuncio (en vez del ícono estático de play), pero
+      // sin deshabilitar el botón: el usuario debe poder seguir usándolo para cancelar el ad.
+      if (playBtn) playBtn.disabled = false;
+      if (loadingEl) loadingEl.classList.remove("sr-hidden");
+      if (playIcon) playIcon.classList.add("sr-hidden");
+      if (pauseIcon) pauseIcon.classList.add("sr-hidden");
       setStatus("ANUNCIO");
       setNowPlaying("Anuncio", "");
+    } else if (loadingEl) {
+      loadingEl.classList.add("sr-hidden");
     }
   }
 
