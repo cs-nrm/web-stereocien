@@ -792,13 +792,25 @@ export async function getStaticPaths() {
   // que el título/artista/artwork coincidan con lo que realmente se está escuchando.
   const METADATA_DISPLAY_DELAY_MS = 18000;
   let metadataApplyTimers = [];
+  // La primera metadata de cada sesión (play desde cero, o resume post-anuncio) se muestra
+  // de inmediato — mejor eso que una pantalla en blanco ~18s y el voto bloqueado por "no hay
+  // canción válida". El delay solo aplica a los cambios de canción posteriores.
+  let hasShownFirstNowPlaying = false;
 
   function clearPendingMetadataApply() {
     metadataApplyTimers.forEach((id) => clearTimeout(id));
     metadataApplyTimers = [];
+    hasShownFirstNowPlaying = false;
   }
 
   function applyNowPlayingDelayed(title, artist) {
+    if (!hasShownFirstNowPlaying) {
+      hasShownFirstNowPlaying = true;
+      setNowPlaying(title, artist);
+      updateArtwork(artist, title);
+      syncLikeStateFromStorage();
+      return;
+    }
     const id = setTimeout(() => {
       setNowPlaying(title, artist);
       updateArtwork(artist, title);
