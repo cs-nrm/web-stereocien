@@ -1069,6 +1069,15 @@ export async function getStaticPaths() {
     // Siempre a través de player.play() (nunca audioPlayer.play() directo): es la única forma
     // en que el plugin de ads de Plyr intercepta la reproducción para meter el pre-roll.
     player.play().catch((error) => {
+      if (isAdActive || isAdPending) {
+        // player.play() internamente hace media.play() del stream en vivo de una vez, sin
+        // esperar a que se resuelva si hay ad. Si IMA sí encuentra un anuncio, pausa ese
+        // media.play() casi de inmediato (CONTENT_PAUSE_REQUESTED -> media.pause()), lo que
+        // rechaza esta misma promesa con un AbortError — no es un error real, es el anuncio
+        // arrancando normalmente.
+        console.log("[audio] play() interrumpido por el pre-roll (esperado):", error);
+        return;
+      }
       console.error("Error al reproducir:", error);
       setStatus("ERROR");
       setLoadingUI(false);
