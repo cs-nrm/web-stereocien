@@ -23,6 +23,10 @@
     {
       "id": "ads",
       "spec": ".agents/specs/ads.json"
+    },
+    {
+      "id": "sounds",
+      "spec": ".agents/specs/sounds.json"
     }
   ]
 }

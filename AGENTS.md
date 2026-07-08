@@ -67,3 +67,4 @@ The contract is intentionally simple so other AI tools can consume it:
 - `analytics`: GTM, comScore, Hotjar, Metricool, beacons
 - `content`: WordPress API, routes, SEO, feeds
 - `ads`: GPT, AdSense fallback, slots, monetization surfaces
+- `sounds`: sounds/Zeno player, now playing, vote/share, artwork, pre-roll ads

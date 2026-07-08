@@ -41,6 +41,14 @@ export async function getStaticPaths() {
   description=""
 />
 
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="https://storage.googleapis.com/nrm-web/nrm/lib/plyr.css"
+/>
+<script is:inline src="https://storage.googleapis.com/nrm-web/nrm/lib/plyr.js"
+></script>
+
 <body>
   <div class="sr-player-wrap">
     <div
@@ -65,6 +73,9 @@ export async function getStaticPaths() {
 
       <main class="sr-main">
         <div class="sr-artframe">
+          <div id="ad-slot" class="sr-adslot">
+            <video id="ad-video" playsinline preload="none"></video>
+          </div>
           <div
             id="artwork"
             class="sr-art"
@@ -176,13 +187,23 @@ export async function getStaticPaths() {
 </body>
 
 <script is:inline define:vars={{ streamurl, mounturl, station_slug: slug }}>
-  // Single-station player (layout tipo screenshot)
-  let audioPlayer = null;
+  // Single-station player (layout tipo screenshot) + pre-roll de video (Plyr + Google IMA)
+  let player = null; // instancia de Plyr sobre el <video> del pre-roll
+  let audioPlayer = null; // player.media — el <video> real que Plyr envuelve
   let isPlaying = false;
   let metadataES = null;
   let hasUserPressedPlay = false;
   let isStopping = false;
   let ignoreAudioErrorsUntil = 0;
+
+  // Estado del pre-roll de video (VAST vía Google Ad Manager)
+  let isAdActive = false;
+  let lastAdAttemptAt = 0;
+  const AD_FETCH_DEBOUNCE_MS = 15000;
+
+  // Referencias a los listeners del media element actual, para poder desengancharlos
+  // antes de destruir/recrear el player (el <video> del DOM se reutiliza entre ciclos).
+  let mediaListeners = null;
 
   // Artwork (iTunes) cache + fallback to station image
   let stationArtworkBg = "";
@@ -660,6 +681,8 @@ export async function getStaticPaths() {
   }
 
   async function handleLikeClick() {
+    if (isAdActive) return;
+
     const btn = $("fav-btn");
     if (!btn) return;
 
@@ -706,6 +729,8 @@ export async function getStaticPaths() {
   }
 
   async function handleShareClick() {
+    if (isAdActive) return;
+
     const station = getStationSlug();
     const artist = String(currentArtist || "").trim();
     const title = String(currentTitle || "").trim();
@@ -880,15 +905,58 @@ export async function getStaticPaths() {
     }
   }
 
-  function attachAudioListeners(player) {
-    player.addEventListener("playing", function () {
+  // ------------------------------
+  // Pre-roll de video (VAST vía Google Ad Manager, servido por el plugin de ads de Plyr/IMA)
+  // ------------------------------
+  function getVastTagUrl() {
+    // Ad unit anidado por estación dentro de "sounds" en Ad Manager, ej. /23349147378/sounds/fresh.
+    // Mismo network ID ya usado en producción (src/js/player.js).
+    const params = new URLSearchParams({
+      iu: `/23349147378/sounds/${getStationSlug()}`,
+      description_url: window.location.href,
+      tfcd: "0",
+      npa: "0",
+      sz: "600x360",
+      gdfp_req: "1",
+      unviewed_position_start: "1",
+      output: "vast",
+      env: "vp",
+      impl: "s",
+      correlator: String(Date.now()),
+    });
+    return `https://pubads.g.doubleclick.net/gampad/ads?${params.toString()}`;
+  }
+
+  function setAdUI(active) {
+    isAdActive = !!active;
+
+    const slot = $("ad-slot");
+    if (slot) slot.classList.toggle("sr-ad-active", isAdActive);
+
+    const fav = $("fav-btn");
+    const share = $("share-btn");
+    if (fav) fav.disabled = isAdActive;
+    if (share) share.disabled = isAdActive;
+
+    if (isAdActive) {
+      stopMetadataFeed();
+      setLoadingUI(false);
+      setStatus("ANUNCIO");
+      setNowPlaying("Anuncio", "");
+    }
+  }
+
+  function attachAudioListeners(mediaEl) {
+    const onPlaying = function () {
+      if (isAdActive) return; // el ciclo del ad lo maneja el plugin de ads (eventos ads*)
       isPlaying = true;
       setLoadingUI(false);
       setStatus("REPRODUCIENDO");
       setPlayingUI(true);
-    });
+    };
 
-    player.addEventListener("pause", function () {
+    const onPause = function () {
+      if (isAdActive) return;
       isPlaying = false;
       setLoadingUI(false);
       if (isStopping) {
@@ -898,22 +966,25 @@ export async function getStaticPaths() {
         setStatus("PAUSADO");
       }
       setPlayingUI(false);
-    });
+    };
 
-    player.addEventListener("waiting", function () {
+    const onWaiting = function () {
+      if (isAdActive) return;
       // Buffering/connecting
       setLoadingUI(true);
       setStatus("CARGANDO");
-    });
+    };
 
-    player.addEventListener("canplay", function () {
+    const onCanPlay = function () {
+      if (isAdActive) return;
       setLoadingUI(false);
       if (!isPlaying) setStatus("LISTO");
-    });
+    };
 
-    player.addEventListener("error", function (e) {
+    const onError = function (e) {
+      if (isAdActive) return; // errores del ad los maneja IMA internamente (onAdError -> resume)
       // During STOP/reset, browsers may emit an error when we clear src/load.
-      if (Date.now() < ignoreAudioErrorsUntil || isStopping || !player.src) {
+      if (Date.now() < ignoreAudioErrorsUntil || isStopping || !mediaEl.src) {
         console.log("[audio] ignored error during stop/reset");
         return;
       }
@@ -924,20 +995,66 @@ export async function getStaticPaths() {
       isPlaying = false;
       setPlayingUI(false);
       stopMetadataFeed();
+    };
+
+    const onAdsPauseRequested = function () {
+      setAdUI(true);
+    };
+
+    const onAdsResumeRequested = function () {
+      setAdUI(false);
+      // Plyr ya llamó player.media.play() internamente al reanudar; solo resincronizamos metadata.
+      startMetadataFeed();
+    };
+
+    mediaEl.addEventListener("playing", onPlaying);
+    mediaEl.addEventListener("pause", onPause);
+    mediaEl.addEventListener("waiting", onWaiting);
+    mediaEl.addEventListener("canplay", onCanPlay);
+    mediaEl.addEventListener("error", onError);
+    // Fases del pre-roll, disparadas por el plugin de ads de Plyr sobre player.media.
+    mediaEl.addEventListener("adscontentpauserequested", onAdsPauseRequested);
+    mediaEl.addEventListener("adscontentresumerequested", onAdsResumeRequested);
+
+    // Guardamos las referencias para poder desengancharlas en destroyPlayer(): el <video>
+    // del DOM se reutiliza entre ciclos de stop/play, así que sin esto los listeners se
+    // acumulan (cada canplay/playing/etc. dispararía una vez por cada ciclo anterior).
+    mediaListeners = {
+      playing: onPlaying,
+      pause: onPause,
+      waiting: onWaiting,
+      canplay: onCanPlay,
+      error: onError,
+      adscontentpauserequested: onAdsPauseRequested,
+      adscontentresumerequested: onAdsResumeRequested,
+    };
+  }
+
+  function detachAudioListeners(mediaEl) {
+    if (!mediaEl || !mediaListeners) return;
+    Object.keys(mediaListeners).forEach((eventName) => {
+      mediaEl.removeEventListener(eventName, mediaListeners[eventName]);
     });
+    mediaListeners = null;
   }
 
   function playRadio() {
-    if (audioPlayer && (!audioPlayer.src || audioPlayer.src === "")) {
+    if (!player || !audioPlayer) return;
+    if (!audioPlayer.src || audioPlayer.src === "") {
       const src = freshStreamUrl(streamurl);
-      if (src) audioPlayer.src = src;
+      if (!src) {
+        setStatus("ERROR");
+        return;
+      }
+      audioPlayer.src = src;
     }
-    if (!audioPlayer) return;
     setStatus("CONECTANDO");
     setLoadingUI(true);
     startMetadataFeed();
 
-    audioPlayer.play().catch((error) => {
+    // Siempre a través de player.play() (nunca audioPlayer.play() directo): es la única forma
+    // en que el plugin de ads de Plyr intercepta la reproducción para meter el pre-roll.
+    player.play().catch((error) => {
       console.error("Error al reproducir:", error);
       setStatus("ERROR");
       setLoadingUI(false);
@@ -945,31 +1062,74 @@ export async function getStaticPaths() {
     });
   }
 
+  function createPlayer(withAds) {
+    const videoEl = $("ad-video");
+    if (!videoEl) return;
+
+    player = new Plyr(videoEl, {
+      controls: [],
+      clickToPlay: false,
+      playsinline: true,
+      ads: {
+        enabled: !!withAds,
+        tagUrl: withAds ? getVastTagUrl() : "",
+      },
+    });
+    audioPlayer = player.media;
+    audioPlayer.preload = "none";
+
+    attachAudioListeners(audioPlayer);
+  }
+
+  function destroyPlayer() {
+    detachAudioListeners(audioPlayer);
+    if (player) {
+      try {
+        player.destroy();
+      } catch (e) {}
+    }
+    player = null;
+    audioPlayer = null;
+  }
+
+  function attemptPrerollAndPlay() {
+    const now = Date.now();
+
+    // Debounce anti-spam de clicks (NO es control de frecuencia de negocio — eso vive en GAM):
+    // un click repetido muy rápido no vuelve a pedir un ad, solo reconecta el stream en vivo.
+    const withAds = now - lastAdAttemptAt >= AD_FETCH_DEBOUNCE_MS;
+    lastAdAttemptAt = now;
+
+    // Cada intento de play desde detenido recrea la instancia de Plyr desde cero. El plugin de
+    // ads (Google IMA) reintenta internamente cuando falla/no hay fill, y reutilizar la misma
+    // instancia para un segundo play puede dejar la reproducción colgada por ese reintento
+    // interno pisando nuestra propia llamada — recrear evita ese estado acumulado.
+    destroyPlayer();
+    createPlayer(withAds);
+
+    playRadio();
+  }
+
   function stopRadio() {
-    if (!audioPlayer) return;
+    if (!player || !audioPlayer) return;
 
     // For live streams, "pause" causes buffered delay. We do a hard stop.
     isStopping = true;
     ignoreAudioErrorsUntil = Date.now() + 1500;
 
+    if (isAdActive && player.ads) {
+      try {
+        player.ads.cancel();
+      } catch (e) {}
+    }
+    setAdUI(false);
+
     try {
-      audioPlayer.pause();
+      player.pause();
     } catch (e) {}
     stopMetadataFeed();
 
-    // Fully reset the audio element so the next Play reconnects from LIVE.
-    try {
-      audioPlayer.src = "";
-      audioPlayer.load();
-    } catch (e) {}
-
-    try {
-      audioPlayer = new Audio();
-      audioPlayer.preload = "none";
-      attachAudioListeners(audioPlayer);
-    } catch (e) {
-      console.error("No se pudo recrear el audio element:", e);
-    }
+    destroyPlayer();
 
     isPlaying = false;
     setPlayingUI(false);
@@ -982,8 +1142,7 @@ export async function getStaticPaths() {
   }
 
   document.addEventListener("DOMContentLoaded", function () {
-    audioPlayer = new Audio();
-    audioPlayer.preload = "none";
+    createPlayer(true);
 
     setStatus("LISTO");
     setNowPlaying("", "");
@@ -1006,29 +1165,25 @@ export async function getStaticPaths() {
       syncLikeStateFromStorage();
     }
 
-    attachAudioListeners(audioPlayer);
-
     // Optional autoplay via query param (?autoplay=1)
     if (shouldAutoplay()) {
       hasUserPressedPlay = true;
-      playRadio();
+      attemptPrerollAndPlay();
     }
 
     const playBtn = $("play-btn");
     if (playBtn) {
       playBtn.addEventListener("click", function () {
         hasUserPressedPlay = true;
-        if (!audioPlayer.src) {
-          const src = freshStreamUrl(streamurl);
-          if (!src) {
-            setStatus("ERROR");
-            return;
-          }
-          audioPlayer.src = src;
+
+        // Click a mitad del ad o durante reproducción: se interpreta como "detener todo"
+        // (no es el skip nativo de IMA). stopRadio() ya cancela el ad si estaba activo.
+        if (isAdActive || isPlaying) {
+          stopRadio();
+          return;
         }
 
-        if (isPlaying) stopRadio();
-        else playRadio();
+        attemptPrerollAndPlay();
       });
     }
 
@@ -1052,7 +1207,7 @@ export async function getStaticPaths() {
 
     window.addEventListener("beforeunload", function () {
       try {
-        if (audioPlayer) audioPlayer.pause();
+        if (player) player.pause();
       } catch (e) {}
       stopMetadataFeed();
     });
@@ -1180,6 +1335,7 @@ export async function getStaticPaths() {
   }
 
   .sr-artframe {
+    position: relative;
     width: 100%;
     aspect-ratio: 1/1;
     border-radius: 22px;
@@ -1190,6 +1346,8 @@ export async function getStaticPaths() {
   }
 
   .sr-art {
+    position: relative;
+    z-index: 1;
     width: 100%;
     height: 100%;
     background-size: cover;
@@ -1198,6 +1356,21 @@ export async function getStaticPaths() {
   }
   .sr-artframe:hover .sr-art {
     transform: scale(1.08);
+  }
+
+  /* Pre-roll de video (Plyr + Google IMA): oculto detrás del artwork hasta que corre un ad */
+  .sr-adslot {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+  .sr-adslot.sr-ad-active {
+    z-index: 2;
+  }
+  .sr-adslot video,
+  .sr-adslot :global(.plyr) {
+    width: 100%;
+    height: 100%;
   }
 
   .sr-meta {
