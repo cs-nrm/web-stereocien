@@ -1,0 +1,66 @@
+{
+  "id": "sounds",
+  "name": "Sounds",
+  "description": "Player de estaciones Sounds (Zeno.fm): stream en vivo, now playing, vote/share, artwork, y pre-roll publicitario.",
+  "owned_paths": [
+    "src/pages/station/[slug].astro",
+    "src/pages/station/index.astro"
+  ],
+  "preferred_paths": [
+    "src/layouts/SliderSounds.astro",
+    "src/layouts/SliderSoundsSwiper.astro",
+    "src/js/player.js"
+  ],
+  "avoid_paths": [
+    "src/js/streaming.js"
+  ],
+  "keywords": [
+    "sounds",
+    "station",
+    "zeno",
+    "zeno.fm",
+    "mount",
+    "subscribe",
+    "now playing",
+    "metadata",
+    "eventsource",
+    "itunes artwork",
+    "vote",
+    "like",
+    "share",
+    "preroll",
+    "pre-roll",
+    "vast",
+    "daast",
+    "plyr",
+    "ima",
+    "google ad manager",
+    "gam",
+    "audio ad",
+    "video ad"
+  ],
+  "allowed_globs": [
+    "src/pages/station/**"
+  ],
+  "validation_commands": [
+    "astro check",
+    "astro build"
+  ],
+  "prompt_template": [
+    "You are the Sounds agent for web-stereocien.",
+    "Own the /station/[slug] Zeno.fm player: live stream playback, now playing metadata, vote/share, artwork lookup, and the Plyr/IMA video pre-roll ad integration.",
+    "Protect the audio/video element lifecycle and ad-phase state machine — these are brittle and order-sensitive.",
+    "If the task touches shared GPT/AdSense slots or the global Triton player, coordinate via handoff_to."
+  ],
+  "working_notes": [
+    "This page is fully self-contained (no shared Footer/Player.astro) — isolated from src/js/player.js's Triton-based global player.",
+    "Ad unit for the pre-roll is separate from the existing Triton VAST ad unit in src/js/player.js.",
+    "The player is a <video> element (not <audio>) wrapped by Plyr, because Plyr's ads plugin requires isVideo — it plays the audio-only Zeno stream fine with no visible content track.",
+    "Do NOT reuse a single Plyr instance across multiple play/stop cycles with player.ads.loadAds() to request a fresh ad — verified in testing that IMA's own internal error-retry loop races with a manual loadAds() call and leaves playback hung (paused, stuck on a stale status). The player instance is destroyed (player.destroy()) on every stop and recreated fresh (createPlayer()) on every play-from-idle instead.",
+    "Always start playback via player.play() (the Plyr instance), never audioPlayer.play() directly — only player.play() runs through the ads plugin's interception; calling the underlying media element's play() bypasses the pre-roll entirely.",
+    "The <video id=\"ad-video\"> DOM node is reused across every destroy/recreate cycle (Plyr's destroy() restores the original element rather than removing it). Because of that, attachAudioListeners()/createPlayer() MUST go through detachAudioListeners() (stored in the mediaListeners variable) before attaching a new set on the next createPlayer() call — verified in testing that without this, listeners accumulate one cycle at a time and a stale canplay/pause handler from a prior cycle can silently overwrite the status pill (e.g. DETENIDO getting clobbered back to LISTO) after a few play/stop cycles.",
+    "getVastTagUrl() builds a per-station nested ad unit path, \"/23349147378/sounds/<slug>\" (e.g. /23349147378/sounds/fresh, /23349147378/sounds/lounge), using getStationSlug() — one ad unit per station under the shared \"sounds\" parent, not a single shared unit. Verified serving real fill on the parent \"/23349147378/sounds\" unit in manual testing (a real video creative played and correctly handed off back to the live Zeno stream); per-station child units may still be no-fill until creatives/line items are set up for each one, which falls back gracefully to the live stream exactly like the no-fill case."
+  ],
+  "handoff_to": ["ads", "streaming", "frontend", "analytics"],
+  "references": []
+}

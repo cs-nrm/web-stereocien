@@ -198,6 +198,11 @@ export async function getStaticPaths() {
 
   // Estado del pre-roll de video (VAST vía Google Ad Manager)
   let isAdActive = false;
+  // true desde que se intenta reproducir hasta que se confirma anuncio (adscontentpauserequested)
+  // o contenido en vivo (evento "playing"). Mientras tanto, Plyr puede lanzar un error transitorio
+  // del <video> al intentar cargar el stream en vivo justo antes de que IMA lo pause para el ad —
+  // no es un error real, así que lo ignoramos durante esta ventana.
+  let isAdPending = false;
   let lastAdAttemptAt = 0;
   const AD_FETCH_DEBOUNCE_MS = 15000;
 
@@ -939,6 +944,7 @@ export async function getStaticPaths() {
     if (share) share.disabled = isAdActive;
 
     if (isAdActive) {
+      isAdPending = false;
       stopMetadataFeed();
       setLoadingUI(false);
       setStatus("ANUNCIO");
@@ -949,6 +955,7 @@ export async function getStaticPaths() {
   function attachAudioListeners(mediaEl) {
     const onPlaying = function () {
       if (isAdActive) return; // el ciclo del ad lo maneja el plugin de ads (eventos ads*)
+      isAdPending = false;
       isPlaying = true;
       setLoadingUI(false);
       setStatus("REPRODUCIENDO");
@@ -983,6 +990,13 @@ export async function getStaticPaths() {
 
     const onError = function (e) {
       if (isAdActive) return; // errores del ad los maneja IMA internamente (onAdError -> resume)
+      if (isAdPending) {
+        // Plyr intenta reproducir el stream en vivo de inmediato mientras IMA todavía está
+        // decidiendo si hay anuncio; si el ad sí llega, IMA pausa el contenido a mitad de esa
+        // carga y el <video> puede lanzar un error transitorio que no es un error real.
+        console.log("[audio] ignored transient error while ad is pending");
+        return;
+      }
       // During STOP/reset, browsers may emit an error when we clear src/load.
       if (Date.now() < ignoreAudioErrorsUntil || isStopping || !mediaEl.src) {
         console.log("[audio] ignored error during stop/reset");
@@ -1094,6 +1108,7 @@ export async function getStaticPaths() {
 
   function attemptPrerollAndPlay() {
     const now = Date.now();
+    isAdPending = true;
 
     // Debounce anti-spam de clicks (NO es control de frecuencia de negocio — eso vive en GAM):
     // un click repetido muy rápido no vuelve a pedir un ad, solo reconecta el stream en vivo.
@@ -1115,6 +1130,7 @@ export async function getStaticPaths() {
 
     // For live streams, "pause" causes buffered delay. We do a hard stop.
     isStopping = true;
+    isAdPending = false;
     ignoreAudioErrorsUntil = Date.now() + 1500;
 
     if (isAdActive && player.ads) {
@@ -1367,10 +1383,25 @@ export async function getStaticPaths() {
   .sr-adslot.sr-ad-active {
     z-index: 2;
   }
-  .sr-adslot video,
   .sr-adslot :global(.plyr) {
     width: 100%;
     height: 100%;
+  }
+  /* Plyr mete su propio wrapper con aspect-ratio calculado (padding-bottom %), que deja
+     el video chico dentro del cuadro cuadrado. Lo forzamos a llenar el cuadro completo. */
+  .sr-adslot :global(.plyr__video-wrapper) {
+    position: absolute;
+    inset: 0;
+    height: 100% !important;
+    padding-bottom: 0 !important;
+  }
+  .sr-adslot :global(.plyr__video-wrapper video),
+  .sr-adslot :global(.plyr__poster) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .sr-meta {
