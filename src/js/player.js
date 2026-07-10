@@ -529,7 +529,7 @@ document.addEventListener('astro:page-load', ev => {
         document.querySelector('.logo-player img').src = '/img/logo-STEREO-pag.png';
         document.getElementById('big-play').classList.remove('border-4');
     } else {
-        document.querySelector('.logo-player img').src = 'https://storage.googleapis.com/nrm-web/stereocien/stereocien.svg';
+        document.querySelector('.logo-player img').src = 'https://storage.googleapis.com/nrm-web/stereocien/stereocien-jul26.svg';
         document.getElementById('radiobutton').classList.remove('en-vivo');
         document.getElementById('big-play').classList.add('border-4');
     }
