@@ -806,9 +806,50 @@ article .plyr--video{
 .ns-effect-bouncyflip .ns-close::after, .ns-effect-bouncyflip .ns-close::before{
 	background: #000!important;
 }
+/* Botón de cierre: 44px es el mínimo táctil recomendado (WCAG 2.5.8) */
 .ns-close {
-	right: -3px !important;
-	top: -3px !important;
+	width: 44px !important;
+	height: 44px !important;
+	/* La notificación está pegada al borde superior: con offsets negativos
+	   el botón se sale del viewport y se corta. */
+	right: 6px !important;
+	top: 6px !important;
+	border-radius: 50%;
+	background: #fff;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+	overflow: visible;
+}
+
+.ns-close::before,
+.ns-close::after {
+	width: 4px;
+	height: 40%;
+	border-radius: 2px;
+}
+
+@media (max-width: 768px) {
+	.ns-close {
+		width: 52px !important;
+		height: 52px !important;
+		right: 8px !important;
+		top: 8px !important;
+	}
+}
+
+/* Los contenedores de anuncios nunca deben desbordar el viewport:
+   un creativo de escritorio (728/970px) servido en mobile ensancha el
+   documento y desfasa todo el layout. */
+.leader,
+.billboard,
+.super-leader {
+	max-width: 100%;
+	overflow-x: clip;
+}
+
+.leader ins.adsbygoogle,
+.billboard ins.adsbygoogle,
+.super-leader ins.adsbygoogle {
+	max-width: 100% !important;
 }
 
 /* LEADER EXPANDIBLE */

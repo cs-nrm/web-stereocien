@@ -16,8 +16,10 @@ function scheduleAdsensePush(fb) {
     var ins = document.createElement('ins');
     ins.className = 'adsbygoogle';
     ins.style.display = 'block';
-    ins.style.width = (fb.dataset.adWidth || '300') + 'px';
-    ins.style.maxWidth = '100%';
+    // Ancho fluido con tope en la medida de escritorio: un ancho fijo (970/728px)
+    // desborda el documento en mobile y desfasa todo el layout.
+    ins.style.width = '100%';
+    ins.style.maxWidth = (fb.dataset.adWidth || '300') + 'px';
     ins.style.height = (fb.dataset.adHeight || '250') + 'px';
     ins.dataset.adClient = fb.dataset.adClient;
     ins.dataset.adSlot = fb.dataset.adSlot;
