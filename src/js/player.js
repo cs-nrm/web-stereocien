@@ -543,7 +543,7 @@ document.addEventListener('astro:page-load', ev => {
 
         let soundWin = null;
 
-        const soundButtons = ['sounds-love', 'sounds-acoustic-moods', 'sounds-retro', 'sounds-soundtracks', 'sounds-covers', 'sounds-jazz-blues', 'sounds-world-music', 'sounds-nu-disco', 'sounds-back-to-disco', 'sounds-latin', 'sounds-live', 'sounds-fresh', 'sounds-xmas'];
+        const soundButtons = ['sounds-ballads', 'sounds-acoustic', 'sounds-retro', 'sounds-soundtracks', 'sounds-covers', 'sounds-jazz-blues', 'sounds-world-music', 'sounds-nu-disco', 'sounds-back-to-disco', 'sounds-rock-en-espanol', 'sounds-live', 'sounds-news', 'sounds-xmas', 'sounds-lounge'];
         soundButtons.forEach(buttonId => {
             const element = document.getElementById(buttonId);
             if (element) {
