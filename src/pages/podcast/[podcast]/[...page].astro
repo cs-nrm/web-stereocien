@@ -30,20 +30,20 @@ export async function getStaticPaths({ paginate }) {
         "Nada se compara a la emoción de asistir a un concierto y encontrarte con tu artista favorito.",
     },
     {
-      nodo: 280,
-      title: "Mascotas con Estrella",
-      link: "mascotas-con-estrella",
+      nodo: 10214,
+      title: "El Gran Circo",
+      link: "el-gran-circo",
       imagen:
-        "https://images.unsplash.com/photo-1450778869180-41d0601e046e?auto=format&fit=crop&w=400",
+        "https://storage.googleapis.com/nrm-web/stereocien/GRAN.png",
       descripcion:
-        "Todo eso que siempre quisiste saber de tus mascotas y jamás te atreviste a preguntar.",
+        "Podcast dedicado al apasionante mundo de la Fórmula 1 con la experiencia y análisis de Memo Lira.",
     },
 
     /*{nodo: 827,title: 'Magazin', link: 'magazin', imagen: 'https://contenido.stereociendigital.mx/wp-content/uploads/2025/06/MAGAZIN_.PODCST.jpg', descripcion: 'Recorridos llenos de nostalgia, descubrimientos y mucha música con alma.'},*/
   ];
 
   const res = await fetch(
-    "https://stereociendigital.com.mx/wp-json/wp/v2/posts?_embed&per_page=250&_fields=title,slug,yoast_head_json,categories,acf&categories=281,279,280,827",
+    "https://stereociendigital.com.mx/wp-json/wp/v2/posts?_embed&per_page=250&_fields=title,slug,yoast_head_json,categories,acf&categories=281,279,280,827,10214",
   );
   const posts = await res.json();
   //console.log(posts);

@@ -6,6 +6,8 @@ import Footer from "../../components/Footer.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts.js";
 import { getArticles } from "../../lib/api.js";
 import SliderSounds from "../../layouts/SliderSounds.astro";
+//import Player from '../../components/Player.astro';
+//const currentPath = Astro.url.pathname;
 
 
 export async function getStaticPaths({ paginate }) {
@@ -23,7 +25,6 @@ const { page = [] } = Astro.props;
 
 <BaseLayout title="Sounds" description={SITE_DESCRIPTION}>
 
-
 	<ClientRouter />
 	<main>
 		<div class="container my-12 mx-auto px-4 md:px-12">
@@ -33,5 +34,6 @@ const { page = [] } = Astro.props;
 			</div>
 		</div>
 	</main>
+
 	<Footer />
 </BaseLayout>
