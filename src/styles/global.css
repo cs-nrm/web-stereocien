@@ -740,7 +740,6 @@ article .plyr--video{
 
 
 /* NOTIFICACIÓN */
-/* NOTIFICACIÓN */
 
 .ns-attached{max-width: 350px !important; left: auto !important;}
 .ns-effect-bouncyflip {
@@ -762,8 +761,8 @@ article .plyr--video{
 
 .ns-box-inner a, .ns-box-inner .fondo-live div:first-child{
 	position: relative;
-	top: 190px;
-	left: 50px;
+	top: 182px;
+	/*left: 50px;*/
 	text-decoration: none;
 	/*text-align: right;*/
 	line-height: 0px;
@@ -771,15 +770,21 @@ article .plyr--video{
 	font-size: 17px;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 10px;
 }
  .ns-effect-bouncyflip .icon {
   position: relative !important;
-	left: 0 !important;
+	left: -7px !important;
     top: 0 !important;
 }
 .ns-box-inner .fondo-live div:first-child, .ns-box-inner a{color: white !important;}
-.ns-box-inner h3{margin: 0; font-size: 1.5rem; color: #000 !important;}
+/*.ns-box-inner h3{margin: 0; font-size: 1.5rem; color: #000 !important;}*/
+
+.ns-box-inner h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #fff !important;
+}
 .ns-box-inner i {
     font-size: 2.3rem;
 	position: relative;
@@ -797,7 +802,7 @@ article .plyr--video{
 .fondo-live{
 	width: 300px;
 	height: 256px;
-	background: #fff url('https://storage.googleapis.com/nrm-web/mundial/notificacion-mundial.jpg') no-repeat;
+	background: #fff url('https://storage.googleapis.com/nrm-web/mundial/notificacion-espana.jpg') no-repeat;
   /*background: #fff url('https://storage.googleapis.com/nrm-web/beat/resources/img/notificacion-lou.jpg') no-repeat;*/
 	background-position: top center;
 }
@@ -872,3 +877,7 @@ article .plyr--video{
 .swiper-3d .swiper-slide-shadow-right {
   background-image: none !important;
 }
+
+/* PUBLICIDAD */
+#ad-slot-leader iframe:hover, #ad-slot-leader2 iframe:hover, #ad-slot-billboard2 iframe:hover, #ad-slot-billboard iframe:hover{height:400px;z-index:10000;position:relative; cursor: pointer;}
+#ad-slot-leader iframe, #ad-slot-leader2 iframe, #ad-slot-billboard2 iframe, #ad-slot-billboard iframe{ margin: 0 auto;}
