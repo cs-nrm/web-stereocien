@@ -879,5 +879,5 @@ article .plyr--video{
 }
 
 /* PUBLICIDAD */
-#ad-slot-leader iframe:hover, #ad-slot-leader2 iframe:hover, #ad-slot-billboard2 iframe:hover, #ad-slot-billboard iframe:hover{height:400px;z-index:10000;position:relative; cursor: pointer;}
+#ad-slot-leader iframe:hover, #ad-slot-leader2 iframe:hover, #ad-slot-billboard2 iframe:hover, #ad-slot-billboard iframe:hover{height:400px;z-index:100000;position:relative; cursor: pointer;}
 #ad-slot-leader iframe, #ad-slot-leader2 iframe, #ad-slot-billboard2 iframe, #ad-slot-billboard iframe{ margin: 0 auto;}
