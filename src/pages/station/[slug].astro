@@ -17,6 +17,14 @@ const color2 = post?.["sounds_colors"]?.["color2"] || "";
 const color3 = post?.["sounds_colors"]?.["color3"] || "";
 const streamurl = post?.sounds_stream_url || "";
 const mounturl = post?.sounds_mount_url || "";
+// Banner "Presentado por" (opcional, se define por estación desde WordPress):
+//  - sounds_banner_img: URL de la imagen del banner
+//  - sounds_banner_url: URL de destino al hacer click (opcional)
+// Si no hay imagen (o no es una URL válida), no se muestra nada.
+const rawBannerImg = post?.sounds_banner_img || "";
+const rawBannerLink = post?.sounds_banner_url || "";
+const bannerImg = /^https?:\/\//i.test(rawBannerImg) ? rawBannerImg : "";
+const bannerLink = /^https?:\/\//i.test(rawBannerLink) ? rawBannerLink : "";
 
 // use the post data to populate meta tags / header
 const pageTitle = post?.title?.rendered || "Sounds by Stereo Cien";
@@ -69,6 +77,34 @@ export async function getStaticPaths() {
             <span class="sr-live-label">LIVE NOW</span>
           </div>
         </div>
+
+        {
+          bannerImg && (
+            <div class="sr-sponsor">
+              <span class="sr-sponsor-label">Presentado por:</span>
+              {bannerLink ? (
+                <a
+                  class="sr-sponsor-link"
+                  href={bannerLink}
+                  target="_blank"
+                  rel="noopener sponsored"
+                >
+                  <img
+                    class="sr-sponsor-img"
+                    src={bannerImg}
+                    alt="Presentado por"
+                  />
+                </a>
+              ) : (
+                <img
+                  class="sr-sponsor-img"
+                  src={bannerImg}
+                  alt="Presentado por"
+                />
+              )}
+            </div>
+          )
+        }
       </header>
 
       <main class="sr-main">
@@ -1388,6 +1424,40 @@ export async function getStaticPaths() {
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 0.22em;
+  }
+
+  .sr-sponsor {
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    flex: 0 0 auto;
+    max-width: 45%;
+  }
+
+  .sr-sponsor-label {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .sr-sponsor-link {
+    display: block;
+    line-height: 0;
+  }
+
+  .sr-sponsor-img {
+    display: block;
+    max-width: 100%;
+    max-height: 44px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
   }
 
   .sr-main {
