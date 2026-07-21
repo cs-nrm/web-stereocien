@@ -1,0 +1,125 @@
+---
+import DoubleBox from '../components/DoubleBox.astro';
+import BoxBanner from '../components/BoxBanner.astro';
+import LeaderBoard from'../components/LeaderBoard.astro';
+import SuperLeader from '../components/SuperLeader.astro';
+import { Image } from 'astro:assets';
+
+const PLACEHOLDER_IMG = 'https://storage.googleapis.com/nrm-web/stereocien/img_stereocien-min.jpg';
+const ressti = await fetch("https://stereociendigital.com.mx/wp-json/wp/v2/posts?_fields=date,title,slug,sticky,yoast_head_json,excerpt,_links,_embedded&_embed&per_page=1&categories=10273");
+
+const posts = await ressti.json();
+
+---
+  <div class="wine-route">
+      <div class="wine-content">
+        <a href={`/vinilos/${posts[0].slug}/`}>
+          <span class="category lovelo">VINILOS</span>
+          <h2 set:html={posts[0].title.rendered}></h2>
+          <div class="resumen" set:html={posts[0].excerpt.rendered}></div>
+          <span class="author font-bold roboto">por {posts[0].yoast_head_json.author}</span>
+          <!--div class="roboto flex flex-wrap items-center mt-4 justify-end sm:gap-4 leading-none">
+            <span class="text-xs">Patrocinado por</span>
+            <div id="ad-slot7">
+              <script is:inline>
+              var gptAdSlots7 = [];
+              googletag.cmd.push(function() {
+              var mapping7 = googletag.sizeMapping().addSize([1, 1]).build();
+              var slot7 = googletag.defineSlot("/23349147378/StereoCien", [1, 1],'ad-slot7').defineSizeMapping(mapping7).addService(googletag.pubads());
+              googletag.pubads().setTargeting("test","responsive");
+              googletag.enableServices();
+              googletag.display('ad-slot7');
+              googletag.pubads().refresh([slot7]);
+              //setInterval(function(){googletag.pubads().refresh([slot7]);}, 10000);
+              });
+              </script>
+            </div>  
+          </div-->
+        </a>
+      </div>
+      <div class="wine-image">
+        <a href={`/vinilos/${posts[0].slug}/`}>
+          <!--img src={posts[0]._embedded['wp:featuredmedia'][0].media_details.sizes['medium_large'].source_url} alt="Imagen Vinilos"-->
+          <img loading="lazy" class="h-auto w-full" src={posts[0]?._embedded?.['wp:featuredmedia']?.[0]?.media_details?.sizes?.['medium_large']?.source_url|| PLACEHOLDER_IMG} alt={posts[0]?._embedded?.['wp:featuredmedia']?.[0]?.alt_text||"Imagen Vinilos"}/>
+        </a>
+      </div>
+
+  </div>
+</a>
+
+<style>
+.wine-route {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 600px;
+  background: black;
+  margin-top: 4rem;
+}
+
+.wine-content {
+  padding: 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 600px;
+  margin: 0 auto;
+  color: white;
+  text-align: center;
+}
+
+.wine-content .category {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+.wine-content h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+.wine-content .resumen {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  color: #d1d1d1;
+}
+
+.wine-content .author {
+  font-size: 0.875rem;
+  color: #888;
+}
+
+.wine-image {
+  position: relative;
+  overflow: hidden;
+}
+
+.wine-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%);
+  transition: all 0.3s;
+}
+
+.wine-image a:hover img{
+  filter: grayscale(0%);
+}
+
+
+
+@media (max-width: 900px) {
+  .wine-route{min-height: auto;}
+  .wine-content {padding: 1rem;}
+  .wine-content .resumen{display: none;  }
+}
+@media (max-width: 640px) {
+  .wine-content h2{font-size: 1.5rem;}
+  .wine-content .author, .wine-content .category{ font-size: 0.6rem;}
+}
+</style>
