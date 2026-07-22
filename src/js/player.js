@@ -543,22 +543,19 @@ document.addEventListener('astro:page-load', ev => {
 
         let soundWin = null;
 
-        const soundButtons = ['sounds-ballads', 'sounds-acoustic', 'sounds-retro', 'sounds-soundtracks', 'sounds-covers', 'sounds-jazz-blues', 'sounds-world-music', 'sounds-nu-disco', 'sounds-back-to-disco', 'sounds-rock-en-espanol', 'sounds-live', 'sounds-news', 'sounds-xmas', 'sounds-lounge'];
-        soundButtons.forEach(buttonId => {
-            const element = document.getElementById(buttonId);
-            if (element) {
-                element.addEventListener('click', function () {
-                    const soundType = buttonId.replace('sounds-', '');
-                    const url = `/station/${soundType}?utm_source=stereocien&utm_medium=web&utm_campaign=${soundType}&autoplay=1`;
-                    if (!soundWin || soundWin.closed) {
-                        soundWin = window.open(url, 'soundPopup', 'width=500,height=900');
-                    } else {
-                        soundWin.location.href = url;
-                        soundWin.focus();
-                    }
-                    radioStop();
-                });
-            }
+        document.querySelectorAll('[id^="sounds-"]').forEach(element => {
+            element.addEventListener('click', function () {
+                const buttonId = this.id;
+                const soundType = buttonId.replace('sounds-', '');
+                const url = `/station/${soundType}?utm_source=stereocien&utm_medium=web&utm_campaign=${soundType}&autoplay=1`;
+                if (!soundWin || soundWin.closed) {
+                    soundWin = window.open(url, 'soundPopup', 'width=500,height=900');
+                } else {
+                    soundWin.location.href = url;
+                    soundWin.focus();
+                }
+                radioStop();
+            });
         });
     }
 

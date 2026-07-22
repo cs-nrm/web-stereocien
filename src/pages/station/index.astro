@@ -1,11 +1,9 @@
 ---
 import { ClientRouter } from 'astro:transitions';
 import BaseLayout from "../../layouts/BaseLayout.astro";
-
-import Footer from "../../components/Footer.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts.js";
 import { getArticles } from "../../lib/api.js";
-import SliderSounds from "../../layouts/SliderSounds.astro";
+import SliderStation from '../../layouts/SliderStation.astro';
 //import Player from '../../components/Player.astro';
 //const currentPath = Astro.url.pathname;
 
@@ -28,12 +26,9 @@ const { page = [] } = Astro.props;
 	<ClientRouter />
 	<main>
 		<div class="container my-12 mx-auto px-4 md:px-12">
-	
 			<div class="">
-				<SliderSounds />
+				<SliderStation />
 			</div>
 		</div>
 	</main>
-
-	<Footer />
 </BaseLayout>
