@@ -84,6 +84,7 @@ function initGPT() {
         var mappingBillboard2  = googletag.sizeMapping().addSize([768, 0], [728,  90]).addSize([0, 0], [320,  50]).build();
         var mappingSuperLeader = googletag.sizeMapping().addSize([768, 0], [970,  90]).addSize([0, 0], [320,  50]).build();
         var mappingBox         = googletag.sizeMapping().addSize([0, 0],   [300, 250]).build();
+        var mappingBox2        = googletag.sizeMapping().addSize([0, 0],   [300, 250]).build();
         var mappingDoubleBox   = googletag.sizeMapping().addSize([0, 0],   [300, 600]).build();
         var mappingTakeover    = googletag.sizeMapping().addSize([768, 0],   [600, 800]).addSize([0, 0], [320, 480]).build();
         var mappingSkin        = googletag.sizeMapping().addSize([0, 0],   [1,   1  ]).build();
@@ -95,6 +96,7 @@ function initGPT() {
         window.slotBillboard2  = googletag.defineSlot("/23349147378/StereoCien", [[728,  90], [320,  50]], 'ad-slot-billboard2').defineSizeMapping(mappingBillboard2).addService(googletag.pubads());
         window.slotSuperLeader = googletag.defineSlot("/23349147378/StereoCien", [[970,  90], [320,  50]], 'ad-slot-superleader').defineSizeMapping(mappingSuperLeader).addService(googletag.pubads());
         window.slotBox         = googletag.defineSlot("/23349147378/StereoCien", [300, 250],               'ad-slot-box').defineSizeMapping(mappingBox).addService(googletag.pubads());
+        window.slotBox2        = googletag.defineSlot("/23349147378/StereoCien", [300, 250],               'ad-slot-box2').defineSizeMapping(mappingBox2).addService(googletag.pubads());
         window.slotDoubleBox   = googletag.defineSlot("/23349147378/StereoCien", [300, 600],               'ad-slot-doublebox').defineSizeMapping(mappingDoubleBox).addService(googletag.pubads());
         window.slotTakeover    = googletag.defineSlot("/23349147378/StereoCien", [[600, 800], [320, 480]], 'ad-slot-takeover').defineSizeMapping(mappingTakeover).addService(googletag.pubads());
         window.slotSkin        = googletag.defineSlot("/23349147378/StereoCien/SkinLeft", [1, 1],          'ad-slot-skin').defineSizeMapping(mappingSkin).addService(googletag.pubads());
@@ -109,6 +111,7 @@ function initGPT() {
         if (document.getElementById('ad-slot-billboard2'))  googletag.display('ad-slot-billboard2');
         if (document.getElementById('ad-slot-superleader')) googletag.display('ad-slot-superleader');
         if (document.getElementById('ad-slot-box'))         googletag.display('ad-slot-box');
+        if (document.getElementById('ad-slot-box2'))        googletag.display('ad-slot-box2');
         if (document.getElementById('ad-slot-doublebox'))   googletag.display('ad-slot-doublebox');
         if (document.getElementById('ad-slot-takeover'))    googletag.display('ad-slot-takeover');
         if (document.getElementById('ad-slot-skin'))        googletag.display('ad-slot-skin');
@@ -120,6 +123,7 @@ function initGPT() {
         if (document.getElementById('ad-slot-billboard2'))  adFallback(['ad-slot-billboard2'],  'ad-slot-billboard2-adsense');
         if (document.getElementById('ad-slot-superleader')) adFallback(['ad-slot-superleader'], 'ad-slot-superleader-adsense');
         if (document.getElementById('ad-slot-box'))         adFallback(['ad-slot-box'],         'ad-slot-box-adsense');
+        if (document.getElementById('ad-slot-box2'))        adFallback(['ad-slot-box2'],        'ad-slot-box2-adsense');
         if (document.getElementById('ad-slot-doublebox'))   adFallback(['ad-slot-doublebox'],   'ad-slot-doublebox-adsense');
     });
 }
