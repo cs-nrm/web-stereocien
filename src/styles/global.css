@@ -879,5 +879,6 @@ article .plyr--video{
 }
 
 /* PUBLICIDAD */
-#ad-slot-leader iframe:hover, #ad-slot-leader2 iframe:hover, #ad-slot-billboard2 iframe:hover, #ad-slot-billboard iframe:hover{height:400px;z-index:100000;position:relative; cursor: pointer;}
-#ad-slot-leader iframe, #ad-slot-leader2 iframe, #ad-slot-billboard2 iframe, #ad-slot-billboard iframe{ margin: 0 auto;}
+#ad-slot-leaderboard1, #ad-slot-leaderboard2, #ad-slot-leaderboard3, #ad-slot-leaderboard4 {position:relative; cursor: pointer;}
+#ad-slot-leaderboard1 iframe:hover, #ad-slot-leaderboard2 iframe:hover, #ad-slot-leaderboard3 iframe:hover, #ad-slot-leaderboard4 iframe:hover{height:400px;z-index:100000;position:absolute; cursor: pointer;}
+#ad-slot-leaderboard1 iframe, #ad-slot-leaderboard2 iframe, #ad-slot-leaderboard3 iframe, #ad-slot-leaderboard4 iframe{ margin: 0 auto;}
