@@ -1,5 +1,5 @@
 // ===== [ADS] =====
-/*window._adFallbackStates = window._adFallbackStates || {};
+window._adFallbackStates = window._adFallbackStates || {};
 
 function adFallback(slots, fallbackId) {
     var state = { slots: slots, fallbackId: fallbackId, loaded: {}, rendered: 0 };
@@ -72,7 +72,7 @@ function initAdFallbackListener() {
         }
     });
 }
-
+/*
 function initGPT() {
     googletag.cmd.push(function () {
         googletag.destroySlots();
@@ -127,20 +127,9 @@ function initGPT() {
         if (document.getElementById('ad-slot-doublebox'))   adFallback(['ad-slot-doublebox'],   'ad-slot-doublebox-adsense');
     });
 }
-
-// initAdFallbackListener se registra UNA SOLA VEZ aquí (no dentro de initGPT)
-// initGPT() NO se llama aquí — astro:page-load lo maneja en carga inicial y en navegaciones
-googletag.cmd.push(initAdFallbackListener);
-
-document.addEventListener('astro:page-load', function () {
-    if (window.googletag && googletag.apiReady) {
-        initGPT();
-    } else {
-        window.googletag = window.googletag || { cmd: [] };
-        googletag.cmd.push(function() { initGPT(); });
-    }
-});
 */
+
+
 
 // ===== [ADS] initGPT, safeRefreshSlots =====
 function initGPT() {
@@ -212,7 +201,7 @@ function safeRefreshSlots() {
     if (window.slotLeaderboard3) googletag.pubads().refresh([window.slotLeaderboard3]);
     if (window.slotLeaderboard4) googletag.pubads().refresh([window.slotLeaderboard4]);
     if (window.slotLeaderboard5) googletag.pubads().refresh([window.slotLeaderboard5
-        
+
     ]);
     if (window.slot5)  googletag.pubads().refresh([window.slot5]);
     if (window.slotBoxbanner1) googletag.pubads().refresh([window.slotBoxbanner1]);
@@ -228,5 +217,19 @@ function safeRefreshSlots() {
 }
 
 // Exponer globalmente para que player.js pueda llamar initGPT y safeRefreshSlots
-window.initGPT = initGPT;
+/*window.initGPT = initGPT;
 window.safeRefreshSlots = safeRefreshSlots;
+*/
+
+// initAdFallbackListener se registra UNA SOLA VEZ aquí (no dentro de initGPT)
+// initGPT() NO se llama aquí — astro:page-load lo maneja en carga inicial y en navegaciones
+googletag.cmd.push(initAdFallbackListener);
+
+document.addEventListener('astro:page-load', function () {
+    if (window.googletag && googletag.apiReady) {
+        initGPT();
+    } else {
+        window.googletag = window.googletag || { cmd: [] };
+        googletag.cmd.push(function() { initGPT(); });
+    }
+});
