@@ -467,6 +467,42 @@ document.querySelectorAll('.radio-link').forEach(function (el) {
     });
 });
 
+/* TONEFUSE APPLE MUSIC */
+function initAppleMusicAds() {
+  const slot = document.getElementById('amplified_100007144');
+  if (!slot) return;
+
+  const runAppleMusicAds = () => {
+    window.amplified = window.amplified || { init: [] };
+
+    if (typeof window.amplified.setParams === 'function' &&
+        typeof window.amplified.pushAdUnit === 'function' &&
+        typeof window.amplified.run === 'function') {
+      window.amplified.setParams({ artist: '', song: '' });
+      window.amplified.pushAdUnit(100007144);
+      window.amplified.run();
+      return true;
+    }
+
+    if (Array.isArray(window.amplified.init)) {
+      window.amplified.init.push(function() {
+        window.amplified.setParams({ artist: '', song: '' });
+        window.amplified.pushAdUnit(100007144);
+        window.amplified.run();
+      });
+      return true;
+    }
+
+    return false;
+  };
+
+  if (runAppleMusicAds()) return;
+
+  window.setTimeout(() => {
+    if (!document.getElementById('amplified_100007144')) return;
+    runAppleMusicAds();
+  }, 500);
+}
 
 // ===== [NAVIGATION - VIEW TRANSITIONS] =====
 document.addEventListener('astro:before-preparation', ev => {
@@ -480,6 +516,7 @@ document.addEventListener("astro:after-swap", () => {
 
 
 document.addEventListener('astro:page-load', ev => {
+    initAppleMusicAds();
     const getplayingstatus = playerstatus();
     document.querySelector('main').classList.remove('loading');
     document.querySelector('.preloader').classList.remove('showpreloader');
