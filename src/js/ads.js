@@ -178,16 +178,16 @@ function initGPT() {
     if (document.getElementById('ad-slot-boxbanner6')) googletag.display('ad-slot-boxbanner6');
     if (document.getElementById('ad-slot-videonota')) googletag.display('ad-slot-videonota');
 
-    googletag.pubads().refresh([window.slotBoxbanner2]);
+    googletag.pubads().refresh([window.slotBoxbanner1]);
 
     // Limpiar intervalo anterior si existe (por navegación SPA)
-    if (window.slotBoxbanner2RefreshInterval) {
-      clearInterval(window.slotBoxbanner2RefreshInterval);
+    if (window.slotBoxbanner1RefreshInterval) {
+      clearInterval(window.slotBoxbanner1RefreshInterval);
     }
 
     // Crear intervalo para refresh cada 10 segundos
-    window.slotBoxbanner2RefreshInterval = setInterval(function(){
-      googletag.pubads().refresh([window.slotBoxbanner2]);
+    window.slotBoxbanner1RefreshInterval = setInterval(function(){
+      googletag.pubads().refresh([window.slotBoxbanner1]);
     }, 120000);
   });
 }
