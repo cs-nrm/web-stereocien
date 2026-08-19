@@ -140,7 +140,7 @@ function initGPT() {
     // Formatos estandarizados: leaderboard (728x90) y box (300x250).
     var mappingLeaderboard = googletag.sizeMapping().addSize([768, 0], [728, 90]).addSize([0, 0], [320, 50]).build();
     var mappingBox         = googletag.sizeMapping().addSize([0, 0], [300, 250]).build();
-    var mapping5           = googletag.sizeMapping().addSize([0, 0], [300, 600]).build();
+    var mappingdoublebox   = googletag.sizeMapping().addSize([0, 0], [300, 600]).build();
     var mapping14          = googletag.sizeMapping().addSize([768, 0], [600, 800]).addSize([0, 0], [320, 480]).build();
     var mappingVideoNota   = googletag.sizeMapping().addSize([0, 0], [400, 311]).build();
 
