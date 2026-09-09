@@ -161,7 +161,26 @@ function initGPT() {
       window.slotVideoNota = googletag.defineSlot("/23349147378/StereoCien", [400, 311], 'ad-slot-videonota').defineSizeMapping(mappingVideoNota).addService(googletag.pubads());
     }
 
-    googletag.pubads().setTargeting("test", "responsive");
+    // Migrado de `pubads().setTargeting("test", "responsive")`, que GPT marcó
+    // como deprecado (aviso `goo.gle/gpt-message#170`). Mismo alcance: con un
+    // solo servicio, el targeting de servicio ya era targeting de página.
+    // La llave se llama literalmente "test". Readback a mano:
+    // `googletag.getConfig('targeting')` — sin la llave devuelve {} y avisa #96.
+    googletag.setConfig({ targeting: { test: "responsive" } });
+
+    // 🔴 Vista de página NUEVA para GAM. initGPT() vuelve a correr en cada
+    // navegación de View Transitions; sin renovar el correlator, TODAS comparten
+    // el de la primera carga y para Ad Manager el lector nunca sale de la misma
+    // vista. No solo subcuenta vistas de página: dentro de una vista GAM aplica
+    // exclusión competitiva, roadblocks y frecuencia como si fuera una sola
+    // página, así que esas reglas se aplican a la sesión entera del lector.
+    // Va DESPUÉS de destroySlots() + defineSlot y ANTES de display(), como pide
+    // la doc de GPT para single-page apps.
+    // No se llama en la PRIMERA vista: GPT ya generó su correlator al cargar.
+    // Verificación: navegar 3 veces => 3 correlators distintos en /gampad/ads.
+    if (window._gptHuboPrimeraVista) googletag.pubads().updateCorrelator();
+    window._gptHuboPrimeraVista = true;
+
     googletag.enableServices();
     if (document.getElementById('ad-slot-leaderboard1')) googletag.display('ad-slot-leaderboard1');
     if (document.getElementById('ad-slot-leaderboard2')) googletag.display('ad-slot-leaderboard2');
@@ -185,7 +204,7 @@ function initGPT() {
       clearInterval(window.slotBoxbanner1RefreshInterval);
     }
 
-    // Crear intervalo para refresh cada 10 segundos
+    // Crear intervalo para refresh cada 2 minutos (120000 ms)
     window.slotBoxbanner1RefreshInterval = setInterval(function(){
       googletag.pubads().refresh([window.slotBoxbanner1]);
     }, 120000);
