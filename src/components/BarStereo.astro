@@ -327,6 +327,7 @@ const currentPath = Astro.url.pathname;
   }
   .bar-stereo {
     background: white;
+    background: var(--verde-electrico) !important;
     padding: 1rem 1.5rem;
     flex-direction: row;
     justify-content: space-between;
@@ -499,14 +500,20 @@ button:hover {
 </style>
 
 <script>
+  let originalBarTop: number | null = null;
+
   function handleScroll() {
     const barStereo = document.querySelector(".bar-stereo");
     if (barStereo) {
       const logo = barStereo.querySelector(".logo");
-      if (window.scrollY > 10) {
+      if (originalBarTop === null && !barStereo.classList.contains("compress")) {
+        originalBarTop = barStereo.getBoundingClientRect().top + window.scrollY;
+      }
+
+      if (originalBarTop !== null && window.scrollY > originalBarTop) {
         barStereo.classList.add("compress");
         if (logo) logo.classList.add("compress-logo");
-      } else {
+      } else if (originalBarTop !== null) {
         barStereo.classList.remove("compress");
         if (logo) logo.classList.remove("compress-logo");
       }
@@ -517,7 +524,10 @@ button:hover {
   window.addEventListener("scroll", handleScroll);
 
   // Asegurar que el estado inicial sea correcto y funcione con ViewTransitions
-  document.addEventListener("astro:page-load", handleScroll);
+  document.addEventListener("astro:page-load", () => {
+    originalBarTop = null;
+    handleScroll();
+  });
 
   // Ejecutar también cuando el DOM está listo
   document.addEventListener("DOMContentLoaded", handleScroll);
