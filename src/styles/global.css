@@ -854,12 +854,6 @@ article .plyr--video{
 	overflow-x: clip;
 }
 
-.leader ins.adsbygoogle,
-.billboard ins.adsbygoogle,
-.super-leader ins.adsbygoogle {
-	max-width: 100% !important;
-}
-
 /* LEADER EXPANDIBLE */
 /*.billboard #ad-slot32 iframe:hover,
 .billboard #ad-slot3 iframe:hover,
