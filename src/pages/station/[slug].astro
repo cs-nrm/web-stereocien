@@ -276,7 +276,7 @@ export async function getStaticPaths() {
     if (!cfg) return "";
     const n = Math.max(1, Math.min(999, Number(cfg.count) || 1));
     const idx = Math.floor(Math.random() * n) + 1;
-    return `${cfg.base}portada${idx}.jpeg`;
+    return `${cfg.base}porta${idx}.jpeg`;
   }
 
   // Current track state (for vote/share)
