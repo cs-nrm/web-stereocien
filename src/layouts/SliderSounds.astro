@@ -429,12 +429,13 @@ const posts = await res.json();
 
 ];
 
-const cards = document.querySelectorAll(".card");
-const dots = document.querySelectorAll(".dot");
-const memberName = document.querySelector(".member-name");
-const memberRole = document.querySelector(".member-role");
-const leftArrow = document.querySelector(".nav-arrow.left");
-const rightArrow = document.querySelector(".nav-arrow.right");
+let slider = document.getElementById("carrusel-sounds");
+let cards = slider?.querySelectorAll(".card") || [];
+let dots = document.querySelectorAll(".dot");
+let memberName = document.querySelector(".member-name");
+let memberRole = document.querySelector(".member-role");
+let leftArrow = document.querySelector(".nav-arrow.left");
+let rightArrow = document.querySelector(".nav-arrow.right");
 let currentIndex = 0;
 let isAnimating = false;
 let autoplayInterval;
@@ -444,6 +445,7 @@ console.log("=== SliderSounds Script iniciado ===");
 console.log("Elementos encontrados:", { cards: cards.length, dots: dots.length, leftArrow, rightArrow });
 
 function startAutoplay() {
+	stopAutoplay();
 	autoplayInterval = setInterval(() => {
 		updateCarousel(currentIndex + 1);
 	}, AUTOPLAY_DELAY);
@@ -459,7 +461,7 @@ function resetAutoplay() {
 }
 
 function updateCarousel(newIndex) {
-	if (isAnimating) return;
+	if (isAnimating || cards.length === 0) return;
 	isAnimating = true;
 
 	currentIndex = (newIndex + cards.length) % cards.length;
@@ -495,12 +497,14 @@ function updateCarousel(newIndex) {
 		dot.classList.toggle("active", i === currentIndex);
 	});
 
-	memberName.style.opacity = "0";
-	memberRole.style.opacity = "0";
+	if (memberName) memberName.style.opacity = "0";
+	if (memberRole) memberRole.style.opacity = "0";
 
 	setTimeout(() => {
-		memberName.textContent = teamMembers[currentIndex].name;
-		memberRole.textContent = teamMembers[currentIndex].role;
+		if (!memberName || !memberRole) return;
+		const member = teamMembers[currentIndex] || { name: "Sounds", role: "" };
+		memberName.textContent = member.name;
+		memberRole.textContent = member.role;
 		memberName.style.opacity = "1";
 		memberRole.style.opacity = "1";
 	}, 300);
@@ -513,8 +517,8 @@ function updateCarousel(newIndex) {
 // Función para inicializar listeners de click en tarjetas
 function initClickListeners() {
 	try {
-		const carouselTrack = document.getElementById("carrusel-sounds");
-		const allCards = document.querySelectorAll(".card");
+		const carouselTrack = slider;
+		const allCards = cards;
 		
 		if (!carouselTrack) {
 			console.error("No se encontró carrusel-sounds");
@@ -564,13 +568,23 @@ function initClickListeners() {
 }
 
 
-// Ejecutar cuando el DOM esté listo
-setTimeout(() => {
+function initializeSoundsSlider() {
+	slider = document.getElementById("carrusel-sounds");
+	cards = slider?.querySelectorAll(".card") || [];
+	dots = document.querySelectorAll(".dot");
+	memberName = slider?.closest("main")?.querySelector(".member-name") || document.querySelector(".member-name");
+	memberRole = slider?.closest("main")?.querySelector(".member-role") || document.querySelector(".member-role");
+	leftArrow = slider?.parentElement?.querySelector(".nav-arrow.left") || null;
+	rightArrow = slider?.parentElement?.querySelector(".nav-arrow.right") || null;
+
+	if (cards.length === 0) {
+		stopAutoplay();
+		return;
+	}
+
+	currentIndex = 0;
+	isAnimating = false;
 	initClickListeners();
-	
-	// Agregar listeners de flechas
-	const leftArrow = document.querySelector(".nav-arrow.left");
-	const rightArrow = document.querySelector(".nav-arrow.right");
 	
 	if (leftArrow) {
 		leftArrow.addEventListener("click", () => {
@@ -585,9 +599,21 @@ setTimeout(() => {
 			updateCarousel(currentIndex + 1);
 		});
 	}
-}, 100);
+
+	updateCarousel(0);
+	resetAutoplay();
+}
+
+document.addEventListener("astro:page-load", initializeSoundsSlider);
+
+if (document.readyState === "loading") {
+	document.addEventListener("DOMContentLoaded", initializeSoundsSlider, { once: true });
+} else {
+	initializeSoundsSlider();
+}
 
 document.addEventListener("keydown", (e) => {
+	if (!slider || cards.length === 0) return;
 	if (e.key === "ArrowLeft") {
 		resetAutoplay();
 		updateCarousel(currentIndex - 1);
@@ -610,6 +636,7 @@ document.addEventListener("touchend", (e) => {
 });
 
 function handleSwipe() {
+	if (!slider || cards.length === 0) return;
 	const swipeThreshold = 50;
 	const diff = touchStartX - touchEndX;
 
@@ -622,8 +649,5 @@ function handleSwipe() {
 		}
 	}
 }
-
-updateCarousel(0);
-startAutoplay();
 
 </script>
