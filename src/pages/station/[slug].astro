@@ -30,6 +30,12 @@ const bannerLink = /^https?:\/\//i.test(rawBannerLink) ? rawBannerLink : "";
 const pageTitle = post?.title?.rendered || "Sounds by Stereo Cien";
 const pageDescription = post?.excerpt?.rendered || SITE_DESCRIPTION;
 
+// Nombre limpio de la estación: analytics lo manda como dimensión y el filtro de IDs
+// lo compara contra el texto de Zeno, así que no puede traer HTML del CMS.
+const stationName = String(post?.title?.rendered || "")
+  .replace(/<[^>]*>/g, "")
+  .trim();
+
 export async function getStaticPaths() {
   let data = await fetch(
     "https://stereociendigital.com.mx/wp-json/wp/v2/sounds?_embed&per_page=15&_fields=title,slug",
@@ -222,7 +228,7 @@ export async function getStaticPaths() {
   </div>
 </body>
 
-<script is:inline define:vars={{ streamurl, mounturl, station_slug: slug }}>
+<script is:inline define:vars={{ streamurl, mounturl, station_slug: slug, station_name: stationName }}>
   // Single-station player (layout tipo screenshot) + pre-roll de video (Plyr + Google IMA)
   let player = null; // instancia de Plyr sobre el <video> del pre-roll
   let audioPlayer = null; // player.media — el <video> real que Plyr envuelve
@@ -282,6 +288,168 @@ export async function getStaticPaths() {
   // Current track state (for vote/share)
   let currentTitle = "";
   let currentArtist = "";
+
+  // ------------------------------
+  // Analytics (dataLayer -> GTM -> GA4)
+  // ------------------------------
+  // Aquí solo se empuja al dataLayer. Los tags de evento viven en el contenedor
+  // GTM-WCB6K54T; sin esos tags configurados estos push no llegan a GA4.
+  const LISTEN_BEAT_MS = 60000;
+  const LISTEN_CHECK_MS = 10000;
+  const GA_STR_MAX = 100;
+
+  let listenMs = 0; // escucha real acumulada en esta vista (sin anuncios ni pausas)
+  let listenTickAt = null; // inicio del tramo en curso; null = contador detenido
+  let listenBeatSent = 0; // último múltiplo de 60s ya reportado
+  let listenTimer = null;
+  let listeningActive = false; // true entre sounds_play y sounds_pause
+  let pendingPlayTrigger = ""; // "button" | "autoplay", se consume al primer "playing"
+  let lastTrackKey = "";
+
+  // Parámetros que cualquier evento puede traer. GTM conserva el estado del dataLayer entre
+  // pushes: una clave omitida seguiría resolviendo al valor del evento anterior (track_artist
+  // pegado a un sounds_pause, por ejemplo). Se mandan todas siempre, con undefined las que no
+  // apliquen, para cortar ese arrastre; GA4 descarta las undefined y no las reporta.
+  const TRACK_PARAMS = [
+    "trigger",
+    "listen_seconds",
+    "reason",
+    "track_artist",
+    "track_title",
+    "method",
+    "error_kind",
+  ];
+
+  function track(event, params) {
+    try {
+      const p = params || {};
+      const payload = {
+        event: event,
+        station: getStationSlug(),
+        station_name:
+          typeof station_name !== "undefined" ? String(station_name) : "",
+      };
+      TRACK_PARAMS.forEach(function (k) {
+        payload[k] = Object.prototype.hasOwnProperty.call(p, k)
+          ? p[k]
+          : undefined;
+      });
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push(payload);
+    } catch (e) {}
+  }
+
+  function listenSeconds() {
+    const open = listenTickAt !== null ? Date.now() - listenTickAt : 0;
+    return Math.round((listenMs + open) / 1000);
+  }
+
+  function checkListenBeat() {
+    const beat = Math.floor(listenSeconds() / 60) * 60;
+    if (beat > 0 && beat > listenBeatSent) {
+      listenBeatSent = beat;
+      track("sounds_listen", { listen_seconds: beat });
+    }
+  }
+
+  // El reloj corre solo mientras suena contenido real: se detiene en pausa, en error y
+  // durante el pre-roll, así que listen_seconds nunca infla el tiempo de escucha.
+  function startListenClock() {
+    if (listenTickAt !== null) return;
+    listenTickAt = Date.now();
+    if (!listenTimer) listenTimer = setInterval(checkListenBeat, LISTEN_CHECK_MS);
+  }
+
+  function stopListenClock() {
+    if (listenTickAt !== null) {
+      listenMs += Date.now() - listenTickAt;
+      listenTickAt = null;
+    }
+    if (listenTimer) {
+      clearInterval(listenTimer);
+      listenTimer = null;
+    }
+  }
+
+  function beginListening() {
+    startListenClock();
+    if (listeningActive) return;
+    listeningActive = true;
+    track("sounds_play", { trigger: pendingPlayTrigger || "unknown" });
+    pendingPlayTrigger = "";
+  }
+
+  // Dedupe: stop, error y salida de página pueden dispararse en cadena para el mismo corte.
+  function endListening(reason) {
+    stopListenClock();
+    if (!listeningActive) return;
+    listeningActive = false;
+    track("sounds_pause", {
+      listen_seconds: listenSeconds(),
+      reason: reason || "pause",
+    });
+  }
+
+  // ------------------------------
+  // Higiene de metadata para analytics
+  // ------------------------------
+  // Zeno manda un solo string libre, sin distinguir canción de ID de estación. Verificado en
+  // captura de 30 min sobre las 4 estaciones: llegan IDs con y sin guion ("Ahora escuchas Rock
+  // en Español - Sounds", "Estás escuchando New Sounds"), nombres de archivo con extensión
+  // ("VANCE JOY - DIVINE FEELINGS.mp3") y hex crudo del automatizador ("0004F864"). Sin este
+  // filtro, sounds_track se llena de basura que no es música.
+  const ID_PHRASE =
+    /\b(ahora escuchas|estas escuchando|estan escuchando|escuchas|bienvenido a)\b/;
+
+  function normalizeMeta(str) {
+    return String(str || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[-\u2013\u2014]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
+  }
+
+  function cleanMeta(str) {
+    return String(str || "")
+      .replace(/\.(mp3|wav|aac|m4a|flac|ogg)$/i, "")
+      .trim();
+  }
+
+  function isStationId(artist, title) {
+    const n = normalizeMeta(`${artist} ${title}`);
+    if (!n) return true;
+    if (ID_PHRASE.test(n)) return true;
+    const st = normalizeMeta(
+      typeof station_name !== "undefined" ? station_name : "",
+    );
+    // El nombre pelón daría falsos positivos ("New" contra "Dua Lipa - New Rules"):
+    // hace falta la marca completa, "<estación> sounds".
+    return !!(st && n.indexOf(`${st} sounds`) !== -1);
+  }
+
+  function isJunkMeta(title) {
+    const t = String(title || "").trim();
+    return /^[0-9A-F]{6,}$/i.test(t) && !/\s/.test(t);
+  }
+
+  function trackNowPlaying(title, artist) {
+    const a = cleanMeta(artist);
+    const t = cleanMeta(title);
+    if (!a && !t) return;
+    if (t.toUpperCase() === "EN VIVO") return;
+    if (isStationId(a, t) || isJunkMeta(t)) return;
+
+    const key = `${a}|${t}`.toLowerCase();
+    if (key === lastTrackKey) return;
+    lastTrackKey = key;
+
+    track("sounds_track", {
+      track_artist: a.slice(0, GA_STR_MAX),
+      track_title: t.slice(0, GA_STR_MAX),
+    });
+  }
 
   const $ = (id) => document.getElementById(id);
 
@@ -760,6 +928,10 @@ export async function getStaticPaths() {
       setLikeUI(true);
       setVoteRecord(key);
       console.log("[vote] Voto registrado con éxito.");
+      track("sounds_like", {
+        track_artist: artist.slice(0, GA_STR_MAX),
+        track_title: title.slice(0, GA_STR_MAX),
+      });
     } catch (err) {
       console.log(
         "[vote] No se pudo registrar el voto:",
@@ -792,6 +964,7 @@ export async function getStaticPaths() {
           text: msg,
           url: pageUrl,
         });
+        track("sounds_share", { method: "native" });
         return;
       } catch (e) {
         // fall back below
@@ -800,6 +973,7 @@ export async function getStaticPaths() {
 
     // WhatsApp fallback
     const wa = `https://api.whatsapp.com/send/?text=${encodeURIComponent(msg)}`;
+    track("sounds_share", { method: "whatsapp" });
     window.open(wa, "_blank", "noopener,noreferrer");
   }
 
@@ -845,12 +1019,16 @@ export async function getStaticPaths() {
       setNowPlaying(title, artist);
       updateArtwork(artist, title);
       syncLikeStateFromStorage();
+      trackNowPlaying(title, artist);
       return;
     }
     const id = setTimeout(() => {
       setNowPlaying(title, artist);
       updateArtwork(artist, title);
       syncLikeStateFromStorage();
+      // Dentro del timer, no fuera: el evento debe caer cuando la canción suena, no cuando
+      // Zeno la anuncia ~18s antes.
+      trackNowPlaying(title, artist);
     }, METADATA_DISPLAY_DELAY_MS);
     metadataApplyTimers.push(id);
   }
@@ -999,7 +1177,15 @@ export async function getStaticPaths() {
   }
 
   function setAdUI(active) {
+    const wasAdActive = isAdActive;
     isAdActive = !!active;
+
+    if (!wasAdActive && isAdActive) {
+      stopListenClock(); // el anuncio no cuenta como tiempo de escucha
+      track("sounds_ad_start", {});
+    } else if (wasAdActive && !isAdActive) {
+      track("sounds_ad_end", {});
+    }
 
     const slot = $("ad-slot");
     if (slot) slot.classList.toggle("sr-ad-active", isAdActive);
@@ -1038,6 +1224,9 @@ export async function getStaticPaths() {
       setLoadingUI(false);
       setStatus("REPRODUCIENDO");
       setPlayingUI(true);
+      // sounds_play se emite aquí, no en el click: mide reproducción confirmada, no intención.
+      // En el resume post-anuncio solo reanuda el reloj (beginListening ya está deduplicado).
+      beginListening();
     };
 
     const onPause = function () {
@@ -1051,6 +1240,10 @@ export async function getStaticPaths() {
         setStatus("PAUSADO");
       }
       setPlayingUI(false);
+      // isAdPending cubre la ventana en que IMA pausa el contenido antes de marcar el ad
+      // como activo: esa pausa es del anuncio arrancando, no del usuario.
+      if (isAdPending) stopListenClock();
+      else endListening("pause");
     };
 
     const onWaiting = function () {
@@ -1087,6 +1280,11 @@ export async function getStaticPaths() {
       isPlaying = false;
       setPlayingUI(false);
       stopMetadataFeed();
+      track("sounds_error", {
+        error_kind:
+          mediaEl && mediaEl.error ? `media_${mediaEl.error.code}` : "media",
+      });
+      endListening("error");
     };
 
     const onAdsPauseRequested = function () {
@@ -1238,6 +1436,7 @@ export async function getStaticPaths() {
     setPlayingUI(false);
     setLoadingUI(false);
     setStatus("DETENIDO");
+    endListening("stop");
     // Clear the ignore window shortly after the reset completes.
     setTimeout(() => {
       ignoreAudioErrorsUntil = 0;
@@ -1271,6 +1470,7 @@ export async function getStaticPaths() {
     // Optional autoplay via query param (?autoplay=1)
     if (shouldAutoplay()) {
       hasUserPressedPlay = true;
+      pendingPlayTrigger = "autoplay";
       attemptPrerollAndPlay();
     }
 
@@ -1278,6 +1478,7 @@ export async function getStaticPaths() {
     if (playBtn) {
       playBtn.addEventListener("click", function () {
         hasUserPressedPlay = true;
+        pendingPlayTrigger = "button";
 
         // Click a mitad del ad o durante reproducción: se interpreta como "detener todo"
         // (no es el skip nativo de IMA). stopRadio() ya cancela el ad si estaba activo.
@@ -1313,6 +1514,12 @@ export async function getStaticPaths() {
         if (player) player.pause();
       } catch (e) {}
       stopMetadataFeed();
+    });
+
+    // pagehide sí dispara en Safari iOS y en bfcache, donde beforeunload no. endListening
+    // está deduplicado, así que si ambos corren solo se emite un sounds_pause.
+    window.addEventListener("pagehide", function () {
+      endListening("exit");
     });
   });
 </script>
