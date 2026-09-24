@@ -1,0 +1,96 @@
+/**
+ * TEMPORAL - pegar tal cual al final de functions.php. No lleva etiqueta de
+ * apertura: el archivo ya esta en contexto PHP y abrirlo otra vez seria error.
+ *
+ * Permite que /wp-json/wp/v2/sounds?status=any devuelva tambien las estaciones sin
+ * publicar (borrador, pendiente, programada, privada) sin autenticacion, para que
+ * la pagina /fiesta-sounds pueda listarlas durante el build de Astro.
+ *
+ * Alcance: solo peticiones GET a la ruta de coleccion /wp/v2/sounds. Ningun otro
+ * tipo de contenido, ninguna otra ruta y ningun otro metodo quedan afectados. El
+ * item individual (/wp/v2/sounds/123) tampoco entra, asi que un borrador no se
+ * puede pedir por ID. Los usuarios con sesion conservan sus permisos reales.
+ *
+ * Trampa: el tipo de contenido se llama 'sounds_station'. 'sounds' es unicamente su
+ * rest_base, o sea el trozo que aparece en la URL. get_post_type_object('sounds')
+ * devuelve null y el fragmento no haria nada, sin avisar.
+ *
+ * Trampa: mientras esto este puesto, los borradores de estaciones son publicos para
+ * cualquiera que conozca la URL. Es deliberado y es temporal.
+ *
+ * Puesto: 2026-09-24. Quitar: 2026-09-25 (borrar este bloque completo).
+ */
+
+add_filter(
+	'rest_pre_dispatch',
+	function ( $result, $server, $request ) {
+		// La ruta de coleccion cubre tanto el listado del slider como la busqueda
+		// por ?slug=, que es todo lo que consume /fiesta-sounds.
+		if ( 'GET' === $request->get_method() && '/wp/v2/sounds' === $request->get_route() ) {
+			$GLOBALS['sc_sounds_abrir_borradores'] = true;
+		}
+
+		return $result;
+	},
+	10,
+	3
+);
+
+// Apagar el permiso en cuanto la peticion termina de resolverse. WordPress tambien
+// despacha rutas REST internamente (rest_do_request) dentro de una carga de pagina
+// normal; sin esto, una de esas llamadas dejaria el permiso encendido para todo lo
+// que corriera despues en esa misma carga.
+add_filter(
+	'rest_request_after_callbacks',
+	function ( $response, $handler, $request ) {
+		if ( '/wp/v2/sounds' === $request->get_route() ) {
+			unset( $GLOBALS['sc_sounds_abrir_borradores'] );
+		}
+
+		return $response;
+	},
+	10,
+	3
+);
+
+add_filter(
+	'user_has_cap',
+	function ( $allcaps, $caps, $args, $user ) {
+		if ( empty( $GLOBALS['sc_sounds_abrir_borradores'] ) ) {
+			return $allcaps;
+		}
+
+		// Los usuarios con sesion conservan sus permisos reales sin tocar.
+		if ( ! empty( $user->ID ) ) {
+			return $allcaps;
+		}
+
+		$tipo = get_post_type_object( 'sounds_station' );
+		if ( ! $tipo ) {
+			return $allcaps;
+		}
+
+		// El tipo puede declarar capacidades propias (edit_sounds_stations) o heredar
+		// las de 'post' (edit_posts). Se leen del objeto para no adivinar cual es cual.
+		// WordPress las pide en tres puntos distintos: al validar ?status=any, al
+		// resolver read_post de cada borrador y al mapear edit_post por debajo.
+		$necesarias = array(
+			'read',
+			'read_private_posts',
+			'edit_posts',
+			'edit_others_posts',
+			'edit_private_posts',
+			'edit_published_posts',
+		);
+
+		foreach ( $necesarias as $clave ) {
+			if ( ! empty( $tipo->cap->$clave ) ) {
+				$allcaps[ $tipo->cap->$clave ] = true;
+			}
+		}
+
+		return $allcaps;
+	},
+	10,
+	4
+);

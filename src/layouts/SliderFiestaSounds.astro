@@ -6,10 +6,28 @@ import SuperLeader from '../components/SuperLeader.astro';
 import { Image } from 'astro:assets';
 
 const PLACEHOLDER_IMG = 'https://storage.googleapis.com/nrm-web/stereocien/img_stereocien-min.jpg';
-const res = await fetch(
-  "https://stereociendigital.com.mx/wp-json/wp/v2/sounds?per_page=100&orderby=sounds_order&order=asc&status=any&context=edit"
-);
-const posts = await res.json();
+// Esta pagina es el clon de /sounds que ademas lista las estaciones sin publicar.
+// status=any solo lo permite el fragmento temporal del functions.php de WordPress
+// (tools/wp-sounds-status-any.txt); sin el, la API contesta 400 con un objeto de
+// error. No se pide context=edit: el slider solo usa slug, titulo y logo, y ese
+// contexto expondria el contenido crudo y los metadatos sin filtrar de cada estacion.
+const API_SOUNDS =
+  "https://stereociendigital.com.mx/wp-json/wp/v2/sounds?per_page=100&orderby=sounds_order&order=asc";
+
+let res = await fetch(`${API_SOUNDS}&status=any`);
+let datos = await res.json();
+
+// Cuando se retire el fragmento, la pagina no debe quedar vacia ni tumbar el build:
+// se reintenta sin status y se comporta igual que /sounds.
+if (!Array.isArray(datos)) {
+  console.warn(
+    `[fiesta-sounds] sin estaciones no publicadas (${res.status}): falta el fragmento en functions.php`
+  );
+  res = await fetch(API_SOUNDS);
+  datos = await res.json();
+}
+
+const posts = Array.isArray(datos) ? datos : [];
 
 
 ---
@@ -27,7 +45,7 @@ const posts = await res.json();
     posts.map((post:any, i:number)=> (
       <div id={`sounds-${post.slug}`} class="card" data-index={i}>
           <img loading="lazy" class="block h-auto w-full object-fill" src={post?.sounds_logo_url || PLACEHOLDER_IMG} alt={post?._embedded?.['wp:featuredmedia']?.[0]?.alt_text||"Imagen Relojes"} width="300" height="150"/>
-          <div class="play-overlay" aria-label={`Reproducir ${post?.title?.rendered || post.slug}`}>
+          <div class="play-overlay" aria-label={`Reproducir ${(post?.title?.rendered || post.slug).replace(/&amp;/g, "&")}`}>
             <span class="play-icon">
 				<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
 					<path d="M6 4v16a1 1 0 0 0 1.524 .852l13 -8a1 1 0 0 0 0 -1.704l-13 -8a1 1 0 0 0 -1.524 .852z" />

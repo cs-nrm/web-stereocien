@@ -7,10 +7,20 @@ const { tags } = Astro.props;
 const { description } = Astro.props;
 const { slug } = Astro.params;
 
-let res = await fetch(
-  `https://stereociendigital.com.mx/wp-json/wp/v2/sounds?slug=${slug}`,
-);
-let [post] = await res.json();
+// status=any depende del fragmento temporal en el functions.php de WordPress
+// (tools/wp-sounds-status-any.txt). Si no esta, la API contesta 400 y se reintenta
+// sin el, para que las estaciones publicadas sigan abriendo.
+const API_SOUNDS = `https://stereociendigital.com.mx/wp-json/wp/v2/sounds?slug=${slug}`;
+
+let res = await fetch(`${API_SOUNDS}&status=any`);
+let datos = await res.json();
+
+if (!Array.isArray(datos)) {
+  res = await fetch(API_SOUNDS);
+  datos = await res.json();
+}
+
+let [post] = Array.isArray(datos) ? datos : [];
 
 const color1 = post?.["sounds_colors"]?.["color1"] || "";
 const color2 = post?.["sounds_colors"]?.["color2"] || "";
@@ -18,15 +28,44 @@ const color3 = post?.["sounds_colors"]?.["color3"] || "";
 const streamurl = post?.sounds_stream_url || "";
 const mounturl = post?.sounds_mount_url || "";
 
+// WordPress entrega el titulo con entidades HTML ("Jazz &amp; Blues"). En <title>
+// Astro vuelve a escapar el &, asi que la pestana acaba mostrando "&amp;" literal.
+// Aqui se decodifica; donde el titulo va como HTML (set:html) no hace falta.
+function decodificar(texto: string) {
+  return String(texto)
+    .replace(/&#(\d+);/g, (_m, n) => String.fromCharCode(Number(n)))
+    .replace(/&#x([0-9a-f]+);/gi, (_m, n) => String.fromCharCode(parseInt(n, 16)))
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&");
+}
+
 // use the post data to populate meta tags / header
-const pageTitle = post?.title?.rendered || "Sounds by Stereo Cien";
+const pageTitle = decodificar(post?.title?.rendered || "Sounds by Stereo Cien");
 const pageDescription = post?.excerpt?.rendered || SITE_DESCRIPTION;
 
 export async function getStaticPaths() {
-  let data = await fetch(
-    "https://stereociendigital.com.mx/wp-json/wp/v2/sounds?_embed&per_page=15&_fields=title,slug",
-  );
-  let posts = await data.json();
+  // per_page=15 era el limite heredado de /sounds; aqui tienen que caber todas las
+  // estaciones, publicadas y no publicadas.
+  const API_LISTA =
+    "https://stereociendigital.com.mx/wp-json/wp/v2/sounds?_embed&per_page=100&_fields=title,slug";
+
+  let data = await fetch(`${API_LISTA}&status=any`);
+  let datos = await data.json();
+
+  // Sin el fragmento en functions.php la respuesta es un objeto de error. Se
+  // reintenta sin status para no quedarse con cero rutas ni tumbar el build.
+  if (!Array.isArray(datos)) {
+    console.warn(
+      `[fiesta-sounds] sin estaciones no publicadas (${data.status}): falta el fragmento en functions.php`,
+    );
+    data = await fetch(API_LISTA);
+    datos = await data.json();
+  }
+
+  const posts = Array.isArray(datos) ? datos : [];
 
   return posts.map((post: any) => ({
     params: { slug: post.slug },
@@ -37,7 +76,7 @@ export async function getStaticPaths() {
 
 <BaseHead
   title="Sounds by Stereo Cien"
-  seccion={post.title.rendered}
+  seccion={decodificar(post.title.rendered)}
   description=""
 />
 
