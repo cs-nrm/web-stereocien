@@ -1,0 +1,655 @@
+---
+import DoubleBox from '../components/DoubleBox.astro';
+import BoxBanner from '../components/BoxBanner.astro';
+import LeaderBoard from'../components/LeaderBoard.astro';
+import SuperLeader from '../components/SuperLeader.astro';
+import { Image } from 'astro:assets';
+
+const PLACEHOLDER_IMG = 'https://storage.googleapis.com/nrm-web/stereocien/img_stereocien-min.jpg';
+const res = await fetch(
+  "https://stereociendigital.com.mx/wp-json/wp/v2/sounds?per_page=100&orderby=sounds_order&order=asc&status=any&context=edit"
+);
+const posts = await res.json();
+
+
+---
+<div class="about-title-container mt-8">
+  <!--h1 class="about-title">SOUNDS</h1>
+  <h3 class="about-subtitle">by Stereo Cien</h3--> 
+  <img src="https://storage.googleapis.com/nrm-web/stereocien/sounds/logo-sounds.svg" alt="SOUNDS" class="logo-sounds w-[400px]">
+</div>
+
+
+<div class="carousel-container">
+	<button class="nav-arrow left">‹</button>
+	<div id="carrusel-sounds" class="carousel-track">
+  	{
+    posts.map((post:any, i:number)=> (
+      <div id={`sounds-${post.slug}`} class="card" data-index={i}>
+          <img loading="lazy" class="block h-auto w-full object-fill" src={post?.sounds_logo_url || PLACEHOLDER_IMG} alt={post?._embedded?.['wp:featuredmedia']?.[0]?.alt_text||"Imagen Relojes"} width="300" height="150"/>
+          <div class="play-overlay" aria-label={`Reproducir ${post?.title?.rendered || post.slug}`}>
+            <span class="play-icon">
+				<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+					<path d="M6 4v16a1 1 0 0 0 1.524 .852l13 -8a1 1 0 0 0 0 -1.704l-13 -8a1 1 0 0 0 -1.524 .852z" />
+				</svg>
+			</span>
+          </div>
+      </div> 
+    ))    
+    }
+	</div>
+	<button class="nav-arrow right">›</button>
+</div>
+
+<div class="member-info">
+	<h2 class="member-name">Programa</h2>
+	<p class="member-role">Descripción</p>
+</div>
+
+<!--div class="dots">
+	<div class="dot active" data-index="0"></div>
+	<div class="dot" data-index="1"></div>
+	<div class="dot" data-index="2"></div>
+	<div class="dot" data-index="3"></div>
+	<div class="dot" data-index="4"></div>
+	<div class="dot" data-index="5"></div>
+</div-->
+
+
+
+<!--div class="slider-sounds">
+	<div class="carousel main-carousel-sounds cards promos">
+
+	{
+	posts.map((post:any)=> (
+		<div id={`sounds-${post.slug}`} class="carousel-cell card">
+			<article>
+				<Image loading="lazy" class="rounded-full block h-auto w-full object-fill" src={post?.sounds_logo_url || PLACEHOLDER_IMG} alt={post?._embedded?.['wp:featuredmedia']?.[0]?.alt_text||"Imagen Relojes"} width="300" height="150"/>
+			</article>
+		</div>
+	))    
+	}
+	</div> 
+
+</div-->
+
+<style>
+.about-title-container{
+  position: relative;
+  max-width: fit-content;
+  margin: 0 auto;
+  margin-top: 30px;
+}
+.about-title {
+  text-align: center;
+	font-size: 5.5rem;
+	font-weight: 900;
+	text-transform: uppercase;
+	letter-spacing: -0.02em;
+	position: relative;
+	top: 45px;
+	left: 50%;
+	transform: translateX(-50%);
+	pointer-events: none;
+	white-space: nowrap;
+	font-family: "Arial Black", "Arial Bold", Arial, sans-serif;
+	background: linear-gradient(
+		to bottom,
+		rgb(8 42 123 / 35%) 30%,
+		rgb(255 255 255 / 0%) 76%
+	);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+.about-subtitle {
+    font-size: 0.7rem;
+    color: #acb3c5;
+    text-align: right;
+    position: absolute;
+    right: 0;
+}
+
+.carousel-container {
+	width: 100%;
+	max-width: 1200px;
+	height: 330px;
+	position: relative;
+	perspective: 1000px;
+	margin-top: 40px;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.carousel-track {
+	width: 100%;
+	height: 100%;
+	display: flex;
+  flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+	transform-style: preserve-3d;
+	transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.card {
+	position: absolute;
+	width: 250px;
+	height: 250px;
+	/*height: 380px;*/
+	background: white;
+	border-radius: 20px;
+	overflow: hidden;
+	/*box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);*/
+	box-shadow: 0 14px 17px rgba(0, 0, 0, 0.15);
+	transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	cursor: default;
+	pointer-events: auto;
+}
+
+.card:not(.hidden) {
+	cursor: pointer;
+	pointer-events: auto;
+}
+
+.card:not(.hidden):hover {
+	box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+}
+
+.card img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.play-overlay{
+	position:absolute;
+	top:50%;
+	left:50%;
+	transform:translate(-50%,-50%);
+	width:72px;
+	height:72px;
+	border-radius:999px;
+	background:rgba(0,0,0,0.55);
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	z-index: 12;
+	text-decoration:none;
+	transition: transform 0.2s ease, background 0.2s ease;
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+	pointer-events: auto;
+}
+.play-overlay:hover{
+	background:rgba(0,0,0,0.7);
+	transform:translate(-50%,-50%) scale(1.06);
+}
+.play-icon{
+	color:#fff;
+	font-size:28px;
+	line-height:1;
+	margin-left:3px;
+}
+@media (max-width: 768px){
+	.play-overlay{ width:60px; height:60px; }
+	.play-icon{ font-size:24px; }
+}
+
+.card.center {
+	z-index: 10;
+	transform: scale(1.1) translateZ(0);
+}
+
+.card.center img {
+	filter: none;
+}
+
+.card.left-201 {
+	z-index: 1;
+	transform: translateX(-400px) scale(0.8) translateZ(-300px);
+	opacity: 0.7;
+}
+
+.card.left-201 img {
+	filter: grayscale(100%);
+}
+
+.card.left-101 {
+	z-index: 5;
+	transform: translateX(-200px) scale(0.9) translateZ(-100px);
+	opacity: 0.9;
+}
+
+.card.left-101 img {
+	filter: grayscale(100%);
+}
+
+.card.right-101 {
+	z-index: 5;
+	transform: translateX(200px) scale(0.9) translateZ(-100px);
+	opacity: 0.9;
+}
+
+.card.right-101 img {
+	filter: grayscale(100%);
+}
+
+.card.right-201 {
+	z-index: 1;
+	transform: translateX(400px) scale(0.8) translateZ(-300px);
+	opacity: 0.7;
+}
+
+.card.right-201 img {
+	filter: grayscale(100%);
+}
+
+.card.hidden {
+	opacity: 0;
+	pointer-events: none;
+}
+
+.member-info {
+	text-align: center;
+	margin-top: 0px;
+	transition: all 0.5s ease-out;
+	padding: 5px;
+	overflow: hidden;
+}
+
+.member-name {
+	color: #24628c;
+	font-size: 2rem;
+	font-weight: 700;
+	margin-bottom: 10px;
+	position: relative;
+	display: inline-block;
+}
+
+.member-name::before,
+.member-name::after {
+	content: "";
+	position: absolute;
+	top: 100%;
+	width: 100px;
+	height: 2px;
+	background: #24628c;
+}
+
+.member-name::before {
+	left: -120px;
+}
+
+.member-name::after {
+	right: -120px;
+}
+
+.member-role {
+  width: 60%;
+	color: #848696;
+	font-size: 0.9rem;
+	font-weight: 500;
+	opacity: 0.8;
+	letter-spacing: 0.1em;
+	padding: 10px 0;
+	margin-top: -15px;
+	position: relative;
+  	margin: 0 auto;
+	line-height: 1.2;
+	min-height: 60px;
+}
+.dots {
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+	margin-top: 60px;
+}
+
+.dot {
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	background: rgba(8, 42, 123, 0.2);
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.dot.active {
+	background: rgb(8, 42, 123);
+	transform: scale(1.2);
+}
+
+.nav-arrow {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	background: rgb(36 98 140 / 80%);
+	color: white;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	z-index: 20;
+	transition: all 0.3s ease;
+	font-size: 1.5rem;
+	border: none;
+	outline: none;
+	padding-bottom: 4px;
+}
+
+.nav-arrow:hover {
+	background: rgb(31 61 123 / 80%);
+	transform: translateY(-50%) scale(1.1);
+}
+
+.nav-arrow.left {
+	left: 20px;
+	padding-right: 3px;
+}
+
+.nav-arrow.right {
+	right: 20px;
+	padding-left: 3px;
+}
+
+@media (max-width: 768px) {
+  .carousel-container{
+    width: 100%;  
+    max-width: 100%;
+  }
+	.about-title {
+		font-size: 4.5rem;
+	}
+
+	.card {
+		width: 200px;
+		height: 200px;
+	}
+
+	.card.left-201 {
+		transform: translateX(-250px) scale(0.8) translateZ(-300px);
+	}
+
+	.card.left-101 {
+		transform: translateX(-120px) scale(0.9) translateZ(-100px);
+	}
+
+	.card.right-101 {
+		transform: translateX(120px) scale(0.9) translateZ(-100px);
+	}
+
+	.card.right-201 {
+		transform: translateX(250px) scale(0.8) translateZ(-300px);
+	}
+
+	.member-name {
+		font-size: 1.8rem;
+	}
+
+	.member-role {
+		font-size: 0.8rem;
+    width: 80%;
+	}
+
+	.member-name::before,
+	.member-name::after {
+		width: 40px;
+	}
+
+	.member-name::before {
+		left: -70px;
+	}
+
+	.member-name::after {
+		right: -70px;
+	}
+}
+
+</style>
+
+<script is:inline>  
+  const teamMembers = [
+ 	/*{ name: "Lounge", role: "Una selección de sonidos relajantes y sofisticados para un ambiente de lounge." },
+	{ name: "Français", role: "Una selección de música francesa que combina tradición y modernidad." },*/
+	{ name: "Back to Disco", role: "El pasado vuelve a bailar. Disco, funk y soul de los 70 pararecuperar el glamour, la energía y el espíritu de una época inolvidable." },
+	/*{ name: "World Music", role: "Una experiencia auditiva global que celebra cultura, viaje y sofisticación." },*/
+  	{ name: "Nu Disco", role: "El pasado se mezcla con el presente. Los sonidos que definieron los 80 y 90 encuentran nuevos ritmos, mezclas y texturas para escucharlos de una manera diferente." },
+	/*{ name: "Ballads", role: "Sonidos elegantes que acompañan momentos personales y llenos de romanticismo." },
+	{ name: "Acoustic", role: "Sonidos acústicos y emotivos que crean una atmósfera íntima y sofisticada." },
+	{ name: "Live", role: "Sesiones en vivo y música auténtica que generan cercanía con el talento y cultura musical." },
+	{ name: "Jazz and Blues", role: "Clásicos y contemporáneos para una audiencia adulta sofisticada y de alto poder adquisitivo." },
+	{ name: "Retro", role: "Una selección de sonidos retro que evocan la nostalgia y el estilo clásico." },*/
+	{ name: "New", role: "El sonido de lo que está por venir. Nuevos artistas, nuevas canciones y nuevas tendencias para descubrir hoy la música que marcará el mañana." },
+	{ name: "Rock en Español", role: "Las canciones que también hablan de nosotros. Los grandes himnos del rock en nuestro idioma y las nuevas voces que mantienen viva una historia que sigue sonando." },
+
+
+
+];
+
+let slider = document.getElementById("carrusel-sounds");
+let cards = slider?.querySelectorAll(".card") || [];
+let dots = document.querySelectorAll(".dot");
+let memberName = document.querySelector(".member-name");
+let memberRole = document.querySelector(".member-role");
+let leftArrow = document.querySelector(".nav-arrow.left");
+let rightArrow = document.querySelector(".nav-arrow.right");
+let currentIndex = 0;
+let isAnimating = false;
+let autoplayInterval;
+const AUTOPLAY_DELAY = 4000; // 4 segundos
+
+console.log("=== SliderSounds Script iniciado ===");
+console.log("Elementos encontrados:", { cards: cards.length, dots: dots.length, leftArrow, rightArrow });
+
+function startAutoplay() {
+	stopAutoplay();
+	autoplayInterval = setInterval(() => {
+		updateCarousel(currentIndex + 1);
+	}, AUTOPLAY_DELAY);
+}
+
+function stopAutoplay() {
+	clearInterval(autoplayInterval);
+}
+
+function resetAutoplay() {
+	stopAutoplay();
+	startAutoplay();
+}
+
+function updateCarousel(newIndex) {
+	if (isAnimating || cards.length === 0) return;
+	isAnimating = true;
+
+	currentIndex = (newIndex + cards.length) % cards.length;
+
+	cards.forEach((card, i) => {
+		const offset = (i - currentIndex + cards.length) % cards.length;
+
+		card.classList.remove(
+			"center",
+			"left-101",
+			"left-201",
+			"right-101",
+			"right-201",
+			"hidden"
+		);
+
+		if (offset === 0) {
+			card.classList.add("center");
+		} else if (offset === 1) {
+			card.classList.add("right-101");
+		} else if (offset === 2) {
+			card.classList.add("right-201");
+		} else if (offset === cards.length - 1) {
+			card.classList.add("left-101");
+		} else if (offset === cards.length - 2) {
+			card.classList.add("left-201");
+		} else {
+			card.classList.add("hidden");
+		}
+	});
+
+	dots.forEach((dot, i) => {
+		dot.classList.toggle("active", i === currentIndex);
+	});
+
+	if (memberName) memberName.style.opacity = "0";
+	if (memberRole) memberRole.style.opacity = "0";
+
+	setTimeout(() => {
+		if (!memberName || !memberRole) return;
+		const member = teamMembers[currentIndex] || { name: "Sounds", role: "" };
+		memberName.textContent = member.name;
+		memberRole.textContent = member.role;
+		memberName.style.opacity = "1";
+		memberRole.style.opacity = "1";
+	}, 300);
+
+	setTimeout(() => {
+		isAnimating = false;
+	}, 800);
+}
+
+// Función para inicializar listeners de click en tarjetas
+function initClickListeners() {
+	try {
+		const carouselTrack = slider;
+		const allCards = cards;
+		
+		if (!carouselTrack) {
+			console.error("No se encontró carrusel-sounds");
+			return;
+		}
+		
+		carouselTrack.addEventListener("click", function(e) {
+			// Ignorar play-overlay
+			if (e.target.closest(".play-overlay")) {
+				return;
+			}
+			
+			const clickX = e.clientX;
+			const clickY = e.clientY;
+			
+			// Buscar cuál tarjeta visible está bajo el cursor
+			let clickedCard = null;
+			let highestZIndex = -1;
+			
+			allCards.forEach((card) => {
+				if (card.classList.contains("hidden")) {
+					return;
+				}
+				
+				const rect = card.getBoundingClientRect();
+				const zIndex = parseInt(window.getComputedStyle(card).zIndex) || 0;
+				
+				// Verificar si el click está dentro de los bounds
+				const isInside = clickX >= rect.left && clickX <= rect.right && 
+							   clickY >= rect.top && clickY <= rect.bottom;
+				
+				if (isInside && zIndex > highestZIndex) {
+					clickedCard = card;
+					highestZIndex = zIndex;
+				}
+			});
+			
+			if (clickedCard) {
+				const index = parseInt(clickedCard.getAttribute("data-index"), 10);
+				resetAutoplay();
+				updateCarousel(index);
+			}
+		});
+	} catch (err) {
+		console.error("Error en initClickListeners:", err);
+	}
+}
+
+
+function initializeSoundsSlider() {
+	slider = document.getElementById("carrusel-sounds");
+	cards = slider?.querySelectorAll(".card") || [];
+	dots = document.querySelectorAll(".dot");
+	memberName = slider?.closest("main")?.querySelector(".member-name") || document.querySelector(".member-name");
+	memberRole = slider?.closest("main")?.querySelector(".member-role") || document.querySelector(".member-role");
+	leftArrow = slider?.parentElement?.querySelector(".nav-arrow.left") || null;
+	rightArrow = slider?.parentElement?.querySelector(".nav-arrow.right") || null;
+
+	if (cards.length === 0) {
+		stopAutoplay();
+		return;
+	}
+
+	currentIndex = 0;
+	isAnimating = false;
+	initClickListeners();
+	
+	if (leftArrow) {
+		leftArrow.addEventListener("click", () => {
+			resetAutoplay();
+			updateCarousel(currentIndex - 1);
+		});
+	}
+	
+	if (rightArrow) {
+		rightArrow.addEventListener("click", () => {
+			resetAutoplay();
+			updateCarousel(currentIndex + 1);
+		});
+	}
+
+	updateCarousel(0);
+	resetAutoplay();
+}
+
+document.addEventListener("astro:page-load", initializeSoundsSlider);
+
+if (document.readyState === "loading") {
+	document.addEventListener("DOMContentLoaded", initializeSoundsSlider, { once: true });
+} else {
+	initializeSoundsSlider();
+}
+
+document.addEventListener("keydown", (e) => {
+	if (!slider || cards.length === 0) return;
+	if (e.key === "ArrowLeft") {
+		resetAutoplay();
+		updateCarousel(currentIndex - 1);
+	} else if (e.key === "ArrowRight") {
+		resetAutoplay();
+		updateCarousel(currentIndex + 1);
+	}
+});
+
+let touchStartX = 0;
+let touchEndX = 0;
+
+document.addEventListener("touchstart", (e) => {
+	touchStartX = e.changedTouches[0].screenX;
+});
+
+document.addEventListener("touchend", (e) => {
+	touchEndX = e.changedTouches[0].screenX;
+	handleSwipe();
+});
+
+function handleSwipe() {
+	if (!slider || cards.length === 0) return;
+	const swipeThreshold = 50;
+	const diff = touchStartX - touchEndX;
+
+	if (Math.abs(diff) > swipeThreshold) {
+		resetAutoplay();
+		if (diff > 0) {
+			updateCarousel(currentIndex + 1);
+		} else {
+			updateCarousel(currentIndex - 1);
+		}
+	}
+}
+
+</script>
