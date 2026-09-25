@@ -3,7 +3,7 @@
  * Plugin Name:       SOUNDS (by Stereo Cien)
  * Plugin URI:        https://stereociendigital.mx/
  * Description:       Administra estaciones de SOUNDS (stream + branding) y expone campos vía REST (wp-json).
- * Version:           1.2.0
+ * Version:           1.3.0
  * Requires at least: 5.9
  * Requires PHP:      7.4
  * Author:            nrm
@@ -14,7 +14,7 @@
 
 if (!defined('ABSPATH')) { exit; }
 
-define('SOUNDS_SC_VERSION', '1.2.0');
+define('SOUNDS_SC_VERSION', '1.3.0');
 define('SOUNDS_SC_PLUGIN_FILE', __FILE__);
 define('SOUNDS_SC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SOUNDS_SC_PLUGIN_URL', plugin_dir_url(__FILE__));

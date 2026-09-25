@@ -86,6 +86,21 @@ class REST {
             'get_callback' => [__CLASS__, 'get_banner_url'],
             'schema' => ['type' => 'string'],
         ]);
+
+        register_rest_field(CPT::POST_TYPE, 'sounds_sponsor_id', [
+            'get_callback' => [__CLASS__, 'get_sponsor_id'],
+            'schema' => ['type' => 'integer'],
+        ]);
+
+        register_rest_field(CPT::POST_TYPE, 'sounds_sponsor_img', [
+            'get_callback' => [__CLASS__, 'get_sponsor_img'],
+            'schema' => ['type' => 'string'],
+        ]);
+
+        register_rest_field(CPT::POST_TYPE, 'sounds_sponsor_url', [
+            'get_callback' => [__CLASS__, 'get_sponsor_url'],
+            'schema' => ['type' => 'string'],
+        ]);
     }
 
     public static function register_routes() {
@@ -188,6 +203,16 @@ class REST {
         $banner_id = (int) get_post_meta((int) $obj['id'], Meta::META_BANNER_ID, true);
         if (!$banner_id) { return ''; }
         $url = wp_get_attachment_image_url($banner_id, 'full');
+        return $url ? (string) $url : '';
+    }
+
+    public static function get_sponsor_id($obj) { return (int) get_post_meta((int) $obj['id'], Meta::META_SPONSOR_ID, true); }
+    public static function get_sponsor_url($obj) { return (string) get_post_meta((int) $obj['id'], Meta::META_SPONSOR_URL, true); }
+
+    public static function get_sponsor_img($obj) {
+        $sponsor_id = (int) get_post_meta((int) $obj['id'], Meta::META_SPONSOR_ID, true);
+        if (!$sponsor_id) { return ''; }
+        $url = wp_get_attachment_image_url($sponsor_id, 'full');
         return $url ? (string) $url : '';
     }
 }

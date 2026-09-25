@@ -16,6 +16,10 @@ class Meta {
     const META_BANNER_ID  = '_sounds_banner_id';
     const META_BANNER_URL = '_sounds_banner_url';
 
+    // Imagen "Patrocinado por" (opcional, por estación). Se usa en el slider.
+    const META_SPONSOR_ID  = '_sounds_sponsor_id';
+    const META_SPONSOR_URL = '_sounds_sponsor_url';
+
     const META_COLOR1 = '_sounds_color1';
     const META_COLOR2 = '_sounds_color2';
     const META_COLOR3 = '_sounds_color3';
@@ -99,6 +103,20 @@ class Meta {
             'sanitize_callback' => 'esc_url_raw',
             'default' => '',
         ]));
+
+        register_post_meta(CPT::POST_TYPE, self::META_SPONSOR_ID, [
+            'type'         => 'integer',
+            'single'       => true,
+            'show_in_rest' => ['schema' => ['type' => 'integer']],
+            'sanitize_callback' => 'absint',
+            'default' => 0,
+            'auth_callback' => '__return_true',
+        ]);
+
+        register_post_meta(CPT::POST_TYPE, self::META_SPONSOR_URL, array_merge($common_string, [
+            'sanitize_callback' => 'esc_url_raw',
+            'default' => '',
+        ]));
     }
 
     public static function add_meta_boxes() {
@@ -156,8 +174,12 @@ class Meta {
         $banner_id   = (int) get_post_meta($post->ID, self::META_BANNER_ID, true);
         $banner_link = get_post_meta($post->ID, self::META_BANNER_URL, true);
 
+        $sponsor_id   = (int) get_post_meta($post->ID, self::META_SPONSOR_ID, true);
+        $sponsor_link = get_post_meta($post->ID, self::META_SPONSOR_URL, true);
+
         $logo_url   = $logo_id ? wp_get_attachment_image_url($logo_id, 'medium') : '';
         $banner_img = $banner_id ? wp_get_attachment_image_url($banner_id, 'medium') : '';
+        $sponsor_img = $sponsor_id ? wp_get_attachment_image_url($sponsor_id, 'medium') : '';
         ?>
         <div class="sounds-sc-grid">
             <div class="sounds-sc-field">
@@ -259,6 +281,34 @@ class Meta {
                 </p>
                 <input type="url" id="sounds_banner_url" name="sounds_banner_url" value="<?php echo esc_attr($banner_link); ?>" placeholder="https://..." class="widefat" />
             </div>
+
+            <div class="sounds-sc-field sounds-sc-logo sounds-sc-media"
+                 data-title="Elegir imagen de patrocinador" data-button="Usar esta imagen" data-empty="Sin imagen">
+                <label><strong>Patrocinador Slider</strong></label>
+                <p class="sounds-sc-help">
+                    Se muestra en el slider de SOUNDS, con la leyenda &laquo;Patrocinado por:&raquo;.
+                    Si no eliges imagen, no se muestra nada.
+                </p>
+                <div class="sounds-sc-logo-row">
+                    <div class="sounds-sc-logo-preview sounds-sc-media-preview">
+                        <?php if ($sponsor_img): ?>
+                            <img src="<?php echo esc_url($sponsor_img); ?>" alt="" />
+                        <?php else: ?>
+                            <div class="sounds-sc-logo-placeholder">Sin imagen</div>
+                        <?php endif; ?>
+                    </div>
+                    <div>
+                        <input type="hidden" name="sounds_sponsor_id" class="sounds-sc-media-id" value="<?php echo esc_attr($sponsor_id); ?>" />
+                        <button type="button" class="button sounds-sc-media-pick">Elegir imagen</button>
+                        <button type="button" class="button sounds-sc-media-clear">Quitar</button>
+                    </div>
+                </div>
+
+                <p class="sounds-sc-sublabel">
+                    <label for="sounds_sponsor_url"><strong>Link del patrocinador</strong> (opcional)</label>
+                </p>
+                <input type="url" id="sounds_sponsor_url" name="sounds_sponsor_url" value="<?php echo esc_attr($sponsor_link); ?>" placeholder="https://..." class="widefat" />
+            </div>
         </div>
         <?php
     }
@@ -312,6 +362,14 @@ class Meta {
 
         if (isset($_POST['sounds_banner_url'])) {
             update_post_meta($post_id, self::META_BANNER_URL, esc_url_raw(wp_unslash($_POST['sounds_banner_url'])));
+        }
+
+        if (isset($_POST['sounds_sponsor_id'])) {
+            update_post_meta($post_id, self::META_SPONSOR_ID, absint($_POST['sounds_sponsor_id']));
+        }
+
+        if (isset($_POST['sounds_sponsor_url'])) {
+            update_post_meta($post_id, self::META_SPONSOR_URL, esc_url_raw(wp_unslash($_POST['sounds_sponsor_url'])));
         }
     }
 }
