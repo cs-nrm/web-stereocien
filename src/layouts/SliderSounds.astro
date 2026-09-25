@@ -23,7 +23,7 @@ const posts = await res.json();
 	<div id="carrusel-sounds" class="carousel-track">
   	{
     posts.map((post:any, i:number)=> (
-      <div id={`sounds-${post.slug}`} class="card" data-index={i}>
+	<div id={`sounds-${post.slug}`} class="card" data-index={i} data-slug={post.slug} data-sponsor-image={post?.sounds_banner_img || ''}>
           <img loading="lazy" class="block h-auto w-full object-fill" src={post?.sounds_logo_url || PLACEHOLDER_IMG} alt={post?._embedded?.['wp:featuredmedia']?.[0]?.alt_text||"Imagen Relojes"} width="300" height="150"/>
           <div class="play-overlay" aria-label={`Reproducir ${post?.title?.rendered || post.slug}`}>
             <span class="play-icon">
@@ -41,6 +41,10 @@ const posts = await res.json();
 
 <div class="member-info">
 	<h2 class="member-name">Programa</h2>
+	<div class="sponsor-info" hidden>
+		<span class="sponsor-label">Patrocinado por:</span>
+		<img class="sponsor-logo" alt="" />
+	</div>
 	<p class="member-role">Descripción</p>
 </div>
 
@@ -266,6 +270,32 @@ const posts = await res.json();
 	display: inline-block;
 }
 
+.sponsor-info {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	margin: 8px auto;
+}
+
+.sponsor-info[hidden] {
+	display: none;
+}
+
+.sponsor-label {
+	color: #848696;
+	font-size: 0.8rem;
+	font-weight: 600;
+}
+
+.sponsor-logo {
+	display: block;
+	width: auto;
+	max-width: 160px;
+	max-height: 44px;
+	object-fit: contain;
+}
+
 .member-name::before,
 .member-name::after {
 	content: "";
@@ -434,6 +464,8 @@ let cards = slider?.querySelectorAll(".card") || [];
 let dots = document.querySelectorAll(".dot");
 let memberName = document.querySelector(".member-name");
 let memberRole = document.querySelector(".member-role");
+let sponsorInfo = document.querySelector(".sponsor-info");
+let sponsorLogo = document.querySelector(".sponsor-logo");
 let leftArrow = document.querySelector(".nav-arrow.left");
 let rightArrow = document.querySelector(".nav-arrow.right");
 let currentIndex = 0;
@@ -499,6 +531,21 @@ function updateCarousel(newIndex) {
 
 	if (memberName) memberName.style.opacity = "0";
 	if (memberRole) memberRole.style.opacity = "0";
+	const activeCard = cards[currentIndex];
+	const activeSlug = activeCard?.dataset.slug || "";
+	const sponsorUrl = activeCard?.dataset.sponsorImage || "";
+	const hasSponsorStation = ["nu-disco", "rock-en-espanol", "rock-en-español"].includes(activeSlug);
+	const showSponsor = hasSponsorStation && /^https?:\/\//i.test(sponsorUrl);
+	if (sponsorInfo && sponsorLogo) {
+		sponsorInfo.hidden = !showSponsor;
+		if (showSponsor) {
+			sponsorLogo.src = sponsorUrl;
+			sponsorLogo.alt = `Patrocinador de ${activeSlug}`;
+		} else {
+			sponsorLogo.removeAttribute("src");
+			sponsorLogo.alt = "";
+		}
+	}
 
 	setTimeout(() => {
 		if (!memberName || !memberRole) return;
@@ -574,6 +621,8 @@ function initializeSoundsSlider() {
 	dots = document.querySelectorAll(".dot");
 	memberName = slider?.closest("main")?.querySelector(".member-name") || document.querySelector(".member-name");
 	memberRole = slider?.closest("main")?.querySelector(".member-role") || document.querySelector(".member-role");
+	sponsorInfo = slider?.parentElement?.parentElement?.querySelector(".sponsor-info") || document.querySelector(".sponsor-info");
+	sponsorLogo = sponsorInfo?.querySelector(".sponsor-logo") || null;
 	leftArrow = slider?.parentElement?.querySelector(".nav-arrow.left") || null;
 	rightArrow = slider?.parentElement?.querySelector(".nav-arrow.right") || null;
 
