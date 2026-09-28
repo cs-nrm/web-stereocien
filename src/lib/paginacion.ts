@@ -1,24 +1,21 @@
 /**
  * El contrato de paginación de las vistas de índice.
  *
- * Nace el 2026-09-17 porque Beat Scanner tenía **53 notas publicadas y solo 11
- * alcanzables**: la sección pedía una tanda y se acababa ahí. Las 42 restantes
- * seguían existiendo —su URL respondía, y estaban en el sitemap del CMS— pero
- * desde el sitio no había forma de llegar a ellas. Medido contra el CMS ese día:
- * Beat Scanner 53, Editorial 5, Microambiente 1.
+ * Heredado de web-beat sin cambios de lógica. Allá nació el 2026-09-17 porque una
+ * sección tenía **53 notas publicadas y solo 11 alcanzables**: pedía una tanda y se
+ * acababa ahí, y las otras 42 respondían por su URL y estaban en el sitemap, pero
+ * desde el sitio no había forma de llegar a ellas. Aquí todavía no pagina ninguna
+ * vista —hoy el sitio es el Inicio y la nota—; esto es el contrato para la primera
+ * que lo haga, y `obtenerNotas` en `src/lib/cms/noticias.ts` ya lo usa.
  *
- * La página va en el QUERY (`?pagina=2`) y no en la ruta (`/pagina/2`), y no es
- * pereza: las cuatro vistas que paginan son `/beat-scanner`, `/editorial`,
- * `/beat-scanner/<categoria>` y `/etiqueta/<slug>`, y las dos últimas ya son rutas
- * dinámicas. Con segmento habría que crear cuatro archivos de ruta más, y el
- * `/pagina/` de primer nivel chocaría con `[tipoLista]`, que reclama cualquier
- * primer segmento que no esté reservado.
+ * La página va en el QUERY (`?pagina=2`) y no en la ruta (`/pagina/2`): una vista
+ * de índice que ya es ruta dinámica —una sección por categoría, por ejemplo—
+ * necesitaría otro archivo de ruta por cada una, y un `/pagina/` de primer nivel
+ * es un segmento más que reservar.
  *
- * Y por eso mismo `rutaPagina` NO conserva otros parámetros: hoy ninguna de las
- * cuatro rutas lee nada más de la URL —el `?tipo` de la Agenda se retiró el
- * 2026-09-08—, y arrastrar el query entero sería justo lo que la regla de abajo
- * prohíbe. El día que una vista tenga dos parámetros, se combinan aquí y se
- * validan los dos.
+ * Y por eso mismo `rutaPagina` NO conserva otros parámetros: arrastrar el query
+ * entero sería justo lo que la regla de abajo prohíbe. El día que una vista tenga
+ * dos parámetros, se combinan aquí y se validan los dos.
  */
 
 /**
@@ -27,12 +24,15 @@
  * entrada de caché regalada, y hay tantas como números quiera teclear alguien.
  *
  * Mismo motivo y misma forma que el `PAGINA_MAX` de `src/lib/feeds.ts`. La lección
- * está pagada en `web-enfoque`: un parámetro sin validar produjo **836 de 1,103
- * errores por hora**.
+ * está pagada en `web-enfoque` (heredado de web-beat): un parámetro sin validar
+ * produjo **836 de 1,103 errores por hora**.
  *
- * 200 no es una estimación tímida: con las 11 notas por página de `IndiceScanner`
- * son 2,200 notas, más de lo que la estación tiene publicado en todo su archivo
- * viejo. Lo que importa es que sea un número CERRADO, no cuál.
+ * Lo que importa es que sea un número CERRADO, no cuál. Ojo con el tamaño, eso sí:
+ * con las 12 notas por página que `obtenerNotas` usa por omisión son 2,400 notas
+ * alcanzables por vista, y el WordPress de Stereo Cien tiene 10,119 entradas solo
+ * en Cultura Pop (2026-09-28). Si la migración las trae todas, la cola de esa
+ * sección solo se alcanza por su URL y por el sitemap; subir el tope es la salida,
+ * y cuesta exactamente eso: más claves de caché posibles.
  */
 export const TOPE_PAGINA = 200;
 
@@ -68,9 +68,8 @@ export function totalPaginas(total: number, porPagina: number): number {
 /**
  * El `href` de una página.
  *
- * La página 1 va SIN parámetro. Es lo que evita que `/beat-scanner` y
- * `/beat-scanner?pagina=1` sean dos URLs con el mismo contenido — el mismo
- * problema que el 301 de `/beat-scanner/editorial` resolvió el 2026-09-07.
+ * La página 1 va SIN parámetro. Es lo que evita que `/<vista>` y
+ * `/<vista>?pagina=1` sean dos URLs con el mismo contenido.
  */
 export function rutaPagina(pathname: string, n: number): string {
   return n <= 1 ? pathname : `${pathname}?${PARAM_PAGINA}=${n}`;

@@ -1,9 +1,17 @@
 /**
- * Beat Scanner — las notas. Cubre las pantallas 14b/14e (índice) y 14c/14f (nota).
+ * Las notas de la estación: el listado, la nota suelta y sus relacionadas.
  *
- * «Beat Scanner» SUSTITUYE a lo que en el sitio viejo era «news»: es la sección
- * editorial del relanzamiento. La colección sigue siendo `noticias`; el nombre de
- * sección vive en la ruta y en la nav, no en el CMS.
+ * Portado de web-beat sin rediseñar la lógica —la categoría resuelta por slug una
+ * sola vez, el conteo aparte, el orden, cómo se tratan `distribucion` y el tamaño
+ * de página constante—. Lo que cambia es la forma: allá la API era la de Beat
+ * Scanner, una sección concreta con su destacada; aquí es un listado genérico que
+ * cada bloque del Inicio y cada vista pide con sus opciones, y quien pinta decide
+ * qué nota destaca.
+ *
+ * Hoy Stereo Cien tiene CERO notas en el CMS (2026-09-28). Todo lo de aquí
+ * devuelve vacío sin error, que es lo que se ve en pantalla hasta la migración.
+ * Para probar con contenido: `ESTACION_CODIGO=beat` en local, nunca como valor por
+ * omisión.
  */
 import {
   cmsContarEstacion,
@@ -12,145 +20,222 @@ import {
   type ParamsCms,
   type RespuestaLista,
 } from './client';
-import { totalPaginas } from '@/lib/paginacion';
+import { TOPE_PAGINA, totalPaginas } from '@/lib/paginacion';
 import { obtenerCategoria } from './categorias';
 import type { Noticia } from '@/types/payload';
 
 /**
- * Campos que el índice necesita, y solo esos. `depth: 1` puebla `imagen`,
- * `categorias` y `autores`; con `depth: 0` vendrían como ids y habría que pedirlos
- * aparte.
- */
-const BASE_INDICE: ParamsCms = { depth: 1, ...SIN_PAGINACION };
-
-/**
- * Una `pieza` no se distribuye como noticia.
+ * Los campos que un LISTADO necesita, y solo esos. Obligatorio en toda consulta
+ * que no sea el detalle de una nota.
  *
- * `noticias.distribucion` separa QUÉ es una pieza de DÓNDE se coloca: una cápsula
- * del Fenómeno Residente conserva su URL y su entrada en el sitemap —se comparte
- * suelta, tiene que poder encontrarse— pero no aparece en los listados
- * editoriales, porque su lugar es dentro de su especial.
+ * Sin `select`, cada nota del listado arrastra su `contenido` entero —el árbol
+ * Lexical del cuerpo— para pintar una tarjeta que solo enseña el titular. Medido
+ * el 2026-09-28 contra el CMS con las 11 notas más recientes de Beat y `depth: 1`:
+ * **103.3 KB sin `select`, 19.6 KB con él y 16.8 KB con el `populate` de abajo**.
+ * Es lo que viaja del CMS al servidor en cada consulta, y lo que se guarda en la
+ * caché del cliente por cada entrada.
  *
- * El `or` con `exists: false` NO es decorativo: en Postgres un `!= 'pieza'`
- * **no devuelve las filas con NULL**, así que sin él se perderían todas las notas
- * que nunca tocaron el campo. Está documentado igual en el CMS.
+ * Lo que queda: titular, slug, resumen, foto, categorías (el rótulo de la tarjeta)
+ * y los dos campos de la firma. `id` llega siempre, se pida o no. `fecha` y
+ * `createdAt` van porque la fecha que se pinta cae de una a otra.
+ *
+ * `populate` recorta los documentos RELACIONADOS a lo que la tarjeta lee: de la
+ * categoría, nombre y slug; del autor, lo que usa `firma()` en `src/lib/nota.ts`.
+ *
+ * Trampa, medida el mismo día: la MEDIA no se recorta con `populate`. Pedir
+ * `populate[media][url]` sin `filename` y `prefix` devuelve `url: null` —Payload
+ * arma la URL a partir de esos dos— y la foto desaparece de todas las tarjetas sin
+ * un solo error. Lo que se ahorraba eran 2.3 KB en 11 notas; no compensa un
+ * recorte que se rompe en silencio el día que `Media` cambie cómo arma su URL.
  */
-const SOLO_NOTICIAS: ParamsCms = {
-  'where[or][0][distribucion][not_equals]': 'pieza',
-  'where[or][1][distribucion][exists]': false,
+const CAMPOS_LISTADO: ParamsCms = {
+  'select[titulo]': true,
+  'select[slug]': true,
+  'select[resumen]': true,
+  'select[imagen]': true,
+  'select[categorias]': true,
+  'select[autor]': true,
+  'select[autores]': true,
+  'select[fecha]': true,
+  'select[createdAt]': true,
+  'populate[categorias][nombre]': true,
+  'populate[categorias][slug]': true,
+  'populate[autores][nombre]': true,
+  'populate[autores][slug]': true,
+  'populate[autores][cargo]': true,
+  'populate[autores][bio]': true,
+  'populate[autores][foto]': true,
 };
 
-/** Orden público: primero lo fijado, luego por fecha. Igual que el CMS. */
+/**
+ * La base de todo listado. `depth: 1` puebla `imagen`, `categorias` y `autores`;
+ * con `depth: 0` vendrían como ids y la tarjeta se quedaría sin foto —sin error:
+ * `urlMedia` recibe un número y devuelve `null`—.
+ */
+const BASE_LISTADO: ParamsCms = { depth: 1, ...SIN_PAGINACION, ...CAMPOS_LISTADO };
+
+/**
+ * Solo las publicadas.
+ *
+ * Hoy es redundante y se escribe igual: el CMS ya le exige `estado: 'publicada'`
+ * a quien lee sin sesión (`lecturaPublicaPublicada` en `cms-estaciones`), y este
+ * front lee siempre sin sesión. Lo que protege es el día en que el front lea con
+ * un token —una vista previa, por ejemplo—: con sesión el CMS devuelve TODO, y sin
+ * esta línea las despublicadas saldrían en el Inicio. No cuesta nada en caché: es
+ * la misma en todas las consultas.
+ */
+const PUBLICADAS: ParamsCms = { 'where[estado][equals]': 'publicada' };
+
+/*
+  Los dos filtros de colocación, cada uno en su propio índice de `and`.
+
+  Trampa: los dos son un `or` (ver abajo por qué), y dos `or` sueltos en la misma
+  consulta se rompen de dos maneras. Si los dos escriben `where[or][0]` y
+  `where[or][1]`, al combinarlos el segundo PISA al primero —son las mismas claves— y
+  las piezas vuelven a salir sin error. Si el segundo sigue en `[or][2]` y `[or][3]`,
+  queda UN solo `or` de cuatro términos, y una pieza con `excluirDelHome: false` lo
+  cumple. Cada uno en su `where[and][n]` los deja como dos condiciones que tienen
+  que cumplirse a la vez. Los índices 0 y 1 son fijos: un tercer filtro de este tipo
+  va en el 2. La combinación con `and` se comprobó contra el CMS el 2026-09-28.
+
+  El `or` con `exists: false` NO es decorativo (heredado de web-beat): en Postgres
+  un `!=` **no devuelve las filas con NULL**, así que sin él se perderían todas las
+  notas que nunca tocaron el campo. Hoy ninguna nota de Beat tiene NULL en estos
+  dos campos, pero las de Stereo Cien todavía no existen y llegan por una
+  migración: no se apuesta a que el importador escriba el valor por omisión.
+*/
+
+/**
+ * Una `pieza` no se distribuye como noticia, en NINGÚN listado.
+ *
+ * `noticias.distribucion` separa QUÉ es una pieza de DÓNDE se coloca: una pieza de
+ * lista conserva su URL, su sitemap y el buscador —se comparte suelta, tiene que
+ * poder encontrarse— pero no sale en los listados editoriales, porque su lugar es
+ * dentro de su colección. El CMS lo describe así en el propio campo. Heredado de
+ * web-beat, que la excluía de todos sus listados y no solo del Inicio.
+ */
+const SIN_PIEZAS: ParamsCms = {
+  'where[and][0][or][0][distribucion][not_equals]': 'pieza',
+  'where[and][0][or][1][distribucion][exists]': false,
+};
+
+/**
+ * Fuera del Inicio lo que la redacción marcó con «Excluir del home».
+ *
+ * Es una excepción de COLOCACIÓN para una nota normal: sale en su sección, pero
+ * no en la portada. El CMS lo documenta en el campo:
+ * «el front filtra con `where[excluirDelHome][not_equals]=true`». web-beat nunca lo
+ * leyó; este front sí, en `paraPortada`.
+ */
+const FUERA_DEL_HOME: ParamsCms = {
+  'where[and][1][or][0][excluirDelHome][not_equals]': true,
+  'where[and][1][or][1][excluirDelHome][exists]': false,
+};
+
+/** Orden público: primero lo fijado, luego por fecha. Es el `defaultSort` del CMS. */
 const ORDEN = '-fijada,-fecha';
 
-/** El filtro de una vista de índice: una categoría o una etiqueta. */
-export interface FiltroScanner {
-  tipo: 'categoria' | 'etiqueta';
-  id: number;
-  nombre: string;
-  slug: string;
+/** Tamaño de página por omisión, y su tope. */
+const POR_PAGINA = 12;
+/**
+ * Un número CERRADO por la regla de oro del cliente: la clave de caché es la
+ * consulta entera, y un `porPagina` sin tope es una clave distinta por cada número.
+ * Hoy lo escribe el código y no el lector, pero cuesta lo mismo acotarlo aquí que
+ * descubrirlo después.
+ */
+const TOPE_POR_PAGINA = 50;
+
+function enteroEnRango(v: number | undefined, min: number, max: number, porOmision: number): number {
+  return typeof v === 'number' && Number.isInteger(v) && v >= min && v <= max ? v : porOmision;
+}
+
+export interface OpcionesNotas {
+  /**
+   * `slug` de una categoría del CMS. Ausente = todas las notas de la estación.
+   *
+   * No romper: presente pero inexistente en el CMS = CERO notas, no todas. Hoy
+   * es el caso de TODAS las categorías de Stereo Cien, y confundir los dos haría
+   * que cada bloque del Inicio pintara las mismas notas sin filtrar —la clase de
+   * fallo que nadie reporta porque la página se ve llena—.
+   */
+  categoria?: string;
+  /** 1 por omisión. Fuera de `1..TOPE_PAGINA` cae a 1: valídala antes con `leerPagina`. */
+  pagina?: number;
+  /** 12 por omisión, tope 50. Constante entre páginas de una misma vista: ver abajo. */
+  porPagina?: number;
+  /** Para el Inicio: además de las piezas, saca lo marcado con «Excluir del home». */
+  paraPortada?: boolean;
+}
+
+export interface PaginaDeNotas {
+  notas: Noticia[];
+  /**
+   * Cuántas notas hay con ese filtro. Exacto cuando el conteo respondió; si no
+   * respondió, es lo mínimo que se sabe (las de las páginas anteriores más las de
+   * esta), y `totalPaginas` queda en 1.
+   */
+  total: number;
+  /** Ya acotado a `TOPE_PAGINA`. 1 cuando no hay nada o no se pudo contar: no se pinta tira. */
+  totalPaginas: number;
+  /** La página que se sirvió, ya validada. */
+  pagina: number;
 }
 
 /**
- * Traduce el filtro (y su exclusión opcional) a parámetros del CMS.
+ * Un listado de notas de la estación.
  *
- * ✨ Se filtra por **id** y no por slug, y aquí sí es lo correcto: el id sale de
- * una consulta ya cacheada (`obtenerCategoria`), y `where[categorias][in]` con un
- * id acierta la misma entrada de caché para todas las notas de esa categoría. El
- * slug obligaría a `where[categorias.slug]`, que en Payload es un join y cuesta.
+ * Una sola consulta de contenido y un conteo APARTE, en paralelo. El conteo es
+ * `cmsContarEstacion`: sin `page`, `limit` ni `sort`, así que todas las páginas de
+ * una misma vista comparten un solo `COUNT`, y con timeout corto y `null` si falla
+ * —sin total no hay tira de números, que es una vista con menos navegación y no una
+ * vista rota—. `SIN_PAGINACION` se queda puesto aunque esto pagine: con
+ * `pagination=false` Payload respeta `page` (ver `cmsContarEstacion` en
+ * `./client`).
  *
- * Lo que NO se hace es meter algo que varíe por DOCUMENTO en el `where` — esa
- * es la regla de oro del cliente, y es distinta: aquí varía por vista, y hay tantas
- * vistas como categorías, no como notas. `excluir` es una categoría, no una nota,
- * así que sigue siendo una sola entrada de caché por vista.
+ * El tamaño de página tiene que ser CONSTANTE entre páginas de una misma vista
+ * (heredado de web-beat): el desplazamiento lo calcula Payload como
+ * `(page - 1) * limit`, así que un `porPagina` distinto en la página 2 —por
+ * ejemplo, uno menos por no tener destacada— se saltaría una nota en cada salto.
+ * Si una vista destaca una nota, la saca de la misma tanda en memoria, no de una
+ * consulta aparte: dos consultas tienen dos relojes de caché y la destacada y la
+ * rejilla pueden quedar desfasadas (le pasó a `web-enfoque`).
+ *
+ * La categoría se resuelve por slug UNA vez con `obtenerCategoria` —cacheada— y el
+ * listado filtra por su id con `where[categorias][in]`. El slug directo obligaría a
+ * `where[categorias.slug]`, que en Payload es un join contra la tabla de
+ * relaciones. Medido el 2026-09-28 sobre las 145 notas de Beat, los dos tardan lo
+ * mismo (~160 ms): con una tabla así de chica no se nota. Lo que crece con la tabla
+ * es el join, y el WordPress de Stereo Cien trae 10,119 entradas solo en Cultura Pop
+ * (contadas ese día en su API). Y de paso la consulta de la categoría es la que
+ * distingue «no existe» de «sin filtro».
+ *
+ * Degrada, nunca truena: si el CMS no responde, una página vacía.
  */
-function acotar(filtro?: FiltroScanner | null, excluir?: FiltroScanner | null): ParamsCms {
-  if (!filtro) return {};
-  const base =
-    filtro.tipo === 'categoria'
-      ? { 'where[categorias][in]': String(filtro.id) }
-      : { 'where[etiquetas][in]': String(filtro.id) };
-  if (excluir?.tipo === 'categoria') {
-    return { ...base, 'where[categorias][not_in]': String(excluir.id) };
+export async function obtenerNotas(opciones: OpcionesNotas = {}): Promise<PaginaDeNotas> {
+  const pagina = enteroEnRango(opciones.pagina, 1, TOPE_PAGINA, 1);
+  const porPagina = enteroEnRango(opciones.porPagina, 1, TOPE_POR_PAGINA, POR_PAGINA);
+  const vacia: PaginaDeNotas = { notas: [], total: 0, totalPaginas: 1, pagina };
+
+  let porCategoria: ParamsCms = {};
+  // `!== undefined` y no un `if (opciones.categoria)`: una cadena vacía es una
+  // categoría que no existe, no «sin filtro». Esa ni se le pregunta al CMS.
+  if (opciones.categoria !== undefined) {
+    const slug = opciones.categoria.trim();
+    const categoria = slug ? await obtenerCategoria(slug) : null;
+    if (!categoria) return vacia;
+    porCategoria = { 'where[categorias][in]': String(categoria.id) };
   }
-  return base;
-}
 
-/**
- * El filtro de una sección editorial, resuelto desde el SLUG de su categoría.
- *
- * Existe para que las cuatro superficies que necesitan una sección editorial
- * —`/scanner`, `/editorial`, el mosaico del Inicio y su pila— no repitan cada una
- * el mapeo «categoría del CMS → `FiltroScanner`». Cuando se repite en cuatro
- * sitios, el quinto se escribe distinto.
- *
- * Devuelve `null` si la categoría no existe en el CMS, y quien llama TIENE que
- * distinguirlo de «sin filtro»: `obtenerScanner(n, null)` trae TODAS las notas, así
- * que confundir los dos casos haría que una sección con la categoría mal escrita
- * pintara el sitio entero en vez de quedarse vacía. Es la clase de fallo que nadie
- * reporta porque la página se ve llena.
- *
- * ✨ El id sale de una consulta cacheada por slug, que es justo lo que
- * `obtenerScanner` necesita para acertar su entrada de caché — ver `acotar()`.
- */
-export async function filtroDeCategoria(slug: string): Promise<FiltroScanner | null> {
-  const cat = await obtenerCategoria(slug);
-  if (!cat) return null;
-  return {
-    tipo: 'categoria',
-    id: cat.id,
-    nombre: cat.nombre ?? '',
-    slug: cat.slug ?? slug,
+  const where: ParamsCms = {
+    ...PUBLICADAS,
+    ...SIN_PIEZAS,
+    ...(opciones.paraPortada ? FUERA_DEL_HOME : {}),
+    ...porCategoria,
   };
-}
 
-/**
- * Portada de una sección editorial: la nota principal, la rejilla y su paginación.
- *
- * Se pide UNA sola consulta y se reparte en memoria. Es deliberado: si la
- * destacada y la rejilla fueran dos consultas, tendrían dos relojes de caché
- * independientes y podrían quedar desfasadas —la destacada vieja con la rejilla
- * nueva—. Le pasó a `web-enfoque` y se arregló exactamente así.
- *
- * Pagina desde el 2026-09-17, y la razón es un número: Beat Scanner tenía **53
- * notas y 11 alcanzables**. Ver `src/lib/paginacion.ts` para el contrato de la URL.
- *
- * El tamaño de página es `cuantas + 1` y es CONSTANTE entre páginas. Tiene que
- * serlo: el desplazamiento lo calcula Payload como `(page - 1) * limit`, así que un
- * `limit` distinto en la página 2 —por ejemplo, 11 en la primera y 10 en las demás
- * por no tener destacada— se saltaría una nota en cada salto. La destacada sale de
- * la tanda, no de una consulta aparte.
- *
- * `SIN_PAGINACION` se queda PUESTO aunque esto pagine, y no es una contradicción
- * con lo que dice `client.ts`. Comprobado contra el CMS el 2026-09-17: con
- * `pagination=false` Payload respeta `page` y devuelve la tanda correcta; lo único
- * que deja de servir es su `totalDocs`. El total lo trae `cmsContarEstacion` en una
- * consulta aparte que NO lleva `page`, así que las cinco páginas de una sección
- * comparten un solo `COUNT` en vez de pagar uno cada una.
- */
-export async function obtenerScanner(
-  cuantas = 10,
-  filtro?: FiltroScanner | null,
-  excluir?: FiltroScanner | null,
-  pagina = 1,
-): Promise<{
-  /** La nota principal. **Solo en la página 1**: en las demás no hay portada que destacar. */
-  destacada: Noticia | null;
-  rejilla: Noticia[];
-  /** Cuántas páginas hay, ya acotado. 1 cuando no se pudo contar: la tira no se pinta. */
-  paginas: number;
-}> {
-  const porPagina = cuantas + 1;
-  const where = { ...SOLO_NOTICIAS, ...acotar(filtro, excluir) };
-
-  /*
-    Las dos en paralelo: el conteo no es la ruta crítica y ya degrada solo. Si
-    tarda más que su timeout corto devuelve `null` y la vista se queda sin tira de
-    números —que es una vista con menos navegación, no una vista rota—.
-  */
-  const [lista, total] = await Promise.all([
+  const [lista, contadas] = await Promise.all([
     cmsFetchEstacion<RespuestaLista<Noticia>>('noticias', {
-      ...BASE_INDICE,
+      ...BASE_LISTADO,
       ...where,
       sort: ORDEN,
       limit: porPagina,
@@ -159,29 +244,30 @@ export async function obtenerScanner(
     cmsContarEstacion('noticias', where),
   ]);
 
-  // Degrada: media portada es mejor que un 500.
-  if (!lista) return { destacada: null, rejilla: [], paginas: 1 };
+  if (!lista) return vacia;
+  const notas = lista.docs;
 
-  const paginas = totalPaginas(total ?? 0, porPagina);
-
-  /*
-    La destacada es de la PÁGINA 1. En la 2 no hay ninguna nota que sea «la
-    principal» —son las siguientes once, todas del mismo peso—, y darle a la
-    duodécima nota más vieja el tratamiento de portada diría algo que no es cierto.
-  */
-  if (pagina > 1) return { destacada: null, rejilla: lista.docs, paginas };
-
-  const [destacada, ...rejilla] = lista.docs;
-  return { destacada: destacada ?? null, rejilla, paginas };
+  if (contadas === null) {
+    return { notas, total: (pagina - 1) * porPagina + notas.length, totalPaginas: 1, pagina };
+  }
+  return { notas, total: contadas, totalPaginas: totalPaginas(contadas, porPagina), pagina };
 }
 
-/** Una nota por slug. A diferencia del resto, este error SÍ se propaga: la página
- *  necesita saberlo para hacer `Astro.rewrite('/404')`. */
+/**
+ * Una nota por slug, completa: es la única consulta que trae `contenido`.
+ *
+ * A diferencia del resto, este error SÍ se propaga: la página necesita distinguir
+ * «no existe» (`null`, un 404) de «el CMS no responde» (un 503 que no se cachea).
+ *
+ * Las piezas NO se filtran aquí: conservan su URL aunque no salgan en listados.
+ */
 export async function obtenerNota(slug: string): Promise<Noticia | null> {
   const r = await cmsFetchEstacion<RespuestaLista<Noticia>>('noticias', {
+    ...PUBLICADAS,
     'where[slug][equals]': slug,
     // `depth: 2` para que la FOTO del autor venga poblada: con 1 llega el autor
-    // pero su `foto` sigue siendo un id.
+    // pero su `foto` sigue siendo un id. Y el `audio.archivo` de la nota, que es
+    // otra relación a `media`.
     depth: 2,
     limit: 1,
     draft: false,
@@ -190,16 +276,17 @@ export async function obtenerNota(slug: string): Promise<Noticia | null> {
 }
 
 /**
- * Las tres relacionadas del pie de la nota (14c: "tres notas relacionadas").
+ * Las relacionadas del pie de una nota: de sus mismas categorías, las más
+ * recientes.
  *
  * La nota actual se excluye EN MEMORIA, no en el `where`.
  *
- * Es la regla de oro de la caché de este cliente, y viene de un incidente medido:
- * en `web-enfoque` esta misma función usaba `where[id][not_equals]=<id>`, así que
- * cada nota generaba su propia entrada de caché y la consulta más llamada del
- * sitio nunca acertaba — **836 de los 1,103 errores por hora salían de ahí**.
- * Filtrando por categoría a secas, todas las notas de una sección comparten una
- * sola entrada.
+ * Es la regla de oro de la caché de este cliente, y viene de un incidente medido
+ * (heredado de web-beat): en `web-enfoque` esta misma función usaba
+ * `where[id][not_equals]=<id>`, así que cada nota generaba su propia entrada de
+ * caché y la consulta más llamada del sitio nunca acertaba — **836 de los 1,103
+ * errores por hora salían de ahí**. Filtrando por categoría a secas, todas las
+ * notas de una categoría comparten una sola entrada.
  */
 export async function obtenerRelacionadas(nota: Noticia, cuantas = 3): Promise<Noticia[]> {
   const cats = (nota.categorias ?? [])
@@ -209,8 +296,9 @@ export async function obtenerRelacionadas(nota: Noticia, cuantas = 3): Promise<N
 
   try {
     const r = await cmsFetchEstacion<RespuestaLista<Noticia>>('noticias', {
-      ...BASE_INDICE,
-      ...SOLO_NOTICIAS,
+      ...BASE_LISTADO,
+      ...PUBLICADAS,
+      ...SIN_PIEZAS,
       'where[categorias][in]': cats.join(','),
       sort: '-fecha',
       // Se piden algunas más de las necesarias para poder descartar la actual sin
@@ -222,18 +310,3 @@ export async function obtenerRelacionadas(nota: Noticia, cuantas = 3): Promise<N
     return [];
   }
 }
-
-/*
-  Aquí vivía `minutosDeLectura()`, y se borró el 2026-09-07 con su último
-  llamador.
-
-  Pintaba el «3 MIN» de cada tarjeta estimando 200 palabras por minuto sobre el
-  árbol Lexical. El problema no era el cálculo, era el dato: con las notas que
-  publica la estación, TODAS salían en «1 MIN», así que cuatro tarjetas seguidas
-  decían lo mismo y el hueco no informaba nada. Ahora esas cinco superficies
-  —tarjetas, portada del mosaico, destacada de la sección, cartas de la pila y la
-  firma de la nota— llevan la FECHA, que sí distingue.
-
-  Se anota en vez de borrarse en silencio para que nadie la reinvente: si vuelve a
-  hacer falta, está en `git log` de este archivo.
-*/

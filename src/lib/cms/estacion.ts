@@ -2,72 +2,89 @@
  * La estación como dato de marca.
  *
  * `estaciones.read` es **público a propósito** en el CMS — el comentario del
- * propio `Estaciones.ts` lo explica: es el primer request de cada uno de los 4
- * sitios Astro, antes de tener usuario, y lo que expone ya es información pública
- * (dominio, nombre, color, logo, mount del stream).
+ * propio `Estaciones.ts` de `cms-estaciones` lo explica: es el primer request de
+ * cada uno de los 4 sitios Astro, antes de tener usuario, y lo que expone ya es
+ * información pública (dominio, nombre, color, logo, mount del stream).
  *
- * De aquí sale, entre otras cosas, el `tritonMount` del player: `Cabecera.astro`
- * lo emite en el SSR como `data-mount` y `src/scripts/player.ts` lo lee de ahí,
- * en vez del `XHSONFM` que el `player.js` heredado llevaba hardcodeado. Es lo que
- * hace que el repo sirva de modelo para las otras tres estaciones.
+ * De aquí sale, entre otras cosas, el `tritonMount` del player. Heredado de
+ * web-beat: el mount se lee del CMS y no se escribe en el código, que es lo que
+ * hace que el mismo front sirva a las cuatro estaciones cambiando solo
+ * `ESTACION_CODIGO`.
  */
 import { cmsFetch, type RespuestaLista } from './client';
 import { ESTACION_CODIGO } from '@/config/site';
 import { REDES_RESPALDO } from '@/config/navegacion';
 
+/**
+ * El documento de `estaciones`, con los campos que trae de verdad.
+ *
+ * Comprobado contra `admin.nrm.com.mx` el 2026-09-28
+ * (`/api/estaciones?where[codigo][equals]=stereocien&depth=0`). Los valores de los
+ * comentarios son los de Stereo Cien ese día.
+ */
 export interface Estacion {
   id: number;
-  /** Nombre interno, CON frecuencia: "Beat 100.9". */
+  /** Nombre interno, CON frecuencia: "Stereo Cien 100.1". */
   nombre: string;
-  /** Identificador corto y estable: `beat`. */
+  /** Identificador corto y estable: `stereocien`. */
   codigo: string;
-  /** Nombre público SIN frecuencia: "BEAT". Es el que va en feeds y SEO. */
+  /** Nombre público SIN frecuencia: "STEREO CIEN". Es el que va en feeds y SEO. */
   nombrePublicacion: string;
-  /** Dominio del front, sin protocolo ni www. */
+  /** Dominio del front, sin protocolo ni www: `stereociendigital.mx`. */
   dominio: string;
+  /** `#2A3B8F`. */
   color?: string | null;
+  /** Ruta dentro del CMS, no del front: `/branding/estaciones/stereocien.svg`. */
   logo?: string | null;
+  /** En `null`: Stereo Cien todavía no tiene variante para fondo oscuro. */
   logoReversa?: string | null;
-  /** Mount de Triton Digital. Para Beat: `XHSONFM`. */
+  /**
+   * Mount de Triton Digital. Para Stereo Cien: `XEOYAM`.
+   *
+   * No romper: el sufijo AM en una estación FM es CORRECTO, y el propio documento
+   * lo explica en `notaStream`. Es el mount de «Stereo Cien Digital», solo música,
+   * que es lo que reproduce el sitio; por la frecuencia 100.1 FM se transmite la
+   * programación de Enfoque Noticias, que no es lo que el sitio reproduce. No lo
+   * «corrijas».
+   */
   tritonMount?: string | null;
+  /** Aclaración del CMS sobre qué transmite el mount. Ver `tritonMount`. */
   notaStream?: string | null;
   /** Interruptor del preroll de audio. Apagado —lo normal— significa SIN preroll. */
   preroll?: boolean | null;
+  /**
+   * Las categorías de canción que la bitácora del aire acepta guardar. Es un
+   * filtro de la ingesta del CMS, no algo que este front pinte; viene en el
+   * documento y por eso está en el tipo. Hoy, vacío.
+   */
+  categoriasMusicales?: Array<{ categoria: string; id?: string | null }> | null;
   facebook?: string | null;
   instagram?: string | null;
   x?: string | null;
   youtube?: string | null;
   tiktok?: string | null;
+  updatedAt?: string;
+  createdAt?: string;
 }
 
 /**
  * ¿Hay campaña de preroll?
  *
- * Por qué existe el interruptor (Carlos, 2026-09-10): hay campaña cada dos o
- * tres meses y dura de 15 a 30 días, así que el ad unit está VACÍO unos tres
- * cuartos del año. Medido ese día contra el ad unit que sale del entorno, GAM
- * devuelve un VAST vacío —`<VAST version="3.0"/>`, 156 bytes—. Apagado, el player
- * no pide ese anuncio y abre el aire antes.
- *
- * Y sobre todo quita de raíz un cuelgue que ya costó: `playAd()` puede no emitir
- * NINGÚN evento, y eso eran 20 s de «Conectando…» y un error en el primer play de
- * la sesión, en un iPhone con buena wifi. `player.ts` lo tiene acotado a 6 s con su
- * propio tope; con el interruptor apagado son cero, porque ni se pide.
+ * Heredado de web-beat, donde nació el 2026-09-10: allá las campañas de preroll
+ * eran esporádicas, así que el ad unit pasaba vacío la mayor parte del año y
+ * pedirle un anuncio vacío solo hacía que el aire tardara más en abrir. Con el
+ * interruptor apagado, el player ni lo pide. Para Stereo Cien está en `false`
+ * (2026-09-28).
  *
  * El fallo de un booleano va del lado caro, y hay que saberlo: olvidado APAGADO
  * con campaña vendida, se dejan de servir impresiones y nadie se entera. Se eligió
- * igual, a sabiendas, porque lo prende y lo apaga Carlos y no quiere capturar
- * fechas — antes esto fue un rango `inicio`/`fin` y se descartó por eso.
+ * igual, a sabiendas, porque lo prende y lo apaga una persona que no quiere
+ * capturar fechas.
  *
- * Lo que NO ahorra, aunque lo parecía: la descarga del IMA de Google (499,908 B
- * sin comprimir). Se probó construir el SDK sin el plugin `vastAd` y `ima3.js` se
- * baja igual — lo arrastra el módulo MediaPlayer, no el plugin. Queda anotado en
- * `player.ts`, donde se intentó.
- *
- * Se resuelve en el SERVIDOR y viaja como `data-preroll`. Y sigue siendo función y
- * no un `estacion.preroll === true` suelto por una razón concreta: la forma de este
- * campo ya cambió una vez en un mismo día —era un grupo con fechas—, y esta es la
- * única línea del front que hay que tocar si vuelve a cambiar.
+ * Sigue siendo función y no un `estacion.preroll === true` suelto por una razón
+ * concreta: la forma de este campo ya cambió una vez en el CMS —era un grupo con
+ * fechas—, y esta es la única línea del front que hay que tocar si vuelve a
+ * cambiar.
  */
 export function prerollActivo(estacion: Estacion): boolean {
   return estacion.preroll === true;
@@ -110,12 +127,14 @@ export function obtenerEstacion(): Promise<Estacion> {
  * Redes sociales de la estación, ya filtradas y con su etiqueta.
  *
  * El CMS manda, y `REDES_RESPALDO` solo tapa el hueco RED POR RED: hoy los
- * cinco campos de `estaciones` están en `null` y el pie pintaba «Próximamente»
- * donde va la única forma de seguir a la estación. Con el `??`, capturar Facebook
- * en el admin lo hace ganar de inmediato sin tocar las otras cuatro.
+ * cinco campos de Stereo Cien en `estaciones` están en `null` (2026-09-28), y sin
+ * respaldo el sitio no enseñaría ninguna forma de seguir a la estación. Con el
+ * `??`, capturar Facebook en el admin lo hace ganar de inmediato sin tocar las
+ * otras cuatro.
  *
  * Se sigue filtrando por verdad: una entrada sin URL en ninguno de los dos
- * lados no se pinta. Un enlace vacío es peor que una red de menos.
+ * lados no se pinta —hoy YouTube, que no tiene cuenta conocida—. Un enlace vacío
+ * es peor que una red de menos.
  */
 export async function redesEstacion(): Promise<Array<{ red: string; url: string }>> {
   const e = await obtenerEstacion();

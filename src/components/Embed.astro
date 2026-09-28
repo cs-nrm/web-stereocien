@@ -2,11 +2,20 @@
 /**
  * El bloque `embed` del contenido Lexical.
  *
- * El CMS guarda **solo la URL**, nunca HTML crudo del editor — es una decisión
- * de seguridad explícita de `src/blocks/Embed.ts`: *"el frontend arma el
- * <iframe>/embed real a partir de la URL, en vez de insertar HTML que venga del
- * editor"*. Este componente es esa mitad del contrato, así que la URL se **valida
- * y se reconstruye**; nunca se interpola tal cual en un atributo.
+ * Heredado de web-beat. El CMS guarda **solo la URL**, nunca HTML crudo
+ * del editor — es una decisión de seguridad explícita de `src/blocks/Embed.ts` en
+ * `cms-estaciones`: el front arma el `<iframe>` a partir de la URL, en vez de
+ * insertar HTML que venga del editor. Este componente es esa mitad del contrato,
+ * así que la URL se **valida y se reconstruye**; nunca se interpola tal cual en un
+ * atributo.
+ *
+ * Lo que no se reconoce se degrada a un ENLACE, y eso incluye todo lo que el
+ * importador del WordPress marca como `otro` —los reproductores de podcast en
+ * iframe, por ejemplo—: salen como «Ver la publicación en el sitio original».
+ *
+ * Sin estilo de diseño: el CSS de aquí es solo el que hace que el iframe ocupe
+ * su caja con la proporción de cada plataforma. El aspecto de `.embed-bloque` y
+ * `.embed-suelto` lo pone el contenedor.
  *
  * Y todos van por `<iframe>`, sin el script de la plataforma. Instagram,
  * Facebook y X ofrecen un `embed.js` que es lo que casi todo el mundo pega, y cada
@@ -61,8 +70,10 @@ function resolver(p: Props['plataforma'], crudo: string): { src: string; alto: s
     case 'twitter': {
       const m = u.pathname.match(/\/status\/(\d+)/);
       if (!m) return null;
+      // Sin `theme`: la tarjeta sale en claro, que es el de la revista de Stereo
+      // Cien. web-beat pedía `theme=dark` porque su sitio es negro.
       return {
-        src: `https://platform.twitter.com/embed/Tweet.html?id=${m[1]}&theme=dark`,
+        src: `https://platform.twitter.com/embed/Tweet.html?id=${m[1]}`,
         alto: '80%',
       };
     }
@@ -105,12 +116,11 @@ const insercion = url ? resolver(plataforma, url) : null;
 }
 
 <style>
+  /* La caja reserva el alto por proporción (`--embed-alto`, por plataforma) antes
+     de que cargue el iframe, así la página no brinca; el iframe la llena. */
   .embed-bloque {
     position: relative;
-    margin: var(--s-9) 0 0;
     padding-bottom: var(--embed-alto);
-    background: var(--surface-card);
-    box-shadow: inset 0 0 0 1px var(--border-hairline);
   }
   .embed-bloque iframe {
     position: absolute;
@@ -118,17 +128,5 @@ const insercion = url ? resolver(plataforma, url) : null;
     width: 100%;
     height: 100%;
     border: 0;
-  }
-  .embed-suelto {
-    margin: var(--s-9) 0 0;
-    padding: var(--s-7) var(--s-8);
-    background: var(--surface-card);
-    box-shadow: inset 0 0 0 1px var(--border-hairline);
-    font: var(--type-body-sm);
-  }
-  .embed-suelto a {
-    color: var(--text-link);
-    text-decoration: underline;
-    text-underline-offset: 3px;
   }
 </style>

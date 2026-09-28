@@ -1,5 +1,5 @@
 /* GENERADO — NO EDITAR A MANO.
- * Vendorizado desde cms-estaciones:src/payload-types.ts en el ref 0190393.
+ * Vendorizado desde cms-estaciones:src/payload-types.ts en el ref 6b59130.
  * Regenerar con: pnpm sync:types  (el pin vive en payload-types.lock.json).
  * Nota: se quita la augmentation `declare module 'payload'` del upstream
  *       (el front no instala el paquete payload; solo usa las interfaces).
@@ -796,7 +796,7 @@ export interface Lista {
    */
   slug?: string | null;
   /**
-   * Nace despublicada: publícala cuando la lista esté completa.
+   * Despublicar esconde la lista del sitio sin borrarla.
    */
   estado?: ('publicada' | 'despublicada') | null;
   /**
@@ -1049,7 +1049,7 @@ export interface Evento {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * Los banners del sitio: portada y banner nativo. Cada uno con su anunciante, su vigencia y su enlace. Fuera de vigencia deja de mostrarse solo.
+ * Los banners del sitio: portada, banner nativo y el takeover (el modal de la portada). Cada uno con su anunciante y su vigencia. Fuera de vigencia deja de mostrarse solo. El takeover puede traer su propia creatividad o servirse desde Ad Manager.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "publicidad".
@@ -1066,9 +1066,13 @@ export interface Publicidad {
    */
   anunciante: string;
   /**
-   * Cada sitio ya sabe dónde va cada tipo.
+   * Cada sitio ya sabe dónde va cada tipo. El takeover es el modal que tapa la portada al entrar.
    */
-  tipo: 'portada' | 'nativo';
+  tipo: 'portada' | 'nativo' | 'takeover';
+  /**
+   * Casi siempre es Ad Manager. Con Ad Manager el CMS no guarda imagen ni liga —el slot está fijo en el sitio y el creativo lo pone Google—: esta campaña solo dice durante qué días el sitio debe pedirlo. Las impresiones y los clics también los cuenta Ad Manager, así que los números de aquí abajo se quedan en cero.
+   */
+  fuente?: ('propia' | 'admanager') | null;
   /**
    * Antes de esta fecha el sitio no lo muestra.
    */
@@ -1078,17 +1082,25 @@ export interface Publicidad {
    */
   fin?: string | null;
   /**
-   * La creatividad como la manda el anunciante.
+   * La creatividad como la manda el anunciante. En un takeover con video, esta imagen es además el respaldo: es lo que se ve mientras el video carga y si el navegador no lo deja arrancar.
    */
-  imagen: number | Media;
+  imagen?: (number | null) | Media;
   /**
    * Opcional. La versión vertical o cuadrada. Si se deja vacía, el sitio usa la de arriba.
    */
   imagenMovil?: (number | null) | Media;
   /**
+   * Opcional. Un mp4 corto, subido a Media como cualquier archivo. Si lo dejas vacío, el takeover es la imagen de arriba.
+   */
+  video?: (number | null) | Media;
+  /**
    * La liga del anunciante. Puede ser externa o una página del propio sitio.
    */
-  enlace: string;
+  enlace?: string | null;
+  /**
+   * Lo aplica el sitio, y vale también para Ad Manager: es cada cuándo se le pide el modal. "En cada carga" es agresivo —vuelve a tapar la portada en cada página que abra el lector—: úsalo solo si la campaña lo pide.
+   */
+  frecuencia?: ('sesion' | 'siempre') | null;
   /**
    * Opcional. Cuando hay varias campañas corriendo al mismo tiempo en el mismo lugar, el sitio empieza por el número más bajo.
    */
@@ -2321,11 +2333,14 @@ export interface PublicidadSelect<T extends boolean = true> {
   titulo?: T;
   anunciante?: T;
   tipo?: T;
+  fuente?: T;
   inicio?: T;
   fin?: T;
   imagen?: T;
   imagenMovil?: T;
+  video?: T;
   enlace?: T;
+  frecuencia?: T;
   orden?: T;
   estado?: T;
   impresiones?: T;

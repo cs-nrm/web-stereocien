@@ -7,9 +7,11 @@
  * al cliente. La única excepción es la MEDIA, que el navegador sí carga directo
  * desde el origen público del CMS (ver `urlMediaAbsoluta`).
  *
- * La política de caché de este archivo NO se inventó aquí: es la de
- * `web-enfoque/src/lib/cms/client.ts`, que salió de tres incidentes de producción
- * con números medidos. Se copia a propósito.
+ * Heredado de web-beat, portado sin rediseñar: la política de caché de este
+ * archivo tampoco se inventó allá. Es la del cliente de `web-enfoque`, que salió de
+ * tres incidentes de producción con números medidos, y se copia a propósito. Lo
+ * único que cambia de estación a estación es `ESTACION_CODIGO` (ver
+ * `src/config/site.ts`); nada de este archivo sabe qué estación es.
  */
 import { CMS_URL, CMS_URL_PUBLICA, ESTACION_CODIGO } from '@/config/site';
 import { envServidor } from '@/lib/env';
@@ -190,10 +192,10 @@ async function pedirAlCms<T>(url: URL, ruta: string, timeoutMs: number): Promise
 // ============================================================
 // Multi-estación
 // ------------------------------------------------------------
-// La diferencia más importante respecto a `web-enfoque`, que se copió casi
-// literal en todo lo demás: Enfoque tiene una instancia DEDICADA de Payload y por
-// eso **no filtra por `estacion` en absoluto**. Copiar ese patrón tal cual aquí
-// mezclaría las 4 marcas de NRM en la misma página.
+// La diferencia más importante respecto a `web-enfoque`, del que se copió casi
+// literal todo lo demás (heredado de web-beat): Enfoque tiene una instancia
+// DEDICADA de Payload y por eso **no filtra por `estacion` en absoluto**. Copiar
+// ese patrón tal cual aquí mezclaría las 4 marcas de NRM en la misma página.
 //
 // El filtro se inyecta en el TRANSPORTE, no en cada llamada, precisamente para
 // que sea imposible olvidarlo en una consulta nueva. Y entra en la clave de
@@ -209,14 +211,22 @@ async function pedirAlCms<T>(url: URL, ruta: string, timeoutMs: number): Promise
  * estacion`— que se ve igual que "el CMS está mal" y no dice qué hiciste mal.
  * Con la comprobación, el error nombra la causa en el acto.
  *
- * Verificado contra producción el 2026-08-21, colección por colección.
- * `media` queda FUERA a propósito: la biblioteca es **compartida** entre las 4
- * estaciones (decisión 6), y filtrarla es justo el 400 de arriba.
- * `estaciones`, `redirects` y `forms` tampoco lo llevan.
+ * Sale del `multiTenantPlugin` de `cms-estaciones` (`collections` en su
+ * `src/payload.config.ts`), más `search`, que no está en el plugin pero copia el
+ * campo al indexar (su `beforeSync` lo escribe). Verificado contra producción el
+ * 2026-09-28, colección por colección, con `where[estacion][equals]=<id>`: todas
+ * las de esta lista responden 200; `media`, `estaciones`, `redirects` y `forms`
+ * responden el 400 de arriba.
  *
- * `publicidad` se agregó el 2026-08-27: la colección es más nueva que aquella
- * revisión y sí lleva el campo (está en el plugin multi-tenant del CMS con
- * `useTenantAccess: false`, como noticias).
+ * `media` queda FUERA a propósito: la biblioteca es **compartida** entre las 4
+ * estaciones, y filtrarla es justo ese 400. `redirects` tampoco lo lleva, y por eso
+ * el mapa de 301 del sitio viejo no vive ahí: la colección es global, de todas las
+ * estaciones a la vez.
+ *
+ * `promociones` y `paginas` entraron el 2026-09-28 al portar de web-beat, cuya
+ * lista no las tenía (allá `paginas` seguía anotada como pendiente). Las dos están
+ * en el CMS desde el 2026-08-24 (`5449bfc` de `cms-estaciones`) y las dos llevan el
+ * campo. GANA, la sección de promociones del Inicio, sale de la primera.
  */
 export const COLECCIONES_POR_ESTACION = [
   'noticias',
@@ -233,25 +243,29 @@ export const COLECCIONES_POR_ESTACION = [
   'tipos-de-lista',
   'eventos',
   'publicidad',
+  'promociones',
+  'paginas',
   'search',
 ] as const;
 
 export type ColeccionPorEstacion = (typeof COLECCIONES_POR_ESTACION)[number];
 
 /**
- * Colecciones que el plan necesita y que TODAVÍA NO EXISTEN en el CMS.
+ * Lo que este sitio necesita y que TODAVÍA NO ES una colección del CMS.
  *
- * Están aquí para que el error las distinga: pedir `paginas` hoy da un 404
- * `Route not found`, y sin esta lista el mensaje sonaría a ruta mal escrita
- * cuando en realidad es trabajo pendiente del carril A.
+ * Está aquí para que el error lo distinga: una colección que no existe da un 404
+ * `Route not found`, y sin esta lista el mensaje sonaría a ruta mal escrita cuando
+ * en realidad es trabajo pendiente.
+ *
+ * Los canales SOUNDS son el único caso hoy (verificado el 2026-09-28: no hay
+ * colección en `cms-estaciones`). Viven en el WordPress del sitio viejo, en el
+ * tipo de entrada del plugin que está en la rama `stereocien`
+ * (`wp/plugins/sounds-by-stereo-cien/`). El nombre `sounds` es el de la ruta REST
+ * de ese plugin, no el de una colección decidida: si el CMS la crea con otro
+ * nombre, esta entrada se va y el nombre real entra en `COLECCIONES_POR_ESTACION`.
  */
 const PENDIENTES_EN_EL_CMS: Record<string, string> = {
-  paginas: 'A1 — «Beat para marcas» (§8) y los avisos legales',
-  productos: 'fase 2 — la Tienda (§7)',
-  oyentes: 'A2 — Comunidad (§6)',
-  playlists: 'A2 — Comunidad (§6)',
-  guardados: 'A2 — Comunidad (§6)',
-  suscripciones: 'A2 — Comunidad (§6)',
+  sounds: 'los canales SOUNDS siguen en el plugin de WordPress del sitio viejo',
 };
 
 /** Lo mínimo de `estaciones` que necesita el transporte. El resto vive en `estacion.ts`. */
@@ -263,7 +277,7 @@ interface EstacionMinima {
 /**
  * Id numérico de la estación, resuelto por `codigo` y memorizado para el proceso.
  *
- * Nunca se hardcodea el id. En una BD sembrada en orden Beat sería `1`, pero
+ * Nunca se hardcodea el id. En la base de producción Stereo Cien es el `4`, pero
  * eso es un `serial` de Postgres: depende del orden de siembra y no es portable
  * entre entornos. `estaciones.read` es **público a propósito** justo para que cada
  * front pueda resolver esto sin sesión, en su primer request.
@@ -305,8 +319,12 @@ export function idEstacion(): Promise<number> {
  * Igual que `cmsFetch`, pero acota la consulta a la estación de este front.
  *
  * Es la función que deben usar todos los módulos de dominio. Si una consulta
- * nueva se escribe con `cmsFetch` por descuido, devolverá contenido de Oye,
- * Sabrosita y Stereo Cien mezclado — de ahí que el nombre sea explícito.
+ * nueva se escribe con `cmsFetch` por descuido, devolverá contenido de las otras
+ * tres estaciones mezclado con el de esta — de ahí que el nombre sea explícito.
+ *
+ * Trampa que aquí se nota más que en ningún otro front: hoy Stereo Cien tiene CERO
+ * documentos en el CMS (la migración del WordPress está pendiente), así que una
+ * consulta sin filtro no se ve vacía, se ve LLENA — con las notas de otra estación.
  */
 export async function cmsFetchEstacion<T>(
   ruta: ColeccionPorEstacion,
@@ -337,14 +355,16 @@ export async function cmsFetchEstacion<T>(
  *
  * Es la «consulta APARTE» que anuncia `SIN_PAGINACION` unas líneas arriba, y
  * existe para poder tener números de página SIN pagar el `COUNT` en cada consulta
- * de contenido. Comprobado contra el CMS el 2026-09-17: con `pagination=false`
- * Payload **sí respeta `page`** —devuelve la tanda correcta— y lo único que pierde
- * es `totalDocs`/`totalPages`, que es justo lo que esto trae.
+ * de contenido. Heredado de web-beat, que lo comprobó contra el CMS el 2026-09-17,
+ * y vuelto a comprobar el 2026-09-28: con `pagination=false` Payload **sí respeta
+ * `page`** —las páginas 1, 2 y 14 de 11 notas devolvieron tandas distintas y la
+ * última la cola de 2— y lo único que pierde es `totalDocs`/`totalPages`, que es
+ * justo lo que esto trae.
  *
  * Tres propiedades que no son casualidad:
  *
  *   · **No lleva `page`, ni `limit`, ni `sort`, ni `depth`** — solo el `where`. Así
- *     las cinco páginas de una sección comparten UNA entrada de caché en vez de
+ *     todas las páginas de una sección comparten UNA entrada de caché en vez de
  *     pagar un `COUNT` cada una. Es lo contrario de la regla de oro y por la misma
  *     razón: lo que no varía, no entra en la clave.
  *   · **Timeout corto** (2.5 s contra los 8 de una consulta normal). Contar obliga
@@ -356,7 +376,7 @@ export async function cmsFetchEstacion<T>(
  *     Quien llama decide, y lo que se pierde es la tira, no las notas.
  *
  * `/api/<coleccion>/count` es un endpoint de Payload, no un listado: responde
- * `{ totalDocs }` y nada más. Comprobado contra el CMS el 2026-09-17.
+ * `{ totalDocs }` y nada más. Comprobado contra el CMS el 2026-09-28.
  */
 export async function cmsContarEstacion(
   ruta: ColeccionPorEstacion,
@@ -384,10 +404,17 @@ export async function cmsContarEstacion(
  * Absolutiza una URL de media.
  *
  * El CMS **no** pone `disablePayloadAccessControl`, así que `doc.url` no apunta a
- * `storage.googleapis.com`: es una ruta relativa (`/api/media/file/<archivo>`) que
- * sirve el propio CMS, leyendo del bucket con su service-account. Por eso hay que
- * prefijar el origen **público** (`CMS_URL_PUBLICA`) y no el interno: el navegador
- * carga las imágenes directo.
+ * `storage.googleapis.com`: apunta a `/api/media/file/<archivo>`, que sirve el
+ * propio CMS leyendo del bucket con su service-account. Medido el 2026-09-28, hoy
+ * ya llega ABSOLUTA y con el origen público
+ * (`https://admin.nrm.com.mx/api/media/file/<archivo>?prefix=media`), y entonces
+ * esta función la deja intacta.
+ *
+ * El prefijo se conserva para cuando llegue RELATIVA —Payload la arma así si el
+ * CMS arranca sin `SERVER_URL`, que es de donde su config saca `serverURL`—, y ahí
+ * hay que poner el origen **público**
+ * (`CMS_URL_PUBLICA`) y no el interno: el navegador carga las imágenes directo, y
+ * el interno puede ser una IP privada que desde fuera no existe.
  */
 export function urlMediaAbsoluta(url: string | null | undefined): string | null {
   if (!url) return null;
@@ -439,7 +466,7 @@ export function urlArchivo(media: DocMedia | number | null | undefined): string 
  * porque **el CMS no recorta**: `thumbnail` 400 / `card` 768 / `large` 1280 son
  * variantes de ANCHO y todas conservan la proporción del original. Ninguna es un
  * cuadrado ni un 16:9 — el recorte lo hace el front con `object-fit: cover`, y sin
- * punto focal recorta por el centro, que en una foto vertical de un DJ es el
+ * punto focal recorta por el centro, que en una foto vertical de un artista es el
  * pecho.
  *
  * `media` lleva `focalPoint: true` en el CMS, así que todo documento trae `focalX`

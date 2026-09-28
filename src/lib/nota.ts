@@ -1,22 +1,24 @@
 /**
  * Valores de PRESENTACIÓN derivados de una nota.
  *
- * Viven aparte de `lib/cms/noticias.ts` a propósito: ese módulo habla con el CMS,
- * este decide cómo se lee un dato en pantalla. La firma editorial, el nombre de la
- * categoría y la fecha larga son decisiones de front, y varias tienen que resolver
- * inconsistencias del contenido capturado.
+ * Viven aparte de `src/lib/cms/noticias.ts` a propósito: ese módulo habla con el
+ * CMS, este decide cómo se lee un dato en pantalla. La firma, el nombre de la
+ * categoría, la sección y la fecha son decisiones de front, y varias tienen que
+ * resolver inconsistencias del contenido capturado.
  */
 import { urlMedia } from '@/lib/cms/client';
 import { SECCIONES_EDITORIALES, type SeccionEditorial } from '@/config/navegacion';
 import type { Noticia } from '@/types/payload';
 
 /**
- * El nombre de categoría que se pinta en la tarjeta.
+ * El nombre de categoría que se pinta en la tarjeta: el «Cultura Pop» de «por
+ * Cecilia Masariego · Cultura Pop» en el diseño.
  *
  * `noticias.categorias` es `hasMany` y NO hay categoría primaria — es
- * justamente la razón por la que la URL de una nota es plana (decisión 10 del
- * plan). Para PINTAR sí hace falta elegir una, y se toma la primera: aquí sí es
- * aceptable, porque reordenar el array cambia una etiqueta, no una URL.
+ * justamente la razón por la que la URL de una nota es plana, `/noticias/<slug>`
+ * (heredado de web-beat). Para PINTAR sí hace falta elegir una, y se toma la
+ * primera: aquí sí es aceptable, porque reordenar el array cambia una etiqueta, no
+ * una URL.
  */
 export function nombreCategoria(nota: Noticia): string | null {
   const primera = (nota.categorias ?? [])[0];
@@ -25,31 +27,32 @@ export function nombreCategoria(nota: Noticia): string | null {
 }
 
 /**
- * A QUÉ SECCIÓN pertenece una nota: Beat Scanner o Editorial.
+ * A QUÉ SECCIÓN del diseño pertenece una nota, o `null` si a ninguna.
  *
- * Lo decide la categoría, porque desde el 2026-09-07 eso es lo que separa las dos
- * secciones editoriales (ver `SECCIONES_EDITORIALES`). De aquí salen la migaja de
- * la nota y la pastilla encendida de su tira: antes las dos decían «BEAT SCANNER»
- * fijo, y con dos secciones eso convertía a la mitad de las notas en una mentira.
+ * Lo decide la categoría (ver `SECCIONES_EDITORIALES`): la principal de cada
+ * sección o una de sus afines. De aquí sale la migaja de la nota.
  *
  * Se recorren las categorías EN EL ORDEN DE LA NOTA y gana la primera que sea
- * una sección — el mismo criterio que `nombreCategoria`. Es coherente y es lo menos
- * sorprendente: quien captura decide cuál va primero, y reordenar el array cambia
- * una etiqueta, no una URL.
+ * de una sección — el mismo criterio que `nombreCategoria`. Es coherente y es lo
+ * menos sorprendente: quien captura decide cuál va primero, y reordenar el array
+ * cambia una etiqueta, no una URL.
  *
- * Cae a Beat Scanner cuando la nota no está en ninguna de las dos —una cápsula
- * del Fenómeno Residente, por ejemplo—. No es exacto, pero es lo que el sitio ya
- * hacía para TODAS las notas, y la alternativa —una migaja sin sección— dejaría a
- * esas notas sin salida hacia arriba.
+ * Devuelve `null`, y no una sección de caída, cuando ninguna categoría es de una
+ * sección: una nota de Series y películas o de Tecnología no es del Lado A ni del
+ * B, y ponerle una sección que no es suya sería una migaja falsa —que Google enseña
+ * tal cual encima del resultado—. Quien la llama pinta la migaja sin ese eslabón.
+ * web-beat caía a una sección fija porque allá el sitio ya la pintaba en todas
+ * las notas antes de partir sus secciones; aquí nunca fue así.
  */
-export function seccionDeNota(nota: Noticia): SeccionEditorial {
-  const secciones = Object.values(SECCIONES_EDITORIALES);
+export function seccionDeNota(nota: Noticia): SeccionEditorial | null {
+  const secciones: SeccionEditorial[] = Object.values(SECCIONES_EDITORIALES);
   for (const c of nota.categorias ?? []) {
     if (typeof c === 'number' || !c?.slug) continue;
-    const hallada = secciones.find((s) => s.categoria === c.slug);
+    const slug = c.slug;
+    const hallada = secciones.find((s) => s.categoria === slug || s.afines.includes(slug));
     if (hallada) return hallada;
   }
-  return SECCIONES_EDITORIALES.scanner;
+  return null;
 }
 
 /** El slug de la primera categoría — para enlazar el rótulo al filtro. */
@@ -77,14 +80,15 @@ export interface Firma {
 /**
  * Las INICIALES con las que se rellena el hueco de la foto.
  *
- * Antes ese hueco era un círculo con degradado y nada dentro, y a simple vista se
+ * Heredado de web-beat: allá ese hueco fue un círculo vacío, y a simple vista se
  * leía como una imagen que no cargó. Un monograma dice «no hay retrato de esta
  * persona», que es la verdad.
  *
- * El caso raro está medido, no imaginado: el contenido capturado usa el texto
- * libre y ahí la misma persona aparece como «FO», «Fernanda Ortíz» y «Fernanda
- * Ortiz». Una firma que YA son iniciales —una sola palabra, en mayúsculas, corta—
- * se deja tal cual; partirla daría «F».
+ * El caso raro está medido, no imaginado, aunque en el contenido de Beat: la
+ * misma persona aparecía como «FO», «Fernanda Ortíz» y «Fernanda Ortiz» en el
+ * texto libre. Una firma que YA son iniciales —una sola palabra, en mayúsculas,
+ * corta— se deja tal cual; partirla daría «F». Las firmas de Stereo Cien llegan
+ * con la migración del WordPress y todavía no se han medido.
  */
 function monogramaDe(nombre: string): string {
   const palabras = nombre.trim().split(/\s+/).filter(Boolean);
@@ -101,21 +105,20 @@ function monogramaDe(nombre: string): string {
 }
 
 /**
- * La firma.
+ * La firma: el «por Cecilia Masariego» de las tarjetas del diseño.
  *
  * Hay DOS campos y no dicen lo mismo: `autores` es una relación a la colección
- * `autores` y `autor` es texto libre. El contenido capturado usa solo el texto
- * libre, y ahí ya aparece la misma persona escrita de tres formas —«FO»,
- * «Fernanda Ortíz», «Fernanda Ortiz»—. Se prefiere la relación cuando existe,
+ * `autores` y `autor` es texto libre. Se prefiere la relación cuando existe,
  * porque es la única que puede dar una firma estable, una foto y una página de
- * autor.
+ * autor; si no, el texto libre. Hoy Stereo Cien tiene 0 autores en el CMS
+ * (2026-09-28).
  *
  * La foto solo llega si quien consulta pidió `depth: 2`: con 1 el autor viene
  * poblado pero su `foto` sigue siendo un id. `obtenerNota` ya lo hace, y es la
- * única que necesita la ficha. Si llegara como id, `urlMedia` devuelve `null` y se
- * pinta el monograma — degrada, no truena.
+ * única que necesita la ficha; los listados piden `depth: 1`. Si llegara como id,
+ * `urlMedia` devuelve `null` y se pinta el monograma — degrada, no truena.
  *
- * ✨ `cargo` antes que `bio`: este hueco es de UNA línea («Conductora», «Editor
+ * `cargo` antes que `bio`: este hueco es de UNA línea («Conductora», «Editor
  * digital»), que es exactamente para lo que el CMS tiene `cargo`. La `bio` es un
  * párrafo y aquí se leería apretada.
  */
@@ -143,13 +146,13 @@ const MESES = [
 ];
 
 /**
- * La fecha como la escribe el diseño: `18 AGO 2026`.
+ * La fecha corta: `18 AGO 2026`.
  *
- * Se formatea a mano y no con `Intl`: el diseño la quiere en mayúsculas y con el
- * mes abreviado a tres letras sin punto, que es lo que `Intl` en español no da
- * (devuelve «18 ago 2026», con punto en algunos entornos). Y con `timeZone` fija,
- * porque el servidor puede correr en UTC y una nota publicada a las 20:00 de
- * México saldría con la fecha del día siguiente.
+ * Heredado de web-beat, con su formato. Se arma a mano y no con `Intl`: en
+ * mayúsculas y con el mes abreviado a tres letras sin punto, que es lo que `Intl` en
+ * español no da (devuelve «18 ago 2026», con punto en algunos entornos). Y con
+ * `timeZone` fija, porque el servidor puede correr en UTC y una nota publicada a
+ * las 20:00 de México saldría con la fecha del día siguiente.
  */
 export function fechaCorta(valor: string | null | undefined): string | null {
   if (!valor) return null;
@@ -173,11 +176,14 @@ export function fechaIso(valor: string | null | undefined): string | null {
 }
 
 /**
- * Los tres destinos de «compartir» de 14c.
+ * Los tres destinos de «compartir» de una nota.
  *
  * Se arman en el SERVIDOR con la URL canónica. Nada de `location.href`: la nota se
  * puede abrir con `?utm_*` pegado y compartirlo propagaría el rastreo de quien lo
  * compartió a todos los que reciban el enlace.
+ *
+ * `icono` es un nombre, no un archivo: quien pinte los botones lo traduce a su
+ * juego de iconos. Se conservan los de web-beat para no cambiar la firma.
  */
 export function enlacesCompartir(
   url: string,
