@@ -39,7 +39,7 @@ export const GET: APIRoute = ({ url }) => {
         'User-agent: *',
         'Allow: /',
         '',
-        '# Los proxies del servidor no son contenido.',
+        '# Reservado para los proxies del servidor, que no son contenido.',
         'Disallow: /api/',
         '',
         ...SITEMAPS_ANUNCIADOS.map((s) => `Sitemap: ${s}`),

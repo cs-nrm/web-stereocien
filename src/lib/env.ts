@@ -2,12 +2,16 @@
  * Lectura de variables de entorno de SERVIDOR en tiempo de EJECUCIÓN.
  *
  * Por qué existe este archivo: `import.meta.env.FOO` **se sustituye por su
- * valor al compilar**, no se lee al arrancar. Con `pnpm build` en local eso pasa
- * desapercibido, porque Vite carga el `.env` durante el build y el valor queda
- * horneado con el dato correcto. Pero si se compila SIN `.env`, se hornea la cadena
- * vacía y el proceso ignora el `CMS_URL` que le pasen al arrancar: el sitio
- * responde 200 y **cero noticias**. Pasó tal cual en el primer despliegue del beta
- * de `web-enfoque` (31 jul 2026), cuya imagen de Docker se construía sin `.env`.
+ * valor al compilar**, no se lee al arrancar. Pasó tal cual en el primer
+ * despliegue del beta de `web-enfoque` (31 jul 2026): su imagen de Docker se
+ * construía sin `.env`, `import.meta.env.CMS_URL` compilaba a cadena vacía y el
+ * proceso ignoraba el `CMS_URL` que le pasaban al arrancar. El sitio respondía 200
+ * y **cero noticias**.
+ *
+ * Verificado aquí el 2026-09-28 con Astro 7.2.10: en un build, `import.meta.env`
+ * ni siquiera trae las variables SIN prefijo, aunque el `.env` esté presente al
+ * compilar. Solo trae las `PUBLIC_*` y las de Astro. O sea que en un build las de
+ * servidor salen SOLO del entorno del proceso.
  * Heredado de web-beat; no lo repitamos.
  *
  * `process.env` sí se lee al arrancar, que es lo que queremos para la config del
@@ -27,7 +31,8 @@ declare const process: { env?: Record<string, string | undefined> };
 
 /**
  * Valor de una variable de servidor. Prioriza `process.env` (ejecución) y cae a
- * `import.meta.env` (dev con `astro dev`, y builds locales con `.env` presente).
+ * `import.meta.env`, que solo sirve en `astro dev` (ahí sí trae el `.env`). En un
+ * build las variables sin `PUBLIC_` tienen que estar en el entorno del proceso.
  */
 export function envServidor(clave: string, porDefecto = ''): string {
   // `typeof process` en vez de `process` a secas: si este módulo acabara

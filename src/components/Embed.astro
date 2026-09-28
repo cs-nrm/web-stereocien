@@ -23,12 +23,21 @@
  * en toda la página. Sus rutas `/embed` hacen lo mismo dentro de un iframe aislado
  * y con `loading="lazy"` no cuestan nada hasta que se acercan.
  */
+import { hrefSeguro } from '@/lib/enlaces';
+
 interface Props {
   plataforma: 'youtube' | 'twitter' | 'instagram' | 'facebook' | 'otro' | null | undefined;
   url: string | null | undefined;
 }
 
 const { plataforma, url } = Astro.props;
+
+/*
+  El enlace de respaldo pasa por el mismo filtro que los enlaces del cuerpo, y solo
+  admite http y https. Antes escribía la URL cruda: con `javascript:...` salía
+  servido tal cual (ver src/lib/enlaces.ts). Si no pasa, no se pinta nada.
+*/
+const respaldo = hrefSeguro(url, { soloWeb: true });
 
 /**
  * Convierte la URL editorial en la URL de inserción de la plataforma.
@@ -101,14 +110,14 @@ const insercion = url ? resolver(plataforma, url) : null;
         allowfullscreen
       />
     </figure>
-  ) : url ? (
+  ) : respaldo ? (
     /*
       Se degrada a enlace. Pasa cuando la URL no encaja con el patrón conocido
       (o cuando `plataforma` es "otro"): mejor un enlace que funciona que un
       iframe a una URL que no supimos leer.
     */
     <p class="embed-suelto">
-      <a href={url} target="_blank" rel="noopener noreferrer nofollow">
+      <a href={respaldo} target="_blank" rel="noopener noreferrer nofollow">
         Ver la publicación en {plataforma === 'otro' ? 'el sitio original' : plataforma}
       </a>
     </p>

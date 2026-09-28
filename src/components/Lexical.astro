@@ -37,6 +37,7 @@
 import Embed from './Embed.astro';
 import { urlMedia, type DocMedia } from '@/lib/cms/client';
 import { HOST_CANONICO, rutaNota } from '@/config/site';
+import { hrefSeguro } from '@/lib/enlaces';
 
 interface Props {
   contenido: unknown;
@@ -116,10 +117,9 @@ function esEnlace(n: Nodo): boolean {
 /**
  * El `href` de un nodo de enlace, ya sea externo o a un documento del CMS.
  *
- * No romper: la URL capturada pasa por una lista CERRADA de esquemas antes de
- * llegar a un `href`. Un `javascript:` en un enlace es el mismo XSS almacenado que
- * un `set:html`, solo que esperando un clic, y el texto del enlace sí se pinta —como
- * texto— aunque la URL se descarte.
+ * No romper: la URL capturada pasa por `hrefSeguro` (src/lib/enlaces.ts), la lista
+ * CERRADA de esquemas, antes de llegar a un `href`. El texto del enlace sí se pinta
+ * —como texto— aunque la URL se descarte.
  */
 function hrefDe(n: Nodo): string | null {
   const f = (n.fields ?? {}) as { url?: string; linkType?: string; doc?: unknown };
@@ -129,11 +129,7 @@ function hrefDe(n: Nodo): string | null {
     // Solo `noticias` por ahora: es la única ruta de detalle que existe.
     return slug && doc?.relationTo === 'noticias' ? rutaNota(slug) : null;
   }
-  const url = (f.url ?? '').trim();
-  if (!url) return null;
-  // Relativo o ancla: de este sitio.
-  if (/^[/#]/.test(url) && !url.startsWith('//')) return url;
-  return /^(https?:|mailto:|tel:)/i.test(url) ? url : null;
+  return hrefSeguro(f.url);
 }
 
 /**

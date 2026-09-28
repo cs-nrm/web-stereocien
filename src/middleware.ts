@@ -17,8 +17,9 @@ import { destinoSitioViejo } from '@/config/redirecciones/sitio-viejo';
 /**
  * Rutas que NUNCA se cachean, ni en el borde ni en el navegador.
  *
- * - `/api/`: los proxies server-side. Cachearlos serviría datos viejos a quien
- *   acaba de pedirlos.
+ * - `/api/`: reservado para los proxies de servidor. Hoy no existe ninguno
+ *   (`src/pages/api/` no está); la regla va por delante para que el primero no
+ *   nazca cacheado, porque serviría datos viejos a quien acaba de pedirlos.
  * - `/buscar`: todavía no existe, pero el diseño aprobado dibuja un buscador en la
  *   cabecera, y su respuesta depende de la consulta del lector. La regla va por
  *   delante para que el día que llegue no nazca cacheada.
@@ -125,7 +126,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
    * Despliegue que no es el dominio canónico: se marca `noindex` por cabecera.
    *
    * La cabecera es la que de verdad protege: aplica a TODO lo que sale (páginas,
-   * JSON de los proxies, feeds), no solo al HTML, y Google la respeta incluso donde
+   * feeds, robots), no solo al HTML, y Google la respeta incluso donde
    * no hay dónde poner un `<meta>`.
    *
    * Se evalúan las DOS reglas y basta con que una cierre:
@@ -134,9 +135,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
    *   mismo artefacto de producción servido por otro nombre sería un duplicado
    *   indexable del sitio real.
    *
-   * Depende de `security.allowedDomains` en `astro.config.mjs`. Sin esa lista
-   * `context.url.hostname` es SIEMPRE `localhost` y esto dejaría el sitio real
-   * fuera de Google.
+   * Depende de que a Node le llegue el `Host` verdadero: `ProxyPreserveHost On`
+   * en el proxy, o `X-Forwarded-Host` con el host en `security.allowedDomains`. Si
+   * no, el sitio real sale fuera de Google. El detalle medido está en
+   * src/config/site.ts, «Cómo llega la petición a Node».
    */
   if (NOINDEX_SITIO || noIndexarHost(context.url.hostname)) {
     respuesta.headers.set('X-Robots-Tag', 'noindex, nofollow');

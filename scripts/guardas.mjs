@@ -157,6 +157,16 @@ if (!existsSync(MAPA)) {
         fallos.push(`${ubic}  el origen tiene que ser una ruta que empiece con "/" y no sea la raíz.`);
       } else if (/[?#]/.test(origen)) {
         fallos.push(`${ubic}  el origen lleva query o "#": el middleware busca solo la ruta, así que nunca coincidiría.`);
+      } else if (/\/\/|\\|(^|\/)\.\.?(\/|$)/.test(origen)) {
+        /*
+          Barras dobles, barra invertida o segmentos `.` y `..`: Astro normaliza la
+          ruta ANTES del middleware (colapsa las dobles, vuelve `\` en `/` y
+          resuelve los puntos), así que una clave así nunca coincide. Reproducido el
+          2026-09-28: `/autos//a` en el mapa pasaba esta guarda y `/autos//a/` daba
+          301 a `/autos/a` y luego 404. Con slugs de WordPress es raro, pero pasa si
+          el importador arma el origen con una sección vacía (`//slug`).
+        */
+        fallos.push(`${ubic}  el origen lleva "//", "\\" o un segmento "." / "..": Astro normaliza la ruta antes del middleware, así que nunca coincidiría.`);
       } else if (normalizarRutaVieja(origen) !== origen) {
         fallos.push(`${ubic}  origen sin normalizar: el middleware lo buscaría como "${normalizarRutaVieja(origen)}" (sin barra final, escapes decodificados, NFC).`);
       }

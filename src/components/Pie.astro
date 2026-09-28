@@ -18,13 +18,24 @@
  * CMS con el respaldo): son las MISMAS que el JSON-LD del Inicio declara como
  * `sameAs`, y solo se pintan las que traen URL. Sin ninguna, la lista no sale.
  */
+import { hrefSeguro } from '@/lib/enlaces';
+
 interface Props {
   /** El nombre de la estación, tal como lo trae el CMS: «Stereo Cien 100.1». */
   nombre: string;
   redes: Array<{ red: string; url: string }>;
 }
 
-const { nombre, redes } = Astro.props;
+const { nombre } = Astro.props;
+
+/*
+  Las URLs de las redes salen del documento de la estación en el CMS, así que
+  pasan por el mismo filtro que cualquier enlace que venga de ahí (ver
+  src/lib/enlaces.ts). Una red cuya URL no pase no se pinta.
+*/
+const redes = Astro.props.redes
+  .map((r) => ({ red: r.red, url: hrefSeguro(r.url, { soloWeb: true }) }))
+  .filter((r): r is { red: string; url: string } => r.url !== null);
 
 /**
  * El año en la hora de la Ciudad de México, no en la del servidor: el proceso

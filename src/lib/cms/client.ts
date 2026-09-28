@@ -2,8 +2,8 @@
  * Cliente de `cms-estaciones` (Payload) — SOLO server-side.
  *
  * Línea roja de la casa: el navegador NUNCA habla directo con el CMS. Este
- * módulo se importa únicamente en frontmatter de `.astro` (SSR) o en
- * `src/pages/api/*` (proxies). El guard de abajo revienta si alguien lo arrastra
+ * módulo se importa únicamente en frontmatter de `.astro` (SSR) y en las rutas de
+ * servidor de `src/pages`. El guard de abajo revienta si alguien lo arrastra
  * al cliente. La única excepción es la MEDIA, que el navegador sí carga directo
  * desde el origen público del CMS (ver `urlMediaAbsoluta`).
  *

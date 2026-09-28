@@ -15,8 +15,9 @@
  * (`cms-estaciones/src/seo/site.ts`), así que los sitemaps que genera el CMS
  * apuntan a rutas que este sitio sí sirve, sin tocar el CMS.
  *
- * Lo que cuesta, y por qué no se discute aquí: el sitio viejo servía ~1,008 notas
- * en `/<seccion>/<slug>/` repartidas en 19 secciones. Esas URLs NO se conservan:
+ * Lo que cuesta, y por qué no se discute aquí: el build del sitio viejo publica hoy
+ * 932 notas en `/<seccion>/<slug>/` repartidas en 19 secciones (el tope es de 100
+ * por sección; hay más en el servidor, por el despliegue aditivo). Esas URLs NO se conservan:
  * se redirigen con 301 mediante un MAPA EXACTO versionado en este repo
  * (`src/config/redirecciones/sitio-viejo.json`), que consulta `src/middleware.ts`
  * antes de renderizar nada. Ahí está explicado el formato y quién lo genera.
@@ -70,23 +71,8 @@ export const NOINDEX_SITIO = ((): boolean => {
  * duplicado exacto compitiéndole al real. El `Host` de la petición sí distingue
  * los dos. Es también la regla con la que el layout decide si carga la medición.
  *
- * Depende de DOS cosas, y ninguna de las dos se ve desde aquí:
- *
- * 1. **`security.allowedDomains` en `astro.config.mjs`.** Sin esa lista,
- *    `context.url.hostname` es SIEMPRE `localhost` en producción y esta función
- *    marcaría el sitio real como despliegue de prueba.
- *
- * 2. **`ProxyPreserveHost On` en el proxy inverso** (en web-beat es un vhost de
- *    Apache, y así se montaría aquí). Por omisión Apache reescribe el `Host` hacia
- *    el backend, así que Node recibiría `Host: localhost:<puerto>` y esta función
- *    perdería la única señal con la que trabaja.
- *
- * Cómo falla si alguien apaga la segunda (medido en web-beat): NO se abre el sitio
- * —«localhost» tampoco es el canónico, así que la indexación sigue cerrada— pero
- * `Astro.url` deja de decir la verdad, y con ella `checkOrigin` compara
- * `localhost` contra el dominio real y **responde 403 a todo POST**. Falla
- * silenciosa por el lado de la indexación y ruidosa por el del formulario, que es
- * la peor combinación para diagnosticarla.
+ * Depende de que a Node le llegue el `Host` VERDADERO, y eso no se ve desde aquí.
+ * Ver «Cómo llega la petición a Node», abajo.
  *
  * La otra mitad de la garantía la da el propio Apache (heredado de web-beat): con
  * vhosts por nombre, el `Host` **es** lo que elige el vhost, así que una petición
@@ -99,6 +85,53 @@ export function noIndexarHost(hostname: string): boolean {
   if (forzado !== null) return forzado;
   return hostname.toLowerCase() !== HOST_CANONICO;
 }
+
+/**
+ * ¿Esta petición llegó por el dominio canónico, en un build hecho para él?
+ *
+ * Es la guarda de la MEDICIÓN (`src/layouts/Base.astro`), y se separó de la de
+ * indexación a propósito: NO pasa por `SITIO_NOINDEX`. Ese interruptor es para
+ * abrir o cerrar la puerta a Google. Si también decidiera la medición, un
+ * `SITIO_NOINDEX=0` en local —la forma de probar la indexación— metía tráfico de
+ * prueba a comScore con los IDs reales (reproducido el 2026-09-28), y un `=1` en
+ * el sitio real para sacarlo de Google le apagaba la medición.
+ */
+export function esDespliegueCanonico(hostname: string): boolean {
+  let hostCompilado: string;
+  try {
+    hostCompilado = new URL(SITE_URL).host;
+  } catch {
+    return false;
+  }
+  return hostCompilado === HOST_CANONICO && hostname.toLowerCase() === HOST_CANONICO;
+}
+
+/*
+ * CÓMO LLEGA LA PETICIÓN A NODE. Medido el 2026-09-28 contra un build servido,
+ * con Astro 7.2.10 y @astrojs/node 11.1.4 (el comentario que venía de web-beat
+ * describía otro mecanismo y aquí era falso):
+ *
+ * 1. EL HOST. El adaptador arma `Astro.url` con el `Host` tal como llega. Apache
+ *    sin `ProxyPreserveHost On` manda el del backend (`127.0.0.1:<puerto>`), y
+ *    entonces el sitio real sale en noindex y sin medición. Astro puede recuperar
+ *    el host real de `X-Forwarded-Host`, pero solo le cree si ese host está en
+ *    `security.allowedDomains` (`astro.config.mjs`). Lo seguro son las dos cosas:
+ *    `ProxyPreserveHost On` en el vhost, y todos los hosts en la lista, staging
+ *    incluido.
+ *
+ * 2. EL PROTOCOLO. Detrás del proxy, Node habla HTTP, así que `Astro.url` sale
+ *    `http:` salvo que el proxy mande `X-Forwarded-Proto: https`. Astro solo lo
+ *    lee si `allowedDomains` no está vacía. Sin esa cabecera, `checkOrigin`
+ *    compara `Origin: https://stereociendigital.mx` contra `http://...` y
+ *    **responde 403 a todo POST**, con el Host correcto y todo. Apache no la
+ *    manda por omisión, y el vhost molde de web-beat
+ *    (web-beat: deploy/apache/020-beatdigital.conf) tampoco la pone. Hace falta
+ *    `RequestHeader set X-Forwarded-Proto "https"` (mod_headers) en el vhost :443.
+ *
+ * Cómo se comprueba al montar el vhost: un POST de formulario al dominio, con
+ * `Origin: https://stereociendigital.mx`, NO debe responder 403. Y `curl -sI
+ * https://stereociendigital.mx/` NO debe traer `X-Robots-Tag`.
+ */
 
 /** Origen INTERNO del CMS (API) — SOLO server-side. Puede ser una IP privada
  *  (p. ej. http://10.0.0.5:3000). El navegador nunca lo ve. Sin `/api`: el
@@ -218,6 +251,7 @@ export const rutaNota = (slug: string): string => `/noticias/${slug}`;
 export const SEGMENTOS_RESERVADOS = [
   // Rutas de `src/pages/`
   'noticias',
+  // Reservado para los proxies de servidor: hoy no existe `src/pages/api/`.
   'api',
   '404',
   'robots.txt',

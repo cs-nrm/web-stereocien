@@ -1,8 +1,8 @@
 /**
  * Los 301 del sitio viejo: `/<seccion>/<slug>/` → `/noticias/<slug>`.
  *
- * El sitio viejo de Stereo Cien (Astro estático sobre el WordPress) servía ~1,008
- * notas en 19 secciones, con la sección en la URL. El nuevo las sirve en
+ * El sitio viejo de Stereo Cien (Astro estático sobre el WordPress) publica 932
+ * notas en 19 secciones, con la sección en la URL (ver el conteo más abajo). El nuevo las sirve en
  * `/noticias/<slug>` (el porqué está en `src/config/site.ts`). Sin estos 301, el día
  * del corte de dominio cada enlace compartido, cada marcador y todo lo que Google
  * tiene indexado de esas notas cae en 404.

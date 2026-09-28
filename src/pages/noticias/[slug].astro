@@ -6,9 +6,9 @@
  * nada que el diseño no haya dicho. Sin anuncios y sin compartir por ahora.
  *
  * La URL es PLANA —`/noticias/<slug>`, no `/<sección>/<slug>`—, que es el contrato
- * decidido por Carlos y lo que el CMS emite en `getNewsURL`. Las ~1,008 notas del
- * sitio viejo, que viven en `/<sección>/<slug>/`, llegan aquí con un 301 del mapa
- * que consulta el middleware.
+ * decidido por Carlos y lo que el CMS emite en `getNewsURL`. Las notas del sitio
+ * viejo, que viven en `/<sección>/<slug>/`, llegan aquí con un 301 del mapa que
+ * consulta el middleware (src/config/redirecciones/sitio-viejo.ts).
  *
  * Toda la lógica de datos e indexación se porta de web-beat tal cual —el 503 si
  * el CMS no responde, el 404 real, el grupo `meta` del CMS, el `X-Robots-Tag`, el

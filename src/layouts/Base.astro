@@ -21,8 +21,10 @@ import {
   NOINDEX_SITIO,
   SITE_URL,
   TARJETA_COMPARTIR,
+  esDespliegueCanonico,
   noIndexarHost,
 } from '@/config/site';
+import { rutaPagina } from '@/lib/paginacion';
 import { nodoEstacion, serializar } from '@/lib/jsonld';
 import { obtenerEstacion, redesEstacion, type Estacion } from '@/lib/cms/estacion';
 import { ClientRouter } from 'astro:transitions';
@@ -76,6 +78,23 @@ interface Props {
    * `src/pages/noticias/[slug].astro`.
    */
   noIndex?: boolean;
+  /**
+   * La página de un índice paginado (`?pagina=2`). Heredado tal cual de web-beat.
+   * Solo la pasan las vistas que paginan, y por eso NO se lee aquí de `Astro.url`:
+   * si este layout leyera el parámetro por su cuenta, cualquier `?pagina=7` que un
+   * rastreador invente saldría con canónica propia y «Página 7» en el título, o
+   * sea URLs indexables infinitas en páginas que no paginan.
+   *
+   * Con ella cambian dos cosas, porque la 2 no es la 1: la canónica se apunta a SÍ
+   * MISMA con el parámetro, y el `<title>` lleva su número. Sin lo primero, la
+   * página 2 le dice a Google que es un duplicado de la 1 y las notas que solo
+   * viven ahí se quedan sin indexar: medido en web-beat, 42 notas de una sección
+   * alcanzables solo desde la página 2.
+   *
+   * Hoy ninguna vista pagina. Se trae ya porque la primera vista de sección que se
+   * maquete sí va a paginar (`obtenerNotas` ya lo hace).
+   */
+  pagina?: number | null;
 }
 
 const {
@@ -89,6 +108,7 @@ const {
   publicado = null,
   modificado = null,
   noIndex = false,
+  pagina = null,
 } = Astro.props;
 
 /** El Inicio se distingue por la RUTA, no por lo que declare la página. */
@@ -143,16 +163,28 @@ const despliegueNoIndexable = NOINDEX_SITIO || noIndexarHost(Astro.url.hostname)
 const noIndexar = despliegueNoIndexable || noIndex;
 
 /*
-  La canónica: la ruta SIN barra final (salvo la raíz) y SIN query. Es el contrato
-  de URL del sitio: el middleware responde 301 de `/x/` a `/x`, y esta etiqueta
-  dice lo mismo por si una copia con barra llega a servirse.
+  La canónica: la ruta SIN barra final (salvo la raíz). Es el contrato de URL del
+  sitio: el middleware responde 301 de `/x/` a `/x`, y esta etiqueta dice lo mismo
+  por si una copia con barra llega a servirse.
 
-  El query se descarta entero: un `?utm_source=…` o un `?fbclid=…` no hacen otra
+  Del query solo entra la página, y solo si la vista la declara (prop `pagina`).
+  Todo lo demás se descarta: un `?utm_source=…` o un `?fbclid=…` no hacen otra
   página, y dejarlos entrar convertiría cada enlace compartido en una URL canónica
   distinta (heredado de web-beat).
 */
+const paginaCanonica = typeof pagina === 'number' && pagina > 1 ? pagina : null;
 const rutaCanonica = Astro.url.pathname.replace(/\/+$/, '') || '/';
-const canonical = new URL(rutaCanonica, SITE_URL).href;
+const canonical = new URL(
+  paginaCanonica ? rutaPagina(rutaCanonica, paginaCanonica) : rutaCanonica,
+  SITE_URL,
+).href;
+
+/*
+  El número va al FINAL del título y no incrustado en medio (heredado de web-beat):
+  los títulos son cadenas escritas por cada página, y partirlas aquí sería adivinar
+  la forma de un texto que escribió otro archivo.
+*/
+const tituloPagina = paginaCanonica ? `${titulo} — Página ${paginaCanonica}` : titulo;
 
 /**
  * La imagen de compartir, SIEMPRE absoluta y siempre presente.
@@ -238,9 +270,9 @@ const fichaEstacion = esInicio
  *    `PUBLIC_*`, y Vite las hornea AL COMPILAR: llenar el `.env` no enciende nada
  *    hasta que se RECONSTRUYE.
  *
- * 2. **Fuera del dominio canónico, tampoco**: si ESTA petición es de un
- *    despliegue que no se indexa —un staging, una preproducción, `localhost`—, no
- *    se mide. Es la guarda que web-beat no tenía y que aquí se agrega: el staging y
+ * 2. **Fuera del dominio canónico, tampoco**: si ESTA petición no llega por
+ *    `stereociendigital.mx` —un staging, una preproducción, `localhost`, una IP—,
+ *    no se mide. Es la guarda que web-beat no tenía y que aquí se agrega: el staging y
  *    el sitio real pueden ser el MISMO build, así que la variable sola no los
  *    distingue, y el caro es comScore, que es la medición que NRM le reporta a los
  *    anunciantes para justificar CPMs. Ensuciarlo no deja un dato feo: infla una
@@ -249,10 +281,16 @@ const fichaEstacion = esInicio
  *    Se mira el DESPLIEGUE, no el documento: una nota que la redacción marcó
  *    `noIndex` sí es audiencia real y se mide.
  *
- *    Consecuencia que hay que saber: esta guarda depende de lo mismo que el
- *    `noindex` —`security.allowedDomains` en `astro.config.mjs`, sin el cual el
- *    `Host` de producción llega como `localhost`—. Si esa lista falla, el sitio real
- *    sale sin indexar Y sin medir, las dos cosas a la vez. Al menos se nota.
+ *    Y NO depende de `SITIO_NOINDEX`: es `esDespliegueCanonico` (src/config/site.ts),
+ *    que no pasa por ese interruptor. Antes era `!despliegueNoIndexable`, y con
+ *    `SITIO_NOINDEX=0` en local —la receta para probar la indexación— salían los
+ *    cuatro contenedores desde 127.0.0.1 con los IDs reales (reproducido el
+ *    2026-09-28). Al revés, cerrar el sitio real a Google con `=1` apagaba también
+ *    su medición. El interruptor es de indexación y nada más.
+ *
+ *    Lo que sí comparte con el `noindex` por host: depende de que el `Host` que
+ *    llega a Node sea el de verdad (`ProxyPreserveHost On` en el proxy). Si eso
+ *    falla, el sitio real sale sin indexar Y sin medir a la vez. Al menos se nota.
  *
  * `PUBLIC_GA_ID` no está en esta lista a propósito: **GA4 entra por GTM y nunca
  * directo**, así que aquí no se baja `gtag/js` en ningún caso. Con las dos vías
@@ -262,7 +300,7 @@ const fichaEstacion = esInicio
  * El `.trim()` hace que un `PUBLIC_HOTJAR_ID=" "` mal pegado cuente como ausente
  * en vez de cargar un contenedor con un id en blanco.
  */
-const medir = !despliegueNoIndexable;
+const medir = esDespliegueCanonico(Astro.url.hostname);
 const contenedor = (valor?: string): string | null => (medir && valor?.trim()) || null;
 
 const GTM_ID = contenedor(import.meta.env.PUBLIC_GTM_ID);
@@ -282,7 +320,7 @@ const METRICOOL_HASH = contenedor(import.meta.env.PUBLIC_METRICOOL_HASH);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{titulo}</title>
+    <title>{tituloPagina}</title>
     <meta name="description" content={resumen} />
     <link rel="canonical" href={canonical} />
 
@@ -300,7 +338,7 @@ const METRICOOL_HASH = contenedor(import.meta.env.PUBLIC_METRICOOL_HASH);
     <meta property="og:site_name" content={NOMBRE_SITIO} />
     <meta property="og:locale" content={LOCALE_OG} />
     <meta property="og:type" content={tipo} />
-    <meta property="og:title" content={titulo} />
+    <meta property="og:title" content={tituloPagina} />
     <meta property="og:description" content={resumen} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={imagenCompartir} />

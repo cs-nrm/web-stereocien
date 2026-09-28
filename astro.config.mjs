@@ -70,39 +70,38 @@ export default defineConfig({
   security: {
     checkOrigin: true,
     /**
-     * Sin esta lista, `Astro.url` en producción es SIEMPRE `http://localhost/`:
-     * el adaptador de node descarta el `Host` que no puede validar y cae a
-     * "localhost" (`validateHost`, que usa astro/dist/core/app/node.js, devuelve
-     * `undefined` cuando `allowedDomains` está vacío o el host no está en ella).
+     * Qué hace esta lista, medido el 2026-09-28 con Astro 7.2.10 y @astrojs/node
+     * 11.1.4 contra un build servido. El comentario que venía de web-beat decía
+     * que sin ella `Astro.url` caía a "localhost"; con estas versiones no es así, y
+     * el detalle completo está en src/config/site.ts («Cómo llega la petición a
+     * Node»):
      *
-     * Dos consecuencias, las dos ya pagadas en web-beat y en web-enfoque:
-     *  1. El `X-Robots-Tag` del middleware, el `<meta robots>` y el robots.txt miran
-     *     el host de la petición. Con "localhost" creerían que el sitio real es un
-     *     despliegue de prueba y dejarían TODO stereociendigital.mx fuera de Google.
-     *  2. `checkOrigin` compara el header `Origin` contra `url.origin`: con
-     *     "localhost" de un lado y el dominio real del otro, **todo POST responde
-     *     403**.
+     *  - El adaptador arma `Astro.url` con el `Host` tal como llega. La lista NO
+     *    decide eso.
+     *  - La lista decide a qué cabeceras del proxy se les cree. Con ella no vacía,
+     *    Astro lee `X-Forwarded-Proto` (para cualquier host) y `X-Forwarded-Host`
+     *    (solo para los hosts de aquí). Detrás de Apache, Node habla HTTP. Sin
+     *    creerle a `X-Forwarded-Proto: https`, `Astro.url` sale `http:` y
+     *    `checkOrigin` responde **403 a todo POST**, porque el navegador manda
+     *    `Origin: https://...`. Así que la lista hace falta, y el vhost además tiene
+     *    que MANDAR esa cabecera: Apache no la pone por omisión.
+     *  - Si el proxy reescribe el `Host` (Apache sin `ProxyPreserveHost On`), el
+     *    host real solo se recupera de `X-Forwarded-Host`, y únicamente si está en
+     *    esta lista. Si no, el sitio real sale en noindex y sin medición.
      *
      * Los patrones van solo con `hostname`, sin `protocol` ni `port`, para que el
-     * match no dependa de cómo se resuelva el esquema detrás del proxy inverso (que
-     * habla HTTP con Node y anuncia HTTPS por `X-Forwarded-Proto`). Un host que no
-     * esté aquí no se rechaza: vuelve a "localhost", que es el lado seguro para la
-     * indexación.
+     * match no dependa de cómo se resuelva el esquema detrás del proxy inverso.
      *
-     * TODO staging o preproducción TIENE que entrar en esta lista. Trampa pagada en
-     * web-beat: un staging fuera de ella sale noindex igual (tampoco es el host
-     * canónico, y eso es lo que se quiere), pero `Astro.url` deja de decir la verdad
-     * y **todo POST da 403**, así que el primer formulario que se pruebe ahí falla
-     * sin razón aparente. Y si el que falta es el canónico, el sitio real entero
-     * queda en noindex.
+     * TODO staging o preproducción entra en esta lista, igual que en web-beat. Sin
+     * ella, si su proxy reescribe el `Host`, `Astro.url` no dice la verdad y el
+     * primer formulario que se pruebe ahí falla sin razón aparente.
      */
     allowedDomains: [
       { hostname: 'stereociendigital.mx' },
       /* El `www` hoy ni siquiera resuelve en DNS (comprobado con curl el
-         2026-09-28), pero si mañana alguien lo apunta a este proceso sin un 301
-         delante, un host que NO esté en esta lista se resuelve como "localhost" y
-         el middleware marcaría el sitio real como despliegue de prueba. Listarlo
-         cuesta una línea. */
+         2026-09-28). Si mañana alguien lo apunta a este proceso detrás de un proxy
+         que reescriba el `Host`, sin la entrada su `X-Forwarded-Host` no se cree y
+         `Astro.url` no diría la verdad. Listarlo cuesta una línea. */
       { hostname: 'www.stereociendigital.mx' },
     ],
   },
