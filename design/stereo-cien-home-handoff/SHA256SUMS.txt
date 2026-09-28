@@ -1,0 +1,17 @@
+# sha256 de los archivos de project/ — lienzo https://claude.ai/artifact/Kp5Y8gZXuM3uhoUshron1h, versión 1790608880-572f (28 sep 2026)
+e430ed6eefcf1aeffd880f532bd9d6c203f41bb6c163082bc5de55d19e1b6125  A-Frecuencia-Movil.dc.html
+7b94048ca7ec3e5034b294e37d5951d1123a07553d5b6ec9ae08cdbce9ec1b64  B-Portada-Desktop.dc.html
+5c8363609a2d40e3aabb49dd7e337e26a5c23e97c316b15d0187388a0b824a06  B-Portada-Movil.dc.html
+b7869704f80f965aa27a825d90ffe218b7956d70f8e9a72772b9fa49a9207e0e  C-Tornamesa-Desktop.dc.html
+1edbdc0b66cddf4abb81e1aaa9a82e5e941967efa91fd3d316ef2daaf145b347  C-Tornamesa-Movil.dc.html
+874c8c3d0d5fff64acaacbbf8c5e4f2dff631ffc88826d686af2aeaf923c942e  C2-Desktop.dc.html
+b546b8acd697f24d6d78e1be97f957d4e02ec755bf8f9a6b14a180dddfda3c29  C2-Movil-1.dc.html
+76b05d87c4ee5e9b208c3ca3d314f7dca1efcdbd2f695240e428721cd00916fa  C2-Movil-2.dc.html
+f9ed3cf6fbff447870fef5540616a18f052ffdaf1f17cf865c3966ab22f54361  C2-Teatral-Preroll.dc.html
+67f7d5778ac68de4339f9ac82223a87849999e4609743ce6137fa02b08418308  C2-Teatral-Video.dc.html
+6f9ed137a8907850efb3b5fcaf41a5bb5310731ec23cb4f6d40b9cd13a394ce0  C3-Desktop.dc.html
+cc63ea9876a0d27d6a03ee55aba5e874d664477297bf61fa2177679bc865fa0c  C3-Movil-1.dc.html
+44f455228364916beb719f2c7efeba007c0af08bdc69f2ec03401c880e8cefcb  C3-Movil-2.dc.html
+637a0d26d6d33660a3f7bf95031cc50c463edbc4427f87b768a696484eb346c4  Main.dc.html
+49afaebcf8565c421e1e9d1e525961cde37c77aeb2a2a7468ef1dca648de7309  canvas.json
+09c184f1ebde928464c2877e966f0a97a46f4538de4e19244de630d2a0fb2613  ds/stereo-cien/tokens.json

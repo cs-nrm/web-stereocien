@@ -1,0 +1,827 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Tendencias al Cien</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@100..900&family=Roboto+Mono:wght@400;500&family=Roboto:wght@400;500;700&display=swap">
+<style>
+:root{
+  --bg:#f5f5f5;
+  --surface:#ffffff;
+  --ink:#000000;
+  --muted:#666666;
+  --line:rgba(0,0,0,0.12);
+  --accent:#012169;
+  --accent-ink:#012169;
+  --on-accent:#ffffff;
+  --demo-bg:#012169;
+  --demo-deep:#04095d;
+  --cian:#29abe2;
+  --crema:#f5f3e7;
+  --rojo:#ef4444;
+  --chip-soft:#f5f3e7;
+  --chip-soft-ink:#012169;
+  --chip-off:#e9e9e9;
+  --chip-off-ink:#4d4d4d;
+  --code-bg:#f0f1f5;
+  --display:'Montserrat',system-ui,sans-serif;
+  --serif:'Libre Baskerville',Georgia,serif;
+  --sans:'Roboto',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'Roboto Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#04095d;
+    --surface:#012169;
+    --ink:#ffffff;
+    --muted:#c1c1c1;
+    --line:rgba(255,255,255,0.16);
+    --accent:#29abe2;
+    --accent-ink:#ffffff;
+    --on-accent:#04095d;
+    --demo-bg:#04095d;
+    --demo-deep:#020640;
+    --chip-soft:rgba(255,255,255,0.1);
+    --chip-soft-ink:#ffffff;
+    --chip-off:rgba(255,255,255,0.08);
+    --chip-off-ink:#c1c1c1;
+    --code-bg:#04095d;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#04095d;
+  --surface:#012169;
+  --ink:#ffffff;
+  --muted:#c1c1c1;
+  --line:rgba(255,255,255,0.16);
+  --accent:#29abe2;
+  --accent-ink:#ffffff;
+  --on-accent:#04095d;
+  --demo-bg:#04095d;
+  --demo-deep:#020640;
+  --chip-soft:rgba(255,255,255,0.1);
+  --chip-soft-ink:#ffffff;
+  --chip-off:rgba(255,255,255,0.08);
+  --chip-off-ink:#c1c1c1;
+  --code-bg:#04095d;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;padding-block:0 64px}
+a{color:var(--accent-ink);text-underline-offset:3px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:3px solid var(--cian);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);font-weight:900;text-transform:uppercase;letter-spacing:.02em;text-wrap:balance;margin:0}
+p{margin:0}
+.wrap{max-width:1180px;margin-inline:auto;padding-inline:clamp(16px,4vw,40px)}
+.topbar{border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;padding-block:14px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+.topbar .brand{color:var(--ink)}
+.num{font-variant-numeric:tabular-nums}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:48px;padding-block:56px 40px;align-items:start}
+.eyebrow{font-family:var(--display);font-weight:900;font-size:12px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent-ink)}
+.hero h1{margin-top:14px;font-size:clamp(44px,5.2vw,72px);line-height:.92}
+.hero h1 span{display:block}
+.deck{margin-top:20px;font-family:var(--serif);font-style:italic;font-size:clamp(19px,2vw,23px);line-height:1.5;max-width:30em}
+.legend{margin-top:26px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;font-size:14px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.chip{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:9999px;font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;border:1px solid transparent}
+.chip.v3{background:var(--accent);color:var(--on-accent)}
+.chip.next{border-color:var(--accent-ink);color:var(--accent-ink)}
+.chip.care{background:var(--chip-soft);color:var(--chip-soft-ink)}
+.chip.no{background:var(--chip-off);color:var(--chip-off-ink)}
+
+.tracklist{background:var(--surface);border-radius:16px;padding:22px 24px;display:grid;gap:22px}
+.side-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-family:var(--display);font-weight:900;font-size:13px;letter-spacing:.2em;text-transform:uppercase;padding-bottom:10px;border-bottom:2px solid var(--ink)}
+.side-h small{font-family:var(--sans);font-weight:500;letter-spacing:.04em;text-transform:none;font-size:13px;color:var(--muted)}
+.tracklist ol{list-style:none;margin:0;padding:0}
+.tracklist li a{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:12px;align-items:center;min-height:44px;padding:6px 0;border-bottom:1px solid var(--line);color:var(--ink);text-decoration:none}
+.tracklist li a:hover .t-name{text-decoration:underline;text-underline-offset:3px}
+.t-no{font-family:var(--display);font-weight:900;font-size:13px;color:var(--accent-ink)}
+.t-name{font-weight:500;font-size:15px;line-height:1.3}
+
+/* filters */
+.filters{display:flex;flex-wrap:wrap;gap:8px;padding-block:8px 8px}
+.filters button{height:40px;padding:0 16px;border-radius:9999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:700 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+
+/* sections */
+.side-sec{padding-block:44px 0}
+.side-title{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 18px;font-size:clamp(40px,6vw,72px);line-height:.9;padding-bottom:18px;border-bottom:2px solid var(--ink)}
+.side-title em{font-family:var(--serif);font-style:italic;font-weight:400;text-transform:none;letter-spacing:0;font-size:clamp(18px,2vw,24px);color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:24px}
+
+/* card */
+.card{background:var(--surface);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:16px;scroll-margin-top:16px}
+.card-h{display:flex;gap:14px;align-items:center}
+.label{position:relative;flex-shrink:0;width:46px;height:46px;border-radius:50%;background:#0b0b0b;background-image:repeating-radial-gradient(circle at 50% 50%,#0b0b0b 0 1px,#232323 2px,#0b0b0b 3px);display:grid;place-items:center}
+.label b{width:26px;height:26px;border-radius:50%;background:var(--cian);color:#04095d;display:grid;place-items:center;font:900 11px/1 var(--display)}
+.kicker{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.card h3{font-size:22px;line-height:1.1;margin-top:3px}
+.what{font-size:16px;line-height:1.55;color:var(--ink)}
+.demo{position:relative;height:240px;border-radius:12px;background:var(--demo-bg);color:#ffffff;overflow:hidden}
+.demo-cap{margin-top:-8px;font-size:13px;color:var(--muted)}
+.use{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 12px;align-items:start;padding-top:14px;border-top:1px solid var(--line)}
+.use .chip{margin-top:1px}
+.use p{font-size:15px;line-height:1.5}
+.use strong{font-weight:700}
+.src{font-size:13px;color:var(--muted)}
+.support{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.support b{color:var(--ink);font-weight:700}
+.demo-btn{height:44px;padding:0 18px;border-radius:9999px;border:0;background:#ffffff;color:#012169;font:900 12px/1 var(--display);letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
+.demo-btn:active{transform:scale(.97)}
+pre{margin:0;overflow-x:auto;background:var(--code-bg);border-radius:10px;padding:14px 16px;font:400 13px/1.6 var(--mono);color:var(--ink)}
+pre code{font:inherit}
+.nosupport{display:none;position:absolute;left:12px;right:12px;bottom:10px;font-size:12px;line-height:1.4;color:#c1c1c1;text-align:center}
+
+/* A1 scrollytelling */
+.d-scrolly{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--cian) transparent}
+.d-scrolly .trk{height:760px;view-timeline:--dflip block}
+.d-scrolly .pin{position:sticky;top:0;height:240px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:0 24px}
+.d-scrolly .copy{position:relative;height:96px}
+.d-scrolly .copy span{position:absolute;left:0;top:0;display:block}
+.d-scrolly .copy small{display:block;font:700 12px/1.4 var(--sans);letter-spacing:.14em;color:#c1c1c1;text-transform:uppercase}
+.d-scrolly .copy strong{display:block;font:900 clamp(30px,4.2vw,44px)/1 var(--display);letter-spacing:.02em}
+.d-scrolly .copy .b{opacity:0}
+.d-scrolly .hint{position:absolute;left:24px;bottom:14px;font-size:12px;color:#c1c1c1;letter-spacing:.08em}
+.disc3d{width:150px;height:150px;position:relative;transform-style:preserve-3d}
+.disc3d .face{position:absolute;inset:0;border-radius:50%;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:#0b0b0b;background-image:repeating-radial-gradient(circle at 50% 50%,#0b0b0b 0 2px,#1f1f1f 3px,#0b0b0b 4px);box-shadow:0 16px 32px rgba(0,0,0,.4);display:grid;place-items:center}
+.disc3d .face i{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;font:900 20px/1 var(--display);font-style:normal}
+.disc3d .fa i{background:#ffffff;color:#012169}
+.disc3d .fb{transform:rotateY(180deg)}
+.disc3d .fb i{background:var(--cian);color:#04095d}
+.stage3d{perspective:900px}
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion: no-preference){
+    .d-scrolly .disc3d{animation:dflip linear both;animation-timeline:--dflip;animation-range:contain 5% contain 95%}
+    .d-scrolly .copy .a{animation:dout linear both;animation-timeline:--dflip;animation-range:contain 10% contain 42%}
+    .d-scrolly .copy .b{animation:din linear both;animation-timeline:--dflip;animation-range:contain 50% contain 82%}
+  }
+}
+@supports not (animation-timeline: view()){
+  .d-scrolly .disc3d{transform:rotateY(180deg)}
+  .d-scrolly .copy .a{opacity:0}
+  .d-scrolly .copy .b{opacity:1}
+  .d-scrolly .nosupport{display:block}
+  .d-scrolly .hint{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  .d-scrolly .disc3d{transform:rotateY(180deg)}
+  .d-scrolly .copy .a{opacity:0}
+  .d-scrolly .copy .b{opacity:1}
+}
+@keyframes dflip{from{transform:rotateY(0deg) rotateZ(-24deg)}to{transform:rotateY(180deg) rotateZ(24deg)}}
+@keyframes dout{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-18px)}}
+@keyframes din{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+/* A2 kinetic type */
+.d-kin{display:grid;place-content:center;gap:10px;text-align:center;padding:0 16px}
+.kin{font-family:var(--display);font-size:clamp(40px,6.4vw,64px);line-height:1;letter-spacing:.04em;display:flex;justify-content:center}
+.kin span{display:inline-block;font-weight:900;animation:kin 2.4s ease-in-out infinite alternate;animation-delay:calc(var(--i) * -0.28s)}
+.kin-sub{font-family:var(--serif);font-style:italic;font-size:17px;color:#c1c1c1}
+@keyframes kin{from{font-weight:200}to{font-weight:900}}
+@media (prefers-reduced-motion: reduce){.kin span{animation:none;font-weight:900}}
+
+/* A3 anti-grid */
+.d-grid{background:var(--crema);color:#000000}
+.d-grid .ph{position:absolute;left:8%;top:18px;width:46%;height:150px;background:#dfe3ea;background-image:repeating-linear-gradient(135deg,rgba(1,33,105,.08) 0 1px,transparent 1px 12px)}
+.d-grid .ph span{position:absolute;left:10px;top:8px;font-size:12px;font-weight:700;color:#012169;letter-spacing:.08em}
+.d-grid .blk{position:absolute;right:7%;top:30px;width:38%;height:120px;background:#012169;color:#ffffff;transform:rotate(-5deg);display:grid;place-items:center;font:900 clamp(18px,3.4vw,30px)/1 var(--display);letter-spacing:.04em;white-space:nowrap}
+.d-grid .hl{position:absolute;left:8%;right:10%;bottom:22px;font:italic 400 clamp(18px,2.2vw,22px)/1.35 var(--serif);background:var(--crema);padding:10px 14px 0 0}
+.d-grid .hl b{font-family:var(--display);font-style:normal;font-weight:900;letter-spacing:.02em;text-transform:uppercase;font-size:.95em}
+
+/* A4 textures */
+.d-tex{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:22px;padding:0 24px;background:var(--demo-bg)}
+.grain{position:absolute;inset:0;pointer-events:none;opacity:.55;mix-blend-mode:overlay;transition:opacity .3s}
+.d-tex[data-grain="off"] .grain{opacity:0}
+.rec{width:160px;height:160px;border-radius:50%;background:#0b0b0b;background-image:repeating-radial-gradient(circle at 50% 50%,#0b0b0b 0 2px,#1f1f1f 3px,#0b0b0b 4px);box-shadow:0 18px 36px rgba(0,0,0,.45);display:grid;place-items:center;position:relative;animation:spin 3.6s linear infinite}
+.rec::after{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 20deg,rgba(255,255,255,0) 0deg,rgba(255,255,255,.12) 26deg,rgba(255,255,255,0) 58deg,rgba(255,255,255,0) 200deg,rgba(255,255,255,.08) 226deg,rgba(255,255,255,0) 258deg)}
+.rec i{width:58px;height:58px;border-radius:50%;background:#ffffff;display:grid;place-items:center;font:900 13px/1 var(--display);color:#012169;font-style:normal}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){.rec{animation:none}}
+.tex-copy{display:grid;gap:12px;position:relative}
+.tex-copy p{font-size:15px;line-height:1.45;color:#ffffff}
+.switch{display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#ffffff;cursor:pointer;user-select:none}
+.switch input{appearance:none;-webkit-appearance:none;width:44px;height:26px;border-radius:9999px;background:rgba(255,255,255,.25);position:relative;margin:0;cursor:pointer;transition:background .2s}
+.switch input::after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#ffffff;transition:transform .2s}
+.switch input:checked{background:var(--cian)}
+.switch input:checked::after{transform:translateX(18px)}
+
+/* A5 selective 3D */
+.d-3d{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:16px;padding:0 24px}
+.d-3d .stage3d{display:grid;place-items:center;width:200px;height:200px}
+.d-3d .tilt{transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transform-style:preserve-3d;transition:transform .15s ease-out}
+.d-3d .disc3d{transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.d-3d[data-flip="b"] .disc3d{transform:rotateY(180deg)}
+.d-3d .txt{display:grid;gap:12px;justify-items:start}
+.d-3d .txt p{font-size:15px;line-height:1.45}
+@media (prefers-reduced-motion: reduce){.d-3d .disc3d,.d-3d .tilt{transition:none}}
+
+/* A6 micro */
+.d-micro{display:grid;place-items:center}
+.pbtn{display:flex;align-items:center;gap:16px;height:72px;padding:0 26px 0 10px;border-radius:9999px;border:0;background:#ffffff;color:#012169;cursor:pointer;box-shadow:0 14px 30px rgba(0,0,0,.3);transition:transform .12s ease,box-shadow .2s ease}
+.pbtn:hover{box-shadow:0 18px 36px rgba(0,0,0,.36)}
+.pbtn:active{transform:scale(.96)}
+.pbtn .ico{width:54px;height:54px;border-radius:50%;background:var(--rojo);color:#000000;display:grid;place-items:center;position:relative}
+.pbtn[aria-pressed="true"] .ico::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--rojo);animation:ring 1.4s ease-out infinite}
+@keyframes ring{from{opacity:.8;transform:scale(.9)}to{opacity:0;transform:scale(1.35)}}
+.pbtn .lbl{font:900 15px/1 var(--display);letter-spacing:.16em;text-transform:uppercase;white-space:nowrap}
+.eq{display:flex;align-items:flex-end;gap:3px;height:22px}
+.eq i{display:block;width:4px;height:22px;background:var(--cian);transform-origin:50% 100%;transform:scaleY(.25)}
+.pbtn[aria-pressed="true"] .eq i{animation:eq .9s ease-in-out infinite alternate}
+.eq i:nth-child(2){animation-delay:-.3s!important}
+.eq i:nth-child(3){animation-delay:-.6s!important}
+.eq i:nth-child(4){animation-delay:-.15s!important}
+@keyframes eq{0%{transform:scaleY(.2)}40%{transform:scaleY(1)}70%{transform:scaleY(.45)}100%{transform:scaleY(.85)}}
+.pbtn .pause{display:none}
+.pbtn[aria-pressed="true"] .pause{display:block}
+.pbtn[aria-pressed="true"] .play{display:none}
+@media (prefers-reduced-motion: reduce){.pbtn[aria-pressed="true"] .eq i,.pbtn[aria-pressed="true"] .ico::after{animation:none}.pbtn[aria-pressed="true"] .eq i{transform:scaleY(.8)}}
+
+/* B1 scroll-driven */
+.d-sda{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--cian) transparent}
+.d-sda .bar{position:sticky;top:0;height:5px;background:rgba(255,255,255,.15);z-index:2}
+.d-sda .bar i{display:block;height:100%;background:var(--cian);transform-origin:0 50%;transform:scaleX(.08)}
+.d-sda ul{list-style:none;margin:0;padding:18px 22px 120px;display:grid;gap:12px}
+.d-sda li{display:flex;align-items:center;justify-content:space-between;gap:12px;height:58px;padding:0 16px;border-radius:10px;background:rgba(255,255,255,.08);font:900 18px/1 var(--display);letter-spacing:.06em}
+.d-sda li small{font:500 13px/1 var(--sans);letter-spacing:.02em;color:#c1c1c1}
+@supports (animation-timeline: scroll()){
+  @media (prefers-reduced-motion: no-preference){
+    .d-sda .bar i{animation:grow linear both;animation-timeline:scroll(nearest block)}
+    .d-sda li{animation:rise linear both;animation-timeline:view();animation-range:entry 0% cover 30%}
+  }
+}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes rise{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+
+/* B2 view transitions */
+.d-vt{display:grid;grid-template-rows:minmax(0,1fr) auto;padding:22px 24px 20px;gap:12px}
+.vt-card{display:flex;align-items:center;gap:20px}
+.vt-disc{width:120px;height:120px;flex-shrink:0;border-radius:50%;background:#0b0b0b;background-image:repeating-radial-gradient(circle at 50% 50%,#0b0b0b 0 2px,#1f1f1f 3px,#0b0b0b 4px);display:grid;place-items:center;box-shadow:0 12px 26px rgba(0,0,0,.4)}
+.vt-label{width:46px;height:46px;border-radius:50%;background:#ffffff;view-transition-name:vtlabel}
+.vt-txt{display:grid;gap:4px;min-width:0}
+.vt-kicker{font:700 12px/1.3 var(--sans);letter-spacing:.14em;color:#c1c1c1;text-transform:uppercase}
+.vt-title{font:900 clamp(24px,3.4vw,34px)/1.02 var(--display);letter-spacing:.02em;view-transition-name:vttitle;overflow-wrap:anywhere}
+.vt-sub{font-size:14px;color:#c1c1c1}
+.d-vt[data-state="sounds"] .vt-label{background:var(--cian);border-radius:14px;width:62px;height:62px}
+.d-vt .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.d-vt .row small{font-size:12px;color:#c1c1c1}
+::view-transition-old(root),::view-transition-new(root){animation:none}
+::view-transition-group(vtlabel),::view-transition-group(vttitle){animation-duration:.55s;animation-timing-function:cubic-bezier(.2,.8,.2,1)}
+@media (prefers-reduced-motion: reduce){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
+
+/* B3 popover + anchor */
+.d-pop{display:grid;place-items:center;align-content:center;gap:14px;text-align:center;padding:0 20px}
+.d-pop p{font-size:14px;color:#c1c1c1;max-width:26em}
+.pop-btn{anchor-name:--song}
+.pop{border:0;padding:16px 18px;border-radius:14px;background:#ffffff;color:#000000;box-shadow:0 18px 40px rgba(0,0,0,.35);width:min(300px,86vw);text-align:left}
+.pop::backdrop{background:transparent}
+.pop .k{font:700 12px/1.3 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#666666;display:flex;align-items:center;gap:8px}
+.pop .k i{width:8px;height:8px;border-radius:50%;background:var(--rojo);display:block}
+.pop .t{margin-top:6px;font:900 24px/1.05 var(--display);letter-spacing:.02em;color:#012169}
+.pop .a{margin-top:2px;font-size:15px;font-weight:500}
+.pop .p{margin-top:10px;padding-top:10px;border-top:1px solid rgba(0,0,0,.12);font-size:13px;color:#4d4d4d}
+@supports (anchor-name: --a){
+  .pop{inset:auto;position-anchor:--song;position-area:top;margin:0 0 10px;position-try-fallbacks:flip-block}
+}
+
+/* B4 scroll snap */
+.d-snap{display:grid;align-content:center;gap:12px;padding:18px 0}
+.snap{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 22px;scroll-padding:0 22px;scrollbar-width:thin;scrollbar-color:var(--cian) transparent;overscroll-behavior-x:contain}
+.snap > div{scroll-snap-align:start;flex-shrink:0;width:150px;display:grid;gap:8px}
+.snap .art{width:150px;height:150px;border-radius:8px}
+.snap .n{font:900 14px/1.15 var(--display);letter-spacing:.04em}
+.snap-hint{padding:0 22px;font-size:12px;color:#c1c1c1;letter-spacing:.08em}
+
+/* B5 web audio */
+.d-audio{display:grid;grid-template-rows:minmax(0,1fr) auto;padding:18px 22px 18px;gap:12px}
+.d-audio canvas{width:100%;height:100%;display:block;color:#29abe2;border-bottom:1px solid rgba(255,255,255,.2)}
+.d-audio .row{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
+.d-audio .row small{font-size:12px;color:#c1c1c1}
+
+/* B6 media session */
+.d-ms{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:20px;padding:0 22px}
+.phone{width:150px;height:210px;border-radius:22px;background:#111111;border:3px solid #2b2b2b;padding:12px 10px;display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:6px;color:#ffffff;box-shadow:0 16px 32px rgba(0,0,0,.4)}
+.phone .clock{text-align:center;font:500 26px/1 var(--sans);font-variant-numeric:tabular-nums}
+.phone .date{text-align:center;font-size:12px;color:#c1c1c1}
+.phone .np{align-self:end;background:rgba(255,255,255,.12);border-radius:12px;padding:8px;display:grid;grid-template-columns:34px minmax(0,1fr);gap:4px 8px;align-items:center}
+.phone .cov{width:34px;height:34px;border-radius:6px;background:#012169;display:grid;place-items:center;font:900 9px/1 var(--display);color:#ffffff;letter-spacing:.04em;text-align:center}
+.phone .meta{min-width:0}
+.phone .meta b{display:block;font:900 12px/1.2 var(--display);letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.phone .meta span{display:block;font-size:12px;color:#c1c1c1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.phone .ctl{grid-column:1 / -1;display:flex;justify-content:space-around;align-items:center;padding-top:4px}
+.ms-copy{display:grid;gap:10px}
+.ms-copy p{font-size:14px;line-height:1.45;color:#ffffff}
+.ms-copy small{font-size:12px;color:#c1c1c1}
+
+/* principles, out, gallery, sources */
+.plain{padding-block:48px 0}
+.plain h2{font-size:clamp(28px,4vw,44px);line-height:1;padding-bottom:14px;border-bottom:2px solid var(--ink)}
+.cols3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:22px}
+.cols3 article{display:grid;gap:8px;align-content:start}
+.cols3 h3{font-size:18px;line-height:1.15}
+.cols3 p{font-size:15px;line-height:1.55;color:var(--ink)}
+.out{list-style:none;margin:22px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 32px}
+.out li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;padding:16px 0;border-bottom:1px solid var(--line)}
+.out .x{grid-row:span 2;width:28px;height:28px;border-radius:50%;border:2px solid var(--muted);color:var(--muted);display:grid;place-items:center;margin-top:2px}
+.out b{font-weight:700;font-size:16px}
+.out span{font-size:14px;color:var(--muted)}
+.gallery{list-style:none;margin:22px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0 24px}
+.gallery li a{display:grid;gap:2px;min-height:64px;padding:12px 0;border-bottom:1px solid var(--line);color:var(--ink);text-decoration:none}
+.gallery li a:hover b{text-decoration:underline;text-underline-offset:3px}
+.gallery b{font-weight:700;font-size:15px}
+.gallery span{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.intro-line{margin-top:14px;font-size:15px;color:var(--muted);max-width:46em}
+.sources{margin:18px 0 0;padding:0 0 0 20px;display:grid;gap:8px;font-size:14px;columns:2;column-gap:40px}
+.sources li{break-inside:avoid;margin-bottom:8px}
+.foot{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;font-size:13px;color:var(--muted)}
+
+@media (max-width:980px){
+  .hero{grid-template-columns:minmax(0,1fr);gap:32px}
+  .grid{grid-template-columns:minmax(0,1fr)}
+  .cols3{grid-template-columns:minmax(0,1fr)}
+  .gallery{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:620px){
+  .side-h small{display:none}
+  .out{grid-template-columns:minmax(0,1fr)}
+  .gallery{grid-template-columns:minmax(0,1fr)}
+  .sources{columns:1}
+  .demo{height:260px}
+  .d-scrolly .pin{height:260px}
+  .d-tex,.d-3d,.d-ms{gap:14px;padding:0 16px}
+  .rec{width:112px;height:112px}
+  .rec i{width:44px;height:44px;font-size:11px}
+  .d-3d .stage3d{width:140px;height:140px}
+  .d-3d .disc3d{width:120px;height:120px}
+  .phone{width:128px;height:196px}
+  .d-scrolly .disc3d{width:112px;height:112px}
+  .d-scrolly .pin{padding:0 16px}
+  .pbtn{height:64px;padding:0 20px 0 8px;gap:12px}
+  .pbtn .ico{width:48px;height:48px}
+  .pbtn .lbl{font-size:13px}
+}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+</style>
+
+<div class="topbar">
+  <div class="wrap">
+    <span class="brand">Stereo Cien · rediseño web</span>
+    <span class="num">Actualizado 23.09.2026</span>
+  </div>
+</div>
+
+<header class="hero wrap">
+  <div>
+    <p class="eyebrow">Diseño y desarrollo web · septiembre 2026</p>
+    <h1><span>Tendencias</span><span>al Cien</span></h1>
+    <p class="deck">Lo que se está haciendo en la web en 2026, probado aquí mismo y filtrado por lo que le sirve a una estación de radio que se lee como revista.</p>
+    <div class="legend" aria-label="Cómo leer las etiquetas">
+      <span><b class="chip v3">En la v3</b> ya está en el prototipo</span>
+      <span><b class="chip next">Siguiente fase</b> para desarrollo</span>
+      <span><b class="chip care">Con medida</b> poco y en su lugar</span>
+      <span><b class="chip no">No por ahora</b></span>
+    </div>
+  </div>
+  <nav class="tracklist" aria-label="Tracklist de tendencias">
+    <div>
+      <p class="side-h">Lado A · Diseño <small>6 tendencias</small></p>
+      <ol>
+        <li><a href="#a1"><span class="t-no">A1</span><span class="t-name">Scrollytelling nativo</span><span class="chip v3">En la v3</span></a></li>
+        <li><a href="#a2"><span class="t-no">A2</span><span class="t-name">Tipografía cinética</span><span class="chip care">Con medida</span></a></li>
+        <li><a href="#a3"><span class="t-no">A3</span><span class="t-name">Revista rota (anti-grid)</span><span class="chip v3">En la v3</span></a></li>
+        <li><a href="#a4"><span class="t-no">A4</span><span class="t-name">Texturas analógicas</span><span class="chip v3">En la v3</span></a></li>
+        <li><a href="#a5"><span class="t-no">A5</span><span class="t-name">3D selectivo</span><span class="chip v3">En la v3</span></a></li>
+        <li><a href="#a6"><span class="t-no">A6</span><span class="t-name">Microinteracciones</span><span class="chip v3">En la v3</span></a></li>
+      </ol>
+    </div>
+    <div>
+      <p class="side-h">Lado B · Desarrollo <small>6 tendencias</small></p>
+      <ol>
+        <li><a href="#b1"><span class="t-no">B1</span><span class="t-name">Animaciones por scroll en CSS</span><span class="chip v3">En la v3</span></a></li>
+        <li><a href="#b2"><span class="t-no">B2</span><span class="t-name">View Transitions</span><span class="chip next">Siguiente fase</span></a></li>
+        <li><a href="#b3"><span class="t-no">B3</span><span class="t-name">Popover y anchor positioning</span><span class="chip next">Siguiente fase</span></a></li>
+        <li><a href="#b4"><span class="t-no">B4</span><span class="t-name">Scroll snap nativo</span><span class="chip v3">En la v3</span></a></li>
+        <li><a href="#b5"><span class="t-no">B5</span><span class="t-name">Web Audio y visuales reactivos</span><span class="chip care">Con medida</span></a></li>
+        <li><a href="#b6"><span class="t-no">B6</span><span class="t-name">Media Session</span><span class="chip next">Siguiente fase</span></a></li>
+      </ol>
+    </div>
+  </nav>
+</header>
+
+<div class="filters wrap" role="toolbar" aria-label="Filtrar tendencias">
+  <button type="button" data-f="all" aria-pressed="true">Todo</button>
+  <button type="button" data-f="a" aria-pressed="false">Lado A · Diseño</button>
+  <button type="button" data-f="b" aria-pressed="false">Lado B · Desarrollo</button>
+  <button type="button" data-f="v3" aria-pressed="false">Ya en la v3</button>
+</div>
+
+<section class="side-sec wrap" id="lado-a" aria-labelledby="lado-a-t">
+  <h2 class="side-title" id="lado-a-t">Lado A <em>Diseño: lo que se ve y se siente</em></h2>
+  <div class="grid">
+
+    <article class="card" id="a1" data-side="a" data-v="v3">
+      <div class="card-h"><span class="label" aria-hidden="true"><b>A1</b></span><div><p class="kicker">Narrativa</p><h3>Scrollytelling nativo</h3></div></div>
+      <p class="what">Secciones que se quedan fijas mientras el scroll avanza una historia. Sigue vigente cuando se hace con el scroll del navegador; lo que ya cansa es secuestrar la rueda del mouse.</p>
+      <div class="demo d-scrolly" tabindex="0" aria-label="Demostración: desplázate dentro del recuadro para voltear el disco">
+        <div class="trk">
+          <div class="pin">
+            <div class="copy">
+              <span class="a"><small>Terminaste el</small><strong>LADO A</strong></span>
+              <span class="b"><small>Vida &amp; estilo</small><strong>LADO B</strong></span>
+            </div>
+            <div class="stage3d"><div class="disc3d"><div class="face fa"><i>A</i></div><div class="face fb"><i>B</i></div></div></div>
+            <span class="hint">Desplázate dentro del recuadro ↓</span>
+            <span class="nosupport">Tu navegador aún no anima con el scroll: ves el estado final.</span>
+          </div>
+        </div>
+      </div>
+      <div class="use"><span class="chip v3">En la v3</span><p>Tres momentos: <strong>“Voltea el disco”</strong> entre Lado A y Lado B, <strong>SOUNDS</strong> que corre en horizontal y el <strong>índice de la barra</strong> que marca en qué sección vas.</p></div>
+      <p class="src">Fuentes: <a href="https://motionkit.io/blog/web-animation-trends-2026" target="_blank" rel="noopener">MotionKit, tendencias 2026</a> · <a href="https://www.select-interactive.com/news/web-design-trends-2026-that-survive-performance-and-ai-agents" target="_blank" rel="noopener">Select Interactive</a></p>
+    </article>
+
+    <article class="card" id="a2" data-side="a" data-v="care">
+      <div class="card-h"><span class="label" aria-hidden="true"><b>A2</b></span><div><p class="kicker">Tipografía</p><h3>Tipografía cinética</h3></div></div>
+      <p class="what">Texto que se mueve con fuentes variables: el grosor, el ancho o el espaciado cambian letra por letra. Da mucho impacto con poco peso de página.</p>
+      <div class="demo d-kin" aria-label="Demostración: la palabra BALADAS cambia de grosor letra por letra">
+        <div class="kin" aria-hidden="true"><span style="--i:0">B</span><span style="--i:1">A</span><span style="--i:2">L</span><span style="--i:3">A</span><span style="--i:4">D</span><span style="--i:5">A</span><span style="--i:6">S</span></div>
+        <p class="kin-sub">80s · 90s · 2000s · 2010s · 2020s</p>
+      </div>
+      <div class="use"><span class="chip care">Con medida</span><p>Solo en titulares de sección como <strong>LADO A</strong> o <strong>GANA</strong>, y quieta con “reducir movimiento”. Nunca en texto de lectura.</p></div>
+      <p class="src">Fuentes: <a href="https://motionkit.io/blog/web-animation-trends-2026" target="_blank" rel="noopener">MotionKit</a> · <a href="https://www.select-interactive.com/news/web-design-trends-2026-that-survive-performance-and-ai-agents" target="_blank" rel="noopener">Select Interactive</a></p>
+    </article>
+
+    <article class="card" id="a3" data-side="a" data-v="v3">
+      <div class="card-h"><span class="label" aria-hidden="true"><b>A3</b></span><div><p class="kicker">Composición</p><h3>Revista rota (anti-grid)</h3></div></div>
+      <p class="what">Layouts que rompen la retícula con capas, bloques girados y texto encimado, construidos con grid y container queries en vez de posiciones absolutas frágiles.</p>
+      <div class="demo d-grid" aria-label="Demostración: composición editorial con capas encimadas">
+        <div class="ph"><span>[ FOTO ]</span></div>
+        <div class="blk">LADO B</div>
+        <p class="hl"><b>Vinilos:</b> el clásico de verano de 1982, otra vez en la tornamesa.</p>
+      </div>
+      <div class="use"><span class="chip v3">En la v3</span><p>La portada con <strong>La noticia</strong>, los títulos gigantes de <strong>Lado A</strong> y <strong>GANA</strong> y los boletos con talón perforado.</p></div>
+      <p class="src">Fuente: <a href="https://www.select-interactive.com/news/web-design-trends-2026-that-survive-performance-and-ai-agents" target="_blank" rel="noopener">Select Interactive, junio 2026</a></p>
+    </article>
+
+    <article class="card" id="a4" data-side="a" data-v="v3">
+      <div class="card-h"><span class="label" aria-hidden="true"><b>A4</b></span><div><p class="kicker">Material</p><h3>Texturas analógicas</h3></div></div>
+      <p class="what">Grano, surcos y objetos del mundo físico (retrofuturismo). Son decisiones hechas a mano que evitan que el sitio se vea como diseño genérico generado por IA.</p>
+      <div class="demo d-tex" data-grain="on">
+        <svg class="grain" aria-hidden="true" width="100%" height="100%"><filter id="ruido"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"></feTurbulence><feColorMatrix type="saturate" values="0"></feColorMatrix></filter><rect width="100%" height="100%" filter="url(#ruido)"></rect></svg>
+        <div class="rec" aria-hidden="true"><i>100.1</i></div>
+        <div class="tex-copy">
+          <p>Compara la misma superficie con y sin grano.</p>
+          <label class="switch" for="grain-toggle"><input type="checkbox" id="grain-toggle" checked>Grano</label>
+        </div>
+      </div>
+      <div class="use"><span class="chip v3">En la v3</span><p>El <strong>grano</strong> de la barra azul, los <strong>surcos</strong> del vinil y la <strong>tornamesa</strong> con su brazo, que baja al disco cuando le das play.</p></div>
+      <p class="src">Fuente: <a href="https://www.select-interactive.com/news/web-design-trends-2026-that-survive-performance-and-ai-agents" target="_blank" rel="noopener">Select Interactive</a></p>
+    </article>
+
+    <article class="card" id="a5" data-side="a" data-v="v3">
+      <div class="card-h"><span class="label" aria-hidden="true"><b>A5</b></span><div><p class="kicker">Profundidad</p><h3>3D selectivo</h3></div></div>
+      <p class="what">Un solo objeto en 3D, bien elegido, en lugar de escenas pesadas por todo el sitio. Con respaldo accesible cuando el navegador o la persona piden menos movimiento.</p>
+      <div class="demo d-3d" data-flip="a">
+        <div class="txt">
+          <p>Mueve el cursor sobre el disco para inclinarlo.</p>
+          <button type="button" class="demo-btn" id="flip-btn" aria-pressed="false">Voltear el disco</button>
+        </div>
+        <div class="stage3d" id="tilt-zone"><div class="tilt"><div class="disc3d"><div class="face fa"><i>A</i></div><div class="face fb"><i>B</i></div></div></div></div>
+      </div>
+      <div class="use"><span class="chip v3">En la v3</span><p>El disco que se voltea al pasar de <strong>Lado A</strong> a <strong>Lado B</strong>. Es el único 3D del sitio, a propósito.</p></div>
+      <p class="src">Fuentes: <a href="https://www.select-interactive.com/news/web-design-trends-2026-that-survive-performance-and-ai-agents" target="_blank" rel="noopener">Select Interactive</a> · <a href="https://motionkit.io/blog/web-animation-trends-2026" target="_blank" rel="noopener">MotionKit</a></p>
+    </article>
+
+    <article class="card" id="a6" data-side="a" data-v="v3">
+      <div class="card-h"><span class="label" aria-hidden="true"><b>A6</b></span><div><p class="kicker">Respuesta</p><h3>Microinteracciones</h3></div></div>
+      <p class="what">Pequeñas respuestas al tocar, pasar el cursor o presionar. Confirman que algo pasó sin estorbar y solo animan transform y opacity para no afectar el rendimiento.</p>
+      <div class="demo d-micro">
+        <button type="button" class="pbtn" id="play-btn" aria-pressed="false" aria-label="Escuchar en vivo">
+          <span class="ico" aria-hidden="true"><svg class="play" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.6v12.8c0 .8.9 1.3 1.5.8l10-6.4c.6-.4.6-1.2 0-1.6l-10-6.4C8.9 4.3 8 4.8 8 5.6z"></path></svg><svg class="pause" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg></span>
+          <span class="lbl" id="play-lbl">Escuchar en vivo</span>
+          <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        </button>
+      </div>
+      <div class="use"><span class="chip v3">En la v3</span><p>El botón grande de play <strong>arriba de la tornamesa</strong>, el ecualizador que se mueve al sonar y el brazo que baja al disco.</p></div>
+      <p class="src">Fuente: <a href="https://motionkit.io/blog/web-animation-trends-2026" target="_blank" rel="noopener">MotionKit</a></p>
+    </article>
+
+  </div>
+</section>
+
+<section class="side-sec wrap" id="lado-b" aria-labelledby="lado-b-t">
+  <h2 class="side-title" id="lado-b-t">Lado B <em>Desarrollo: lo que el navegador ya hace solo</em></h2>
+  <div class="grid">
+
+    <article class="card" id="b1" data-side="b" data-v="v3">
+      <div class="card-h"><span class="label" aria-hidden="true"><b>B1</b></span><div><p class="kicker">CSS</p><h3>Animaciones por scroll en CSS</h3></div></div>
+      <p class="what">Animaciones ligadas al scroll con <code>animation-timeline</code>, sin JavaScript. Corren fuera del hilo principal, así que no afectan la respuesta de la página.</p>
+      <div class="demo d-sda" tabindex="0" aria-label="Demostración: desplázate para ver la barra de progreso y las filas que aparecen">
+        <div class="bar" aria-hidden="true"><i></i></div>
+        <ul>
+          <li>LADO A <small>Las de hoy</small></li>
+          <li>SOUNDS <small>Canales</small></li>
+          <li>LADO B <small>Vida &amp; estilo</small></li>
+          <li>GANA <small>Promociones</small></li>
+          <li>PODCASTS <small>Autos al Cien y más</small></li>
+          <li>BOLETÍN <small>Mantente informado</small></li>
+        </ul>
+      </div>
+      <pre><code>.fila {
+  animation: aparecer linear both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 30%;
+}</code></pre>
+      <p class="support"><b>Soporte:</b> Chrome y Edge 115+, Firefox 159+, Safari 26+ · 87% de uso global.</p>
+      <div class="use"><span class="chip v3">En la v3</span><p>El índice de la barra, SOUNDS en horizontal y “Voltea el disco”. Con respaldo: sin soporte, todo se ve completo y estático.</p></div>
+      <p class="src">Fuentes: <a href="https://caniuse.com/mdn-css_properties_animation-timeline_scroll" target="_blank" rel="noopener">Can I use</a> · <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Scroll-driven_animations" target="_blank" rel="noopener">MDN</a> · <a href="https://web.dev/blog/interop-2026" target="_blank" rel="noopener">Interop 2026</a></p>
+    </article>
+
+    <article class="card" id="b2" data-side="b" data-v="next">
+      <div class="card-h"><span class="label" aria-hidden="true"><b>B2</b></span><div><p class="kicker">Navegación</p><h3>View Transitions</h3></div></div>
+      <p class="what">El navegador anima el cambio entre dos estados, o entre dos páginas, conectando los elementos que se repiten. Sin marcos ni librerías.</p>
+      <div class="demo d-vt" data-state="live">
+        <div class="vt-card">
+          <div class="vt-disc" aria-hidden="true"><span class="vt-label"></span></div>
+          <div class="vt-txt"><span class="vt-kicker" id="vt-kicker">En vivo · 100.1 FM</span><span class="vt-title" id="vt-title">HEAVEN</span><span class="vt-sub" id="vt-sub">Bryan Adams</span></div>
+        </div>
+        <div class="row"><button type="button" class="demo-btn" id="vt-btn">Poner SOUNDS</button><small id="vt-note" aria-live="polite"></small></div>
+      </div>
+      <p class="support"><b>Entre páginas:</b> Chrome y Edge 126+, Safari 18.2+, Firefox 144+ parcial.</p>
+      <div class="use"><span class="chip next">Siguiente fase</span><p>Pasar de la home a una nota <strong>sin cortar el audio</strong>: el reproductor se queda y solo cambia el contenido.</p></div>
+      <p class="src">Fuentes: <a href="https://caniuse.com/cross-document-view-transitions" target="_blank" rel="noopener">Can I use</a> · <a href="https://web.dev/blog/interop-2026" target="_blank" rel="noopener">Interop 2026</a></p>
+    </article>
+
+    <article class="card" id="b3" data-side="b" data-v="next">
+      <div class="card-h"><span class="label" aria-hidden="true"><b>B3</b></span><div><p class="kicker">Interfaz</p><h3>Popover y anchor positioning</h3></div></div>
+      <p class="what">Menús, tooltips y paneles nativos: <code>popover</code> los abre y cierra con teclado incluido, y anchor positioning los pega al botón que los llama.</p>
+      <div class="demo d-pop">
+        <button type="button" class="demo-btn pop-btn" popovertarget="song-pop">¿Qué está sonando?</button>
+        <p>El panel se ancla arriba del botón y se voltea si no cabe.</p>
+        <div id="song-pop" popover class="pop">
+          <p class="k"><i aria-hidden="true"></i>Ahora suena</p>
+          <p class="t">HEAVEN</p>
+          <p class="a">Bryan Adams</p>
+          <p class="p">Forever Hits con Rocío Velázquez · 15:00 a 18:00</p>
+        </div>
+      </div>
+      <div class="use"><span class="chip next">Siguiente fase</span><p>El menú, la ficha de la canción al aire y compartir, <strong>sin librerías de UI</strong>. Ambos son áreas prioritarias de Interop 2026.</p></div>
+      <p class="src">Fuentes: <a href="https://web.dev/blog/interop-2026" target="_blank" rel="noopener">Interop 2026</a> · <a href="https://webkit.org/blog/17818/announcing-interop-2026/" target="_blank" rel="noopener">WebKit</a></p>
+    </article>
+
+    <article class="card" id="b4" data-side="b" data-v="v3">
+      <div class="card-h"><span class="label" aria-hidden="true"><b>B4</b></span><div><p class="kicker">Móvil</p><h3>Scroll snap nativo</h3></div></div>
+      <p class="what">Carruseles que se detienen en cada tarjeta usando el scroll del sistema. Se sienten naturales al deslizar con el dedo y no necesitan JavaScript.</p>
+      <div class="demo d-snap">
+        <div class="snap" tabindex="0" aria-label="Carrusel de canales de SOUNDS">
+          <div><span class="art" style="background:#2a3b8f"></span><span class="n">BACK TO DISCO</span></div>
+          <div><span class="art" style="background:#29abe2"></span><span class="n">NU-DISCO</span></div>
+          <div><span class="art" style="background:#000000;border:1px solid rgba(255,255,255,.2)"></span><span class="n">ROCK ESPAÑOL</span></div>
+          <div><span class="art" style="background:#24628c"></span><span class="n">NEWS</span></div>
+        </div>
+        <p class="snap-hint">Desliza →</p>
+      </div>
+      <div class="use"><span class="chip v3">En la v3</span><p>Los canales de <strong>SOUNDS</strong>, Comida y guías, Relojes y Podcasts en el móvil.</p></div>
+      <p class="src">Fuente: <a href="https://web.dev/blog/interop-2026" target="_blank" rel="noopener">Interop 2026 (scroll snap)</a></p>
+    </article>
+
+    <article class="card" id="b5" data-side="b" data-v="care">
+      <div class="card-h"><span class="label" aria-hidden="true"><b>B5</b></span><div><p class="kicker">Audio</p><h3>Web Audio y visuales reactivos</h3></div></div>
+      <p class="what">El sitio escucha el audio y dibuja con él: ecualizadores, formas que laten con la música, incluso sonidos sintetizados. En Codrops se vio con Three.js y WebGPU.</p>
+      <div class="demo d-audio">
+        <canvas id="wa-canvas" width="640" height="300" aria-label="Visualizador de frecuencias"></canvas>
+        <div class="row"><button type="button" class="demo-btn" id="wa-btn" aria-pressed="false">Probar 5 segundos</button><small id="wa-note">Suena solo si das clic. Volumen bajo.</small></div>
+      </div>
+      <div class="use"><span class="chip care">Con medida</span><p>Un visualizador discreto del stream en la barra. <strong>Nada de sonidos de interfaz por defecto</strong>, y WebGPU solo para campañas especiales, no en la home.</p></div>
+      <p class="src">Fuentes: <a href="https://tympanus.net/codrops/2026/07/15/the-architecture-behind-trionn-coordinating-gsap-three-js-lenis-and-web-audio/" target="_blank" rel="noopener">Codrops: Trionn (15 jul 2026)</a> · <a href="https://tympanus.net/codrops/2026/08/20/run-rob-run-building-a-music-reactive-goo-with-three-js-and-webgpu/" target="_blank" rel="noopener">Codrops: Run Rob Run (20 ago 2026)</a></p>
+    </article>
+
+    <article class="card" id="b6" data-side="b" data-v="next">
+      <div class="card-h"><span class="label" aria-hidden="true"><b>B6</b></span><div><p class="kicker">Sistema</p><h3>Media Session</h3></div></div>
+      <p class="what">La canción al aire, la portada y los botones de play y pausa aparecen en la pantalla de bloqueo, en las notificaciones y en las teclas multimedia.</p>
+      <div class="demo d-ms">
+        <div class="phone" aria-hidden="true">
+          <span class="clock">16:29</span>
+          <span class="date">miércoles 23 de septiembre</span>
+          <div class="np">
+            <span class="cov">STEREO CIEN</span>
+            <span class="meta"><b>HEAVEN</b><span>Bryan Adams</span></span>
+            <span class="ctl"><svg width="14" height="14" viewBox="0 0 24 24" fill="#ffffff"><path d="M6 5h2v14H6zM20 5v14L9 12z"></path></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#ffffff"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="#ffffff"><path d="M16 5h2v14h-2zM4 5l11 7L4 19z"></path></svg></span>
+          </div>
+        </div>
+        <div class="ms-copy">
+          <p>Para una radio es lo más útil de esta lista: se sigue controlando con el teléfono bloqueado.</p>
+          <small>Maqueta: la pantalla de bloqueo no se puede simular dentro de esta página.</small>
+        </div>
+      </div>
+      <pre><code>navigator.mediaSession.metadata = new MediaMetadata({
+  title: 'Heaven',
+  artist: 'Bryan Adams',
+  album: 'Stereo Cien 100.1 FM',
+  artwork: [{ src: '/portadas/heaven-512.jpg', sizes: '512x512' }]
+});
+navigator.mediaSession.setActionHandler('pause', pausar);</code></pre>
+      <p class="support"><b>Soporte:</b> funciona en Chrome, Edge, Firefox y Safari; MDN la marca como disponibilidad limitada porque algunas acciones dependen del sistema operativo.</p>
+      <div class="use"><span class="chip next">Siguiente fase</span><p>Imprescindible al construir el reproductor: <strong>título, artista y portada</strong> de lo que suena, también para los canales de SOUNDS.</p></div>
+      <p class="src">Fuente: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Media_Session_API" target="_blank" rel="noopener">MDN: Media Session API</a></p>
+    </article>
+
+  </div>
+</section>
+
+<section class="plain wrap" aria-labelledby="reglas-t">
+  <h2 id="reglas-t">Tres reglas que no son tendencia</h2>
+  <div class="cols3">
+    <article>
+      <h3>Rendimiento primero</h3>
+      <p>El 43% de los sitios no pasa el umbral de 200 ms de INP que mide Google, según MotionKit. Animamos solo transform y opacity y no bloqueamos el hilo principal.</p>
+    </article>
+    <article>
+      <h3>Movimiento accesible</h3>
+      <p>Todo respeta la preferencia de reducir movimiento del sistema, y la v3 suma un botón en el pie de página para apagarlo sin entrar a la configuración.</p>
+    </article>
+    <article>
+      <h3>HTML que leen personas y máquinas</h3>
+      <p>Marcado semántico claro sirve a quien lee, a los lectores de pantalla y a los agentes de IA que ya resumen sitios. Select Interactive lo llama la base, no un extra.</p>
+    </article>
+  </div>
+</section>
+
+<section class="plain wrap" aria-labelledby="out-t">
+  <h2 id="out-t">Lo que ya no suena</h2>
+  <p class="intro-line">Patrones que MotionKit marca a la baja en 2026, y lo que hicimos en su lugar.</p>
+  <ul class="out">
+    <li><span class="x" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></span><b>Scroll secuestrado y lento</b><span>La v3 usa el scroll del navegador; las secciones fijas avanzan al ritmo de quien lee.</span></li>
+    <li><span class="x" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></span><b>Animaciones de entrada en cada elemento</b><span>Solo tres momentos narrativos y apariciones suaves ligadas al scroll.</span></li>
+    <li><span class="x" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></span><b>Preloaders decorativos</b><span>La radio carga primero: el botón de play está listo desde el primer instante.</span></li>
+    <li><span class="x" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></span><b>Video pesado en el hero</b><span>El protagonista es la tornamesa, hecha con CSS, y las fotos que arrastran al diseño.</span></li>
+  </ul>
+</section>
+
+<section class="plain wrap" aria-labelledby="web-t">
+  <h2 id="web-t">Recién destacados en Webzibition</h2>
+  <p class="intro-line">Sitios que Codrops agregó a su galería en septiembre de 2026. Ábrelos para ver estas ideas en proyectos reales.</p>
+  <ul class="gallery">
+    <li><a href="https://au-rel.io/" target="_blank" rel="noopener"><b>Au-rel.io</b><span>au-rel.io</span></a></li>
+    <li><a href="https://stephaniebruce.co/" target="_blank" rel="noopener"><b>Stephanie Bruce</b><span>stephaniebruce.co</span></a></li>
+    <li><a href="https://almirakho.com/" target="_blank" rel="noopener"><b>Almira Kho</b><span>almirakho.com</span></a></li>
+    <li><a href="https://dkton.at/" target="_blank" rel="noopener"><b>Dominik Kostolnik</b><span>dkton.at</span></a></li>
+    <li><a href="https://grafik.co.nz/" target="_blank" rel="noopener"><b>Grafik</b><span>grafik.co.nz</span></a></li>
+    <li><a href="https://velourproductions.com/" target="_blank" rel="noopener"><b>Velour Productions</b><span>velourproductions.com</span></a></li>
+    <li><a href="https://format.obys.agency/" target="_blank" rel="noopener"><b>FORMAT</b><span>format.obys.agency</span></a></li>
+    <li><a href="https://forgeautomotive.co.uk/" target="_blank" rel="noopener"><b>Forge Automotive</b><span>forgeautomotive.co.uk</span></a></li>
+  </ul>
+  <p class="intro-line">Galería completa: <a href="https://tympanus.net/codrops/webzibition/" target="_blank" rel="noopener">tympanus.net/codrops/webzibition</a></p>
+</section>
+
+<section class="plain wrap" aria-labelledby="src-t">
+  <h2 id="src-t">Fuentes</h2>
+  <ol class="sources">
+    <li><a href="https://web.dev/blog/interop-2026" target="_blank" rel="noopener">Interop 2026: Continuing to improve the web for developers</a>, web.dev, 12 feb 2026</li>
+    <li><a href="https://webkit.org/blog/17818/announcing-interop-2026/" target="_blank" rel="noopener">Announcing Interop 2026</a>, WebKit</li>
+    <li><a href="https://caniuse.com/mdn-css_properties_animation-timeline_scroll" target="_blank" rel="noopener">animation-timeline: scroll()</a>, Can I use</li>
+    <li><a href="https://caniuse.com/cross-document-view-transitions" target="_blank" rel="noopener">Cross-document view transitions</a>, Can I use</li>
+    <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Scroll-driven_animations" target="_blank" rel="noopener">CSS scroll-driven animations</a>, MDN</li>
+    <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Media_Session_API" target="_blank" rel="noopener">Media Session API</a>, MDN</li>
+    <li><a href="https://motionkit.io/blog/web-animation-trends-2026" target="_blank" rel="noopener">Web Animation Trends 2026: The Complete Report</a>, MotionKit</li>
+    <li><a href="https://www.select-interactive.com/news/web-design-trends-2026-that-survive-performance-and-ai-agents" target="_blank" rel="noopener">Web Design Trends 2026 That Actually Survive Performance Budgets and AI Agents</a>, Select Interactive, 29 jun 2026</li>
+    <li><a href="https://tympanus.net/codrops/2026/07/15/the-architecture-behind-trionn-coordinating-gsap-three-js-lenis-and-web-audio/" target="_blank" rel="noopener">The Architecture Behind Trionn</a>, Codrops, 15 jul 2026</li>
+    <li><a href="https://tympanus.net/codrops/2026/08/20/run-rob-run-building-a-music-reactive-goo-with-three-js-and-webgpu/" target="_blank" rel="noopener">Run Rob Run: Building a Music-Reactive Goo with Three.js and WebGPU</a>, Codrops, 20 ago 2026</li>
+    <li><a href="https://tympanus.net/codrops/webzibition/" target="_blank" rel="noopener">Webzibition</a>, Codrops</li>
+  </ol>
+  <div class="foot"><span>Tendencias al Cien · para el rediseño de Stereo Cien</span><span class="num">Datos de soporte consultados el 23.09.2026</span></div>
+</section>
+
+<script>
+(function () {
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Filtros
+  var buttons = $$('.filters button');
+  function applyFilter(f) {
+    buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-f') === f)); });
+    $$('.card').forEach(function (c) {
+      var show = f === 'all' || c.getAttribute('data-side') === f || (f === 'v3' && c.getAttribute('data-v') === 'v3');
+      c.hidden = !show;
+    });
+    $$('.side-sec').forEach(function (s) { s.hidden = !s.querySelector('.card:not([hidden])'); });
+  }
+  buttons.forEach(function (b) { b.addEventListener('click', function () { applyFilter(b.getAttribute('data-f')); }); });
+
+  // A4 grano
+  var grain = $('#grain-toggle');
+  if (grain) grain.addEventListener('change', function () { $('.d-tex').setAttribute('data-grain', grain.checked ? 'on' : 'off'); });
+
+  // A5 3D
+  var d3 = $('.d-3d'), flipBtn = $('#flip-btn'), zone = $('#tilt-zone');
+  if (flipBtn) flipBtn.addEventListener('click', function () {
+    var b = d3.getAttribute('data-flip') === 'b';
+    d3.setAttribute('data-flip', b ? 'a' : 'b');
+    flipBtn.setAttribute('aria-pressed', String(!b));
+  });
+  if (zone && !reduce) {
+    var tilt = $('.tilt', zone);
+    zone.addEventListener('pointermove', function (e) {
+      var r = zone.getBoundingClientRect();
+      var x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+      tilt.style.setProperty('--ry', (x * 34).toFixed(1) + 'deg');
+      tilt.style.setProperty('--rx', (-y * 34).toFixed(1) + 'deg');
+    });
+    zone.addEventListener('pointerleave', function () { tilt.style.setProperty('--rx', '0deg'); tilt.style.setProperty('--ry', '0deg'); });
+  }
+
+  // A6 play
+  var play = $('#play-btn'), playLbl = $('#play-lbl');
+  if (play) play.addEventListener('click', function () {
+    var on = play.getAttribute('aria-pressed') !== 'true';
+    play.setAttribute('aria-pressed', String(on));
+    play.setAttribute('aria-label', on ? 'Pausar' : 'Escuchar en vivo');
+    playLbl.textContent = on ? 'Sonando' : 'Escuchar en vivo';
+  });
+
+  // B2 View Transitions
+  var vt = $('.d-vt'), vtBtn = $('#vt-btn'), vtNote = $('#vt-note');
+  function swap() {
+    var toSounds = vt.getAttribute('data-state') === 'live';
+    vt.setAttribute('data-state', toSounds ? 'sounds' : 'live');
+    $('#vt-kicker').textContent = toSounds ? 'SOUNDS · canal' : 'En vivo · 100.1 FM';
+    $('#vt-title').textContent = toSounds ? 'BACK TO DISCO' : 'HEAVEN';
+    $('#vt-sub').textContent = toSounds ? 'Canal de SOUNDS' : 'Bryan Adams';
+    vtBtn.textContent = toSounds ? 'Volver a 100.1' : 'Poner SOUNDS';
+  }
+  if (vtBtn) vtBtn.addEventListener('click', function () {
+    if (document.startViewTransition && !reduce) { document.startViewTransition(swap); }
+    else { swap(); if (!document.startViewTransition) vtNote.textContent = 'Tu navegador cambia sin transición.'; }
+  });
+
+  // B5 Web Audio
+  var cv = $('#wa-canvas'), waBtn = $('#wa-btn'), waNote = $('#wa-note');
+  var g2d = cv ? cv.getContext('2d') : null;
+  var ac = null, analyser = null, master = null, oscs = [], raf = 0, timer = 0, running = false;
+  function barsColor() { return getComputedStyle(cv).color || '#29abe2'; }
+  function drawIdle() {
+    if (!g2d) return;
+    var w = cv.width, h = cv.height, n = 32, bw = w / n;
+    g2d.clearRect(0, 0, w, h);
+    g2d.fillStyle = 'rgba(255,255,255,0.25)';
+    for (var i = 0; i < n; i++) { var bh = 6 + 10 * Math.abs(Math.sin(i * 0.6)); g2d.fillRect(i * bw + 3, h - bh, bw - 6, bh); }
+  }
+  function draw() {
+    var w = cv.width, h = cv.height, n = 32, bw = w / n;
+    var data = new Uint8Array(analyser.frequencyBinCount);
+    analyser.getByteFrequencyData(data);
+    g2d.clearRect(0, 0, w, h);
+    g2d.fillStyle = barsColor();
+    for (var i = 0; i < n; i++) { var v = data[i] / 255; var bh = Math.max(4, v * (h - 8)); g2d.fillRect(i * bw + 3, h - bh, bw - 6, bh); }
+    raf = requestAnimationFrame(draw);
+  }
+  function stopAudio() {
+    if (!running) return;
+    running = false;
+    clearTimeout(timer);
+    var t = ac.currentTime;
+    master.gain.cancelScheduledValues(t);
+    master.gain.setValueAtTime(master.gain.value, t);
+    master.gain.linearRampToValueAtTime(0, t + 0.4);
+    oscs.forEach(function (o) { try { o.stop(t + 0.45); } catch (e) {} });
+    oscs = [];
+    setTimeout(function () { cancelAnimationFrame(raf); drawIdle(); }, 500);
+    waBtn.setAttribute('aria-pressed', 'false');
+    waBtn.textContent = 'Probar 5 segundos';
+  }
+  function startAudio() {
+    try {
+      ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+      if (ac.state === 'suspended') ac.resume();
+    } catch (e) { waNote.textContent = 'Este navegador no permitió iniciar el audio.'; return; }
+    analyser = ac.createAnalyser(); analyser.fftSize = 128; analyser.smoothingTimeConstant = 0.7;
+    master = ac.createGain(); master.gain.value = 0;
+    master.connect(analyser); analyser.connect(ac.destination);
+    var t = ac.currentTime;
+    master.gain.linearRampToValueAtTime(0.05, t + 0.3);
+    var bass = ac.createOscillator(); bass.type = 'sine'; bass.frequency.value = 110; bass.connect(master); bass.start(t);
+    var lead = ac.createOscillator(); lead.type = 'triangle'; lead.connect(master);
+    var notes = [220, 277.18, 329.63, 440, 329.63, 277.18, 246.94, 293.66, 369.99, 493.88, 369.99, 293.66];
+    for (var i = 0; i < 20; i++) { lead.frequency.setValueAtTime(notes[i % notes.length], t + i * 0.25); }
+    lead.start(t);
+    oscs = [bass, lead];
+    running = true;
+    waBtn.setAttribute('aria-pressed', 'true');
+    waBtn.textContent = 'Detener';
+    waNote.textContent = 'Suena solo si das clic. Volumen bajo.';
+    draw();
+    timer = setTimeout(stopAudio, 5000);
+  }
+  if (waBtn && g2d) {
+    drawIdle();
+    waBtn.addEventListener('click', function () { if (running) stopAudio(); else startAudio(); });
+  }
+})();
+</script>
+
+</body></html>

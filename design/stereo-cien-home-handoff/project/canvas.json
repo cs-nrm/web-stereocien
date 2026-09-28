@@ -1,0 +1,238 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "A-Frecuencia-Movil.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "A · Frecuencia — Móvil 390",
+      "w": 390,
+      "x": 1520,
+      "y": 0
+    },
+    "B-Portada-Desktop.dc.html": {
+      "h": 1998,
+      "is_interactive": true,
+      "title": "B · Portada — Desktop 1440",
+      "w": 1440,
+      "x": 2110,
+      "y": 0
+    },
+    "B-Portada-Movil.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "B · Portada — Móvil 390",
+      "w": 390,
+      "x": 3630,
+      "y": 0
+    },
+    "C-Tornamesa-Desktop.dc.html": {
+      "expand": "fill",
+      "h": 1560,
+      "is_interactive": true,
+      "title": "C · Tornamesa — Desktop fluido (vista 1920)",
+      "w": 1920,
+      "x": 4220,
+      "y": 0
+    },
+    "C-Tornamesa-Movil.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "C · Tornamesa — Móvil 390",
+      "w": 390,
+      "x": 6220,
+      "y": 0
+    },
+    "C2-Desktop.dc.html": {
+      "expand": "fill",
+      "h": 1953,
+      "is_interactive": true,
+      "page": "tornamesa-v2",
+      "title": "Desktop fluido · vista 1920",
+      "w": 1920,
+      "x": 1100,
+      "y": 0
+    },
+    "C2-Movil-1.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "page": "tornamesa-v2",
+      "title": "Móvil · primera pantalla",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "C2-Movil-2.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "page": "tornamesa-v2",
+      "title": "Móvil · segunda pantalla (ya sonando)",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "C2-Teatral-Preroll.dc.html": {
+      "h": 1080,
+      "is_interactive": true,
+      "page": "tornamesa-v2",
+      "title": "Recién sonó → pre-roll",
+      "w": 1920,
+      "x": 3100,
+      "y": 0
+    },
+    "C2-Teatral-Video.dc.html": {
+      "h": 1080,
+      "is_interactive": true,
+      "page": "tornamesa-v2",
+      "title": "Recién sonó → modo teatral",
+      "w": 1920,
+      "x": 5100,
+      "y": 0
+    },
+    "C3-Desktop.dc.html": {
+      "expand": "fill",
+      "h": 1080,
+      "is_interactive": true,
+      "page": "tornamesa-v3",
+      "title": "Desktop · barra fija + revista con scroll (vista 1920)",
+      "w": 1920,
+      "x": 0,
+      "y": 0
+    },
+    "C3-Movil-1.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "page": "tornamesa-v3",
+      "title": "Móvil · página completa con scroll",
+      "w": 390,
+      "x": 2000,
+      "y": 0
+    },
+    "C3-Movil-2.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "page": "tornamesa-v3",
+      "title": "Móvil · SOUNDS en la tornamesa",
+      "w": 390,
+      "x": 2470,
+      "y": 0
+    },
+    "Main.dc.html": {
+      "h": 1914,
+      "is_interactive": true,
+      "title": "A · Frecuencia — Desktop 1440",
+      "w": 1440,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-09-22T21:41:54Z",
+    "v": 1
+  },
+  "designSystems": [
+    {
+      "artifact": "https://claude.ai/code/artifact/616a4523-9903-4755-a46c-3b3ffa586219",
+      "copiedAt": "2026-09-22T21:41:54Z",
+      "namespace": "stereo-cien",
+      "title": "Stereo Cien",
+      "version": "1790110186-553a"
+    }
+  ],
+  "launch": {
+    "page": "tornamesa-v3",
+    "view": "canvas"
+  },
+  "notes": {
+    "t2desk": {
+      "kind": "title1",
+      "maxW": 5920,
+      "page": "tornamesa-v2",
+      "text": "Desktop · una sola interfaz → modo teatral",
+      "w": 240,
+      "x": 1100,
+      "y": -300
+    },
+    "t2movil": {
+      "kind": "title1",
+      "maxW": 860,
+      "page": "tornamesa-v2",
+      "text": "Móvil primero",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "t3titulo": {
+      "kind": "title1",
+      "maxW": 2860,
+      "page": "tornamesa-v3",
+      "text": "Tornamesa v3 · la radio fija, la revista con scroll",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "t3uso": {
+      "page": "tornamesa-v3",
+      "text": "Cómo verlo: abre el desktop en Play o en vista enfocada y haz scroll. Lado A es la música (Las de hoy, SOUNDS, Vinilos, Podcasts) y Lado B la vida y estilo (Comida, Libros, Autos, Relojes). Para poner fotos abajo: selecciona el artboard, abre Tweaks › Edición y elige la sección; al editar aparece hasta arriba y en Play todo sigue igual. La cápsula SOUNDS (arriba a la derecha del reproductor) abre el menú de canales; mientras editas se ve abierto, y lo ocultas en Tweaks › Edición › menuSounds.",
+      "w": 420,
+      "x": 2000,
+      "y": 960,
+      "maxH": 720
+    },
+    "tituloA": {
+      "kind": "title1",
+      "maxW": 1910,
+      "text": "A · Frecuencia",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "tituloB": {
+      "kind": "title1",
+      "maxW": 1910,
+      "text": "B · Portada",
+      "w": 240,
+      "x": 2110,
+      "y": -300
+    },
+    "tituloC": {
+      "kind": "title1",
+      "maxW": 2390,
+      "text": "C · Tornamesa",
+      "w": 240,
+      "x": 4220,
+      "y": -300
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "A-Frecuencia-Movil.dc.html",
+    "B-Portada-Desktop.dc.html",
+    "B-Portada-Movil.dc.html",
+    "C-Tornamesa-Desktop.dc.html",
+    "C-Tornamesa-Movil.dc.html",
+    "C2-Movil-1.dc.html",
+    "C2-Movil-2.dc.html",
+    "C2-Desktop.dc.html",
+    "C2-Teatral-Preroll.dc.html",
+    "C2-Teatral-Video.dc.html",
+    "C3-Desktop.dc.html",
+    "C3-Movil-1.dc.html",
+    "C3-Movil-2.dc.html"
+  ],
+  "pages": [
+    {
+      "id": "exploracion",
+      "name": "1 · Exploración"
+    },
+    {
+      "id": "tornamesa-v2",
+      "name": "2 · Archivo (v2 brief)"
+    },
+    {
+      "id": "tornamesa-v3",
+      "name": "3 · Tornamesa v3"
+    }
+  ],
+  "title": "Stereo Cien — Nueva home"
+}
