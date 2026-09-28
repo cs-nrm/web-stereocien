@@ -1,0 +1,226 @@
+---
+/**
+ * La cabecera de la revista: el logo y el menú (§5.2 del handoff, «Header fijo»).
+ *
+ * Va DENTRO del `<main>`, a la derecha de la barra, y se queda pegada arriba
+ * mientras la revista corre. No lleva `transition:persist`: no guarda estado, y la
+ * de cada página es igual a la anterior.
+ *
+ * Del diseño faltan BUSCAR y MENÚ, y es a propósito: todavía no existen, y un
+ * botón que no hace nada no se pinta (regla heredada de web-beat).
+ *
+ * Y NO se esconden entradas por ancho, aunque el diseño lo hace (Promociones por
+ * debajo de 1600, Programación y Enfoque por debajo de 1800). Allá la fila
+ * compartía el ancho con BUSCAR, MENÚ y una séptima entrada, y lo que se escondía
+ * seguía a un clic dentro de MENÚ. Aquí no hay MENÚ: una entrada escondida no
+ * tendría otro camino. Si en el ancho más angosto la fila no cabe entera, se
+ * desplaza de lado dentro de su propia caja (nunca la página), y el final se
+ * desvanece para decir que hay más.
+ *
+ * En el móvil la misma lista se pinta como la fila de pastillas del tablero móvil
+ * (§6, «chips»), debajo del logo.
+ */
+import { NAV_CABECERA } from '@/config/navegacion';
+---
+
+<header class="cabecera">
+  <a class="cabecera-logo" href="/" aria-label="Stereo Cien, inicio">
+    <img src="/img/stereocien.svg" alt="" width="108" height="36" />
+  </a>
+  <nav class="cabecera-nav" aria-label="Principal">
+    <ul class="cabecera-lista">
+      {
+        NAV_CABECERA.map((entrada) => (
+          <li>
+            <a
+              class:list={['cabecera-enlace', { 'es-externo': entrada.externo }]}
+              href={entrada.href}
+              target={entrada.externo ? '_blank' : undefined}
+              rel={entrada.externo ? 'noopener noreferrer' : undefined}
+            >
+              {entrada.nombre}
+              {entrada.externo && (
+                <>
+                  <svg
+                    aria-hidden="true"
+                    focusable="false"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M7 17L17 7M9 7h8v8"></path>
+                  </svg>
+                  <span class="sr-only"> (se abre en otra pestaña)</span>
+                </>
+              )}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>
+
+<style>
+  /*
+    Las alturas de aquí (64 en escritorio, 52 + 38 en el móvil) son las que
+    `--alto-cabecera` de `src/styles/sitio.css` le descuenta a cada salto de
+    ancla. Si una cambia, cambia la otra.
+  */
+  .cabecera {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    height: 64px;
+    box-sizing: border-box;
+    padding: 0 32px 0 var(--margen-revista);
+    background: var(--color-blanco);
+    border-bottom: 1px solid rgb(0 0 0 / 0.1);
+    display: flex;
+    align-items: center;
+    gap: 36px;
+  }
+  .cabecera-logo {
+    flex-shrink: 0;
+    display: flex;
+  }
+  .cabecera-logo img {
+    display: block;
+    width: auto;
+    height: 36px;
+  }
+
+  /*
+    La nav ocupa todo el alto de la cabecera y un poco de aire a los lados: su
+    caja recorta lo que se sale (es la que se desplaza), y sin ese margen el
+    anillo de foco de la primera entrada se cortaría.
+  */
+  .cabecera-nav {
+    flex: 1 1 auto;
+    min-width: 0;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    margin-inline: -6px;
+    padding-inline: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    /*
+      El desvanecido del final. Cuando la fila cabe, esos 24 px son espacio vacío
+      —la nav crece y la lista va pegada a la izquierda— y no se nota; solo cae
+      sobre una entrada cuando la fila no cabe.
+    */
+    mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
+  }
+  .cabecera-nav::-webkit-scrollbar {
+    display: none;
+  }
+  .cabecera-lista {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    white-space: nowrap;
+  }
+  /*
+    `position: relative` NO es de adorno. Trampa medida en el móvil: el texto
+    oculto «(se abre en otra pestaña)» es `position: absolute` (`sr-only`), y sin
+    esto su caja de referencia era la cabecera —que es `sticky`, o sea posicionada—
+    y no la nav que se desplaza. Así escapaba del recorte de la nav y ensanchaba la
+    PÁGINA: 501 px de documento en una pantalla de 390, con scroll de lado.
+  */
+  .cabecera-enlace {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12.8px;
+    line-height: 16.64px;
+    font-weight: 700;
+    letter-spacing: var(--tracking-titular);
+    text-transform: uppercase;
+    color: var(--color-negro);
+  }
+  .cabecera-enlace:hover {
+    color: var(--color-negro);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  /* El externo va en el azul de la marca, con su flecha (§5.2: «ENFOQUE ↗»). */
+  .cabecera-enlace.es-externo,
+  .cabecera-enlace.es-externo:hover {
+    color: var(--color-azul-principal);
+  }
+
+  /* Corte `amplio` (por debajo de 1600): el diseño aprieta la fila. */
+  @media (max-width: 1599px) {
+    .cabecera {
+      gap: 28px;
+    }
+    .cabecera-lista {
+      gap: 22px;
+    }
+  }
+
+  /*
+    ── Por debajo del corte `escritorio` (1280): la cabecera del móvil (§6) ──
+
+    Dos filas: el logo (52 px) y la fila de pastillas (38 px). La cabecera entera
+    se queda pegada arriba, como en el tablero móvil.
+  */
+  @media (max-width: 1279px) {
+    .cabecera {
+      height: auto;
+      padding: 0;
+      display: block;
+      border-bottom: 0;
+      box-shadow: 0 1px 0 rgb(0 0 0 / 0.1);
+    }
+    .cabecera-logo {
+      height: 52px;
+      align-items: center;
+      padding: 0 16px;
+      width: fit-content;
+    }
+    .cabecera-logo img {
+      height: 30px;
+    }
+    .cabecera-nav {
+      height: 38px;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0 12px 6px;
+    }
+    .cabecera-lista {
+      gap: 3px;
+    }
+    .cabecera-enlace {
+      height: 30px;
+      box-sizing: border-box;
+      padding: 0 9px;
+      border: 1px solid rgb(0 0 0 / 0.18);
+      border-radius: 9999px;
+      background: var(--color-blanco);
+      font-size: var(--text-etiqueta);
+      line-height: 16px;
+    }
+    .cabecera-enlace:hover {
+      text-decoration: none;
+      border-color: var(--color-negro);
+    }
+    /*
+      El anillo de foco va POR DENTRO de la pastilla: la fila mide 38 px y la
+      pastilla 30, y la caja que se desplaza recortaría un anillo por fuera.
+    */
+    .cabecera-enlace:focus-visible {
+      outline-offset: -4px;
+    }
+  }
+</style>

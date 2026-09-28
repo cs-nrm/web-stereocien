@@ -1,0 +1,488 @@
+---
+/**
+ * La tarjeta de nota. Dos densidades, las dos del diseño (§5.2):
+ *
+ *   `principal` — «La noticia»: la foto grande y, junto a ella, el titular, el
+ *                 balazo y LEER LA NOTA. A dos columnas desde el corte `amplio`
+ *                 (1600) y a una por debajo.
+ *   `fila`      — las filas numeradas de «Lado A · Las de hoy»: foto cuadrada,
+ *                 número, titular y la flecha en círculo. Sin número sirve para
+ *                 cualquier lista corta (las relacionadas de la nota).
+ *
+ * Lo que comparten, y es regla del diseño (§8): la foto va en ESQUINA RECTA, llena
+ * su marco con `object-fit: cover` y el marco tiene proporción FIJA —no la de cada
+ * foto—, así que una tarjeta mide lo mismo traiga la imagen que traiga. El
+ * antetítulo (la categoría) va en 12 px y mayúsculas, el titular en la display y
+ * el balazo en Libre Baskerville itálica.
+ *
+ * El CMS no recorta: sus tres variantes (`thumbnail` 400, `card` 768, `large`
+ * 1200) son de ANCHO y conservan la proporción del original. El recorte lo hace
+ * `object-fit`, y `puntoFocal` lo mueve al punto que marcó la redacción para no
+ * decapitar a nadie (ver `src/lib/cms/client.ts`).
+ */
+import { puntoFocal, urlMedia, urlMediaAbsoluta, type DocMedia, type TamanoMedia } from '@/lib/cms/client';
+import { firma, nombreCategoria } from '@/lib/nota';
+import { rutaNota } from '@/config/site';
+import type { Noticia } from '@/types/payload';
+
+interface Props {
+  nota: Noticia;
+  variante?: 'principal' | 'fila';
+  /**
+   * El rótulo de la sección que va a la izquierda del antetítulo, con el filete
+   * en medio: «LA NOTICIA ——— CULTURA POP». Solo en `principal`.
+   */
+  rotulo?: string | null;
+  /** El número de la fila (se pinta 01, 02…). Solo en `fila`, y solo si se pasa. */
+  numero?: number | null;
+  /** El nivel del titular en el documento de la página que la usa. */
+  nivel?: 2 | 3;
+  /** `true` solo para la foto que se ve sin hacer scroll: no se difiere. */
+  prioridad?: boolean;
+}
+
+const {
+  nota,
+  variante = 'principal',
+  rotulo = null,
+  numero = null,
+  nivel = 2,
+  prioridad = false,
+} = Astro.props;
+
+/*
+  Una nota sin slug no tiene URL, y una tarjeta sin destino no se pinta. El CMS
+  lo genera desde el titular, así que no debería pasar; si pasa, se omite en vez
+  de enlazar a `/noticias/`.
+*/
+const href = nota.slug ? rutaNota(nota.slug) : null;
+
+const categoria = nombreCategoria(nota);
+const autor = firma(nota);
+const Titulo = nivel === 3 ? 'h3' : 'h2';
+
+const media: DocMedia | null =
+  nota.imagen && typeof nota.imagen === 'object' ? (nota.imagen as DocMedia) : null;
+const foto = urlMedia(media, variante === 'principal' ? 'large' : 'thumbnail');
+const alt = media?.alt ?? '';
+const enfoque = puntoFocal(media);
+
+/**
+ * El `srcset` con las variantes que EXISTEN, cada una con su ancho real.
+ *
+ * Solo las que traen URL y ancho: se generan sin ampliar, así que una foto chica
+ * puede no tener `large`, y un ancho inventado haría que el navegador eligiera mal.
+ * Con una sola variante no hay nada que elegir y no se emite.
+ */
+const ORDEN_TAMANOS: TamanoMedia[] = ['thumbnail', 'card', 'large'];
+const variantes = ORDEN_TAMANOS.map((t) => media?.sizes?.[t]).flatMap((v) => {
+  const url = urlMediaAbsoluta(v?.url);
+  return url && typeof v?.width === 'number' && v.width > 0 ? [`${url} ${v.width}w`] : [];
+});
+const srcset = variantes.length > 1 ? variantes.join(', ') : undefined;
+
+/*
+  Lo que ocupa la foto en pantalla, para que el navegador elija variante antes de
+  maquetar. `principal`: casi media revista a dos columnas, la revista entera a una.
+  `fila`: 120 px en escritorio y menos por debajo (ver el `<style>`).
+*/
+const sizes =
+  variante === 'principal'
+    ? '(min-width: 1600px) 45vw, (min-width: 1280px) 60vw, 100vw'
+    : '(min-width: 1600px) 120px, 96px';
+---
+
+{
+  href && variante === 'principal' && (
+    <article class="tarjeta es-principal">
+      {(rotulo || categoria) && (
+        <div class="tarjeta-cabeza">
+          {rotulo && <span class="tarjeta-rotulo">{rotulo}</span>}
+          <span class="tarjeta-filete" aria-hidden="true"></span>
+          {categoria && <span class="tarjeta-antetitulo">{categoria}</span>}
+        </div>
+      )}
+      <div class="tarjeta-rejilla">
+        <div class="tarjeta-foto">
+          {foto && (
+            <img
+              src={foto}
+              srcset={srcset}
+              sizes={srcset ? sizes : undefined}
+              alt={alt}
+              style={enfoque ? `object-position: ${enfoque}` : undefined}
+              loading={prioridad ? 'eager' : 'lazy'}
+              fetchpriority={prioridad ? 'high' : undefined}
+              decoding="async"
+            />
+          )}
+        </div>
+        <div class="tarjeta-texto">
+          {/*
+            UN solo enlace, en el titular, que cubre toda la tarjeta con su
+            `::after`. Así la foto y el botón también llevan a la nota, pero un
+            lector de pantalla oye un enlace —el titular— y no tres seguidos al
+            mismo sitio.
+          */}
+          <Titulo class="tarjeta-titulo">
+            <a class="tarjeta-enlace" href={href}>
+              {nota.titulo}
+            </a>
+          </Titulo>
+          {nota.resumen && <p class="tarjeta-balazo">{nota.resumen}</p>}
+          <div class="tarjeta-pie">
+            <span class="tarjeta-boton" aria-hidden="true">
+              Leer la nota
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </span>
+            {autor && <span class="tarjeta-firma">por {autor.nombre}</span>}
+          </div>
+        </div>
+      </div>
+    </article>
+  )
+}
+
+{
+  href && variante === 'fila' && (
+    <a class:list={['tarjeta', 'es-fila', { 'con-numero': numero !== null }]} href={href}>
+      <div class="tarjeta-foto">
+        {foto && (
+          <img
+            src={foto}
+            srcset={srcset}
+            sizes={srcset ? sizes : undefined}
+            alt={alt}
+            style={enfoque ? `object-position: ${enfoque}` : undefined}
+            loading="lazy"
+            decoding="async"
+          />
+        )}
+      </div>
+      {numero !== null && (
+        <span class="tarjeta-numero" aria-hidden="true">
+          {String(numero).padStart(2, '0')}
+        </span>
+      )}
+      <div class="tarjeta-texto">
+        {categoria && <span class="tarjeta-antetitulo">{categoria}</span>}
+        <Titulo class="tarjeta-titulo">{nota.titulo}</Titulo>
+        {autor && <span class="tarjeta-firma">por {autor.nombre}</span>}
+      </div>
+      <span class="tarjeta-flecha" aria-hidden="true">
+        <svg
+          aria-hidden="true"
+          focusable="false"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M5 12h14M13 6l6 6-6 6" />
+        </svg>
+      </span>
+    </a>
+  )
+}
+
+<style>
+  /* ── Lo común ── */
+  .tarjeta {
+    color: var(--color-negro);
+  }
+  .tarjeta-foto {
+    position: relative;
+    overflow: hidden;
+    /* Mientras carga, o si la nota no trae foto, el marco se ve como marco y no
+       como un hueco: el gris azulado de los marcos del tablero. */
+    background-color: #dfe3ea;
+  }
+  .tarjeta-foto img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+  }
+  .tarjeta-antetitulo,
+  .tarjeta-rotulo {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: var(--text-etiqueta);
+    line-height: var(--text-etiqueta--line-height);
+    letter-spacing: var(--tracking-etiqueta);
+    text-transform: uppercase;
+  }
+  .tarjeta-titulo {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 900;
+    letter-spacing: var(--tracking-titular);
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+  .tarjeta-firma {
+    font-size: var(--text-etiqueta);
+    line-height: var(--text-etiqueta--line-height);
+    font-weight: 700;
+    color: var(--color-gris-texto);
+  }
+
+  /* ── principal: «La noticia» ── */
+  .tarjeta-cabeza {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .tarjeta-rotulo {
+    color: var(--color-azul-principal);
+  }
+  .tarjeta-filete {
+    flex: 1 1 auto;
+    height: 1px;
+    background: var(--color-negro);
+  }
+  .es-principal .tarjeta-rejilla {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    column-gap: 48px;
+    row-gap: 28px;
+    align-items: end;
+  }
+  /* A dos columnas la foto es casi cuadrada (el marco de 480 px de alto del
+     tablero a 1920); a una columna, apaisada. */
+  .es-principal .tarjeta-foto {
+    aspect-ratio: 5 / 4;
+  }
+  .es-principal .tarjeta-texto {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .es-principal .tarjeta-titulo {
+    font-size: clamp(52px, 3.2vw, 64px);
+    line-height: 0.92;
+  }
+  .tarjeta-enlace {
+    color: inherit;
+  }
+  /* El enlace del titular cubre la tarjeta entera. */
+  .tarjeta-enlace::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .tarjeta-enlace:focus-visible {
+    outline: none;
+  }
+  .tarjeta-enlace:focus-visible::after {
+    outline: 3px solid var(--color-azul-principal);
+    outline-offset: 4px;
+  }
+  .es-principal .tarjeta-rejilla:hover .tarjeta-titulo {
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 6px;
+  }
+  .tarjeta-balazo {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 24px;
+    line-height: 34px;
+    text-wrap: pretty;
+  }
+  .tarjeta-pie {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 24px;
+  }
+  .tarjeta-boton {
+    height: 48px;
+    box-sizing: border-box;
+    padding: 0 22px;
+    background: var(--color-azul-principal);
+    color: var(--color-blanco);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: var(--text-etiqueta);
+    letter-spacing: var(--tracking-etiqueta);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* ── fila: «Lado A · Las de hoy» ── */
+  .es-fila {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr) 44px;
+    column-gap: 24px;
+    align-items: center;
+    padding: 22px 0;
+    border-bottom: 1px solid rgb(0 0 0 / 0.12);
+  }
+  .es-fila.con-numero {
+    grid-template-columns: 120px 56px minmax(0, 1fr) 44px;
+  }
+  .es-fila:hover {
+    color: var(--color-negro);
+  }
+  .es-fila:hover .tarjeta-titulo {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .es-fila .tarjeta-foto {
+    aspect-ratio: 1 / 1;
+  }
+  .tarjeta-numero {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 32px;
+    line-height: 32px;
+    color: var(--color-azul-principal);
+  }
+  .es-fila .tarjeta-texto {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .es-fila .tarjeta-antetitulo {
+    color: var(--color-azul-principal);
+  }
+  .es-fila .tarjeta-titulo {
+    font-size: 25px;
+    line-height: 30px;
+  }
+  .tarjeta-flecha {
+    width: 44px;
+    height: 44px;
+    box-sizing: border-box;
+    border: 1px solid var(--color-negro);
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── Corte `amplio` (por debajo de 1600): la noticia a una columna ── */
+  @media (max-width: 1599px) {
+    .es-principal .tarjeta-rejilla {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .es-principal .tarjeta-foto {
+      aspect-ratio: 16 / 9;
+    }
+    .es-principal .tarjeta-titulo {
+      font-size: 56px;
+    }
+    .es-fila {
+      grid-template-columns: 96px minmax(0, 1fr) 44px;
+      column-gap: 20px;
+    }
+    .es-fila.con-numero {
+      grid-template-columns: 96px 40px minmax(0, 1fr) 44px;
+    }
+    .tarjeta-numero {
+      font-size: 26px;
+      line-height: 26px;
+    }
+    .es-fila .tarjeta-titulo {
+      font-size: 21px;
+      line-height: 26px;
+    }
+  }
+
+  /*
+    ── Por debajo del corte `escritorio` (1280): el tablero móvil (§6) ──
+
+    La noticia: titular a 30 px, balazo a 17/25 y la foto en 3:2. Las filas: foto
+    de 76 px, el número arriba del titular y sin la flecha.
+  */
+  @media (max-width: 1279px) {
+    .tarjeta-cabeza {
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .es-principal .tarjeta-rejilla {
+      row-gap: 14px;
+    }
+    .es-principal .tarjeta-foto {
+      aspect-ratio: 3 / 2;
+    }
+    .es-principal .tarjeta-titulo {
+      font-size: 30px;
+      line-height: 0.95;
+    }
+    .es-principal .tarjeta-texto {
+      gap: 10px;
+    }
+    .tarjeta-balazo {
+      font-size: 17px;
+      line-height: 25px;
+    }
+    .tarjeta-boton {
+      height: 44px;
+      padding: 0 18px;
+    }
+    .es-fila,
+    .es-fila.con-numero {
+      grid-template-columns: 76px minmax(0, 1fr);
+      grid-template-areas:
+        'foto numero'
+        'foto texto';
+      grid-template-rows: auto 1fr;
+      column-gap: 14px;
+      row-gap: 6px;
+      align-items: start;
+      padding: 16px 0;
+    }
+    .es-fila .tarjeta-foto {
+      grid-area: foto;
+    }
+    .tarjeta-numero {
+      grid-area: numero;
+      font-size: var(--text-etiqueta);
+      line-height: 14px;
+    }
+    .es-fila .tarjeta-texto {
+      grid-area: texto;
+      gap: 6px;
+    }
+    .es-fila:not(.con-numero) .tarjeta-texto {
+      grid-row: 1 / -1;
+    }
+    .es-fila .tarjeta-titulo {
+      font-size: 16px;
+      line-height: 20px;
+    }
+    .tarjeta-flecha {
+      display: none;
+    }
+  }
+</style>

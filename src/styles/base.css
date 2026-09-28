@@ -1,52 +1,37 @@
 /**
- * Hoja base del sitio. El ORDEN importa:
+ * Hoja base del sitio. La importa `src/layouts/Base.astro`, y solo él.
  *
- *   1. `ds/styles.css` — el design system completo. Él mismo importa sus 9
- *      archivos de tokens y sus componentes, así que NO se importan por separado
- *      (hacerlo los duplicaba).
- *   2. `beat.css` — los deltas del proyecto. Va DESPUÉS para que gane. En
- *      `web-enfoque` el archivo equivalente iba ANTES, y cualquier regla que
- *      compitiera con el DS perdía ahí; costaba entender por qué.
- *   3. capas de Tailwind.
+ * EL ORDEN DE CAPAS es lo primero, y es la línea que sostiene todo lo demás.
+ * Heredado de web-beat, donde se aprendió midiendo: el CSS sin capa le gana al CSS
+ * en capas —es la cascada—, y Tailwind 4 mete todo lo suyo en `@layer`. Allá el
+ * sistema de diseño venía suelto y le ganaba en silencio a TODA utilidad: `hidden`
+ * no ocultaba un `<svg>` y un `text-[9.5px]` escrito en el marcado no era el que
+ * se pintaba.
  *
- * `src/styles/ds/` es una COPIA de
- * `design/Nuevo sitio de beat full/_ds/copy-of-beat-100-9-design-system-d47698bf-a64c-44d3-8ece-771863d80f6f/`.
- * No se edita: así se puede re-sincronizar cuando cambie el lienzo. La única
- * intervención es haber neutralizado el `@import` de Google Fonts en
- * `tokens/fonts.css` — las fuentes se cargan desde el `<head>` (ver Base.astro) y
- * acabarán auto-hospedadas en `.woff2`.
+ * Con el orden declarado:
+ *   · `theme`      — los tokens (`tokens.css`, vía `@theme`). No compiten con nada.
+ *   · `base`       — el preflight de Tailwind.
+ *   · `proyecto`   — lo nuestro (`sitio.css`, `prosa.css`): le gana al preflight,
+ *                    que es lo que se quiere (los resets de marca mandan).
+ *   · `components`, `utilities` — de Tailwind. Las utilidades le ganan a todo lo
+ *                    anterior, que es para lo que existen.
  *
- * (Vive en `src/` y no se lee de `design/` porque `design/` está en
- * `.dockerignore`: el build de producción no lo tiene.)
+ * Aquí no hay capa `ds` como en web-beat: allá era la copia del sistema de diseño
+ * del lienzo, que se re-sincronizaba sin editarse. En Stereo Cien el sistema son
+ * los tokens de `tokens.css`, y lo que se escribe encima es del proyecto.
+ *
+ * Y la consecuencia que ya costó una tarde allá: el `<style>` de un componente
+ * `.astro` NO lleva capa, así que le gana a todas. Si algo «no hace caso» desde
+ * `sitio.css`, lo primero es buscar si un componente escribe la misma propiedad.
  */
-/* Las @font-face auto-hospedadas van PRIMERO: tienen que existir antes de que el
-   DS declare las familias en `tokens/typography.css`. Generado por `pnpm fuentes`. */
-/*
- * EL ORDEN DE CAPAS. Sin esto, el design system le gana a TODA utilidad de
- * Tailwind, en silencio.
- *
- * El CSS sin capa vence al CSS en capas — es la regla de la cascada, y muerde
- * porque Tailwind 4 mete todo lo suyo en `@layer` y el DS venía suelto. Dos casos
- * medidos en el sitio ya construido:
- *
- *   · `ds/tokens/base.css` declara `img,svg,video{display:block}`, así que `hidden`
- *     NO ocultaba ninguno de los tres. Se vio como dos lupas apiladas en la
- *     cabecera: una era la de móvil, que debía estar oculta.
- *   · `.beat-label` fijaba 11px y le ganaba a `text-[9.5px]` de la nav. El tamaño
- *     escrito en el marcado no era el que se pintaba.
- *
- * Con el orden declarado: el DS le gana al preflight de Tailwind (que es lo que
- * queremos: los resets de marca mandan), `beat.css` le gana al DS (son los deltas
- * del proyecto), y las utilidades le ganan a los dos — que es para lo que existen.
- */
-@layer theme, base, ds, proyecto, components, utilities;
+@layer theme, base, proyecto, components, utilities;
 
-/* Las `@font-face` van sueltas: no compiten con nada y tienen que existir antes de
-   que el DS declare las familias. */
+/* Las `@font-face` van sueltas y primero: no compiten con nada y tienen que
+   existir antes de que alguien declare las familias. Generado por `pnpm fuentes`. */
 @import './fuentes.css';
 
 @import 'tailwindcss';
-@config '../../tailwind.config.js';
+@import './tokens.css';
 
-@import './ds/styles.css' layer(ds);
-@import './beat.css' layer(proyecto);
+@import './sitio.css' layer(proyecto);
+@import './prosa.css' layer(proyecto);

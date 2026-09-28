@@ -1,0 +1,221 @@
+---
+/**
+ * El Inicio: la revista del §5.2 del handoff, en el orden del diseño.
+ *
+ * Es el CASCARÓN: cada sección del diseño está como `<section id="…">` para que
+ * el índice de la barra y el menú de la cabecera tengan a dónde ir, y solo dos se
+ * llenan hoy —«La noticia» y «Lado A · Las de hoy»—, con las notas más recientes.
+ * Las demás esperan su maqueta y su fuente de datos (ver `LADOS` en
+ * `src/config/navegacion.ts`, que dice de dónde sale cada una).
+ *
+ * UNA SECCIÓN SIN CONTENIDO NO PINTA NADA: ni rótulo ni aviso. Queda la
+ * `<section>` vacía, que no ocupa lugar, no se anuncia (sin nombre accesible no es
+ * un punto de referencia) y sigue siendo un ancla válida. Regla heredada de
+ * web-beat: el Inicio se acorta en vez de mostrar un encabezado con nada debajo,
+ * y se va llenando solo conforme la redacción captura, sin un deploy por sección.
+ *
+ * Hoy Stereo Cien tiene CERO notas en el CMS (la migración del WordPress está
+ * pendiente), así que el Inicio real se ve con la barra, la cabecera y el pie. Es
+ * lo correcto. Para verlo con notas en local: `ESTACION_CODIGO=beat`.
+ */
+import Base from '@/layouts/Base.astro';
+import TarjetaNota from '@/components/TarjetaNota.astro';
+import { obtenerNotas } from '@/lib/cms/noticias';
+import { LADOS } from '@/config/navegacion';
+import type { Noticia } from '@/types/payload';
+
+/*
+  Una sola consulta: la más reciente para «La noticia» y las cuatro siguientes
+  para «Las de hoy». `paraPortada` deja fuera las piezas de una lista y lo que la
+  redacción marcó para no salir en el Inicio.
+
+  `obtenerNotas` ya degrada a vacío si el CMS no responde. El `catch` de aquí es el
+  cinturón además de la red: el Inicio es la página que más se sirve, y ninguna
+  falla de datos puede tumbarla a un 500.
+*/
+const { notas } = await obtenerNotas({ paraPortada: true, porPagina: 5 }).catch(() => ({
+  notas: [] as Noticia[],
+}));
+
+const [principal = null, ...siguientes] = notas;
+const lasDeHoy = siguientes.slice(0, 4);
+
+/*
+  Los rótulos del Lado A salen de `LADOS`, los mismos que pinta el índice de la
+  barra: si se renombra la pista, cambian los dos.
+*/
+const ladoA = LADOS.find((l) => l.id === 'a') ?? null;
+const pistaA1 = ladoA?.entradas.find((e) => e.ancla === 'lado-a') ?? null;
+---
+
+{/*
+  Sin `descripcion`: el Inicio cae a la de la casa, que vive en `Base.astro`. Es
+  una sola frase para las dos cosas a propósito; dos textos se desincronizan solos
+  (heredado de web-beat).
+*/}
+<Base titulo="Stereo Cien 100.1 FM">
+  {/*
+    El `h1` del Inicio va SOLO para lectores de pantalla (heredado de web-beat). Un
+    `h1` describe la PÁGINA, no una de sus notas, así que el titular de «La
+    noticia» es un `h2` aunque sea el más grande; y sin este, con cero notas el
+    documento se quedaría sin `h1`.
+  */}
+  <h1 class="sr-only">Stereo Cien 100.1</h1>
+
+  {/* ── La noticia ── */}
+  <section id="noticia" aria-label={principal ? 'La noticia' : undefined}>
+    {
+      principal && (
+        <div class="inicio-bloque es-noticia">
+          <TarjetaNota nota={principal} variante="principal" rotulo="La noticia" prioridad />
+        </div>
+      )
+    }
+  </section>
+
+  {/* ── Lado A · A1 Las de hoy ── */}
+  <section id="lado-a" aria-labelledby={lasDeHoy.length > 0 ? 'titulo-lado-a' : undefined}>
+    {
+      lasDeHoy.length > 0 && (
+        <div class="inicio-bloque es-lado">
+          <div class="lado-cabeza">
+            <h2 class="lado-titulo" id="titulo-lado-a">
+              {ladoA?.nombre ?? 'Lado A'}
+            </h2>
+            <div class="lado-datos">
+              {ladoA?.tema && <span class="lado-tema">{ladoA.tema}</span>}
+              {pistaA1 && (
+                <span class="lado-pista">
+                  {pistaA1.codigo} · {pistaA1.nombre}
+                </span>
+              )}
+            </div>
+          </div>
+          <div class="lado-filete" aria-hidden="true"></div>
+          <ol class="lado-lista">
+            {lasDeHoy.map((nota, i) => (
+              <li>
+                <TarjetaNota nota={nota} variante="fila" numero={i + 1} nivel={3} />
+              </li>
+            ))}
+          </ol>
+        </div>
+      )
+    }
+  </section>
+
+  {/*
+    Las secciones que esperan maqueta y datos, en el orden del diseño. Vacías:
+    no ocupan lugar y no se anuncian, pero el índice de la barra ya llega a ellas.
+  */}
+  <section id="sounds"></section>
+  <section id="vinilos"></section>
+  <section id="podcasts"></section>
+  <section id="lado-b"></section>
+  <section id="comida"></section>
+  <section id="libros"></section>
+  <section id="autos"></section>
+  <section id="relojes"></section>
+  <section id="promos"></section>
+</Base>
+
+<style>
+  /* El margen lateral de la revista es el de todo el sitio (`--margen-revista`);
+     los de arriba son los del tablero: 40 para «La noticia», 88 entre secciones. */
+  .inicio-bloque {
+    padding-inline: var(--margen-revista);
+  }
+  .es-noticia {
+    padding-top: 40px;
+  }
+  .es-lado {
+    padding-top: 88px;
+  }
+
+  /* «LADO A» en grande, y a la derecha el tema y la pista (§5.2). */
+  .lado-cabeza {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .lado-titulo {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 120px;
+    line-height: 0.85;
+    letter-spacing: var(--tracking-titular);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .lado-datos {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    padding-bottom: 8px;
+    text-align: right;
+  }
+  .lado-tema {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: var(--tracking-etiqueta);
+    text-transform: uppercase;
+  }
+  .lado-pista {
+    font-size: var(--text-etiqueta);
+    line-height: var(--text-etiqueta--line-height);
+    color: var(--color-gris-texto);
+    white-space: nowrap;
+  }
+  .lado-filete {
+    margin-top: 20px;
+    height: 2px;
+    background: var(--color-negro);
+  }
+  .lado-lista {
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  /* La última fila no lleva filete debajo, como en el tablero. */
+  .lado-lista > li:last-child > :global(.tarjeta) {
+    border-bottom: 0;
+  }
+
+  /* Corte `amplio` (por debajo de 1600). */
+  @media (max-width: 1599px) {
+    .lado-titulo {
+      font-size: 96px;
+    }
+  }
+
+  /* Por debajo del corte `escritorio` (1280): el tablero móvil (§6). */
+  @media (max-width: 1279px) {
+    .es-noticia {
+      padding-top: 20px;
+    }
+    .es-lado {
+      padding-top: 44px;
+    }
+    .lado-cabeza {
+      gap: 12px;
+    }
+    .lado-titulo {
+      font-size: 52px;
+    }
+    .lado-datos {
+      padding-bottom: 4px;
+    }
+    .lado-tema {
+      font-size: var(--text-etiqueta);
+      line-height: 16px;
+    }
+    .lado-filete {
+      margin-top: 12px;
+    }
+  }
+</style>

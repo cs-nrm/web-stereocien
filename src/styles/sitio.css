@@ -1,0 +1,248 @@
+/**
+ * Lo global del sitio: los resets de marca y el CASCARÓN — «la radio fija, la
+ * revista con scroll» (§1 del handoff).
+ *
+ * Va en la capa `proyecto` (ver `base.css`): le gana al preflight de Tailwind y
+ * pierde contra sus utilidades y contra el `<style>` de cualquier componente.
+ *
+ * El cascarón son cuatro piezas, y las cuatro las pinta `src/layouts/Base.astro`:
+ *
+ *   .split        — el contenedor de las dos mitades.
+ *   .barra        — el `<aside>` de la radio. Lleva `transition:persist`: el
+ *                   reproductor que venga no se corta al navegar (§14).
+ *   .principal    — el `<main>`: cabecera, revista y pie.
+ *   .revista      — lo que pone cada página (`<slot />`).
+ *
+ * Lo que va DENTRO de la barra lo dibuja `src/components/Barra.astro`; aquí solo
+ * vive dónde está y cuánto mide.
+ */
+
+/* ── Medidas del cascarón ──────────────────────────────────────────────── */
+
+:root {
+  /* El ancho de la barra en escritorio, tal cual el §5.1. */
+  --ancho-barra: clamp(560px, 32vw, 640px);
+  /* El margen lateral de la revista: 60 px, 40 px por debajo del corte `amplio`
+     (§5.5) y 16 px en el móvil (§6). Es el `--gx` de los tableros. */
+  --margen-revista: 60px;
+  /*
+    Lo que tapa la cabecera fija: 64 px en escritorio y 52 + 38 en el móvil (la
+    fila del logo y la de las pastillas). Tiene que coincidir con las alturas de
+    `src/components/Cabecera.astro`; si una cambia, cambia la otra.
+  */
+  --alto-cabecera: 64px;
+}
+
+/* Corte `amplio` (1600): por debajo, el margen baja a 40. */
+@media (max-width: 1599px) {
+  :root {
+    --margen-revista: 40px;
+  }
+}
+
+/* Corte `escritorio` (1280): por debajo, la barra deja de ser lateral. */
+@media (max-width: 1279px) {
+  :root {
+    --margen-revista: 16px;
+    --alto-cabecera: 90px;
+  }
+}
+
+/* ── Resets de marca ───────────────────────────────────────────────────── */
+
+html {
+  /*
+    Un salto a un ancla (`/#vinilos`, el índice de la barra) deja la sección
+    DEBAJO de la cabecera fija, no escondida detrás. Va aquí y no como
+    `scroll-margin` en cada sección para que ninguna sección nueva lo olvide.
+  */
+  scroll-padding-top: var(--alto-cabecera);
+}
+
+/*
+  Sin `scroll-behavior: smooth`, aunque los tableros lo traen. Trampa: el
+  `ClientRouter` restaura la posición al volver atrás con un `scrollTo(x, y)` sin
+  `behavior` (`astro/dist/transitions/router.js`), así que con el scroll suave en
+  `html` el regreso al Inicio se vería BAJAR animado desde arriba hasta donde se
+  había quedado el lector. Los tableros no tienen router y ahí no pasaba.
+*/
+
+body {
+  margin: 0;
+  background: var(--color-gris-fondo);
+  color: var(--color-negro);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--color-azul-principal);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--color-marino);
+}
+
+/*
+  Tailwind 4 quitó `cursor: pointer` de su preflight: un `<button>` se comportaría
+  como texto. Heredado de web-beat, donde ya se pagó una vez.
+*/
+button {
+  font: inherit;
+  cursor: pointer;
+}
+button:disabled {
+  cursor: default;
+}
+
+/*
+  El foco visible, SIEMPRE. El diseño lo pinta en cian (§14: «el foco visible»);
+  aquí es azul sobre claro y cian solo sobre azul, porque el anillo de foco tiene
+  que dar 3:1 contra lo que lo rodea (WCAG 1.4.11) y el cian sobre blanco da 2.6:1.
+  La barra, que es azul, lo cambia a cian en su propio `<style>`.
+*/
+:focus-visible {
+  outline: 3px solid var(--color-azul-principal);
+  outline-offset: 2px;
+}
+
+/*
+  «Saltar al contenido»: invisible hasta que alguien llega con el tabulador.
+
+  Aquí hace más falta que en un sitio normal: la barra va PRIMERO en el
+  documento, así que sin este atajo quien navega con teclado cruza toda la radio
+  —y en el móvil, además, la barra se pinta DEBAJO de la cabecera aunque en el
+  documento vaya antes—.
+*/
+.saltar {
+  position: absolute;
+  left: 16px;
+  top: -200px;
+  z-index: 50;
+  padding: 12px 18px;
+  background: var(--color-blanco);
+  color: var(--color-azul-principal);
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--text-etiqueta);
+  line-height: var(--text-etiqueta--line-height);
+  letter-spacing: var(--tracking-etiqueta);
+  text-transform: uppercase;
+}
+.saltar:focus-visible {
+  top: 16px;
+}
+
+/* ── El cascarón: escritorio (corte `escritorio`, 1280 en adelante) ─────── */
+
+.split {
+  display: flex;
+  align-items: flex-start;
+}
+
+/*
+  La barra: fija a la izquierda, a toda la altura de la pantalla (§5.1).
+
+  `sticky` y no `fixed`: así la barra ocupa su lugar en el flujo y la revista no
+  necesita un margen que la esquive, y el día que haya un anuncio a todo lo ancho
+  ENCIMA del cascarón (el masthead del §5.2), la barra se pega arriba sola al
+  pasarlo en vez de taparlo.
+
+  `100dvh` después de `100vh`: el primero es el de respaldo para un navegador que
+  no conozca `dvh`.
+*/
+.barra {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  flex-shrink: 0;
+  width: var(--ancho-barra);
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/*
+  La revista ocupa el resto y mide AL MENOS una pantalla: hoy la estación tiene
+  cero notas, y sin esto el pie quedaría a media altura con la barra azul corriendo
+  sola hasta abajo.
+*/
+.principal {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+.revista {
+  flex: 1 0 auto;
+}
+
+/* ── El cascarón: móvil y tableta (por debajo de 1280) ──────────────────── */
+
+/*
+  La barra deja de ser lateral y entra al flujo como el bloque «equipo» del
+  móvil (§6): debajo de la cabecera y antes de la revista.
+
+  El orden visual NO es el del documento, y es a propósito. En el documento la
+  barra va antes del `<main>` —es lo que la pone a la izquierda en escritorio—,
+  pero en el móvil el diseño pone la cabecera arriba. Se resuelve con una
+  rejilla de cuatro filas: la cabecera en la 1, la barra en la 2, la revista en la
+  3 y el pie en la 4. El `<main>` ocupa las cuatro y reparte sus hijos con
+  `subgrid`, que es lo único que deja a la barra meterse ENTRE dos hijos del
+  `<main>` sin sacarlos de él.
+
+  Trampa que se evitó: la vía corta es `display: contents` en el `<main>`, y hay
+  lectores de pantalla que con eso pierden el punto de referencia «principal».
+  Tampoco sirve envolver la cabecera: dejaría de estar fija, porque `sticky` se
+  pega dentro de su padre.
+
+  Sin `subgrid` (navegadores de antes de 2023) queda el flujo normal: la barra
+  arriba y luego la cabecera. Se lee igual; solo cambia el orden.
+*/
+@media (max-width: 1279px) {
+  .split {
+    display: block;
+  }
+  .barra {
+    position: relative;
+    width: auto;
+    height: auto;
+  }
+  .principal {
+    display: block;
+    min-height: 0;
+  }
+
+  @supports (grid-template-rows: subgrid) {
+    .split {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: repeat(4, auto);
+    }
+    /* Por encima del `<main>`, que la cubre en su fila 2 sin tener nada ahí: sin
+       esto el `<main>` se llevaría los clics de la barra. */
+    .barra {
+      grid-area: 2 / 1;
+      z-index: 1;
+    }
+    .principal {
+      grid-area: 1 / 1 / 5 / 2;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: subgrid;
+    }
+    .principal > .cabecera {
+      grid-row: 1;
+    }
+    .principal > .revista {
+      grid-row: 3;
+    }
+    .principal > .pie {
+      grid-row: 4;
+    }
+  }
+}

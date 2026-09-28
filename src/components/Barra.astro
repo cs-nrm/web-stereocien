@@ -1,0 +1,516 @@
+---
+/**
+ * La barra de la radio: lo que va dentro del `<aside class="barra">` que pinta
+ * `src/layouts/Base.astro` con `transition:persist` (§5.1 del handoff).
+ *
+ * Es el CASCARÓN de la barra, en estático. De arriba abajo pinta lo que ya puede
+ * decir algo verdadero:
+ *   1. la fila de arriba: EN VIVO · 100.1 FM y la cápsula SOUNDS;
+ *   2. el botón grande ESCUCHAR EN VIVO;
+ *   3. la tornamesa, y junto a ella el índice tipo tracklist.
+ *
+ * Y NO pinta AHORA SUENA, el volumen ni las pestañas PROGRAMACIÓN / RECIÉN SONÓ
+ * (puntos 5 a 7 del §5.1): no hay de dónde sacar lo que suena, ni reproductor que
+ * tenga volumen, ni parrilla de Stereo Cien en el CMS. Regla heredada de web-beat:
+ * una zona sin contenido se deja vacía y sin rótulo, nada de «próximamente». Su
+ * lugar es el que queda debajo del disco, que hoy absorbe `.barra-disco` al crecer.
+ *
+ * Todo lo de dentro tiene que ser igual en TODAS las páginas: con
+ * `transition:persist` el marcado de la página nueva se descarta y se queda el de
+ * la primera que se cargó. Por eso los enlaces del índice van a `/#ancla` y no a
+ * `#ancla`, y por eso aquí no se marca nada «activo» desde el servidor.
+ */
+import Tornamesa from './Tornamesa.astro';
+import { LADOS } from '@/config/navegacion';
+
+interface Props {
+  /** El mount de Triton de la estación (`estaciones.tritonMount`), o `null`. */
+  mount?: string | null;
+}
+
+const { mount = null } = Astro.props;
+
+/**
+ * La frecuencia, escrita aquí y no sacada del CMS: `estaciones.nombre` la trae
+ * pegada al nombre («Stereo Cien 100.1») y partir esa cadena sería adivinar la
+ * forma de un texto que captura otra persona. Sale en la fila de arriba y en la
+ * etiqueta del disco.
+ */
+const FRECUENCIA = '100.1';
+---
+
+{/*
+  `id="player"` y `data-mount` son el CONTRATO con el reproductor que venga, con
+  los mismos nombres que usa el reproductor de web-beat: busca `#player`, lee de
+  `data-mount` qué flujo de Triton pedir y engancha el botón por
+  `data-accion="play"`. Hoy ningún script los lee.
+
+  El mount sale del CMS por la estación (`XEOYAM`), no se escribe aquí.
+*/}
+<div class="barra-caja" id="player" data-mount={mount ?? undefined}>
+  <div class="barra-grano" aria-hidden="true"></div>
+
+  <div class="barra-contenido">
+    <div class="barra-fila">
+      {/*
+        EN VIVO · 100.1 FM. En el diseño es un botón que REGRESA al vivo cuando
+        suena un canal de SOUNDS; hoy no hay canales que suenen, así que es un
+        rótulo y no un control. Se vuelve botón con el menú de SOUNDS.
+
+        El punto rojo no late: el latido del diseño dice «esto está sonando», y
+        hoy no suena nada. Es la marca de en vivo, y el rojo solo sirve para eso.
+      */}
+      <p class="barra-vivo">
+        <span class="barra-punto" aria-hidden="true"></span>
+        <span>
+          En vivo<span aria-hidden="true"> · </span>{FRECUENCIA}<span class="barra-fm"> FM</span>
+        </span>
+      </p>
+
+      {/*
+        La cápsula SOUNDS, sin menú todavía.
+
+        Va `disabled` a propósito, como el botón de escuchar de abajo. Heredado de
+        web-beat: un control que no hace nada no se deja inerte, porque un botón
+        muerto es alcanzable con el tabulador y se anuncia en un lector de pantalla
+        — y enseña a desconfiar de los demás. Aquí el diseño lo quiere a la vista,
+        así que se queda, pero deshabilitado: se ve, no se enfoca y se anuncia como
+        no disponible. Quien construya el menú le quita el `disabled`.
+
+        `aria-controls` apunta al contenedor vacío de abajo, que es donde va el
+        menú de canales (§5.3). Existe ya para que la referencia no apunte a nada.
+      */}
+      <button
+        type="button"
+        class="barra-sounds"
+        aria-expanded="false"
+        aria-controls="menu-sounds"
+        disabled
+      >
+        <img
+          class="barra-sounds-marca"
+          src="/img/sounds-palabra-blanca.svg"
+          alt="SOUNDS"
+          width="107"
+          height="13"
+        />
+        <svg
+          aria-hidden="true"
+          focusable="false"
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M6 9l6 6 6-6"></path>
+        </svg>
+      </button>
+      <div id="menu-sounds" class="barra-menu-sounds" hidden></div>
+    </div>
+
+    {/*
+      ESCUCHAR EN VIVO. HOY NO HACE NADA: no hay reproductor. Va `disabled` por la
+      misma razón que la cápsula de arriba, y el reproductor, cuando llegue, lo
+      engancha por `data-accion="play"` y le quita el `disabled`.
+
+      El ecualizador está QUIETO, en el 28 % de alto que el diseño le da en reposo.
+    */}
+    <button type="button" class="barra-escuchar" data-accion="play" disabled>
+      <span class="barra-escuchar-circulo" aria-hidden="true">
+        <svg aria-hidden="true" focusable="false" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M8 5.6v12.8c0 .8.9 1.3 1.5.8l10-6.4c.6-.4.6-1.2 0-1.6l-10-6.4C8.9 4.3 8 4.8 8 5.6z"></path>
+        </svg>
+      </span>
+      <span class="barra-escuchar-texto">Escuchar en vivo</span>
+      <span class="barra-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    </button>
+
+    <div class="barra-disco">
+      <Tornamesa frecuencia={FRECUENCIA} />
+
+      {/*
+        El índice tipo tracklist (§5.1, punto 4), desde `LADOS`.
+
+        En el diseño cada fila se ilumina con el scroll cuando su sección está a la
+        vista. Eso es movimiento guiado por el scroll y no entra en el cascarón: hoy
+        el índice es una lista de enlaces, todos en blanco. La línea que se llena y
+        el marcador que se enciende se agregan encima sin tocar este marcado.
+
+        Una lista dentro de otra: los lados y, dentro de cada uno, sus pistas. Es lo
+        que un lector de pantalla necesita para anunciar «lista, 4 elementos» en vez
+        de doce enlaces sueltos.
+
+        GANA se pinta como UNA fila: su única entrada repite el `tema` y el `ancla`
+        del lado (ver `LADOS`).
+      */}
+      <nav class="indice" aria-label="Índice de la revista">
+        <span class="indice-riel" aria-hidden="true"></span>
+        <ul class="indice-lados">
+          {
+            LADOS.map((lado) => {
+              const pistas = lado.id === 'gana' ? [] : lado.entradas;
+              return (
+                <li class="indice-lado">
+                  <a class="indice-lado-enlace" href={`/#${lado.ancla}`}>
+                    <span class="indice-lado-nombre">{lado.nombre}</span>
+                    <span class="indice-lado-tema">{lado.tema}</span>
+                  </a>
+                  {pistas.length > 0 && (
+                    <ul class="indice-pistas">
+                      {pistas.map((pista) => (
+                        <li>
+                          <a class="indice-pista" href={`/#${pista.ancla}`}>
+                            <span class="indice-marca" aria-hidden="true"></span>
+                            <span class="indice-codigo">{pista.codigo}</span>
+                            <span class="indice-nombre">{pista.nombre}</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              );
+            })
+          }
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<style>
+  /*
+    El fondo del §5.1: el azul de la marca, un brillo radial cian y la textura de
+    grano encima. El cian aquí es luz, no texto.
+  */
+  .barra-caja {
+    position: relative;
+    height: 100%;
+    background-color: var(--color-azul-principal);
+    background-image: radial-gradient(
+      circle at 30% 46%,
+      rgb(41 171 226 / 0.3) 0%,
+      rgb(41 171 226 / 0) 50%
+    );
+    color: var(--color-blanco);
+  }
+  .barra-grano {
+    position: absolute;
+    inset: 0;
+    background-image: url('/img/grano.png');
+    background-size: 256px 256px;
+    pointer-events: none;
+  }
+
+  /* Sobre azul, el anillo de foco es cian: ahí sí da el contraste (5.6:1). Ver
+     `src/styles/sitio.css`. */
+  .barra-caja :focus-visible {
+    outline-color: var(--color-logo-cian);
+  }
+
+  .barra-contenido {
+    position: relative;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 24px 36px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  /* ── 1. La fila de arriba ── */
+  .barra-fila {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 34px;
+    flex-shrink: 0;
+  }
+  .barra-vivo {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: var(--text-etiqueta);
+    line-height: var(--text-etiqueta--line-height);
+    letter-spacing: var(--tracking-etiqueta);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .barra-punto {
+    flex-shrink: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 9999px;
+    background: var(--color-rojo-vivo);
+  }
+  .barra-sounds {
+    margin-left: auto;
+    flex-shrink: 0;
+    height: 34px;
+    box-sizing: border-box;
+    padding: 0 12px 0 10px;
+    border: 1.5px solid rgb(255 255 255 / 0.55);
+    border-radius: 9999px;
+    background: transparent;
+    color: var(--color-blanco);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+  }
+  .barra-sounds-marca {
+    display: block;
+    width: auto;
+    height: 13px;
+  }
+  /* Corte `panoramico` (por debajo de 1800): la palabra baja a 12 px de alto. */
+  @media (max-width: 1799px) {
+    .barra-sounds-marca {
+      height: 12px;
+    }
+  }
+
+  /* ── 2. El botón grande ── */
+  .barra-escuchar {
+    flex-shrink: 0;
+    height: 64px;
+    box-sizing: border-box;
+    padding: 0 22px 0 8px;
+    border: 0;
+    border-radius: 9999px;
+    background: var(--color-blanco);
+    color: var(--color-azul-principal);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 12px 28px rgb(0 0 0 / 0.25);
+    text-align: left;
+  }
+  /* El círculo rojo es marca del reproductor; el triángulo va en negro sobre él,
+     como en el diseño. */
+  .barra-escuchar-circulo {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 9999px;
+    background: var(--color-rojo-vivo);
+    color: var(--color-negro);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .barra-escuchar-texto {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 15px;
+    line-height: 18px;
+    letter-spacing: var(--tracking-etiqueta);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .barra-eq {
+    margin-left: auto;
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 22px;
+  }
+  .barra-eq i {
+    display: block;
+    width: 4px;
+    height: 100%;
+    background: var(--color-logo-cian);
+    transform-origin: 50% 100%;
+    scale: 1 0.28;
+  }
+
+  /* ── 3. La tornamesa y el índice ── */
+  .barra-disco {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  /*
+    `--ixh` es la altura de cada fila del índice (§5.5): 22 px, y baja con el alto
+    de la pantalla para que el índice quepa junto al disco en un portátil.
+  */
+  .indice {
+    --ixh: 22px;
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 0;
+    box-sizing: border-box;
+    padding-left: 20px;
+  }
+  @media (max-height: 879px) {
+    .indice {
+      --ixh: 20px;
+    }
+  }
+  @media (max-height: 759px) {
+    .indice {
+      --ixh: 18px;
+    }
+  }
+  .indice-riel {
+    position: absolute;
+    left: 3px;
+    top: 30px;
+    bottom: 30px;
+    width: 1px;
+    background: rgb(255 255 255 / 0.25);
+  }
+  .indice-lados,
+  .indice-pistas {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .indice-lado + .indice-lado {
+    margin-top: 8px;
+  }
+  .indice a {
+    color: var(--color-blanco);
+    white-space: nowrap;
+  }
+  .indice a:hover {
+    color: var(--color-blanco);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .indice-lado-enlace {
+    height: 22px;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .indice-lado-nombre {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: var(--text-etiqueta);
+    line-height: 16px;
+    letter-spacing: var(--tracking-rotulo);
+    text-transform: uppercase;
+  }
+  .indice-lado-tema {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: var(--text-etiqueta);
+    line-height: 16px;
+    color: var(--color-gris-footer-texto);
+  }
+  .indice-pista {
+    position: relative;
+    height: var(--ixh);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  /* El marcador de cada pista sobre el riel. Es gráfico y va apagado: el que se
+     enciende con el scroll llega con el movimiento. */
+  .indice-marca {
+    position: absolute;
+    left: -20px;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    margin-top: -3.5px;
+    border-radius: 9999px;
+    background-color: #5b6e9a;
+  }
+  .indice-codigo {
+    flex-shrink: 0;
+    width: 20px;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: var(--text-etiqueta);
+    line-height: 14px;
+    letter-spacing: var(--tracking-titular);
+  }
+  .indice-nombre {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 500;
+  }
+
+  /*
+    ── Por debajo del corte `escritorio` (1280): el bloque «equipo» del móvil ──
+
+    La barra entra al flujo debajo de la cabecera (ver `src/styles/sitio.css`) y
+    se compacta con las medidas del tablero móvil (§6): márgenes de 16, botón de 56
+    y la tornamesa chica. El índice se queda junto al disco, en el lugar donde el
+    móvil del diseño pone AHORA SUENA, que hoy no se pinta.
+  */
+  @media (max-width: 1279px) {
+    .barra-caja {
+      height: auto;
+      background-image: radial-gradient(
+        circle at 26% 44%,
+        rgb(41 171 226 / 0.3) 0%,
+        rgb(41 171 226 / 0) 55%
+      );
+    }
+    .barra-contenido {
+      height: auto;
+      padding: 16px;
+      gap: 12px;
+    }
+    .barra-fila {
+      height: 32px;
+      gap: 10px;
+    }
+    .barra-vivo {
+      gap: 9px;
+      letter-spacing: var(--tracking-rotulo);
+    }
+    /* El móvil del diseño dice «EN VIVO · 100.1», sin FM. */
+    .barra-fm {
+      display: none;
+    }
+    .barra-punto {
+      width: 9px;
+      height: 9px;
+    }
+    .barra-sounds {
+      height: 32px;
+      padding: 0 10px 0 8px;
+      gap: 7px;
+    }
+    .barra-sounds-marca {
+      height: 12px;
+    }
+    .barra-escuchar {
+      height: 56px;
+      padding: 0 18px 0 6px;
+      gap: 14px;
+    }
+    .barra-escuchar-circulo {
+      width: 44px;
+      height: 44px;
+    }
+    .barra-escuchar-texto {
+      font-size: 14px;
+    }
+    .barra-eq {
+      height: 20px;
+    }
+    .indice {
+      --ixh: 20px;
+    }
+  }
+</style>

@@ -1,15 +1,38 @@
 /**
  * Baja las webfonts a `public/fuentes/` y genera `src/styles/fuentes.css`.
  *
+ * Se corre A MANO (`pnpm fuentes`) y la salida se commitea: el build no baja
+ * nada de Google, y así el sitio no depende de que Google responda el día que se
+ * construye la imagen.
+ *
  * Solo los subconjuntos `latin` y `latin-ext`: el español no necesita más, y el
  * `unicode-range` hace que `latin-ext` solo se descargue si aparece un carácter
  * que lo requiera, así que incluirlo es gratis en tiempo de ejecución.
  *
- * Diferencia respecto al script equivalente de `web-enfoque`: las tres familias de
- * Beat son VARIABLES y con más de un eje, así que este sí captura `font-style`
- * (Schibsted Grotesk trae eje de itálica) y `font-stretch` (Archivo y Martian Mono
- * traen eje de ancho, y el DS usa Archivo expandido a wdth 125). Allá se
- * hardcodeaba `font-style: normal` porque ninguna familia lo necesitaba.
+ * Heredado de web-beat, con una diferencia: allá las tres familias eran
+ * VARIABLES y cada archivo se nombraba `-var`. Aquí no todas lo son, y lo que
+ * devuelve Google depende de lo que se le pida (verificado con curl el
+ * 2026-09-28):
+ *   · Montserrat pedida en un solo peso (`wght@900`) llega como archivo ESTÁTICO
+ *     de ese peso, más chico que el variable completo. Es lo que conviene: el
+ *     diseño solo usa el 900.
+ *   · Roboto y Libre Baskerville (redonda) son variables: pedidas en rango
+ *     (`400..700`) llegan como UN archivo por subconjunto que cubre todos los
+ *     pesos. Pedidas por pesos sueltos Google devuelve ese mismo archivo repetido
+ *     en tres `@font-face`, o sea lo mismo con más texto.
+ *   · La itálica de Libre Baskerville se pide solo en 400 (los balazos) y llega
+ *     estática.
+ * Por eso el archivo se nombra por familia, PESO y estilo (`roboto-400-700-latin`),
+ * no por «variable o no», y se baja una sola vez aunque dos bloques lo compartan.
+ *
+ * Y la display NO es la de marca. El diseño pide Lovelo Black (§8 del handoff),
+ * que no está disponible: no hay archivo en el paquete de diseño ni licencia para
+ * servirla en web. Hasta que llegue, la display es Montserrat 900, que es la
+ * alternativa que el propio diseño declara (`'Lovelo', 'Montserrat', sans-serif`).
+ * El día que llegue la licencia: se pone el `.woff2` de Lovelo Black en
+ * `public/fuentes/`, se cambia la entrada de Montserrat de abajo (o su `@font-face`
+ * a mano si no viene de Google) y la familia de `--font-display` en
+ * `src/styles/tokens.css`. Nada más cambia.
  */
 import { mkdir, writeFile } from 'node:fs/promises';
 
@@ -19,30 +42,30 @@ const DEST = 'public/fuentes';
 const SUBSETS = new Set(['latin', 'latin-ext']);
 
 /**
- * Estas NO son las tipografías de marca de Beat: son sustitutos. El propio DS
- * lo dice ("no licensed brand fonts were provided"). Cuando lleguen las
- * licenciadas, se cambian los `.woff2` de `public/fuentes/` y las familias de
- * `ds/tokens/typography.css`; el resto del sitio no se toca.
+ * Lo que el diseño usa de verdad (§8 del handoff), y ni un peso más:
+ *   · Montserrat 900 — display, siempre en mayúsculas (sustituta de Lovelo).
+ *   · Libre Baskerville 400 y 700, e itálica 400 — el texto editorial; los
+ *     balazos van en itálica.
+ *   · Roboto 400 a 700 — interfaz y etiquetas (el diseño usa 400, 500 y 700).
  *
- * Los rangos se recortan a lo que el DS usa de verdad, no al máximo que ofrece
- * cada familia:
- *   · Archivo   — display. wdth 100..125 (el DS define 125 y 100), wght 400..800.
- *   · Schibsted — texto. wght 400..800, CON itálica: no la usa ningún rol
- *                 `--type-*`, pero el cuerpo editorial viene de Lexical y puede
- *                 traer `<em>`; sin cara real el navegador sintetiza una oblicua,
- *                 que en una cara de texto se ve mal.
- *   · Martian   — metadata y etiquetas. Solo wght 400..600 (`--type-mono` 400 y
- *                 `--type-label` 600); no se pide el eje de ancho.
+ * `archivo` es el prefijo del nombre local. Las cuatro son SIL Open Font License
+ * 1.1, que permite auto-hospedarlas y redistribuirlas.
  */
 const FAMILIAS = [
-  { nombre: 'Archivo', consulta: 'Archivo:wdth,wght@100..125,400..800', archivo: 'archivo' },
-  { nombre: 'Schibsted Grotesk', consulta: 'Schibsted+Grotesk:ital,wght@0,400..800;1,400..800', archivo: 'schibsted-grotesk' },
-  { nombre: 'Martian Mono', consulta: 'Martian+Mono:wght@400..600', archivo: 'martian-mono' },
+  { nombre: 'Montserrat', consulta: 'Montserrat:wght@900', archivo: 'montserrat' },
+  {
+    nombre: 'Libre Baskerville',
+    consulta: 'Libre+Baskerville:ital,wght@0,400..700;1,400',
+    archivo: 'libre-baskerville',
+  },
+  { nombre: 'Roboto', consulta: 'Roboto:wght@400..700', archivo: 'roboto' },
 ];
 
 await mkdir(DEST, { recursive: true });
 
 const bloques = [];
+/** URL de Google → nombre local, para no bajar dos veces el mismo archivo. */
+const bajados = new Map();
 let totalBytes = 0;
 
 for (const fam of FAMILIAS) {
@@ -67,15 +90,21 @@ for (const fam of FAMILIAS) {
     if (!urlFuente) continue;
 
     const italica = estilo.startsWith('italic') || estilo.startsWith('oblique');
-    const nombreLocal = `${fam.archivo}-var${italica ? '-italic' : ''}-${subset}.woff2`;
+    const nombreLocal = `${fam.archivo}-${peso.replace(/\s+/g, '-')}${italica ? '-italica' : ''}-${subset}.woff2`;
 
-    const bin = Buffer.from(
-      await (await fetch(urlFuente, { headers: { 'User-Agent': UA } })).arrayBuffer(),
-    );
-    await writeFile(`${DEST}/${nombreLocal}`, bin);
-    totalBytes += bin.length;
-    n++;
-    console.log(`  ${nombreLocal.padEnd(44)} ${(bin.length / 1024).toFixed(1).padStart(6)} KB  (${estilo}, peso ${peso}${ancho ? `, ancho ${ancho}` : ''})`);
+    if (!bajados.has(urlFuente)) {
+      const bin = Buffer.from(
+        await (await fetch(urlFuente, { headers: { 'User-Agent': UA } })).arrayBuffer(),
+      );
+      await writeFile(`${DEST}/${nombreLocal}`, bin);
+      bajados.set(urlFuente, nombreLocal);
+      totalBytes += bin.length;
+      n++;
+      console.log(
+        `  ${nombreLocal.padEnd(46)} ${(bin.length / 1024).toFixed(1).padStart(6)} KB  (${estilo}, peso ${peso}${ancho ? `, ancho ${ancho}` : ''})`,
+      );
+    }
+    const archivoLocal = bajados.get(urlFuente);
 
     bloques.push(
       [
@@ -86,7 +115,7 @@ for (const fam of FAMILIAS) {
         `  font-weight: ${peso};`,
         ...(ancho ? [`  font-stretch: ${ancho};`] : []),
         `  font-display: swap;`,
-        `  src: url('/fuentes/${nombreLocal}') format('woff2');`,
+        `  src: url('/fuentes/${archivoLocal}') format('woff2');`,
         ...(rango ? [`  unicode-range: ${rango};`] : []),
         `}`,
       ].join('\n'),
@@ -98,26 +127,21 @@ for (const fam of FAMILIAS) {
 const cabecera = `/* ============================================================
    WEBFONTS AUTO-HOSPEDADAS
    ------------------------------------------------------------
-   El DS las cargaba con \`@import url(fonts.googleapis.com…)\` DENTRO del CSS
-   (\`ds/tokens/fonts.css\`). Esa es la forma más lenta que existe: el navegador
-   descarga el CSS, lo parsea, DESCUBRE el @import, pide OTRO CSS a otro dominio y
-   solo entonces pide los woff2 — una cadena en serie de 3+ viajes, toda ella
-   bloqueando el pintado. En red móvil se nota. El propio readme del DS pide
-   exactamente este cambio.
+   Los tableros del diseño las cargan con un <link> a fonts.googleapis.com. Aquí
+   no: los woff2 se sirven desde nuestro dominio, así que no hay DNS ni TLS a
+   terceros antes del primer pintado, se cachean como cualquier otro archivo del
+   sitio y no se le manda a Google la IP del lector en cada visita (heredado de
+   web-beat, que ya lo hizo así).
 
-   Ahora los woff2 se sirven desde nuestro dominio: una sola conexión, sin DNS/TLS
-   a terceros, cacheables por el CDN como cualquier otro asset, y sin mandarle a
-   Google la IP del lector en cada visita.
+   Tres familias: Montserrat 900 (display, sustituta de Lovelo Black mientras no
+   haya licencia), Libre Baskerville (texto editorial, con itálica para los
+   balazos) y Roboto (interfaz y etiquetas). El porqué de cada peso está en
+   \`scripts/fuentes.mjs\`.
 
-   Las tres familias son VARIABLES: un archivo por subset cubre todo el rango de
-   pesos pedido. Schibsted Grotesk lleva además su cara itálica real.
-
-   Y son SUSTITUTOS, no las tipografías de marca de Beat ("no licensed brand
-   fonts were provided", dice el DS). Al llegar las licenciadas se reemplazan estos
-   archivos y las familias de \`ds/tokens/typography.css\`; nada más cambia.
-
-   🤖 GENERADO por \`scripts/fuentes.mjs\` — no editar a mano. Volver a correr
-   \`pnpm fuentes\` si cambian las familias o los rangos.
+   GENERADO por \`scripts/fuentes.mjs\` — no editar a mano. Volver a correr
+   \`pnpm fuentes\` si cambian las familias o los pesos, y revisar que los
+   \`<link rel="preload">\` de \`src/layouts/Base.astro\` sigan apuntando a
+   archivos que existen: se nombran por familia, peso y subconjunto.
 
    Licencias: las tres son SIL Open Font License 1.1, que permite auto-hospedarlas
    y redistribuirlas.
@@ -126,4 +150,4 @@ const cabecera = `/* ===========================================================
 `;
 
 await writeFile('src/styles/fuentes.css', cabecera + bloques.join('\n\n') + '\n');
-console.log(`TOTAL: ${(totalBytes / 1024).toFixed(1)} KB en ${bloques.length} archivos`);
+console.log(`TOTAL: ${(totalBytes / 1024).toFixed(1)} KB en ${bajados.size} archivos, ${bloques.length} @font-face`);

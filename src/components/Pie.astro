@@ -1,0 +1,139 @@
+---
+/**
+ * El pie, en su versión MÍNIMA: la estación, sus redes y el año.
+ *
+ * El diseño dibuja bastante más (§5.2, «Cierre»): el newsletter, tres columnas
+ * —SECCIONES, NRM COMUNICACIONES, ESCÚCHANOS—, los legales y el botón REDUCIR
+ * MOVIMIENTO. Nada de eso entra en el cascarón:
+ *   · el newsletter necesita un formulario y un proveedor que este sitio
+ *     todavía no tiene;
+ *   · las secciones todavía no tienen página propia;
+ *   · REDUCIR MOVIMIENTO no tiene qué reducir: el cascarón no trae animaciones
+ *     propias, y lo único que se mueve —el fundido entre páginas del
+ *     `ClientRouter`— ya se apaga solo con `prefers-reduced-motion`.
+ * Las listas de destinos que ya existen (`APPS`, `MARCAS_NRM`, `LEGALES` en
+ * `src/config/navegacion.ts`) están listas para cuando se maquete el pie completo.
+ *
+ * Las redes llegan ya resueltas desde el layout (`redesEstacion()`, que junta el
+ * CMS con el respaldo): son las MISMAS que el JSON-LD del Inicio declara como
+ * `sameAs`, y solo se pintan las que traen URL. Sin ninguna, la lista no sale.
+ */
+interface Props {
+  /** El nombre de la estación, tal como lo trae el CMS: «Stereo Cien 100.1». */
+  nombre: string;
+  redes: Array<{ red: string; url: string }>;
+}
+
+const { nombre, redes } = Astro.props;
+
+/**
+ * El año en la hora de la Ciudad de México, no en la del servidor: el proceso
+ * puede correr en UTC, y la noche del 31 de diciembre el pie diría el año que
+ * viene seis horas antes.
+ */
+const anio = new Intl.DateTimeFormat('es-MX', {
+  timeZone: 'America/Mexico_City',
+  year: 'numeric',
+}).format(new Date());
+---
+
+<footer class="pie">
+  <div class="pie-fila">
+    <div class="pie-marca">
+      <img src="/img/stereocien.svg" alt="" width="133" height="44" loading="lazy" decoding="async" />
+      <p class="pie-nombre">{nombre}</p>
+    </div>
+    {
+      redes.length > 0 && (
+        <ul class="pie-redes" aria-label="Redes sociales">
+          {redes.map((r) => (
+            <li>
+              <a href={r.url} target="_blank" rel="noopener noreferrer me">
+                {r.red}
+                <span class="sr-only"> (se abre en otra pestaña)</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+  <p class="pie-legal">© {anio} NRM Comunicaciones</p>
+</footer>
+
+<style>
+  .pie {
+    box-sizing: border-box;
+    padding: 48px var(--margen-revista);
+    background: var(--color-blanco);
+    border-top: 1px solid rgb(0 0 0 / 0.1);
+  }
+  .pie-fila {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px 40px;
+  }
+  .pie-marca {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .pie-marca img {
+    display: block;
+    width: auto;
+    height: 44px;
+  }
+  .pie-nombre {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: var(--text-etiqueta);
+    line-height: var(--text-etiqueta--line-height);
+    letter-spacing: var(--tracking-etiqueta);
+    text-transform: uppercase;
+    color: var(--color-azul-principal);
+  }
+  /* Las redes como en el tablero: en mayúsculas, 12 px y en el azul de la marca. */
+  .pie-redes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  /* `position: relative`: el texto oculto del enlace es `position: absolute` y se
+     queda dentro de su enlace (ver la trampa anotada en `Cabecera.astro`). */
+  .pie-redes a {
+    position: relative;
+    font-size: var(--text-etiqueta);
+    line-height: var(--text-etiqueta--line-height);
+    font-weight: 700;
+    letter-spacing: var(--tracking-titular);
+    text-transform: uppercase;
+    color: var(--color-azul-principal);
+  }
+  .pie-redes a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .pie-legal {
+    margin: 36px 0 0;
+    padding-top: 20px;
+    border-top: 1px solid rgb(0 0 0 / 0.1);
+    font-size: var(--text-etiqueta);
+    line-height: var(--text-etiqueta--line-height);
+    color: var(--color-gris-texto);
+  }
+
+  @media (max-width: 1279px) {
+    .pie {
+      padding: 28px var(--margen-revista) 32px;
+    }
+    .pie-legal {
+      margin-top: 24px;
+    }
+  }
+</style>

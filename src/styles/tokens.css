@@ -1,0 +1,124 @@
+/**
+ * Los tokens de Stereo Cien, expuestos a Tailwind 4.
+ *
+ * La fuente es el §8 del handoff (`design/stereo-cien-home-handoff/
+ * stereo-cien-home-handoff.md`), NO las notas de `project/ds/stereo-cien/
+ * tokens.json`: el propio handoff avisa que esas notas son viejas y describen
+ * `marino` y `azul-acero` con otros usos. Los VALORES coinciden; lo que manda en
+ * el uso es el §8.
+ *
+ * `@theme` hace dos cosas a la vez: declara cada token como variable CSS en
+ * `:root` y genera sus utilidades (`bg-azul-principal`, `font-display`,
+ * `rounded-md`…). Va con `static` a propósito: sin eso Tailwind solo emite las
+ * variables que encuentra usadas en clases, y casi todo el CSS de este sitio las
+ * lee con `var()` desde el `<style>` de cada componente, que Tailwind no ve. El
+ * síntoma sería el peor posible —el sitio no truena, se pinta sin colores—.
+ *
+ * Tailwind mete `@theme` en su capa `theme`, que es la primera del orden que
+ * declara `base.css`: los tokens no compiten con nada, solo se leen.
+ */
+@theme static {
+  /*
+    La paleta ENTERA de Tailwind fuera. Sin esto, `text-red-500` o `bg-sky-400`
+    funcionan, y son la puerta para meter un color que la marca no tiene o para
+    escribir texto en cian. Lo que no está aquí no existe en este sitio.
+  */
+  --color-*: initial;
+
+  /* Marca. Fondo de la barra del reproductor y texto o acento sobre blanco o gris
+     (14.8:1 sobre blanco). */
+  --color-azul-principal: #012169;
+  /* Fondos profundos: la sección SOUNDS. */
+  --color-marino: #04095d;
+  /*
+    SOLO como gráfico o relleno: ecualizador, marcadores, brillos, el anillo de
+    foco sobre azul. NUNCA como texto: sobre blanco da 2.6:1.
+  */
+  --color-logo-cian: #29abe2;
+  /*
+    No es token del sistema de diseño, pero tiene regla propia y por eso vive
+    aquí: SOLO para marcas de en vivo y del reproductor (el punto de EN VIVO, el
+    círculo del botón de escuchar, la aguja de «ahora»). Nunca como texto de menos
+    de 24 px.
+  */
+  --color-rojo-vivo: #ef4444;
+  /* Texto principal. */
+  --color-negro: #000000;
+  /* Fondos de cabecera y tarjetas; texto sobre azul. */
+  --color-blanco: #ffffff;
+  /* Fondo de página. */
+  --color-gris-fondo: #f5f5f5;
+  /* Fondo de Vinilos. */
+  --color-crema: #f5f3e7;
+  /* Texto secundario sobre claro (5.7:1 sobre blanco). */
+  --color-gris-texto: #666666;
+  /* Texto secundario sobre oscuro (8.2:1 sobre el azul principal). */
+  --color-gris-footer-texto: #c1c1c1;
+  /* La etiqueta PUBLICIDAD sobre blanco. Hoy no hay anuncios en el sitio; el
+     token se queda porque es del sistema y la etiqueta tiene un color fijado. */
+  --color-gris-publicidad: #71717a;
+  /* Los patrones de los discos de los canales SOUNDS. */
+  --color-logo-indigo: #2a3b8f;
+  --color-azul-acero: #24628c;
+  /*
+    El acento lima de la exploración v1 NO está, y es deliberado: el diseño lo
+    eliminó (§8 y §16 del handoff). Las notas de `tokens.json` todavía lo
+    mencionan; no mandan.
+  */
+
+  /*
+    Las tres familias, con los nombres de `tokens.json` (display, serif, sans).
+
+    `display` NO lleva 'Lovelo' delante aunque el diseño la escriba así. Sin
+    archivo ni licencia (ver `scripts/fuentes.mjs`), ponerla primero solo haría que
+    quien la tenga instalada en su computadora vea otra letra que el resto. El día
+    que llegue la licencia se cambia esta línea y el archivo, y nada más.
+  */
+  --font-display: 'Montserrat', system-ui, sans-serif;
+  --font-serif: 'Libre Baskerville', Georgia, serif;
+  --font-sans: 'Roboto', system-ui, sans-serif;
+
+  /*
+    El texto más chico del sitio: antetítulos, botones y etiquetas. Es también el
+    MÍNIMO (§8): nada en este sitio va por debajo de 12 px.
+  */
+  --text-etiqueta: 12px;
+  --text-etiqueta--line-height: 16px;
+
+  /* El `letter-spacing` de las mayúsculas del diseño: 3 px en antetítulos y
+     botones grandes, 2 px en rótulos de índice y pestañas, 1 px en titulares. */
+  --tracking-etiqueta: 3px;
+  --tracking-rotulo: 2px;
+  --tracking-titular: 1px;
+
+  /*
+    Los cortes del diseño, y ninguno más.
+
+    Los de Tailwind (sm 640, md 768, lg 1024…) se quitan por la misma razón que
+    web-beat quitó los suyos: si `lg:` significara una cosa en el código y otra en
+    el diseño, sería la desalineación que nadie detecta hasta que algo se ve mal.
+
+      escritorio 1280 — la barra se vuelve lateral y fija. Es el `min-width` del
+                        tablero de escritorio (C3-Desktop): por debajo, una barra de
+                        560 px mínimo dejaría la revista en menos de 720, que el
+                        diseño no dibuja.
+      amplio     1600 — margen de 60 px y la noticia a dos columnas (§5.5).
+      panoramico 1800 — el menú completo de la cabecera (§5.5).
+
+    Los `@media` de los `<style>` no pueden leer estas variables: ahí van los
+    mismos números escritos, y cada uno cita el corte por su nombre.
+  */
+  --breakpoint-*: initial;
+  --breakpoint-escritorio: 80rem;
+  --breakpoint-amplio: 100rem;
+  --breakpoint-panoramico: 112.5rem;
+
+  /* Radios de `tokens.json`. Las notas y sus fotos van en esquina RECTA (§8): el
+     redondeo es para piezas de audio, botones y contenedores. */
+  --radius-*: initial;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 35px;
+}

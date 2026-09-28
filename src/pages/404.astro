@@ -2,94 +2,117 @@
 /**
  * 404.
  *
- * En `web-enfoque` los 404 son el **28% del tráfico** —bots y enlaces viejos—,
- * así que esta página se sirve muchísimo. Por eso es barata: no consulta el CMS
- * más de lo que ya consulta el layout, y el middleware la cachea
- * (`s-maxage=60, swr=600`).
+ * Una página que se sirve MUCHO: en `web-enfoque` los 404 son el 28 % del tráfico
+ * —bots y enlaces viejos—, y aquí va a pesar más en el corte, porque el sitio
+ * viejo tiene unas mil notas vivas en `/<sección>/<slug>/`. Las que se migren
+ * llegan a su nota nueva por el mapa de 301 que consulta el middleware
+ * (`src/config/redirecciones/sitio-viejo.json`, que llena el importador); las que
+ * no, y los índices de sección, caen aquí. Por eso es barata: no consulta el CMS
+ * más de lo que ya consulta el layout (heredado de web-beat).
  *
- * Y va a importar más de lo normal en el corte: cientos de URLs de
- * `beatdigital.mx` están indexadas y su contenido NO va a existir en el sitio
- * nuevo (C4 del plan). Hasta que se decida el 301/410 por grupo, caen aquí.
+ * También es a donde reescribe una nota que no existe
+ * (`src/pages/noticias/[slug].astro`), y con estado 404 real.
  */
 import Base from '@/layouts/Base.astro';
 ---
 
 <Base
-  titulo="No encontramos esa página — Beat 100.9"
+  titulo="No encontramos esa página — Stereo Cien 100.1"
   descripcion="La página que buscas no existe o cambió de lugar."
 >
   <div class="e404">
-    <span class="beat-label e404-codigo">ERROR 404</span>
-    <h1 class="beat-display e404-titulo">ESTA PÁGINA<br />NO EXISTE</h1>
+    <p class="e404-codigo">Error 404</p>
+    <h1 class="e404-titulo">Esta página no existe</h1>
     <p class="e404-texto">
-      Puede que el enlace esté roto, o que la página haya cambiado de lugar con el nuevo sitio.
-      La radio sigue al aire mientras lo averiguas.
+      Puede que el enlace esté roto, o que la página haya cambiado de lugar con el sitio nuevo.
     </p>
-    <div class="e404-salidas">
-      <a href="/" class="beat-label e404-cta">IR AL INICIO</a>
-      <a href="/beat-scanner" class="beat-label e404-cta es-hueco">VER BEAT SCANNER</a>
-    </div>
+    <a href="/" class="e404-salida">
+      Ir al inicio
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.4"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M5 12h14M13 6l6 6-6 6"></path>
+      </svg>
+    </a>
   </div>
 </Base>
 
 <style>
   .e404 {
-    max-width: 62ch;
+    box-sizing: content-box;
+    max-width: 640px;
     margin: 0 auto;
-    padding: 88px 24px 120px;
-    text-align: center;
+    padding: 88px var(--margen-revista) 120px;
   }
   .e404-codigo {
-    color: var(--text-accent);
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: var(--text-etiqueta);
+    line-height: var(--text-etiqueta--line-height);
+    letter-spacing: var(--tracking-etiqueta);
+    text-transform: uppercase;
+    color: var(--color-azul-principal);
   }
   .e404-titulo {
-    margin: 18px 0 0;
-    font-size: var(--size-display-2);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 0.94;
-    color: var(--mist-1);
+    margin: 16px 0 0;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(44px, 4vw, 72px);
+    line-height: 0.92;
+    letter-spacing: var(--tracking-titular);
+    text-transform: uppercase;
+    text-wrap: balance;
   }
   .e404-texto {
-    font: var(--type-body-lg);
-    color: var(--text-muted);
-    margin: 22px auto 0;
+    margin: 22px 0 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 20px;
+    line-height: 30px;
     text-wrap: pretty;
   }
-  .e404-salidas {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
+  /* El botón de marca del diseño: azul, 48 px, en mayúsculas con 3 px. */
+  .e404-salida {
     margin-top: 34px;
+    height: 48px;
+    box-sizing: border-box;
+    padding: 0 22px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--color-azul-principal);
+    color: var(--color-blanco);
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: var(--text-etiqueta);
+    letter-spacing: var(--tracking-etiqueta);
+    text-transform: uppercase;
   }
-  .e404-cta {
-    padding: 13px 22px;
-    border-radius: 999px;
-    background: var(--mist-0);
-    color: var(--noche-0);
-    font-size: 9px;
-    white-space: nowrap;
-  }
-  .e404-cta.es-hueco {
-    background: none;
-    box-shadow: inset 0 0 0 1px var(--border-strong);
-    color: var(--mist-2);
-  }
-  .e404-cta.es-hueco:hover {
-    background: var(--mist-0);
-    color: var(--noche-0);
+  .e404-salida:hover {
+    background: var(--color-marino);
+    color: var(--color-blanco);
   }
 
-  @media (max-width: 899px) {
+  @media (max-width: 1279px) {
     .e404 {
-      padding: 56px 16px 80px;
+      padding: 48px var(--margen-revista) 72px;
     }
     .e404-titulo {
       font-size: 38px;
     }
     .e404-texto {
-      font: 400 14.5px/1.5 var(--font-text);
+      font-size: 17px;
+      line-height: 26px;
     }
   }
 </style>

@@ -1,31 +1,26 @@
 ---
 /**
- * La nota. Pantallas 14c (1280) y 14f (390).
+ * La nota. Mínima pero correcta: titular, balazo, firma, fecha, la foto y el
+ * cuerpo. El diseño aprobado dibuja solo el Inicio, así que esta página no tiene
+ * tablero propio: usa las mismas piezas (tipografía, antetítulos, esquina recta) y
+ * nada que el diseño no haya dicho. Sin anuncios y sin compartir por ahora.
  *
- * La URL es PLANA —`/noticias/<slug>`, no `/<seccion>/<slug>`— y es la decisión 10
- * del plan: `noticias.categorias` es `hasMany` sin categoría primaria, así que
- * derivar el path de `categorias[0]` haría que reordenar el array cambiara una URL
- * viva en silencio. De paso, es el path que el CMS ya emite en sus feeds.
+ * La URL es PLANA —`/noticias/<slug>`, no `/<sección>/<slug>`—, que es el contrato
+ * decidido por Carlos y lo que el CMS emite en `getNewsURL`. Las ~1,008 notas del
+ * sitio viejo, que viven en `/<sección>/<slug>/`, llegan aquí con un 301 del mapa
+ * que consulta el middleware.
+ *
+ * Toda la lógica de datos e indexación se porta de web-beat tal cual —el 503 si
+ * el CMS no responde, el 404 real, el grupo `meta` del CMS, el `X-Robots-Tag`, el
+ * JSON-LD—, porque es lo que allá ya se pagó.
  */
 import Base from '@/layouts/Base.astro';
-import NavSecciones from '@/components/NavSecciones.astro';
 import Lexical from '@/components/Lexical.astro';
 import TarjetaNota from '@/components/TarjetaNota.astro';
-import AudioNota from '@/components/AudioNota.astro';
-import Icono from '@/components/Icono.astro';
-import Anuncio from '@/components/Anuncio.astro';
 import { obtenerNota, obtenerRelacionadas } from '@/lib/cms/noticias';
-import { medidaMedia, urlMedia } from '@/lib/cms/client';
-import {
-  nombreCategoria,
-  slugCategoria,
-  seccionDeNota,
-  firma,
-  fechaCorta,
-  fechaIso,
-  enlacesCompartir,
-} from '@/lib/nota';
-import { SITE_URL, urlAbsoluta } from '@/config/site';
+import { medidaMedia, puntoFocal, urlMedia } from '@/lib/cms/client';
+import { fechaCorta, fechaIso, firma, nombreCategoria, seccionDeNota } from '@/lib/nota';
+import { SITE_URL, rutaNota, urlAbsoluta } from '@/config/site';
 import { nodoMigaja, nodoNota, serializar } from '@/lib/jsonld';
 
 const { slug } = Astro.params;
@@ -34,192 +29,121 @@ let nota = null;
 try {
   nota = slug ? await obtenerNota(slug) : null;
 } catch {
-  // Si el CMS no responde no se puede saber si la nota existe. Un 404 sería una
-  // mentira cacheable; un 503 es la verdad y no se indexa.
+  // Heredado de web-beat: si el CMS no responde no se puede saber si la nota
+  // existe. Un 404 sería una mentira cacheable; un 503 es la verdad y no se indexa.
   return new Response('El CMS no responde. Vuelve a intentarlo en un momento.', {
     status: 503,
     headers: { 'cache-control': 'no-store', 'retry-after': '30' },
   });
 }
 
-if (!nota) return Astro.rewrite('/404');
+/*
+  El 404 REAL: se reescribe a la página de error, que responde con estado 404 y
+  el cascarón completo (heredado de web-beat, que lo hace así en todas sus rutas
+  dinámicas). Una nota que no existe no puede responder 200 con una página vacía:
+  Google la indexaría como contenido.
+*/
+if (!nota || !nota.slug) return Astro.rewrite('/404');
 
+/*
+  Las tres relacionadas del pie, por categoría. `obtenerRelacionadas` excluye la
+  nota actual EN MEMORIA para que todas las notas de una categoría compartan una
+  sola entrada de caché, y degrada a `[]` si el CMS falla. Sin categorías no
+  consulta nada.
+*/
 const relacionadas = await obtenerRelacionadas(nota, 3);
 
-const cat = nombreCategoria(nota);
-const catSlug = slugCategoria(nota);
-/*
-  La sección de esta nota —Beat Scanner o Editorial— la decide su categoría. De
-  aquí salen la migaja y la pastilla encendida de la tira; antes las dos decían
-  «BEAT SCANNER» fijo, y con dos secciones eso era falso para la mitad.
-*/
-const seccion = seccionDeNota(nota);
-/*
-  La categoría se repite en la migaja SOLO si no es la de la sección. Si no,
-  una nota de Editorial pintaba «EDITORIAL · Editorial»: la misma palabra dos veces
-  separadas por un punto, y el segundo enlace llevando al mismo sitio que el
-  primero.
-*/
-const catEnMigaja = cat && catSlug !== seccion.categoria ? cat : null;
+const canonica = new URL(rutaNota(nota.slug), SITE_URL).href;
 const autor = firma(nota);
 const publicada = fechaCorta(nota.fecha ?? nota.createdAt);
 const publicadaIso = fechaIso(nota.fecha ?? nota.createdAt);
-const hero = urlMedia(nota.imagen, 'large');
-const canonica = new URL(`/noticias/${nota.slug}`, SITE_URL).href;
-const compartir = enlacesCompartir(canonica, nota.titulo ?? '');
-
-const pieDeFoto =
-  nota.imagen && typeof nota.imagen === 'object' ? (nota.imagen.alt ?? null) : null;
-
 /*
-  Las medidas de la foto, para la tarjeta de compartir y para el JSON-LD.
-
-  Se piden POR LA URL que `urlMedia` acabó eligiendo, no por la variante que le
-  pedimos: `large` puede no existir —las variantes se generan sin ampliar— y
-  entonces `hero` es en realidad `card`. Ver `medidaMedia`. Si el CMS no trae las
-  dos medidas, `null`, y las etiquetas no se emiten: mejor sin dato que con uno
-  inventado.
-*/
-const heroMedida = medidaMedia(nota.imagen, hero);
-
-/*
-  `updatedAt` lo mueve el CMS en cada guardado, así que esta fecha puede ser
-  posterior a la que se ve en pantalla. No es una contradicción: la visible es
-  cuándo se publicó y esta es cuándo se tocó por última vez. Google usa las dos.
+  `updatedAt` lo mueve el CMS en cada guardado, así que puede ser posterior a la
+  fecha que se ve. No es una contradicción: la visible es cuándo se publicó y esta,
+  cuándo se tocó por última vez. Google usa las dos.
 */
 const modificadaIso = fechaIso(nota.updatedAt);
 
+/*
+  La migaja: el Inicio y, si la nota es de una sección del diseño, la sección.
+  La sección la decide la categoría (`seccionDeNota`); una nota de una categoría
+  sin sección —Series y películas, Tecnología…— se queda con la categoría como
+  texto, sin enlace, porque todavía no tiene a dónde ir.
+*/
+const seccion = seccionDeNota(nota);
+const categoria = nombreCategoria(nota);
+
+const media = nota.imagen && typeof nota.imagen === 'object' ? nota.imagen : null;
+const hero = urlMedia(media, 'large');
+/*
+  Las medidas se piden POR LA URL que `urlMedia` acabó eligiendo, no por la
+  variante pedida: `large` puede no existir y entonces `hero` es `card`. Sin las
+  dos medidas, `null`, y ni el `<img>` ni las etiquetas inventan unas.
+*/
+const heroMedida = medidaMedia(media, hero);
+const heroAlt = media?.alt ?? '';
+const heroEnfoque = puntoFocal(media);
+
 /**
- * EL GRUPO `meta` DEL CMS. Estaba poblado y el front lo ignoraba entero
- * (decisiones de Carlos, 2026-09-07).
+ * EL GRUPO `meta` DEL CMS (heredado de web-beat, decisiones de Carlos del
+ * 2026-09-07). Es la ficha que la redacción captura para buscadores y para lo que
+ * se comparte, y existe para poder decir las cosas de otra manera AHÍ.
  *
- * Es la ficha que la redacción captura para los buscadores y para lo que se
- * comparte, y existe justamente para poder decir las cosas de otra manera ahí. Al
- * ignorarlo, el trabajo de captura no llegaba a ninguna parte: medido contra
- * `admin.nrm.com.mx`, había un titular de 94 caracteres acortado a mano a 82 que
- * nadie estaba usando.
+ * Cada campo se toma solo si trae algo (`?.trim() ||`, no `??`): un campo que se
+ * abrió y se dejó en blanco llega como cadena vacía, y con `??` ganaría y la nota
+ * se compartiría sin titular.
  *
- * Cada campo se toma solo si trae algo —`?.trim() ||`, no `??`—: un campo del
- * admin que se abrió y se dejó en blanco llega como cadena vacía, y con `??` eso
- * ganaría y la nota se compartiría sin titular.
- *
- * Lo que NO cambia es el `h1` ni la bajada de la página. Para eso existe el
- * grupo: el titular del buscador puede ser más corto que el que lee quien ya
- * entró. Y por la misma razón tampoco cambia el JSON-LD — ver más abajo.
+ * Lo que NO cambia es el `h1`, la bajada ni el JSON-LD: esos dicen lo que hay en
+ * la página.
  */
 const meta = nota.meta ?? {};
-
-/** Gana `meta.title` en el `<title>` y en `og:title`. */
 const tituloMeta = meta.title?.trim() || nota.titulo;
+const resumenMeta = meta.description?.trim() || nota.resumen || undefined;
 
-/**
- * Y gana `meta.description` en la `<meta description>` y en `og:description`.
- *
- * Es el mismo grupo y el mismo propósito que `meta.title`, así que honrar uno
- * e ignorar el otro dejaría media ficha capturada sin efecto. Hoy solo una nota de
- * las 11 los tiene distintos.
- */
-const resumenMeta = meta.description?.trim() || nota.resumen;
+/*
+  `meta.canonicalUrl` se IGNORA, y no es un olvido (heredado de web-beat): toda
+  URL de este sitio se arma contra `SITE_URL`. Honrarlo le daría a un campo de
+  texto del admin la capacidad de sacar una nota del índice de este dominio sin
+  que se note en ninguna pantalla. El día que la estación republique contenido de
+  terceros, es una decisión que se toma de nuevo.
+*/
 
-/**
- * `meta.canonicalUrl` se IGNORA. No es un olvido.
- *
- * Sirve para contenido SINDICADO —una nota que se publicó primero en otro sitio y
- * cuya autoridad le pertenece a ese otro—, y aquí choca de frente con la doctrina
- * de rutas de este repo: toda URL se arma contra `SITE_URL` y nunca contra otra
- * cosa (ver `canonica` arriba, `og:url` y el JSON-LD). Honrarlo sería darle a un
- * campo de texto del admin la capacidad de sacar una nota del índice de este
- * dominio sin que se note en ninguna pantalla — el fallo silencioso más caro de
- * los que este archivo puede producir.
- *
- * Hoy está vacío en las 11 notas, así que no hay nada que se esté perdiendo. El
- * día que la estación empiece a republicar contenido de terceros, esto es una
- * decisión que hay que tomar de nuevo, no un pendiente que se arregla.
- */
-
-/**
- * La foto con la que se COMPARTE la nota: `meta.image` si existe, y si no el hero.
- *
- * El hero sigue siendo lo que se ve EN la página; lo único que cambia aquí es
- * lo que se publica. Son dos trabajos distintos y la redacción los captura por
- * separado: en la nota de Amelie Lens el hero es un 3:2 recortado para la página y
- * `meta.image` es la foto de prensa del artista, que es la que funciona dentro de
- * una tarjeta de Facebook.
- *
- * El `alt` y las medidas viajan CON la foto que se eligió, nunca mezclados. Son
- * documentos de media distintos, con su propio `alt` escrito por la redacción y su
- * propio juego de variantes; usar el `alt` del hero para la foto de prensa
- * describiría una imagen que nadie miró. Ver `medidaMedia`: la medida se busca por
- * la URL que `urlMedia` acabó eligiendo, así que vale para las dos igual.
- */
+/*
+  La foto con la que se COMPARTE: `meta.image` si existe, y si no la de la nota.
+  El `alt` y las medidas viajan CON la foto elegida, nunca mezclados.
+*/
 const social = urlMedia(meta.image, 'large');
-const socialAlt =
-  meta.image && typeof meta.image === 'object' ? (meta.image.alt ?? null) : null;
+const socialAlt = meta.image && typeof meta.image === 'object' ? (meta.image.alt ?? null) : null;
 const compartida = social ?? hero;
-const compartidaAlt = social ? socialAlt : pieDeFoto;
+const compartidaAlt = social ? socialAlt : heroAlt || null;
 const compartidaMedida = social ? medidaMedia(meta.image, social) : heroMedida;
 
 /**
- * `meta.noIndex` se HONRA, y en las DOS capas que pueden saberlo.
- *
- * Aquí va la cabecera; el `<meta robots>` lo pone `Base.astro` con la prop
- * `noIndex`. No es redundancia, son dos alcances distintos:
- *
- *   · el `<meta>` solo existe dentro del HTML, y es la capa que Google lee
- *     mientras rastrea la página;
- *   · la CABECERA viaja en la respuesta, así que la ve cualquier cosa que pida
- *     esta URL sin analizar el documento — y es la única de las dos que sirve si
- *     algún día esta ruta responde algo que no sea HTML.
- *
- * Y por eso NO lo puede hacer el middleware, que es donde vive el resto de la
- * política: cuando el middleware corre no sabe qué documento se va a servir, ni si
- * existe. Es la única regla de indexación del sitio que depende del CONTENIDO, y
- * el único sitio donde el contenido ya se conoce es este.
- *
- * `Astro.response.headers` se escribe en el frontmatter de la PÁGINA, antes de
- * que empiece a salir HTML. Desde el layout no serviría: cuando su frontmatter
- * corre, la respuesta ya está en camino y las cabeceras están decididas.
- *
- * Sin datos que lo prueben — está en `false` en las 11 notas del CMS—, así que
- * se comprobó forzando el valor en local.
+ * `meta.noIndex` se HONRA en las dos capas que pueden saberlo: aquí la cabecera
+ * y en `Base.astro` el `<meta robots>`. El middleware no puede: cuando corre no sabe
+ * qué documento se va a servir. Y va en el frontmatter de la PÁGINA porque desde el
+ * layout la respuesta ya está en camino y las cabeceras, decididas.
  */
 const noIndex = meta.noIndex === true;
 if (noIndex) Astro.response.headers.set('X-Robots-Tag', 'noindex, nofollow');
 
 /**
- * Los datos estructurados de la nota: `NewsArticle` + la migaja.
+ * Los datos estructurados: `NewsArticle` y la migaja, en un solo `@graph`.
  *
- * Van en un solo `@graph` y no en dos bloques por lo de siempre: dos bloques son
- * dos sitios donde puede quedarse uno viejo.
+ * Cada valor es EL MISMO que ya pinta la página: el titular, la bajada, el ISO del
+ * `<time>` visible, la firma, la variante de foto que carga el `<img>`. Aquí no
+ * entra el grupo `meta` —un `headline` que no sea el `h1` visible es marcado
+ * engañoso—.
  *
- * Y cada valor es EL MISMO que ya pinta la página —el titular, la bajada, el
- * ISO del `<time>` visible, la firma de la ficha, la variante de foto que carga el
- * `<img>`, los eslabones de la migaja—. No hay ni un dato que se calcule aparte
- * para el buscador: si la nota cambia, cambian los dos a la vez o no cambia
- * ninguno.
- *
- * AQUÍ NO ENTRA EL GRUPO `meta`, y es la regla que decide el caso: `headline`
- * lleva `nota.titulo` —el `h1` visible— aunque el `<title>` de arriba use
- * `meta.title`, y `image` lleva el hero aunque `og:image` use `meta.image`.
- *
- * Un `<title>` puede diferir legítimamente del titular: es la promesa que se hace
- * en una lista de resultados, y acortarla es trabajo editorial. Un `headline` no:
- * es una afirmación sobre lo que hay dentro de la página, y si no coincide con lo
- * que la página pinta, Google no descarta la propiedad, descarta la ficha. La nota
- * `fenomeno-residente-capsula-1-2` es el caso vivo — su `meta.title` es «Fenómeno
- * Residente Cápsula 1» y su `h1` dice «Kraftwerk Parte 1».
- *
- * Lo mismo con `description`: va el `resumen`, que es la bajada que se lee bajo
- * el titular, no `meta.description`.
- *
- * `author` se OMITE cuando no hay firma, y hoy pasa: `autores` está vacío en el
- * CMS y la firma sale del campo de texto libre, así que hay notas sin ninguna. Un
- * autor de relleno («Redacción Beat») sería un dato que la página no dice.
- *
- * La migaja repite los eslabones VISIBLES —sección, y la categoría solo cuando
- * la nota la pinta— y cierra con la nota. Si la migaja de arriba cambia, esta
- * cambia con ella; son la misma lista leída dos veces.
+ * La migaja del JSON-LD es la visible MENOS la sección, a propósito: hoy la
+ * sección enlaza a su ancla del Inicio (`/#lado-a`), y un eslabón que apunte a la
+ * misma página que «Inicio» no le dice nada a un buscador. Omitir un eslabón no
+ * afirma nada falso; el día que la sección tenga página propia, entra.
  */
+const pasoSeccion =
+  seccion && !seccion.href.includes('#')
+    ? [{ nombre: seccion.nombre, url: urlAbsoluta(seccion.href) }]
+    : [];
 const ficha = serializar(
   [
     nodoNota({
@@ -234,44 +158,17 @@ const ficha = serializar(
       autor: autor?.nombre,
     }),
     nodoMigaja([
-      { nombre: seccion.nombre, url: urlAbsoluta(seccion.href) },
-      ...(catEnMigaja
-        ? [
-            {
-              nombre: catEnMigaja,
-              url: urlAbsoluta(catSlug ? `/beat-scanner/${catSlug}` : seccion.href),
-            },
-          ]
-        : []),
+      { nombre: 'Inicio', url: urlAbsoluta('/') },
+      ...pasoSeccion,
       { nombre: nota.titulo, url: canonica },
     ]),
   ].filter((n): n is NonNullable<typeof n> => n !== null),
 );
-
-// Las etiquetas del pie (14c: "etiquetas, autor y tres notas relacionadas").
-const etiquetas = (nota.etiquetas ?? []).filter(
-  (e): e is Exclude<typeof e, number> => typeof e === 'object' && e !== null,
-);
 ---
 
-{/*
-  La nota es lo ÚNICO que se comparte de verdad, así que es la que pasa su propia
-  ficha: su foto —con su `alt` y sus medidas—, sus dos fechas y `article`. Las URLs
-  de media ya vienen absolutas —`urlMedia` les pone el host público del CMS—, que
-  es lo que Facebook exige.
-
-  Los cuatro primeros valores salen del grupo `meta` del CMS cuando la redacción
-  lo capturó, y del contenido visible cuando no. Ver el bloque del frontmatter: el
-  titular y la bajada de la PÁGINA no se tocan, y tampoco el JSON-LD.
-
-  `imagenAlt` es el `alt` que capturó la redacción para ESA foto —el del pie
-  cuando se comparte el hero, el suyo propio cuando se comparte `meta.image`—. Si
-  la foto no lo trae no se manda nada: describirla desde aquí sería inventar lo que
-  hay dentro de una imagen que este archivo no ve.
-*/}
 <Base
-  titulo={`${tituloMeta} — Beat 100.9`}
-  descripcion={resumenMeta ?? undefined}
+  titulo={`${tituloMeta} — Stereo Cien 100.1`}
+  descripcion={resumenMeta}
   imagen={compartida}
   imagenAlt={compartidaAlt}
   imagenAncho={compartidaMedida?.ancho}
@@ -284,637 +181,212 @@ const etiquetas = (nota.etiquetas ?? []).filter(
   {/*
     guarda-ok set:html: JSON-LD, que en Astro no tiene otra forma de emitirse. El
     valor lo arma `serializar()` y no es HTML del CMS: es JSON con `<` escapado,
-    justamente para que un `</script>` dentro de un titular no cierre el bloque.
-    Ver `src/lib/jsonld.ts`.
+    para que un `</script>` dentro de un titular no cierre el bloque. Ver
+    `src/lib/jsonld.ts`.
   */}
   <script type="application/ld+json" is:inline set:html={ficha} />
 
-  <article class="nt">
-    {/* ── Migaja: sección · tipo ── */}
-    <div class="nt-cabeza">
-      {/*
-        La tira de secciones también AQUÍ (decisión de Carlos, 2026-09-07).
-
-        Faltaba, y era el único interior sin ella. En un interior la barra oscura
-        va recogida a propósito (`Base.astro`), y quien carga con ese trabajo es
-        esta tira —lo dice `NavSecciones.astro`: «es la ÚNICA navegación visible de
-        un interior»—. Las cinco secciones la ponen por `CabezaSeccion`; la nota no
-        usa esa cabecera, así que se quedaba con la hamburguesa como única salida:
-        el lector que termina de leer no tiene a dónde ir sin abrir un menú.
-
-        La sección activa la decide la CATEGORÍA de la nota (`seccionDeNota`), no
-        una constante: con Beat Scanner y Editorial separadas, marcar siempre la
-        misma pastilla le habría dicho al lector que está en una sección en la que
-        no está.
-      */}
-      <NavSecciones activa={seccion.href} />
-
-      <div class="nt-migaja">
-        <a href={seccion.href} class="beat-label nt-seccion">{seccion.rotulo}</a>
-        {
-          catEnMigaja && (
-            <>
-              <span class="beat-label nt-punto">·</span>
-              <a
-                href={catSlug ? `/beat-scanner/${catSlug}` : seccion.href}
-                class="beat-label nt-cat"
-              >
-                {catEnMigaja}
-              </a>
-            </>
-          )
-        }
-      </div>
-
-      {/*
-        Leader expandible, arriba del titular. En hover crece a 400px de alto
-        SIN empujar el titular hacia abajo: ver `.nt-leader-franja` en el
-        `<style>` de abajo para el porqué del `margin-bottom` negativo.
-
-        `/noticias` no tenía leaderboard en la tabla de colocaciones de
-        `agents/ads.md` —solo `nota-box`—. Este hueco (`nota-leader`) queda
-        fuera de esa tabla; si se confirma, hay que sumarlo ahí.
-      */}
-      <div class="nt-leader-franja">
-        <Anuncio formato="leaderboard" nombre="nota-leader" />
-      </div>
-
-      {/* ── Titular centrado ── */}
-      <div class="nt-titular">
-        <h1 class="nt-h1" data-escribir>{nota.titulo}</h1>
-        {nota.resumen && <p class="nt-bajada">{nota.resumen}</p>}
-
-        {/*
-          Aquí NO va el nombre del autor (decisión de Carlos, 2026-09-07).
-
-          Estaba en los dos sitios: aquí suelto, y otra vez abajo en la ficha con
-          su foto y su línea. La misma firma dos veces en una nota no añade
-          autoridad, resta — y la de abajo es la que puede llevar retrato, cargo y
-          algún día un enlace a la página del autor.
-
-          Lo que se queda arriba es lo que sí cambia por nota y se consulta de un
-          vistazo: la FECHA y compartir.
-        */}
-        <div class="nt-credito">
+  <article class="nota">
+    <header class="nota-cabeza">
+      <nav class="nota-migaja" aria-label="Ruta de navegación">
+        <ol>
+          <li><a href="/">Inicio</a></li>
           {
-            publicada && (
-              <time class="beat-label nt-fecha" datetime={publicadaIso ?? undefined}>
-                {publicada}
-              </time>
+            seccion ? (
+              <li>
+                <a href={seccion.href}>{seccion.nombre}</a>
+              </li>
+            ) : (
+              categoria && <li>{categoria}</li>
             )
           }
-          <span class="nt-compartir">
-            {
-              compartir.map((s) =>
-                s.icono === 'link' ? (
-                  /*
-                    «Copiar enlace» es un botón, no un enlace: no navega. Lleva el
-                    href canónico en un `data-` para que funcione sin JS si el
-                    lector lo copia a mano, y el script lo usa con la API del
-                    portapapeles.
-                  */
-                  <button
-                    type="button"
-                    class="nt-compartir-uno"
-                    data-copiar={s.href}
-                    aria-label={s.etiqueta}
-                    title={s.etiqueta}
-                  >
-                    <Icono nombre={s.icono} tamano={16} />
-                  </button>
-                ) : (
-                  <a
-                    href={s.href}
-                    class="nt-compartir-uno"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={s.etiqueta}
-                    title={s.etiqueta}
-                  >
-                    <Icono nombre={s.icono} tamano={16} />
-                  </a>
-                ),
-              )
-            }
-          </span>
-        </div>
-      </div>
-    </div>
+        </ol>
+      </nav>
+      <h1 class="nota-titulo">{nota.titulo}</h1>
+      {nota.resumen && <p class="nota-balazo">{nota.resumen}</p>}
+      {
+        (autor || publicada) && (
+          <p class="nota-credito">
+            {autor && <span>por {autor.nombre}</span>}
+            {publicada && <time datetime={publicadaIso ?? undefined}>{publicada}</time>}
+          </p>
+        )
+      }
+    </header>
 
-    {/* ── Foto principal, a lo ancho ── */}
     {
       hero && (
-        <figure class="nt-hero-caja">
-          {/* El otro extremo de la transición: comparte nombre con la foto de la
-              tarjeta desde la que se llegó. Ver `TarjetaNota.astro`. */}
-          <div class="nt-hero" transition:name={`foto-nota-${nota.id}`}>
-            <img src={hero} alt={pieDeFoto ?? ''} fetchpriority="high" decoding="async" />
-            <div class="beat-grid nt-hero-trama" />
-          </div>
-          {pieDeFoto && <figcaption class="beat-label nt-pie">{pieDeFoto}</figcaption>}
+        <figure class="nota-foto">
+          <img
+            src={hero}
+            alt={heroAlt}
+            width={heroMedida?.ancho}
+            height={heroMedida?.alto}
+            style={heroEnfoque ? `object-position: ${heroEnfoque}` : undefined}
+            fetchpriority="high"
+            decoding="async"
+          />
         </figure>
       )
     }
 
     {/*
-      ── El audio principal, pegado bajo la foto ──
-
-      Va AQUÍ y no dentro del cuerpo (Carlos, 2026-09-15): «como tiene audio
-      principal, sería bueno que en el detalle aparezca en buena posición, hasta
-      arriba». Es lo que justifica una nota de Microambiente, así que tiene que ser
-      lo primero que se pueda pulsar — un reproductor a media nota se encuentra
-      cuando ya decidiste leerla.
-
-      Y comparte el margen del hero —lo pone el propio componente—, no el ancho
-      de lectura de 680px: pegado debajo de la foto y a su misma medida se lee como
-      una pieza del mismo bloque. Centrado y estrecho se leería como el primer
-      párrafo.
-
-      Va SIN envoltura, y es a propósito: si la nota no trae audio el componente
-      no emite nada, y un `<div>` vacío con márgenes puestos aquí sería el hueco que
-      alguien rellena por error dentro de seis meses.
-
-      El componente no se pinta si no hay audio capturado, así que esto NO es una
-      excepción de Microambiente: cualquier nota con `audio` lo trae, y las 43 del
-      CMS —ninguna con el campo lleno el 2026-09-15— siguen viéndose igual que ayer.
+      El cuerpo. Se estiliza el CONTENEDOR (`.prosa`, en `src/styles/prosa.css`),
+      no las clases internas de Lexical: el texto se ve igual venga del nodo que
+      venga. Lexical saca el texto COMO TEXTO; nada de `set:html` con contenido del
+      CMS.
     */}
-    <AudioNota nota={nota} />
-
-    {/* ── Cuerpo a 680 + riel ── */}
-    <div class="nt-abajo">
-      <div class="nt-cuerpo">
-        <Lexical contenido={nota.contenido} />
-
-        {
-          etiquetas.length > 0 && (
-            <div class="nt-etiquetas">
-              {etiquetas.map((e) => (
-                <a href={`/etiqueta/${e.slug}`} class="beat-label nt-etiqueta">
-                  {e.nombre}
-                </a>
-              ))}
-            </div>
-          )
-        }
-
-        {
-          autor && (
-            <div class="nt-ficha-autor">
-              {/*
-                La foto de verdad cuando el CMS la trae, y el MONOGRAMA cuando no.
-                Antes esto era un círculo con degradado y nada dentro, que se leía
-                como una imagen que no cargó — y hoy es el caso de todas las notas,
-                porque la colección `autores` está vacía y la firma viene del campo
-                de texto libre. Las iniciales dicen la verdad: no hay retrato.
-              */}
-              <div class="nt-autor-foto">
-                {autor.foto ? (
-                  <img src={autor.foto} alt={autor.nombre} loading="lazy" decoding="async" />
-                ) : (
-                  <span class="beat-display nt-autor-monograma" aria-hidden="true">
-                    {autor.monograma}
-                  </span>
-                )}
-              </div>
-              <div class="nt-autor-datos">
-                <span class="nt-autor-nombre">{autor.nombre}</span>
-                {/* El cargo capturado si existe; si no, la línea de la casa. */}
-                <span class="nt-autor-bio">{autor.cargo ?? 'Escribe para Beat 100.9.'}</span>
-              </div>
-            </div>
-          )
-        }
-      </div>
-
-      <aside class="nt-riel">
-        <Anuncio formato="box" nombre="nota-box" unidad="Box" />
-        <Anuncio formato="halfpage" nombre="nota-halfpage" unidad="Halfpage" />
-      </aside>
+    <div class="nota-cuerpo prosa">
+      <Lexical contenido={nota.contenido} />
     </div>
-
-    {/* ── Tres relacionadas ── */}
-    {
-      relacionadas.length > 0 && (
-        <section class="nt-relacionadas">
-          <div class="nt-rel-cabeza">
-            <span class="beat-display nt-rel-titulo">SIGUE LEYENDO</span>
-          </div>
-          <div class="nt-rel-rejilla">
-            {relacionadas.map((n) => (
-              <TarjetaNota nota={n} variante="relacionada" />
-            ))}
-          </div>
-        </section>
-      )
-    }
   </article>
+
+  {
+    relacionadas.length > 0 && (
+      <section class="nota-relacionadas" aria-labelledby="titulo-relacionadas">
+        <h2 class="nota-relacionadas-titulo" id="titulo-relacionadas">
+          Sigue leyendo
+        </h2>
+        <ul class="nota-relacionadas-lista">
+          {relacionadas.map((n) => (
+            <li>
+              <TarjetaNota nota={n} variante="fila" nivel={3} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
 </Base>
 
-<script>
-  /**
-   * «Copiar enlace».
-   *
-   * Se registra con delegación en `document` y una sola vez, no un listener por
-   * botón: con el `ClientRouter` de Astro la página se reemplaza sin recargar el
-   * documento, así que los listeners por elemento se acumularían en cada
-   * navegación. La delegación sobrevive sola.
-   */
-  // Cast local en vez de `declare global`: es el mismo criterio que `audio.ts`,
-  // y un script inline no puede importar tipos de un módulo.
-  const w = window as Window & { __beatCopiarListo?: boolean };
-  if (!w.__beatCopiarListo) {
-    w.__beatCopiarListo = true;
-    document.addEventListener('click', async (ev) => {
-      const boton = (ev.target as HTMLElement | null)?.closest<HTMLElement>('[data-copiar]');
-      if (!boton) return;
-      const url = boton.dataset.copiar;
-      if (!url) return;
-      try {
-        await navigator.clipboard.writeText(url);
-        boton.dataset.copiado = 'sí';
-        setTimeout(() => delete boton.dataset.copiado, 1600);
-      } catch {
-        // Sin permiso de portapapeles (o sin HTTPS): no se finge que funcionó.
-      }
-    });
-  }
-</script>
-
 <style>
-  .nt {
-    max-width: var(--grid-max);
+  /* Una columna de lectura, centrada en la revista: 760 px con sus márgenes. */
+  .nota,
+  .nota-relacionadas {
+    box-sizing: content-box;
+    max-width: 760px;
     margin: 0 auto;
+    padding-inline: var(--margen-revista);
+  }
+  .nota {
+    padding-top: 56px;
   }
 
-  /* ── cabeza ── */
-  .nt-cabeza {
-    padding: 30px 24px 0;
-  }
-  /*
-    El aire que separa la migaja de la tira va AQUÍ, en la migaja, y no en la
-    tira. No es capricho: una clase pasada como prop a `NavSecciones` no recibe el
-    ámbito de esta página, así que un `.nt-nav { margin-bottom }` escrito aquí no
-    aplicaría — es el mismo fallo que tenía `CabezaSeccion` y que se veía como el
-    «texto encimado». El aire de ARRIBA de la tira y su filete son suyos y los pone
-    ella; este es el de después, y lo pone quien viene después.
-
-    Es lo mismo que hace `CabezaSeccion` con `.cs-titular { padding-top }`.
-  */
-  .nt-migaja {
+  .nota-migaja ol {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    padding-top: 22px;
-  }
-  .nt-seccion {
-    color: var(--text-muted);
-    font-size: 9px;
-  }
-  .nt-seccion:hover {
-    color: var(--mist-1);
-  }
-  .nt-punto {
-    color: var(--text-faint);
-    font-size: 9px;
-  }
-  .nt-cat {
-    color: var(--mist-0);
-    font-size: 9px;
-  }
-  /*
-    El leader expandible: en hover pasa de su alto de reserva (90px en
-    escritorio, 50px en móvil — ver `MEDIDAS.leaderboard` en `Anuncio.astro`) a
-    400px, SIN mover el titular de abajo.
-
-    El truco es que el alto que gana se cancela con un `margin-bottom`
-    negativo de la misma medida: el flujo del documento no cambia ni un
-    pixel, así que nada de lo que sigue se desplaza. Lo que crece se PINTA
-    por encima —`position: relative` + `z-index`— en vez de empujar.
-
-    Solo aplica al hueco de GPT (`.anuncio-hueco`): el formato
-    `leaderboard` nunca renderiza `.anuncio-creatividad` —esa venía solo para
-    `portada`, ver `Anuncio.astro`—, así que no hace falta cubrirla aquí.
-  */
-  .nt-leader-franja {
-    position: relative;
-    margin: 24px 0 0;
-  }
-  .nt-leader-franja :global(.anuncio-hueco) {
-    transition: height var(--dur-3) var(--ease-out);
-  }
-  .nt-leader-franja:hover :global(.anuncio-hueco) {
-    position: relative;
-    z-index: 5;
-    height: 400px;
-    aspect-ratio: auto;
-    margin-bottom: -310px; /* 400 − 90 (alto de reserva en escritorio) */
-    /*
-      Sin el marco del hueco vacío: `Anuncio.astro` le pone fondo y un borde
-      (`box-shadow` inset) para que el espacio reservado se note aunque no
-      haya creativo. Expandido, ese marco se ve como una caja de 400px sin
-      nada dentro si el creativo no llega a cubrirla entera.
-    */
-    background: none;
-    box-shadow: none;
-  }
-
-  .nt-titular {
-    max-width: 880px;
-    margin: 26px auto 0;
-    text-align: center;
-  }
-  .nt-h1 {
-    font: 700 52px / 1.04 var(--font-text);
-    letter-spacing: -0.026em;
-    color: var(--mist-1);
+    flex-wrap: wrap;
+    gap: 6px 10px;
     margin: 0;
-    text-wrap: pretty;
-  }
-  .nt-bajada {
-    font: var(--type-body-lg);
-    color: var(--text-muted);
-    margin: 20px auto 0;
-    max-width: 56ch;
-    text-wrap: pretty;
-  }
-  .nt-credito {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 14px;
-    margin-top: 24px;
-    padding-top: 20px;
-    border-top: 1px solid var(--border-hairline);
-  }
-  .nt-fecha {
-    color: var(--text-faint);
-    font-size: 9px;
-    white-space: nowrap;
-  }
-  .nt-compartir {
-    display: flex;
-    gap: 8px;
-    margin-left: 8px;
-  }
-  .nt-compartir-uno {
-    display: grid;
-    place-items: center;
-    width: 34px;
-    height: 34px;
-    border-radius: 999px;
-    box-shadow: inset 0 0 0 1px var(--border-hairline);
-    color: var(--mist-4);
-    background: none;
-    border: 0;
     padding: 0;
-    cursor: pointer;
-    transition:
-      color var(--dur-2) var(--ease-out),
-      box-shadow var(--dur-2) var(--ease-out);
+    list-style: none;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: var(--text-etiqueta);
+    line-height: var(--text-etiqueta--line-height);
+    letter-spacing: var(--tracking-etiqueta);
+    text-transform: uppercase;
+    color: var(--color-azul-principal);
   }
-  .nt-compartir-uno:hover {
-    color: var(--mist-0);
-    box-shadow: inset 0 0 0 1px var(--border-strong);
+  .nota-migaja li + li::before {
+    content: '/';
+    margin-right: 10px;
+    color: var(--color-gris-texto);
   }
-  /* Confirmación del copiado, sin toast: el botón se pone del color de acento. */
-  .nt-compartir-uno[data-copiado] {
-    color: var(--state-success);
-    box-shadow: inset 0 0 0 1px var(--state-success);
-  }
-
-  /* ── foto principal ── */
-  .nt-hero-caja {
-    margin: 28px 24px 0;
-  }
-  .nt-hero {
-    position: relative;
-    /*
-      La proporción del sitio, y es la MISMA que la de la tarjeta a propósito:
-      esta foto y la de la tarjeta comparten `transition:name`, así que dos cajas
-      distintas se verían cambiar de encuadre durante la transición. El porqué del
-      número está en `src/styles/beat.css`.
-
-      Pasó por `16 / 7` y por `3 / 2` antes de esto. El 16:7 sobraba: una caja de
-      2.29 sobre una foto de 1.5 se comía un tercio del alto y cortaba cabezas.
-    */
-    aspect-ratio: var(--proporcion-foto);
-    background: var(--grad-noche);
-    overflow: hidden;
-    /* Flota sobre el fondo, así que lleva radio de media. Ver movimiento.md §6. */
-    border-radius: var(--r-media);
-  }
-  .nt-hero img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .nt-hero-trama {
-    position: absolute;
-    inset: 0;
-  }
-  .nt-pie {
-    display: block;
-    padding: 10px 0 0;
-    text-align: center;
-    color: var(--text-faint);
-    font-size: 8.5px;
+  .nota-migaja a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
   }
 
-  /* ── cuerpo ── */
-  .nt-abajo {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 300px;
-    gap: 44px;
-    align-items: start;
-    padding: 40px 24px 44px;
+  .nota-titulo {
+    margin: 16px 0 0;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(40px, 3.4vw, 60px);
+    line-height: 0.95;
+    letter-spacing: var(--tracking-titular);
+    text-transform: uppercase;
+    text-wrap: balance;
+    overflow-wrap: break-word;
   }
-  .nt-cuerpo {
-    /*
-      `width` explícito, no solo `max-width`.
-      Con `max-width` + `margin: 0 auto` en un ítem de rejilla, los márgenes
-      automáticos ganan sobre el estirado y la caja se encoge a su CONTENIDO: una
-      nota de un párrafo salía a 521px y una larga a 680, o sea que la medida de
-      la columna dependía del largo del texto. Medido en dos notas reales.
-    */
-    width: min(100%, 680px);
-    margin: 0 auto;
-  }
-  .nt-riel {
-    position: sticky;
-    top: calc(var(--chrome-h) + 16px);
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
-
-  .nt-etiquetas {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 34px;
-    padding-top: 24px;
-    border-top: 1px solid var(--border-hairline);
-  }
-  .nt-etiqueta {
-    padding: 9px 13px;
-    background: var(--surface-card);
-    box-shadow: inset 0 0 0 1px var(--border-hairline);
-    color: var(--text-body);
-    font-size: 9px;
-    white-space: nowrap;
-    transition:
-      background var(--dur-2) var(--ease-out),
-      color var(--dur-2) var(--ease-out);
-  }
-  .nt-etiqueta:hover {
-    background: var(--mist-0);
-    color: var(--noche-0);
-  }
-
-  .nt-ficha-autor {
-    display: grid;
-    grid-template-columns: 64px minmax(0, 1fr);
-    gap: 18px;
-    margin-top: 26px;
-    padding: 20px;
-    background: var(--surface-card);
-    box-shadow: inset 0 0 0 1px var(--border-hairline);
-  }
-  .nt-autor-foto {
-    position: relative;
-    display: grid;
-    place-items: center;
-    aspect-ratio: 1 / 1;
-    border-radius: 999px;
-    background: var(--grad-noche);
-    /* El retrato es redondo: sin esto la foto cuadrada se sale del círculo. */
-    overflow: hidden;
-  }
-  .nt-autor-foto img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .nt-autor-monograma {
-    font-size: 20px;
-    font-weight: 800;
-    letter-spacing: 0.01em;
-    color: var(--text-muted);
-    /* `aria-hidden`: el nombre completo está al lado, y un lector de pantalla
-       leyendo «FO» antes de «Fernanda Ortíz» solo estorba. */
-  }
-  .nt-autor-datos {
-    min-width: 0;
-  }
-  .nt-autor-nombre {
-    display: block;
-    font: 600 16px/1.2 var(--font-text);
-    color: var(--mist-2);
-  }
-  .nt-autor-bio {
-    display: block;
-    font: 400 14px/1.5 var(--font-text);
-    color: var(--text-muted);
-    margin-top: 6px;
+  .nota-balazo {
+    margin: 18px 0 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 24px;
+    line-height: 34px;
     text-wrap: pretty;
   }
-
-  /* ── relacionadas ── */
-  .nt-relacionadas {
-    padding: 0 24px 48px;
+  .nota-credito {
+    margin: 20px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    font-size: var(--text-etiqueta);
+    line-height: var(--text-etiqueta--line-height);
+    font-weight: 700;
+    color: var(--color-gris-texto);
   }
-  .nt-rel-cabeza {
-    padding-bottom: 14px;
-    border-bottom: 1px solid var(--border-quiet);
-  }
-  .nt-rel-titulo {
-    font-size: 22px;
-    font-weight: 800;
-    letter-spacing: -0.01em;
-    color: var(--mist-2);
-  }
-  .nt-rel-rejilla {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 26px;
-    margin-top: 24px;
+  .nota-credito time {
+    letter-spacing: var(--tracking-titular);
   }
 
-  /* ── 14f: móvil ── */
-  @media (max-width: 899px) {
-    .nt-cabeza {
-      padding: 22px 16px 0;
-    }
-    .nt-migaja {
-      padding-top: 16px;
-    }
-    .nt-leader-franja {
-      margin-top: 18px;
-    }
-    /* 320×50 en móvil (ver `MEDIDAS.leaderboard`): el offset del hover cambia con el alto de reserva. */
-    .nt-leader-franja:hover :global(.anuncio-hueco) {
-      margin-bottom: -350px; /* 400 − 50 */
-    }
-    .nt-titular {
-      margin-top: 18px;
-      text-align: left;
-    }
-    .nt-h1 {
-      font: 700 30px / 1.08 var(--font-text);
-      letter-spacing: -0.022em;
-    }
-    .nt-bajada {
-      font: 400 15px/1.55 var(--font-text);
-      margin-top: 14px;
-      max-width: none;
-    }
-    .nt-credito {
-      justify-content: flex-start;
-      gap: 10px;
-      margin-top: 18px;
-      padding-top: 16px;
-    }
-    .nt-compartir {
-      margin-left: 0;
-      width: 100%;
-      margin-top: 4px;
-    }
+  /* La foto en esquina recta y a todo el ancho de la columna, en su proporción. */
+  .nota-foto {
+    margin: 32px 0 0;
+  }
+  .nota-foto img {
+    display: block;
+    width: 100%;
+    height: auto;
+    background-color: #dfe3ea;
+  }
 
-    .nt-hero-caja {
-      margin: 20px 0 0;
-    }
-    .nt-pie {
-      padding: 8px 16px 0;
-      text-align: left;
-    }
+  .nota-cuerpo {
+    margin-top: 40px;
+  }
 
-    .nt-abajo {
-      grid-template-columns: 1fr;
-      gap: 30px;
-      padding: 26px 16px 30px;
-    }
-    .nt-cuerpo {
-      max-width: none;
-    }
-    .nt-riel {
-      position: static;
-    }
+  .nota-relacionadas {
+    padding-top: 72px;
+    padding-bottom: 24px;
+  }
+  .nota-relacionadas-titulo {
+    margin: 0;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--color-negro);
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: var(--tracking-etiqueta);
+    text-transform: uppercase;
+  }
+  .nota-relacionadas-lista {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
 
-    .nt-relacionadas {
-      padding: 0 16px 36px;
+  @media (max-width: 1279px) {
+    .nota {
+      padding-top: 28px;
     }
-    .nt-rel-titulo {
+    .nota-titulo {
+      margin-top: 12px;
+      font-size: 32px;
+    }
+    .nota-balazo {
+      margin-top: 12px;
       font-size: 18px;
+      line-height: 27px;
     }
-    .nt-rel-rejilla {
-      grid-template-columns: 1fr;
-      gap: 20px;
-      margin-top: 18px;
+    .nota-foto {
+      margin-top: 20px;
+    }
+    .nota-cuerpo {
+      margin-top: 28px;
+    }
+    .nota-relacionadas {
+      padding-top: 48px;
     }
   }
 </style>
