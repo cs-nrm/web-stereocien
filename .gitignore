@@ -12,11 +12,11 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# Variables de entorno. En el v1 solo `.env.production` estaba ignorado, y el
-# `.env` de la raíz estaba VERSIONADO. Ahí solo había un PUBLIC_API_URL (la URL
-# pública del WordPress, no un secreto), así que no hubo fuga — pero este repo va
-# a llevar config de servidor de verdad (CMS_URL con una IP privada de la VPC, y
-# más adelante la llave del proveedor de newsletter), así que se cierra ahora.
+# Variables de entorno. En el sitio viejo el `.env` de la raíz estaba VERSIONADO
+# (sigue en la rama `stereocien`). Ahí solo había un PUBLIC_API_URL —la URL pública
+# del WordPress, no un secreto—, así que no hubo fuga; pero este sitio va a llevar
+# config de servidor de verdad (CMS_URL puede ser una IP privada), y el repo es
+# público, así que se cierra desde el primer commit.
 .env
 .env.*
 !.env.example
@@ -27,25 +27,3 @@ pnpm-debug.log*
 # Lienzo de Claude Design: el ZIP original no se versiona (pesa y es un artefacto
 # de descarga). Sí se versiona la carpeta extraída del lienzo.
 design/*.zip
-
-# Capturas del canal de metadata de Triton (SBM). NO se versionan.
-#
-# No es por peso: ese canal emite cue points de `name: "ad"` con los nombres de los
-# anunciantes al aire y su duración —RENAULT, BANXICO, BANCO NU…—, o sea que una
-# captura es un registro de QUIÉN anuncia y CON QUÉ FRECUENCIA. Es información
-# comercial sensible.
-#
-# Es la misma razón por la que `cms-estaciones` filtra la bitácora con una lista
-# blanca de categorías musicales: su comentario lo dice explícito, "la bitácora de
-# comerciales revela quién anuncia y con qué frecuencia". Aquí aplica igual.
-.metadata-log/*.sse
-.metadata-log/*.txt
-# Las salidas de una corrida: se reescriben cada minuto mientras el monitor vive,
-# así que versionarlas deja el `git status` sucio de forma permanente y arriesga
-# commitear un archivo a medio escribir. Los HALLAZGOS viven en el plan y en los
-# mensajes de commit; lo que sí se versiona son las herramientas.
-.metadata-log/*.jsonl
-.metadata-log/*.log
-# La vista renderizada lleva lo mismo que el .sse: anunciantes al aire, nombres de
-# cartucho de Dalet y material sin estrenar. No entra a git.
-.metadata-log/*.html

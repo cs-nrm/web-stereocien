@@ -1,9 +1,9 @@
 {
-  "name": "web-beat",
+  "name": "web-stereocien",
   "type": "module",
   "version": "2.0.0",
   "private": true,
-  "description": "Front público de Beat 100.9 — Astro SSR sobre cms-estaciones (Payload multi-estación).",
+  "description": "Front público de Stereo Cien 100.1 — Astro SSR sobre cms-estaciones (Payload multi-estación).",
   "packageManager": "pnpm@9.0.0",
   "engines": {
     "node": ">=22.12"
@@ -19,15 +19,12 @@
     "sync:types:check": "node scripts/sync-payload-types.mjs --check",
     "fuentes": "node scripts/fuentes.mjs",
     "guardas": "node scripts/guardas.mjs && node scripts/guarda-cascada.mjs",
-    "preview:cms": "CMS_URL=https://admin.nrm.com.mx astro preview",
-    "favicon": "node scripts/favicon.mjs"
+    "preview:cms": "CMS_URL=https://admin.nrm.com.mx astro preview"
   },
   "dependencies": {
-    "@astrojs/markdown-remark": "^7.3.1",
     "@astrojs/node": "^11.1.4",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.2.10",
-    "plyr": "^3.8.4",
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {

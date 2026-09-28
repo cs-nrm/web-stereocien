@@ -1,0 +1,24 @@
+{
+  "//": [
+    "Mapa EXACTO de 301: URL de nota del sitio viejo de Stereo Cien → su nota en el sitio nuevo.",
+    "Lo carga src/config/redirecciones/sitio-viejo.ts al arrancar y lo consulta src/middleware.ts antes de renderizar nada.",
+    "",
+    "FORMATO. «rutas» es un objeto { origen: destino }, las dos como texto.",
+    "  origen: la ruta vieja NORMALIZADA como la busca el middleware: empieza con «/», SIN barra final, sin query ni «#»,",
+    "          con los escapes %XX ya decodificados y en Unicode NFC. Mayúsculas y minúsculas se respetan: el Apache del",
+    "          sitio viejo las distingue (comprobado el 2026-09-28: /autos/ da 200, /AUTOS/ y /Autos/ dan 404).",
+    "          Ejemplo: https://stereociendigital.mx/autos/<slug>/ se escribe \"/autos/<slug>\".",
+    "  destino: siempre \"/noticias/<slug>\" del sitio nuevo, sin barra final ni query. El query de la petición (utm,",
+    "          fbclid) lo conserva el middleware: no va aquí.",
+    "",
+    "QUIÉN LO GENERA. El importador de cms-estaciones (la migración del WordPress), a partir de lo que SÍ se cargó en",
+    "Payload y con el slug FINAL de cada nota. Así ningún 301 termina en un 404. No se edita a mano: se regenera, y al",
+    "regenerarlo se conserva esta clave «//». scripts/guardas.mjs rechaza claves sin normalizar, destinos fuera de",
+    "/noticias/, cadenas (un destino que también es origen), bucles y orígenes bajo /noticias/.",
+    "",
+    "LO QUE FALTA. Solo cubre NOTAS. Las rutas de SECCIÓN del sitio viejo (/autos/, /autos/2/, … de las 19 secciones)",
+    "todavía no tienen destino porque las páginas de sección no existen en el sitio nuevo. No se inventan destinos:",
+    "hasta que existan, esas URLs caen en el 404."
+  ],
+  "rutas": {}
+}

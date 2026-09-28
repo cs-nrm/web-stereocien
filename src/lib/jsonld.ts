@@ -8,15 +8,15 @@
  * lo que se emite sale del MISMO valor que ya usa el marcado —`firma()`,
  * `fechaIso()`, `seccionDeNota()`— y nunca de una segunda fuente.
  *
- * Y la segunda: **un dato que no existe se OMITE.** Hoy `noticias.autores` está
- * vacío y la firma viene del campo de texto libre, así que no hay página de autor
- * que enlazar: un `author.url` de relleno sería una URL que responde 404. De eso
+ * Y la segunda: **un dato que no existe se OMITE.** Cuando la firma de una nota
+ * viene del campo de texto libre y no del catálogo de `autores`, no hay página de
+ * autor que enlazar: un `author.url` de relleno sería una URL que responde 404. De eso
  * se encarga `serializar` por todos —cualquier propiedad en `null` desaparece del
  * JSON—, así que un builder puede escribir `?? null` sin condicionales.
  *
  * Toda URL va ABSOLUTA y contra `SITE_URL`, nunca contra el host que sirve. Es
  * lo mismo que ya hacen la canónica y `og:image`, y por la misma razón: lo que se
- * publica apunta al sitio real, no a la preproducción.
+ * publica apunta al sitio real, no al staging que lo esté sirviendo.
  */
 import { IDIOMA_REGION, SITE_URL, TARJETA_COMPARTIR, urlAbsoluta } from '@/config/site';
 
@@ -34,12 +34,19 @@ export const ID_ESTACION = `${SITE_URL}/#estacion`;
 /**
  * El nombre de la marca, escrito una vez.
  *
- * Es constante y no el `nombre` del CMS a propósito: es el mismo valor que ya
- * fijan `og:site_name` y el sufijo `— Beat 100.9` de cada `<title>`, y los tres
- * tienen que decir lo mismo. El nombre PÚBLICO del CMS (`BEAT`) sí entra, pero
- * como `alternateName`.
+ * Es constante y no el `nombre` del CMS a propósito: tiene que ser el mismo valor
+ * que fijan `og:site_name` y el sufijo de cada `<title>` en el layout, y los tres
+ * tienen que decir lo mismo. Coincide con `estaciones.nombre` del CMS
+ * («Stereo Cien 100.1»), y la frecuencia viaja en él. El nombre de PUBLICACIÓN del
+ * CMS (`STEREO CIEN`) sí entra, pero como `alternateName`.
  */
-const NOMBRE = 'Beat 100.9';
+const NOMBRE = 'Stereo Cien 100.1';
+
+/**
+ * El logo, como URL del sitio. Tiene que ser el MISMO archivo que pinta la
+ * cabecera, por la razón de `nodoPublicador`.
+ */
+const LOGO = '/img/stereocien.svg';
 
 /**
  * El JSON listo para el atributo.
@@ -83,7 +90,7 @@ export function nodoPublicador(): Nodo {
     '@id': ID_ESTACION,
     name: NOMBRE,
     url: urlAbsoluta('/'),
-    logo: urlAbsoluta('/img/beat-blanco.svg'),
+    logo: urlAbsoluta(LOGO),
   };
 }
 
@@ -95,13 +102,27 @@ export function nodoPublicador(): Nodo {
  * vez. Las demás páginas nombran la misma entidad por su `@id` cuando la necesitan
  * (ver `nodoPublicador`).
  *
- * Todo lo que afirma está verificado: la razón social y el domicilio salen del
- * aviso de privacidad de este mismo sitio. No se agrega `broadcastFrequency` —que
- * sería el dato más obvio de una estación— porque en schema.org es propiedad de
- * `BroadcastService`, no de `RadioStation`; los 100.9 ya viajan en el `name`.
+ * Todo lo que afirma está verificado: la razón social, el domicilio y el grupo
+ * salen del aviso de privacidad del sitio viejo (`avisodeprivacidad` en la rama
+ * `stereocien`), y NRM Comunicaciones además del pie y del `<meta publisher>` del
+ * mismo sitio. No se agrega `broadcastFrequency` —que sería el dato más obvio de
+ * una estación— porque en schema.org es propiedad de `BroadcastService`, no de
+ * `RadioStation`; los 100.1 ya viajan en el `name`.
  *
- * Este nodo es de BEAT: razón social, domicilio e indicativo son suyos. El día
- * que este repo sirva de modelo para otra estación, es lo primero que se cambia.
+ * Lo que se OMITE a propósito, por la regla de arriba:
+ *  - `callSign`. Ningún texto del sitio viejo dice cuál es el indicativo. La razón
+ *    social se llama «Radio XHMM-FM», y eso apunta a uno, pero el nombre de una
+ *    sociedad no es una afirmación sobre la concesión; hasta que se confirme, no
+ *    va. Tampoco sale de `estaciones.tritonMount` (`XEOYAM`): un mount es el nombre
+ *    de un flujo en Triton, y este en particular es el de Stereo Cien Digital, no
+ *    el de la frecuencia.
+ *  - `areaServed`. Lo que suena en este sitio es Stereo Cien Digital, un flujo
+ *    solo de música; por la frecuencia abierta del 100.1 FM va la programación de
+ *    Enfoque Noticias (lo dice `estaciones.notaStream` en el CMS). Declarar la
+ *    cobertura de la antena sería describir otra cosa que la que la página toca.
+ *
+ * Este nodo es de STEREO CIEN: razón social y domicilio son suyos. El día que este
+ * código sirva a otra estación, es lo primero que se cambia.
  *
  * `sameAs` recibe las redes YA RESUELTAS por `redesEstacion()`, las mismas que
  * pinta el pie. No se leen de `REDES_RESPALDO`: si mañana el CMS trae otra cuenta
@@ -114,30 +135,22 @@ export function nodoEstacion(datos: {
   return {
     ...nodoPublicador(),
     alternateName: datos.nombrePublico ?? null,
-    legalName: 'TELEVIDEO, S.A. DE C.V.',
-    /*
-      El indicativo se escribe aquí y NO se lee de `estaciones.tritonMount`,
-      aunque hoy los dos digan `XHSONFM`. No son el mismo dato: un mount es el
-      nombre de un flujo en Triton y puede cambiar sin que la concesión cambie.
-      Leerlo de ahí funcionaría por casualidad hasta el día que dejara de hacerlo.
-    */
-    callSign: 'XHSONFM',
+    legalName: 'RADIO XHMM-FM, S.A. DE C.V.',
     image: {
       '@type': 'ImageObject',
       url: urlAbsoluta(TARJETA_COMPARTIR.ruta),
       width: TARJETA_COMPARTIR.ancho,
       height: TARJETA_COMPARTIR.alto,
     },
-    areaServed: 'Ciudad de México',
     /*
       El domicilio fiscal, repartido como lo pide `PostalAddress`. La colonia va
       dentro de `streetAddress` porque schema.org no tiene un campo para ella, y
       `addressLocality` lleva la alcaldía: es el nivel que sigue al C.P. en una
       dirección mexicana.
 
-      El aviso de privacidad dice «México Distrito Federal» porque es texto
-      legal de 2015 y no es nuestro para reescribirlo. Aquí va el nombre vigente:
-      esto no es el aviso, es un dato que se le da a un buscador.
+      El aviso de privacidad dice «México Distrito Federal», el nombre de antes
+      de 2016, y es texto legal que no es nuestro para reescribirlo. Aquí va el
+      nombre vigente: esto no es el aviso, es un dato que se le da a un buscador.
     */
     address: {
       '@type': 'PostalAddress',
@@ -167,9 +180,9 @@ export function nodoEstacion(datos: {
  *
  * Y por eso `headline` NO recibe `meta.title` del CMS, ni `image` la
  * `meta.image`, aunque el `<title>` y la `og:image` de la misma nota sí los usen
- * (decisión de Carlos, 2026-09-07 — ver `src/pages/noticias/[slug].astro`). No es
- * una inconsistencia, es la línea entre dos cosas distintas: el `<title>` y la
- * tarjeta de compartir son PROMOCIÓN —pueden decirlo más corto o con otra foto, y
+ * (decisión de Carlos en web-beat, 2026-09-07; la aplica
+ * `src/pages/noticias/[slug].astro`). No es una inconsistencia, es la línea entre
+ * dos cosas distintas: el `<title>` y la tarjeta de compartir son PROMOCIÓN —pueden decirlo más corto o con otra foto, y
  * para eso existe ese grupo del CMS—, mientras que el JSON-LD es una AFIRMACIÓN
  * sobre lo que hay en la página. Un `headline` que no sea el `h1` visible es
  * exactamente el marcado que Google lee como engañoso, y ahí no se pierde la
@@ -219,18 +232,18 @@ export function nodoNota(datos: {
 /**
  * La migaja, con los mismos eslabones que la de pantalla.
  *
- * Los `nombre` van en la forma NORMAL del nombre —«Editorial», «Beat
- * Scanner»—, no en mayúsculas (Carlos, 2026-09-07). Antes esta migaja copiaba el
- * `rotulo` de la sección y salía «EDITORIAL», que es lo que Google enseña
- * literalmente al lector encima del resultado. Es la misma palabra: la mayúscula
- * es el `text-transform: uppercase` de la pastilla, una decisión de CSS, y no
- * tenía por qué acabar dentro de un resultado de búsqueda.
+ * Los `nombre` van en la forma NORMAL del nombre —«Comida y guías», «Vinilos»—,
+ * no en mayúsculas (decisión de Carlos en web-beat, 2026-09-07). Allá la migaja
+ * copiaba el `rotulo` de la sección y salía en mayúsculas, que es lo que Google
+ * enseña literalmente al lector encima del resultado. Es la misma palabra: la
+ * mayúscula es el `text-transform: uppercase` de la pastilla, una decisión de CSS,
+ * y no tiene por qué acabar dentro de un resultado de búsqueda.
  *
  * Y no es una «versión arreglada» de lo que dice el DOM: el marcado visible
  * también escribe el nombre en su forma normal y deja el aspecto al CSS, así que
  * los dos siguen diciendo lo mismo. Eso es lo que importa — una migaja que no
- * coincida con la visible es justo el marcado que Google penaliza. Ver
- * `SeccionEditorial` en `config/navegacion.ts`.
+ * coincida con la visible es justo el marcado que Google penaliza. Por eso la
+ * página arma estos pasos con la misma fuente que su migaja visible.
  *
  * Devuelve `null` con menos de dos pasos: una migaja de un solo eslabón no dice
  * nada que la canónica no diga ya.

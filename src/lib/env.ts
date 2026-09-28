@@ -4,19 +4,19 @@
  * Por qué existe este archivo: `import.meta.env.FOO` **se sustituye por su
  * valor al compilar**, no se lee al arrancar. Con `pnpm build` en local eso pasa
  * desapercibido, porque Vite carga el `.env` durante el build y el valor queda
- * horneado con el dato correcto. Pero en Docker la imagen se construye SIN
- * `.env` (está en `.dockerignore`), así que `import.meta.env.CMS_URL` compilaba a
- * cadena vacía y el contenedor ignoraba el `CMS_URL` que le pasaba Compose: el
- * sitio respondía 200 y **cero noticias**. Pasó tal cual en el primer despliegue
- * del beta de `web-enfoque` (31 jul 2026). No lo repitamos.
+ * horneado con el dato correcto. Pero si se compila SIN `.env`, se hornea la cadena
+ * vacía y el proceso ignora el `CMS_URL` que le pasen al arrancar: el sitio
+ * responde 200 y **cero noticias**. Pasó tal cual en el primer despliegue del beta
+ * de `web-enfoque` (31 jul 2026), cuya imagen de Docker se construía sin `.env`.
+ * Heredado de web-beat; no lo repitamos.
  *
  * `process.env` sí se lee al arrancar, que es lo que queremos para la config del
- * servidor: la MISMA imagen sirve para beta y para producción, cambiando solo el
- * entorno.
+ * servidor: el MISMO build sirve para un staging y para producción, cambiando solo
+ * el entorno.
  *
  * Esto vale solo para variables **sin** prefijo `PUBLIC_`. Las `PUBLIC_*` van
  * también al JavaScript del navegador, donde `process.env` no existe: esas tienen
- * que seguir siendo de build (se pasan como `--build-arg`, ver Dockerfile).
+ * que seguir siendo de build (tienen que estar en el entorno de `pnpm build`).
  */
 
 /**

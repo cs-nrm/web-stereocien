@@ -5,16 +5,15 @@
  * La regla de oro de este repo, y la fuente de un bug de producción ya pagado
  * en `web-enfoque` (ver `src/lib/env.ts`):
  *
- *   · `PUBLIC_*`  → se INCRUSTAN al compilar. Van como `--build-arg` del
- *                   Dockerfile y como Variables del repo en GitHub Actions.
- *                   Se leen con `import.meta.env`.
+ *   · `PUBLIC_*`  → se INCRUSTAN al compilar. Tienen que estar en el entorno del
+ *                   BUILD. Se leen con `import.meta.env`. Cambiarlas obliga a
+ *                   reconstruir.
  *   · sin prefijo → se leen en EJECUCIÓN, con `envServidor()` de `src/lib/env.ts`.
- *                   Van en el `.env` de la VM. La misma imagen sirve para
- *                   staging y producción.
+ *                   Tienen que estar en el entorno del proceso de Node. El mismo
+ *                   build sirve para un staging y para producción.
  *
- * Añadir una variable de SERVIDOR nueva no requiere tocar el compose ni el
- * workflow (el compose pasa el `.env` entero con `env_file`). Añadir una
- * `PUBLIC_*` nueva sí requiere tocar los dos.
+ * Aquí se declaran exactamente las `PUBLIC_*` que el código lee. Una `PUBLIC_*`
+ * nueva entra aquí y en `.env.example` el mismo día, con su porqué.
  */
 interface ImportMetaEnv {
   // ---------- Build (llegan al navegador) ----------
@@ -23,21 +22,8 @@ interface ImportMetaEnv {
   /** Origen PÚBLICO del CMS: la media que carga el navegador. */
   readonly PUBLIC_CMS_URL?: string;
   /**
-   * Google Ad Manager. Nunca hardcodear el ad unit: lo consumen
-   * `src/scripts/anuncios.ts` (los slots de GPT) y `src/scripts/player.ts` (el
-   * VAST del pre-roll), y `scripts/guardas.mjs` lo verifica en CI.
-   */
-  readonly PUBLIC_GAM_NETWORK_ID?: string;
-  readonly PUBLIC_GAM_AD_UNIT?: string;
-  /**
-   * Esta NO carga GA4. GA4 entra POR GTM —nunca por las dos vías, que duplican
-   * las páginas vistas—, así que el front no baja `gtag/js` en ningún caso. Lo
-   * único que la lee es el `trackingId` del SDK de Triton (`src/scripts/player.ts`).
-   */
-  readonly PUBLIC_GA_ID?: string;
-  /**
-   * Los cuatro contenedores de medición. Sin valor no se emite el snippet, y la
-   * guarda vive en `src/layouts/Base.astro`: así ningún preview ensucia la
+   * Los cuatro contenedores de medición que emite el layout. Sin valor no se emite
+   * el snippet, y fuera del dominio canónico tampoco: así ningún staging ensucia la
    * propiedad real —y comScore, que es lo que NRM reporta a anunciantes, no infla
    * una cifra certificada con tráfico de revisión.
    */
@@ -47,9 +33,11 @@ interface ImportMetaEnv {
   readonly PUBLIC_METRICOOL_HASH?: string;
 
   // ---------- Runtime (solo servidor) ----------
-  /** Origen INTERNO del CMS (API). Puede ser una IP privada de la VPC. */
+  // Se leen con `envServidor()`, que cae a `import.meta.env` en `astro dev`; por
+  // eso también se declaran aquí.
+  /** Origen INTERNO del CMS (API), sin `/api`. Puede ser una IP privada. */
   readonly CMS_URL?: string;
-  /** `codigo` de la estación en la colección `estaciones` del CMS. Para este repo: `beat`. */
+  /** `codigo` de la estación en la colección `estaciones` del CMS. Para este repo: `stereocien`. */
   readonly ESTACION_CODIGO?: string;
   /** TTL de la caché de respuestas del CMS, en ms. `0` la apaga (conserva el dedup). */
   readonly CACHE_CMS_MS?: string;

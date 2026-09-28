@@ -1,16 +1,16 @@
 /**
  * `robots.txt` — la TERCERA capa de la política de indexación.
  *
- * No existía, y era un agujero real. El plan pide tres capas y solo había dos:
- * el `X-Robots-Tag` del middleware y el `<meta robots>` del layout. Faltaba
- * justamente la que un rastreador lee ANTES de pedir nada — las otras dos solo
- * actúan sobre una respuesta que ya se sirvió.
+ * Es la que un rastreador lee ANTES de pedir nada; las otras dos (el
+ * `X-Robots-Tag` del middleware y el `<meta robots>` del layout) solo actúan sobre
+ * una respuesta que ya se sirvió. Heredado de web-beat, donde faltaba y era un
+ * agujero real.
  *
  * Y es una RUTA, no un archivo en `public/`. Tiene que serlo: la decisión
- * depende del `Host` de cada petición, porque la beta y el sitio real son la MISMA
- * imagen de Docker. Un archivo estático diría lo mismo en los dos, y entonces o
- * la beta invita a rastrear, o el sitio real se cierra a sí mismo. Es el mismo
- * razonamiento que ya está escrito en `noIndexarHost`.
+ * depende del `Host` de cada petición, porque un staging y el sitio real pueden
+ * ser el MISMO artefacto. Un archivo estático diría lo mismo en los dos, y
+ * entonces o el staging invita a rastrear, o el sitio real se cierra a sí mismo.
+ * Es el mismo razonamiento que está escrito en `noIndexarHost`.
  */
 import type { APIRoute } from 'astro';
 import { NOINDEX_SITIO, noIndexarHost } from '@/config/site';
@@ -29,7 +29,7 @@ export const GET: APIRoute = ({ url }) => {
 
   const cuerpo = cerrado
     ? [
-        '# Despliegue que NO es el dominio canónico (beta, staging, una IP).',
+        '# Despliegue que NO es el dominio canónico (staging, una IP, un local).',
         '# Se cierra entero para que no compita con el sitio real en el índice.',
         'User-agent: *',
         'Disallow: /',
@@ -39,9 +39,8 @@ export const GET: APIRoute = ({ url }) => {
         'User-agent: *',
         'Allow: /',
         '',
-        '# El área de oyente es privada y los proxies no son contenido.',
+        '# Los proxies del servidor no son contenido.',
         'Disallow: /api/',
-        'Disallow: /mi/',
         '',
         ...SITEMAPS_ANUNCIADOS.map((s) => `Sitemap: ${s}`),
         '',
@@ -53,9 +52,10 @@ export const GET: APIRoute = ({ url }) => {
       'content-type': 'text/plain; charset=utf-8',
       /*
         Una hora en el borde. Es de lo primero que pide un rastreador y no cambia
-        casi nunca, pero tampoco conviene un TTL largo: el día del corte de
-        dominio este archivo pasa de «Disallow: /» a abierto, y una caché de un
-        día mantendría el sitio real cerrado durante horas después de lanzarlo.
+        casi nunca, pero tampoco conviene un TTL largo: si alguna vez sale
+        cerrado por error en el dominio canónico (un `SITIO_NOINDEX=1` olvidado),
+        una caché de un día lo mantendría fuera de Google durante horas después
+        de corregirlo.
       */
       'cache-control': 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400',
     },

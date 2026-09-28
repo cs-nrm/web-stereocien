@@ -7,14 +7,15 @@
  * el CMS» ni reabre `@astrojs/sitemap`: aquí no se genera nada, se reenvía.
  *
  * Y no es una preferencia estética. El índice del CMS lista hijos con el
- * dominio de la estación (`https://beatdigital.mx/sitemap.xml?...`), porque un
- * `<sitemapindex>` cuyos hijos viven en OTRO host **Google lo descarta**, salvo
- * cross-submission verificada. O sea que los hijos tienen que responder aquí. Sin
- * estas rutas, el índice apunta a dos 404 y el sitio se queda sin vía de
- * descubrimiento el día del corte de dominio. Medido: antes de esto,
- * `/sitemap.xml` respondía 404.
+ * dominio de la estación (`https://stereociendigital.mx/sitemap.xml?seccion=…`,
+ * comprobado con curl el 2026-09-28), porque un `<sitemapindex>` cuyos hijos viven
+ * en OTRO host **Google lo descarta**, salvo cross-submission verificada. O sea que
+ * los hijos tienen que responder aquí. Sin estas rutas, el índice apuntaría a
+ * páginas 404 y el sitio se quedaría sin vía de descubrimiento el día del corte de
+ * dominio. (El sitio viejo anuncia `/sitemap.xml` en su robots.txt y responde 404:
+ * es exactamente ese agujero.)
  *
- * Contrato acordado con `cms-estaciones` (2026-09-03).
+ * El contrato está escrito en `cms-estaciones/docs/feeds-por-estacion.md`.
  */
 import {
   CMS_URL,
@@ -53,16 +54,16 @@ export async function proxyFeed(
     En un despliegue que no es el dominio canónico, esto NO existe.
 
     El `X-Robots-Tag: noindex` del middleware ya cubre la indexación, pero un
-    sitemap es una INVITACIÓN activa a rastrear: la beta estaría publicando un
+    sitemap es una INVITACIÓN activa a rastrear: un staging estaría publicando un
     mapa de URLs de producción bajo otro nombre. Un 404 es la respuesta honesta —
     en este host no hay sitemap. Falla del lado seguro, como el resto de la
     política de indexación.
 
     Se comprueban LAS DOS reglas, igual que el middleware y el `<meta robots>`,
-    y basta con que una cierre. Al principio esto solo miraba el host, y lo cazó
-    una prueba: con `Host: beatdigital.mx` el sitemap se servía **mientras el
-    middleware ponía `X-Robots-Tag: noindex` en esa misma respuesta**, porque
-    `NOINDEX_SITIO` mira el dominio con el que se COMPILÓ. Dos capas de la misma
+    y basta con que una cierre. Heredado de web-beat: allá esto solo miraba el
+    host, y lo cazó una prueba — con el `Host` canónico el sitemap se servía
+    **mientras el middleware ponía `X-Robots-Tag: noindex` en esa misma
+    respuesta**, porque `NOINDEX_SITIO` mira el dominio con el que se COMPILÓ. Dos capas de la misma
     política diciendo cosas contrarias sobre la misma petición.
   */
   if (NOINDEX_SITIO || noIndexarHost(url.hostname)) {
@@ -127,12 +128,17 @@ export async function proxyFeed(
     const xml = await r.text();
 
     /*
-      503, nunca un sitemap vacío.
+      Un cuerpo VACÍO es una avería del CMS, y se responde 503, nunca 200.
 
-      Un `<urlset>` sin URLs es una afirmación —«este sitio no tiene nada»— y
+      Servirlo como 200 sería una afirmación —«este sitio no tiene nada»— y
       además CACHEABLE. Google lo tomaría por bueno y podría desindexar. Un 503 le
       dice «vuelve luego» y no toca el índice. Es la misma lógica por la que la
       nota responde 503 y no 404 cuando el CMS no contesta.
+
+      Ojo, no confundir con un `<urlset>` bien formado SIN URLs: ese sí se sirve,
+      porque es lo que el CMS dice que hay. Es el caso de Stereo Cien mientras la
+      migración del WordPress no esté cargada (comprobado el 2026-09-28: el hijo de
+      `noticias` y el `news-sitemap.xml` llegan vacíos).
     */
     if (!xml.trim()) throw new Error('El CMS devolvió un feed vacío');
 

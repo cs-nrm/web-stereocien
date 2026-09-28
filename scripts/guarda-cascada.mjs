@@ -2,11 +2,12 @@
 /**
  * Guarda de cascada: dos reglas peleando por la misma propiedad.
  *
- * Existe por un fallo concreto. Un bloque de micro-interacciones aplicaba
- * `transform: scale(1.045)` a la foto de la tarjeta; meses después se le añadió un
- * hover que también escribía `transform`. Misma capa, misma especificidad: el
- * empate lo resolvía el ORDEN EN EL ARCHIVO, o sea por accidente. Movería el bloque
- * quien lo moviera, el hover cambiaba sin que nadie tocara el hover.
+ * Heredada de web-beat, y existe por un fallo concreto de allá: un bloque de
+ * micro-interacciones aplicaba `transform: scale(1.045)` a la foto de una tarjeta;
+ * meses después se le añadió un hover que también escribía `transform`. Misma capa,
+ * misma especificidad: el empate lo resolvía el ORDEN EN EL ARCHIVO, o sea por
+ * accidente. Moviera quien moviera el bloque, el hover cambiaba sin que nadie
+ * tocara el hover.
  *
  * Y por eso lee el CSS CONSTRUIDO y no el fuente: el conflicto no existe en
  * ningún archivo por separado, solo en la cascada ensamblada. Una guarda sobre las
@@ -79,7 +80,7 @@ function partirSelectores(lista) {
 
 const hojas = globSync('dist/client/**/*.css');
 if (!hojas.length) {
-  console.log('· guarda-cascada: no hay CSS construido todavía, se omite.');
+  console.log('guarda-cascada: no hay CSS construido todavía, se omite.');
   process.exit(0);
 }
 
@@ -105,8 +106,8 @@ for (const hoja of hojas) {
 
   /*
    * Se recorre con PILA DE CONTEXTO, no con una expresión regular sobre todo el
-   * archivo. La primera versión daba falso positivo con `.pila-carta`: escribe
-   * `transform` en la regla base y otra vez en su ajuste de móvil. Eso es CSS
+   * archivo. La primera versión (en web-beat) daba falso positivo con una regla que
+   * escribía `transform` en su base y otra vez en su ajuste de móvil. Eso es CSS
    * responsivo normal —cada media query manda en su ancho— y no un empate resuelto
    * por orden. Solo cuentan las escrituras que compiten DE VERDAD: mismo selector
    * y mismo contexto.
@@ -167,13 +168,13 @@ for (const hoja of hojas) {
         `\n    «${selector}» recibe "${prop}" desde ${dato.veces} reglas:` +
         dato.reglas.map((v) => `\n      · ${prop}: ${v}`).join('') +
         `\n    Gana la que quede más abajo en el archivo, o sea por accidente de orden.` +
-        `\n    Deja una sola, o reparte los gestos entre transform / translate / scale (ver movimiento.md §1).`,
+        `\n    Deja una sola, o reparte los gestos entre transform / translate / scale: son propiedades distintas y no se pisan.`,
     );
   }
 }
 
 if (fallos.length) {
-  console.error(`\n✗ guarda-cascada: ${fallos.length} conflicto(s)\n` + fallos.map((f) => '  ' + f).join('\n\n') + '\n');
+  console.error(`\nguarda-cascada: FALLA, ${fallos.length} conflicto(s)\n` + fallos.map((f) => '  ' + f).join('\n\n') + '\n');
   process.exit(1);
 }
-console.log(`✓ guarda-cascada: ${hojas.length} hoja(s), sin propiedades en disputa.`);
+console.log(`guarda-cascada: sin conflictos (${hojas.length} hoja(s), sin propiedades en disputa).`);
