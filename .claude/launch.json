@@ -1,0 +1,37 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web-beat",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "dev",
+        "--port",
+        "4321"
+      ],
+      "port": 4321
+    },
+    {
+      "name": "design",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "4399",
+        "--directory",
+        "design/Nuevo sitio de beat full"
+      ],
+      "port": 4399
+    },
+    {
+      "name": "web-beat-build",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "set -a; . ./.env; set +a; node ./dist/server/entry.mjs"
+      ],
+      "port": 4322,
+      "autoPort": true
+    }
+  ]
+}

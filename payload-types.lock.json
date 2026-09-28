@@ -1,0 +1,8 @@
+{
+  "repo": "cms-estaciones",
+  "repoPath": "../cms-estaciones",
+  "sourcePath": "src/payload-types.ts",
+  "targetPath": "src/types/payload.ts",
+  "branch": "main",
+  "ref": "0190393"
+}

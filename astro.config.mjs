@@ -1,0 +1,179 @@
+import { defineConfig } from 'astro/config';
+import node from '@astrojs/node';
+import tailwind from '@tailwindcss/vite';
+
+// Front público de Beat 100.9 — Astro SSR sobre `cms-estaciones`.
+// Modelo: `web-enfoque` (que a su vez copió de `web-mundial`). Las tres
+// diferencias deliberadas de Enfoque respecto a los repos hermanos SSG se
+// heredan aquí a propósito:
+//   1. security.checkOrigin: true  → protección CSRF gratis para los POST de
+//      sesión (login/registro de oyentes). `web-mundial` lo tiene en false;
+//      NO heredar esa decisión.
+//   2. Sin @astrojs/sitemap → los sitemaps los sirve el CMS. Dos sitemaps
+//      compitiendo es peor que uno. (Y el `sitemap({ sitemap: '/sitemap.xml' })`
+//      del web-beat viejo pasaba una opción que la integración no soporta, así
+//      que anunciaba un archivo que nunca se generaba.)
+//   3. Tailwind con los tokens de marca mapeados, no el config vacío de los
+//      repos hermanos: acá sí hay design system.
+//
+// Tailwind entra por el PLUGIN DE VITE, no por `@astrojs/tailwind`. Esa
+// integración se quedó en Tailwind 3 y en Astro 5 (su última versión declara
+// `tailwindcss: ^3.0.24` y `astro: ^3||^4||^5`), así que es un callejón sin
+// salida: mantenerla obligaba a quedarse dos majors atrás en las dos cosas.
+export default defineConfig({
+  // Dominio canónico de Beat, sin `www`. El `www` se resuelve con un 301 en el
+  // edge (Caddy/Cloudflare), no aquí.
+  site: process.env.PUBLIC_SITE_URL || 'https://beatdigital.mx',
+  output: 'server',
+  adapter: node({ mode: 'standalone' }),
+
+  /*
+   * Las rutas VIEJAS de Beat Scanner, con 301.
+   *
+   * La sección vivía en `/scanner` y se mudó a `/beat-scanner` el 2026-09-07, para
+   * que las dos secciones editoriales tengan la URL diciendo su nombre (Carlos:
+   * «deben ser /beat-scanner y /editorial»).
+   *
+   * No se borra la vieja, se redirige, y no es cortesía: `/scanner/<slug>` es la
+   * ruta que llevan la migaja de cada nota ya publicada, el sitemap que emite el
+   * CMS y cualquier enlace que la estación haya compartido. Dejarla en 404 tira lo
+   * que esas URLs tuvieran acumulado y manda a un lector real a una página de error
+   * por un cambio que solo nos importa a nosotros.
+   *
+   * Es 301 y no 302 a propósito: la mudanza es permanente, y un 302 le dice a
+   * Google que siga indexando la URL vieja.
+   *
+   * `scanner` sigue en `SEGMENTOS_RESERVADOS` (`config/site.ts`). Estas
+   * redirecciones se resuelven antes que las páginas, pero si alguien las quitara,
+   * la lista es lo que impide que `[tipoLista]` reclame el segmento y responda 404
+   * tras una consulta al CMS.
+   */
+  redirects: {
+    /*
+     * Estas dos van ANTES de la regla dinámica de abajo, y existen para que no
+     * haya CADENA de redirecciones.
+     *
+     * Las dos categorías que hoy SON una sección ya se redirigen desde
+     * `beat-scanner/[categoria].astro` —`/beat-scanner/editorial` → `/editorial`—,
+     * así que sin estas dos líneas `/scanner/editorial` daba dos saltos: primero a
+     * `/beat-scanner/editorial` y de ahí a `/editorial`. Las dos eran 301 y
+     * funcionaba, pero una cadena es una petición de más para cada lector que llegue
+     * por un enlace viejo, y las dos rutas SÍ estuvieron enlazadas: hasta hoy la
+     * migaja de cada nota apuntaba a `/scanner/<su categoría>`.
+     *
+     * Son los únicos dos slugs de categoría escritos a mano en el repo — el resto
+     * sale de `SECCIONES_EDITORIALES` en `config/navegacion.ts`, que este archivo no
+     * puede importar (es TS con alias, y la config de Astro se evalúa antes). Si algún
+     * día se renombra una de esas dos categorías, esta entrada NO se rompe: se queda
+     * como lo que ya es, la redirección de una URL histórica.
+     */
+    '/scanner/editorial': { status: 301, destination: '/editorial' },
+    '/scanner/beat-scanner': { status: 301, destination: '/beat-scanner' },
+
+    '/scanner': { status: 301, destination: '/beat-scanner' },
+    '/scanner/[categoria]': { status: 301, destination: '/beat-scanner/[categoria]' },
+  },
+  vite: {
+    plugins: [tailwind()],
+    /*
+     * Plyr se declara aquí aunque se importe de forma DINÁMICA.
+     *
+     * Vite descubre las dependencias al vuelo; con un `import()` perezoso no se
+     * entera hasta que alguien lo dispara, y entonces re-optimiza y **invalida la
+     * petición en curso**: el navegador recibe `504 Outdated Optimize Dep` y la
+     * carga falla. En pantalla se ve como «se descompuso el reproductor de video»,
+     * y no hay nada roto en el código — el build de producción siempre estuvo bien.
+     *
+     * Nos costó tres falsas alarmas hoy. Declarándolo, Vite lo optimiza al
+     * arrancar y el `import()` perezoso encuentra el paquete ya listo. Sigue sin
+     * bajar hasta que se pide: esto es del servidor de desarrollo, no del bundle.
+     */
+    optimizeDeps: { include: ['plyr'] },
+    server: {
+      watch: {
+        /*
+         * Sin esto, CUALQUIER escritura dentro del proyecto reinicia el
+         * servidor de desarrollo.
+         *
+         * Medido: las capturas de `.metadata-log/` escriben una muestra cada 60 s,
+         * y el log del dev server mostraba un `program reload` cada 60 s clavado.
+         * En pantalla se ve como un parpadeo periódico —la página se recarga
+         * entera— y en medio de una verificación visual es imposible saber si lo
+         * que ves es tu cambio o el rebote.
+         *
+         * `design/` va por lo mismo: son megabytes de `.dc.html` que no alimentan
+         * el build (viven en `.dockerignore`), y vigilarlos no compra nada.
+         */
+        /*
+          Las exclusiones por omisión van INCLUIDAS a mano.
+
+          `ignored` como lista REEMPLAZA la lista por omisión de Vite, que trae
+          `node_modules` y `.git`. Al poner solo las nuestras, el vigilante se puso
+          a observar node_modules entero y dejó de avisar de los cambios en `src`:
+          el servidor sirvió CSS viejo durante varias sesiones de medición y me hizo
+          perseguir problemas de layout que no existían. Se nota tarde porque el
+          `build` sí toma los cambios — solo el dev queda atrás.
+        */
+        ignored: [
+          '**/node_modules/**',
+          '**/.git/**',
+          '**/.metadata-log/**',
+          '**/design/**',
+          '**/dist/**',
+        ],
+      },
+    },
+  },
+  security: {
+    checkOrigin: true,
+    /**
+     * Sin esta lista, `Astro.url` en producción es SIEMPRE
+     * `http://localhost/` — no es una suposición: el adaptador de node descarta
+     * el `Host` que no puede validar y cae a "localhost"
+     * (`astro/dist/core/app/node.js` → `validateHost`, que devuelve `undefined`
+     * cuando `allowedDomains` está vacío).
+     *
+     * Dos consecuencias que muerden en producción, las dos ya medidas en
+     * `web-enfoque`:
+     *  1. Cualquier regla que mire el host de la petición (el `X-Robots-Tag` del
+     *     middleware) creería que el sitio real es un despliegue de prueba, y
+     *     dejaría TODO el sitio fuera de Google.
+     *  2. `checkOrigin` compara el header `Origin` contra `url.origin`: con
+     *     `localhost` de un lado y el dominio real del otro, **todo POST
+     *     respondería 403**. Acá eso es el login y el registro de oyentes, o sea
+     *     que muerde desde el día 1 — a diferencia de Enfoque, donde no mordía
+     *     porque su bloque de formulario todavía era un andamio sin POST.
+     *
+     * Los patrones van solo con `hostname`: sin `protocol` ni `port` para que el
+     * match no dependa de cómo termine resolviéndose el esquema detrás de Caddy
+     * (que habla HTTP con el contenedor y anuncia HTTPS por `X-Forwarded-Proto`).
+     * Un host que no esté aquí no se rechaza: simplemente vuelve a "localhost",
+     * que es el lado seguro.
+     *
+     * Todo staging o preproducción TIENE que entrar en esta lista. Ya pasó:
+     * `v2.beatdigital.mx` se levantó en sep 2026 y se agregó abajo.
+     */
+    allowedDomains: [
+      { hostname: 'beatdigital.mx' },
+      /* El `www` va con 301 al apex en el edge y hoy no llega hasta aquí, pero si
+         ese 301 se cayera, un host que NO esté en esta lista se resuelve como
+         "localhost" y el middleware marcaría el sitio real como despliegue de
+         prueba: `noindex` en todo. Listarlo cuesta una línea. */
+      { hostname: 'www.beatdigital.mx' },
+      /* Dominio viejo del WordPress. Durante la ventana de corte sigue vivo como
+         respaldo, y conviene que este proceso sepa reconocerlo. */
+      { hostname: 'beatdigital.com.mx' },
+      { hostname: 'beta.beatdigital.mx' },
+      /* Preproducción del relanzamiento (sep 2026). Entra por las DOS razones de
+         arriba: sin ella `Astro.url` cae a "localhost", y entonces `checkOrigin`
+         compararía "localhost" contra el dominio real y **todo POST daría 403** —
+         o sea el login y el registro de oyentes, el día que existan. El `noindex`
+         no depende de esta lista (sale igual, porque "localhost" tampoco es el
+         host canónico), pero el 403 sí. */
+      { hostname: 'v2.beatdigital.mx' },
+    ],
+  },
+  devToolbar: {
+    enabled: true,
+  },
+});

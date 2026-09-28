@@ -1,0 +1,420 @@
+/**
+ * La navegación del sitio, en un solo lugar.
+ *
+ * Fuente única para la cabecera y el pie. El lienzo dibuja `secciones ×8` en
+ * los dos, y tenerlo duplicado es cómo se llega a que el menú y el pie no
+ * coincidan — que es justo lo que pasa hoy en el sitio viejo, donde el menú y el
+ * footer enlazan a `/nerdosis`, `/beat-trends` y `/beat-recordings`, tres secciones
+ * apagadas que responden 404.
+ *
+ * Los `href` tienen que existir en `SEGMENTOS_RESERVADOS` de `config/site.ts`.
+ */
+
+export interface EntradaNav {
+  /** Etiqueta corta, para la nav de escritorio (va en mayúsculas por CSS). */
+  corto: string;
+  /** Etiqueta completa, para el menú móvil y el pie. */
+  largo: string;
+  href: string;
+  /** Todavía sin construir: se pinta apagada y sin enlace. */
+  pendiente?: boolean;
+}
+
+/**
+ * Las TRES secciones editoriales, y qué categoría del CMS alimenta a cada una.
+ *
+ * Las dos primeras son del 2026-09-07 y son una decisión editorial de Carlos, no un
+ * refactor: **son cosas distintas y hasta ese día el sitio las trataba como una.**
+ *
+ *   `Beat Scanner`  → el día a día. Va en la parte principal del Inicio.
+ *   `Editorial`     → las notas más elaboradas. Va en la pila, más abajo.
+ *   `Microambiente` → las notas que traen audio (2026-09-15). Va en su bloque.
+ *
+ * Scanner y Editorial usan el MISMO interior (`IndiceScanner`) porque la pantalla
+ * es la misma; lo que cambia es de qué categoría se llena. Antes `/scanner` traía
+ * TODAS las notas sin filtrar, así que las elaboradas y las del día se mezclaban en
+ * la misma rejilla y ninguna de las dos secciones significaba nada.
+ *
+ * `categoria` es el `slug` de un documento de `categorias` del CMS, y es el
+ * único punto de contacto: si la redacción renombra la categoría, el rótulo del
+ * front NO cambia —lo manda `rotulo`— pero el slug sí tiene que seguir existiendo.
+ * Si el slug deja de existir, la sección se pinta VACÍA con su aviso, no con
+ * todas las notas: ver `IndiceScanner.astro`. Un índice que de pronto trae todo es
+ * peor que uno que dice que está vacío, porque nadie lo nota.
+ */
+export interface SeccionEditorial {
+  /**
+   * El NOMBRE de la sección, en su forma normal.
+   *
+   * Es el que va a cualquier sitio que lea una máquina y presente a un lector:
+   * la migaja del JSON-LD, la nav, el pie. Google enseña la migaja tal como se la
+   * damos, y «EDITORIAL» en mayúsculas ahí no es la sección, es una decisión de
+   * CSS de la pastilla escapándose a un resultado de búsqueda (Carlos,
+   * 2026-09-07).
+   *
+   * Es la MISMA palabra que `rotulo`, no otro dato. Existen las dos porque una
+   * es el nombre y la otra es cómo se pinta; el día que alguien quiera renombrar
+   * la sección, se cambian las dos.
+   */
+  nombre: string;
+  /**
+   * El rótulo tal como se pinta en un titular de display: ya en mayúsculas.
+   *
+   * `.beat-display` y `.beat-label` ya llevan `text-transform: uppercase`, así
+   * que donde el rótulo entra con una de esas clases da igual cuál de los dos se
+   * pase — se ve idéntico. Lo que NO da igual es qué queda escrito en el DOM, que
+   * es lo que lee un rastreador: ahí va `nombre`.
+   */
+  rotulo: string;
+  href: string;
+  /** `slug` de la categoría del CMS que la llena. */
+  categoria: string;
+}
+
+/*
+  `href` y `categoria` se parecen pero NO son lo mismo, y conviene no fundirlos:
+  el `href` es nuestro contrato de URL y la `categoria` es un slug que la redacción
+  puede renombrar en el admin. Que hoy coincidan en `beat-scanner` es una
+  coincidencia cómoda, no una regla — `editorial` ya podría dejar de coincidir
+  mañana sin que la URL se mueva.
+*/
+export const SECCIONES_EDITORIALES = {
+  scanner: {
+    nombre: 'Beat Scanner',
+    rotulo: 'BEAT SCANNER',
+    href: '/beat-scanner',
+    categoria: 'beat-scanner',
+  },
+  editorial: {
+    nombre: 'Editorial',
+    rotulo: 'EDITORIAL',
+    href: '/editorial',
+    categoria: 'editorial',
+  },
+  /**
+   * La TERCERA, y entra el 2026-09-15 (Carlos): «son también como notas, pero su
+   * particularidad es que tienen audio».
+   *
+   * Es una sección editorial más —misma colección, misma URL de nota, mismo
+   * detalle— y por eso vive aquí y no en una estructura aparte: lo que la separa no
+   * es el tipo de documento sino el campo `noticias.audio`, que el CMS tiene desde
+   * la reestructura y que el front no leía. Ver `src/lib/audio.ts`.
+   *
+   * Lo que NO comparte con sus dos hermanas es el INTERIOR: Beat Scanner y
+   * Editorial usan `IndiceScanner` (destacada + rejilla) y esta usa la lista de
+   * `Microambiente.astro`. Por eso `/microambiente` no es una página de cinco
+   * líneas como `/editorial`.
+   *
+   * La categoría existe en el CMS desde el 2026-09-14 y el 2026-09-15 tenía CERO
+   * notas. La sección responde 200 y se pinta vacía hasta que la redacción capture
+   * —que es lo correcto y es la regla de la casa—, así que probarla con contenido
+   * exige capturar una nota primero.
+   */
+  microambiente: {
+    nombre: 'Microambiente',
+    rotulo: 'MICROAMBIENTE',
+    href: '/microambiente',
+    categoria: 'microambiente',
+  },
+} as const satisfies Record<string, SeccionEditorial>;
+
+/**
+ * La navegación de arriba: OCHO secciones, en este orden.
+ *
+ * `EN VIVO · PROGRAMACIÓN · FENÓMENO RESIDENTE · BONUS BEAT · MICROAMBIENTE ·
+ * BEAT SCANNER · EDITORIAL · AGENDA`.
+ *
+ * «En vivo» y «Programación» entraron el 2026-09-09 (Carlos): «hay que agregar
+ * a los menús, todos, la de en vivo y programación; antes las teníamos ocultas».
+ * Cada una estaba escondida por su motivo y los dos caducaron el mismo día:
+ *
+ *   · «En vivo» estaba fuera desde el 2026-09-07 «hasta que hagamos bien la
+ *     página», y era una página mínima a la espera de un lienzo. Ese día se le
+ *     mudó encima el panel «AL AIRE AHORA» de `/programacion`, así que ya no
+ *     desmerece al lado del resto.
+ *   · «Programación» vivía solo en el PIE, por ser una utilidad de consulta y no
+ *     una sección editorial. Sigue siendo verdad y ya no manda: es de las pocas
+ *     páginas que alguien viene a buscar a propósito.
+ *
+ * Van las dos DELANTE de lo editorial, y en este orden: qué suena ahora, qué
+ * va a sonar, y luego lo que hay que leer. Es el orden en que se usa una radio.
+ *
+ * **Son OCHO en una fila que el lienzo dibujó con CINCO**, y la octava entró el
+ * 2026-09-15. La entrada anterior avisaba de que había que volver a medir, así que
+ * se midió sobre el build SERVIDO, no sobre el lienzo:
+ *
+ *   · a 1280 — la fila de la cabecera cabe con holgura: 834px de contenido en una
+ *     caja de 834, terminando en el píxel 988 de 1280. La tira de `NavSecciones`
+ *     mete las ocho pastillas en UNA fila, 1192 de contenido en 1192 de caja.
+ *   · a 375 — la fila de la cabecera se esconde (`display: none`) y manda la
+ *     hamburguesa, como estaba previsto a partir de 900px. La tira envuelve en
+ *     CUATRO filas, 343 en 343.
+ *   · el documento no desborda a lo ancho en ninguna de las dos (`scrollWidth` =
+ *     `innerWidth`).
+ *
+ * **EL TOP TEN NO ENTRA AQUÍ TODAVÍA, y hay una medida detrás.** Se añadió como
+ * novena el 2026-09-21, se midió sobre el build SERVIDO y se retiró el mismo día
+ * (Carlos: «en el home por ahora no lo pongamos»). Lo medido, para quien lo intente
+ * de nuevo:
+ *
+ *   · La fila necesita **1064px** con nueve; con ocho necesita 988. El Top Ten
+ *     cuesta 76px.
+ *   · La hamburguesa no entra hasta los 900 (`md`), y esta fila va dentro de un
+ *     `overflow-x: hidden` (`Cabecera.astro`). O sea que entre 900 y 1064 la última
+ *     sección —«Agenda»— **se recorta sin aviso**: no hay scroll ni puntos
+ *     suspensivos, simplemente no está.
+ *   · **Con OCHO eso ya pasa entre 900 y 988.** El defecto es anterior al Top
+ *     Ten; la novena solo ensancha la banda. A 1024 —un iPad apaisado— con ocho
+ *     cabe por 36px, y con nueve no.
+ *   · Los parches que se probaron NO alcanzan: «Fenómeno Residente» → «Fenómeno»
+ *     deja la fila en 984, el espaciado de 20 a 16px la deja en 1032, y los dos
+ *     juntos en 952 — los tres siguen por encima de 900.
+ *
+ * Arreglarlo de verdad es subir el corte de la fila a ~1100px, que es un cambio de
+ * cabecera para TODO el sitio y no se hace de paso en un encargo de otra cosa.
+ *
+ * Cuando el Top Ten tenga una lista publicada y toque anunciarlo, la decisión es
+ * esa. Mientras no la tenga, tampoco hay qué anunciar: una sección vacía en el menú
+ * es exactamente lo que este archivo evita con `SECCIONES_FUTURAS`. La ruta
+ * `/top-ten` responde 200 desde ya —la sirve `src/pages/[tipoLista]/`— y el enlace
+ * es literalmente esta línea:
+ *
+ *     { corto: 'Top Ten', largo: 'Top Ten', href: '/top-ten' },
+ *
+ * Si un día entra una NOVENA, se vuelve a medir igual: es el sitio exacto donde ya
+ * se coló un desborde de 510px en una caja de 390. Lo que aprieta primero es la
+ * fila de la cabecera, que es la que no envuelve.
+ *
+ * Beat Scanner y Editorial son DOS entradas desde el 2026-09-07, cuando se
+ * separaron en secciones con interior propio. Las dos tienen entrada porque las dos
+ * tienen página — anunciar una y esconder la otra dejaría la sección «elaborada»
+ * como la menos visible del sitio.
+ *
+ * Las tres que faltan del mapa de sitio —Comunidad, Tienda y Marcas— no
+ * desaparecen: bajan a `SECCIONES_FUTURAS`, que hoy no pinta nadie. Un menú con
+ * tres entradas apagadas enseña al lector que parte de este sitio no lleva a
+ * ninguna parte.
+ *
+ * El rótulo es el nombre COMPLETO —«Fenómeno Residente», no «Fenómeno»—
+ * porque cabe, y porque abreviar el nombre de la sección estrella para ahorrar
+ * 60px era una economía sin destinatario.
+ *
+ * La tira de `NavSecciones` las pinta todas y se ENVUELVE: a 375px salen en
+ * cuatro filas, sin desbordar (medido con ocho el 2026-09-15; eran dos filas con
+ * siete). No se convierte en carrusel — una sección que hay que descubrir
+ * arrastrando es una sección que no existe.
+ *
+ * Los `href` editoriales salen de `SECCIONES_EDITORIALES`, no escritos a mano:
+ * son los mismos que usan las dos páginas y la migaja de cada nota, y tenerlos en
+ * dos sitios es cómo el menú y el pie dejan de coincidir. Y desde el 2026-09-07,
+ * también el NOMBRE: era la misma palabra escrita dos veces, y el día que la
+ * sección se renombre solo se va a cambiar una.
+ */
+export const SECCIONES: EntradaNav[] = [
+  { corto: 'En vivo', largo: 'Escuchar en vivo', href: '/en-vivo' },
+  { corto: 'Programación', largo: 'Programación', href: '/programacion' },
+  { corto: 'Fenómeno Residente', largo: 'El Fenómeno Residente', href: '/fenomeno-residente' },
+  { corto: 'Bonus Beat', largo: 'Bonus Beat', href: '/bonus-beat' },
+  /*
+    Microambiente va JUNTO a Bonus Beat y no con las otras dos editoriales, aunque
+    técnicamente sea hermana de ellas: las dos de aquí son las secciones que SUENAN.
+    El orden de esta fila es el orden en que se usa una radio —qué suena, qué va a
+    sonar, qué se escucha, qué se lee— y agrupar por parentesco de código en vez de
+    por lo que el lector viene a hacer es cómo se llega a un menú que nadie recorre.
+  */
+  {
+    corto: SECCIONES_EDITORIALES.microambiente.nombre,
+    largo: SECCIONES_EDITORIALES.microambiente.nombre,
+    href: SECCIONES_EDITORIALES.microambiente.href,
+  },
+  {
+    corto: SECCIONES_EDITORIALES.scanner.nombre,
+    largo: SECCIONES_EDITORIALES.scanner.nombre,
+    href: SECCIONES_EDITORIALES.scanner.href,
+  },
+  {
+    corto: SECCIONES_EDITORIALES.editorial.nombre,
+    largo: SECCIONES_EDITORIALES.editorial.nombre,
+    href: SECCIONES_EDITORIALES.editorial.href,
+  },
+  { corto: 'Agenda', largo: 'Agenda', href: '/eventos' },
+];
+
+/*
+  Aquí vivía `SECCIONES_OCULTAS`, con «En vivo» dentro y las instrucciones para
+  devolverla. Se ejecutaron el 2026-09-09 y la constante se fue con ella: una lista
+  de ocultas vacía, exportada y sin nadie que la lea, es una invitación a esconder
+  la siguiente sección en vez de arreglarla.
+
+  Lo que decía y conviene no perder: se ocultó el 2026-09-07 «hasta que hagamos
+  bien la página», NO como `pendiente`. Esa distinción sigue valiendo para la
+  próxima vez — una sección apagada dice «esto no existe todavía», y decir eso de
+  la radio en vivo es exactamente lo contrario de lo que este sitio afirma. La
+  ruta nunca dejó de responder 200 ni el pie de enlazarla.
+*/
+
+/**
+ * Las tres del mapa de sitio que todavía no se construyen.
+ *
+ * YA NO SE PINTAN EN NINGÚN SITIO (Carlos, 2026-09-07): «en el footer hay links
+ * desactivados en el nav del footer, quitémoslos, ese nav debe ser acorde al main
+ * nav». Vivían en el pie en gris, y la idea era que quien buscara «Comunidad»
+ * viera que existe y que aún no está. En la práctica el pie enseñaba tres palabras
+ * que no llevan a ninguna parte, y el mapa completo que justificaba eso ya no
+ * coincidía con la navegación real del sitio.
+ *
+ * La constante NO se borra, y es a propósito: el mapa de sitio las declara y
+ * Comunidad es el objetivo estratégico #1, así que esta es la única lista escrita
+ * de lo que falta. Se queda exportada, sin nadie que la pinte, hasta que alguna se
+ * construya — y entonces pasa a `SECCIONES` como una entrada normal.
+ */
+export const SECCIONES_FUTURAS: EntradaNav[] = [
+  { corto: 'Comunidad', largo: 'Comunidad', href: '/comunidad', pendiente: true },
+  { corto: 'Tienda', largo: 'Tienda', href: '/tienda', pendiente: true },
+  { corto: 'Marcas', largo: 'Beat para marcas', href: '/marcas', pendiente: true },
+];
+
+/*
+  Y aquí vivía `SECCIONES_PIE`, con «Programación» dentro: iba en el pie y no
+  arriba «porque es una utilidad de consulta, no una sección editorial, y la nav
+  del lienzo tiene exactamente 8 huecos». Desde el 2026-09-09 va en `SECCIONES`
+  como una más, así que la constante sobra.
+
+  La spread que la metía en el pie y en el menú lleno (`[...SECCIONES,
+  ...SECCIONES_PIE]`) se retiró de `Pie.astro` y de `MenuLleno.astro`. Dejarla
+  como un array vacío habría funcionado igual y habría sido peor: dos componentes
+  concatenando una lista que nunca tiene nada se leen como un cable suelto.
+*/
+
+/*
+  Y aquí vivía `PLATAFORMAS_RADIO`, la columna «También escucha en» del pie y
+  la sección 2 de `/en-vivo`. Se retiró entera el 2026-09-11 (Carlos): «vamos a
+  quitar de la página todo lo que encontremos de iHeart».
+
+  Tenía UNA entrada —la ficha de iHeartRadio— porque TuneIn está vetado por
+  decisión comercial (Carlos, 2026-09-07): es competencia, no un aliado de
+  distribución. Al salir iHeart no quedaba ningún agregador, así que la lista se
+  fue con él y con ella los dos rótulos y el CSS de `.vivo-plataforma*`. Una zona
+  sin contenido se deja vacía y sin rótulo; un `<ul>` vacío bajo un «También
+  escucha en» es exactamente lo que la regla prohíbe.
+
+  Si algún día vuelve a haber un agregador que enlazar, lo que hay que
+  recuperar es el bloque de marcado, no solo la constante: el pie y `/en-vivo`
+  ya no recorren nada. Ver `git show 36d572f:src/config/navegacion.ts` para la
+  nota de por qué la URL tiene que ser la ficha de la estación y no la portada
+  del servicio.
+*/
+
+/**
+ * Apps de la estación.
+ *
+ * Las URLs quedan vacías a propósito hasta cerrar **C1**: las 4 estaciones
+ * tienen app en tiendas y todavía no sabemos qué consume la de Beat del WordPress
+ * viejo. Enlazar a una app que va a romperse en el corte sería peor que no
+ * enlazarla.
+ */
+/**
+ * Las apps de la estación.
+ *
+ * Las URLs salen del pie del sitio v1 (`git show main:src/components/Footer.astro`),
+ * no de la nada: son las fichas REALES en tiendas, con el id de la app publicada.
+ * Inventarlas habría mandado gente a una ficha que no existe.
+ *
+ * `Alexa` estuvo en `null` —apagada en el pie— porque apuntaba a `/alexa`, una
+ * página del v1 que en v2 no existía. Ya existe (2026-09-07), con las mismas
+ * instrucciones de la skill que el v1, así que vuelve a ser un enlace.
+ *
+ * Y con eso el pie se queda SIN un solo enlace apagado, que era el punto de
+ * Carlos: «en el footer hay links desactivados, quitémoslos».
+ */
+export const APPS: Array<{ tienda: string; url: string | null }> = [
+  { tienda: 'App Store', url: 'https://apps.apple.com/mx/app/beat-100-9/id444090239' },
+  { tienda: 'Google Play', url: 'https://play.google.com/store/apps/details?id=com.sferea.beat' },
+  { tienda: 'Alexa', url: '/alexa' },
+];
+
+/**
+ * Legales y corporativos.
+ *
+ * Los dos primeros son PÁGINAS DE ESTE SITIO desde el 2026-09-07, y es decisión
+ * de Carlos: «tenemos que hacer páginas aquí, no redirigir a NRM».
+ *
+ * Y tiene razón sobre lo que había: apuntaban a `nrm.com.mx`, que es la razón
+ * social del grupo, cuando el aviso que gobierna este sitio es el de **TELEVIDEO,
+ * S.A. DE C.V.** —«BEAT 100.9»—, con su propio domicilio y su propio correo de
+ * datos personales (`privacidad@nrm.com.mx`). Mandar al del corporativo era mandar
+ * al aviso de otra persona moral.
+ *
+ * El texto sale del sitio actual (`beatdigital.mx/avisodeprivacidad/` y
+ * `/terminosycondiciones/`), no se reescribe: es texto legal vigente y no es
+ * nuestro para redactarlo. Ver `src/pages/avisodeprivacidad.astro`.
+ *
+ * Los `href` son RELATIVOS y apuntan a este sitio, no al dominio del v1. Que la
+ * ruta se escriba igual que la del v1 —sin guiones, decisión de Carlos
+ * (2026-09-09)— es justo lo que hace que los enlaces al aviso que ya andan por ahí
+ * sigan cayendo en su página el día del corte, sin pasar por una redirección.
+ *
+ * `Ventas` sí es del CORPORATIVO y se queda apuntando allá: sale del pie del v1
+ * y del de los repos hermanos, y es el contacto comercial de NRM, no de la
+ * estación. Es el enlace por el que entra el dinero, así que es el que menos
+ * conviene perder en un relanzamiento.
+ */
+export const LEGALES: EntradaNav[] = [
+  { corto: 'Aviso de privacidad', largo: 'Aviso de privacidad', href: '/avisodeprivacidad' },
+  { corto: 'Términos y condiciones', largo: 'Términos y condiciones', href: '/terminosycondiciones' },
+  { corto: 'Ventas', largo: 'Ventas', href: 'https://nrm.com.mx/contacto/' },
+];
+
+/**
+ * Las redes de la estación, de RESPALDO.
+ *
+ * El CMS es la fuente —`estaciones.facebook`, `.instagram`, `.x`, `.youtube`,
+ * `.tiktok`— y sigue siendo el que gana. El problema es que hoy los cinco campos
+ * están en `null` (comprobado contra `admin.nrm.com.mx`), así que el pie pintaba
+ * «Próximamente» donde va la única forma que tiene un oyente de seguir a la
+ * estación. Beat tiene esas cuentas desde años; lo que faltaba era capturarlas.
+ *
+ * Salen del pie del v1 (`git show main:src/components/Footer.astro`), igual que
+ * `APPS`: son los perfiles REALES, no inventados, y los cinco responden 200
+ * —verificado antes de escribirlos—.
+ *
+ * Es un respaldo POR RED y no una lista alterna: en cuanto el CMS traiga
+ * `facebook`, ese valor gana y este se ignora. Así capturar una sola red en el
+ * admin no obliga a capturar las cinco, y corregir una cuenta no exige un
+ * despliegue. Ver `redesEstacion()` en `lib/cms/estacion.ts`.
+ */
+export const REDES_RESPALDO = {
+  facebook: 'https://www.facebook.com/beat1009fm',
+  instagram: 'https://www.instagram.com/beat1009fm/',
+  x: 'https://x.com/BEATOFICIAL',
+  youtube: 'https://www.youtube.com/c/BEAT1009FMOFICIAL',
+  tiktok: 'https://www.tiktok.com/@beat1009fm',
+} as const;
+
+/**
+ * La tira de marcas de NRM del pie.
+ *
+ * Hardcodeada a propósito, y no leída de `estaciones`: son las marcas de la
+ * casa, no inquilinos de este front. `estaciones` solo tiene las 4 de radio, y en
+ * la tira también va Enfoque, que vive en OTRO CMS (`cms-nrm`). Leerla del CMS
+ * daría una lista incompleta y una consulta por render para un dato que cambia
+ * cada varios años.
+ */
+/**
+ * Los logos salen del bucket del corporativo, el mismo que usan los cuatro
+ * repos hermanos. No se copian a `public/`: son marcas de OTRAS empresas del grupo
+ * y quien las actualiza es el corporativo, no nosotros. Copiándolas tendríamos
+ * cinco copias envejeciendo por su cuenta en cinco repos.
+ *
+ * `nombre` se conserva aunque haya logo: es el `alt`, y es lo que se ve si la
+ * imagen no carga.
+ */
+const LOGOS = 'https://storage.googleapis.com/nrm-web/nrm/images/footer/';
+
+export const MARCAS_NRM = [
+  { nombre: 'NRM', sub: 'Comunicaciones', url: 'https://nrm.com.mx', logo: `${LOGOS}NRM-2.png` },
+  { nombre: 'OYE', sub: '89.7', url: 'https://oyedigital.mx', logo: `${LOGOS}OYE2.png` },
+  { nombre: 'Stereo Cien', sub: '100.1', url: 'https://stereociendigital.mx', logo: `${LOGOS}stereocien_footer-jul26.png` },
+  { nombre: 'Sabrosita', sub: '590', url: 'https://sabrositadigital.mx', logo: `${LOGOS}sabrosita.png` },
+  { nombre: 'En Enfoque', sub: 'Noticias', url: 'https://enfoquenoticias.com.mx', logo: `${LOGOS}enfoque-footer.png` },
+] as const;

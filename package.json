@@ -1,0 +1,38 @@
+{
+  "name": "web-beat",
+  "type": "module",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Front público de Beat 100.9 — Astro SSR sobre cms-estaciones (Payload multi-estación).",
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && node scripts/guardas.mjs && astro build && node scripts/guarda-cascada.mjs",
+    "preview": "astro preview",
+    "check": "astro check && node scripts/guardas.mjs",
+    "astro": "astro",
+    "sync:types": "node scripts/sync-payload-types.mjs",
+    "sync:types:check": "node scripts/sync-payload-types.mjs --check",
+    "fuentes": "node scripts/fuentes.mjs",
+    "guardas": "node scripts/guardas.mjs && node scripts/guarda-cascada.mjs",
+    "preview:cms": "CMS_URL=https://admin.nrm.com.mx astro preview",
+    "favicon": "node scripts/favicon.mjs"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "^7.3.1",
+    "@astrojs/node": "^11.1.4",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.2.10",
+    "plyr": "^3.8.4",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "sharp": "^0.35.4",
+    "typescript": "^5.9.3"
+  }
+}

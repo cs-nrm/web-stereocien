@@ -1,0 +1,911 @@
+---
+/**
+ * Cascarón del sitio.
+ *
+ * ⏳ Provisional en su estructura: el layout de verdad —con el header que lleva el
+ * player persistente— llega con B4. Lo que ya es definitivo es el cableado del
+ * design system y las dos reglas de indexación.
+ */
+import '@/styles/base.css';
+/*
+  La piel de Plyr, GLOBAL y desde aquí.
+
+  Vivía en el `<style>` de `Fenomeno.astro`, y ahí Astro la escopaba con el
+  `data-astro-cid` de ese componente: solo vestía al visor del Fenómeno. El visor
+  flotante de las canciones vive en este layout, y le llegaba Plyr sin hoja — los
+  controles a 1049px de alto y el iframe a 640 de ancho dentro de un marco de 360.
+
+  Importado en el frontmatter y NO con un `import()` dinámico desde el script:
+  eso hace que Vite re-optimice dependencias y el navegador se quede con una URL
+  vieja —`504 Outdated Optimize Dep`—, que en pantalla es un visor que no arranca.
+  Está documentado en `video.ts` y ya costó una vez.
+
+  Y sí, son ~10 KB en todas las páginas y no solo en las que tienen visor. Es el
+  precio de que el reproductor viva en el cromo: tiene que seguir sonando al
+  navegar, así que no hay página en la que no pueda hacer falta.
+*/
+import 'plyr/dist/plyr.css';
+import {
+  IDIOMA,
+  LOCALE_OG,
+  NOINDEX_SITIO,
+  SITE_URL,
+  TARJETA_COMPARTIR,
+  noIndexarHost,
+} from '@/config/site';
+import { rutaPagina } from '@/lib/paginacion';
+import { nodoEstacion, serializar } from '@/lib/jsonld';
+import { ClientRouter } from 'astro:transitions';
+import Cabecera from '@/components/Cabecera.astro';
+import MenuLleno from '@/components/MenuLleno.astro';
+import Pie from '@/components/Pie.astro';
+import Icono from '@/components/Icono.astro';
+import { obtenerEstacion, redesEstacion } from '@/lib/cms/estacion';
+
+interface Props {
+  titulo: string;
+  descripcion?: string;
+  /**
+   * La imagen con la que se ve esta página al compartirla. Una nota pasa la suya;
+   * el resto no pasa nada y cae a la tarjeta de marca.
+   *
+   * Puede ser absoluta —lo que devuelve `urlMedia`, que ya trae el host del CMS— o
+   * una ruta de `public/`, que se vuelve absoluta aquí.
+   */
+  imagen?: string | null;
+  /**
+   * Qué se ve en esa imagen, para quien no la ve. En una nota es el `alt` de su
+   * foto, tal como lo capturó la redacción.
+   *
+   * Si no viene, la etiqueta NO se emite. Un `alt` inventado desde el layout
+   * describiría una foto que este archivo no ha visto.
+   */
+  imagenAlt?: string | null;
+  /**
+   * Las medidas REALES de esa imagen, cuando se conocen.
+   *
+   * Solo se pasan si el dato existe: las trae el documento de media del CMS
+   * (`sizes.<variante>.width/height`, ver `medidaMedia`). Las plataformas reservan
+   * el hueco de la tarjeta con estos números antes de bajar el archivo, así que
+   * unas medidas falsas se ven como un recorte raro en la publicación — y desde el
+   * sitio no se nota nada.
+   */
+  imagenAncho?: number | null;
+  imagenAlto?: number | null;
+  /** `article` en una nota; `website` en todo lo demás. */
+  tipo?: 'website' | 'article';
+  /** La fecha de publicación en ISO. Solo tiene sentido con `tipo="article"`. */
+  publicado?: string | null;
+  /**
+   * La última modificación en ISO. Solo con `tipo="article"`.
+   *
+   * Va en pareja con `publicado`: `article:published_time` sin
+   * `article:modified_time` deja una nota corregida pareciendo la de su día de
+   * estreno.
+   */
+  modificado?: string | null;
+  /**
+   * Este DOCUMENTO no se indexa, lo diga el host lo que diga.
+   *
+   * Es la cuarta entrada a la política de indexación y la única que depende del
+   * contenido: `noticias.meta.noIndex` en el CMS, que la redacción marca en una
+   * nota concreta. Las otras tres —`robots.txt`, la cabecera del middleware y el
+   * `<meta>` de aquí abajo— hablan del DESPLIEGUE entero y no pueden saber esto:
+   * cuando se evalúan, nadie ha decidido todavía qué documento se va a servir.
+   *
+   * Solo SUMA restricción, nunca la quita: se combina con un `||`, así que un
+   * `false` del CMS no puede abrir a Google la preproducción. Es la misma regla
+   * que gobierna las otras tres —basta con que una cierre— y es la que hace que
+   * equivocarse aquí no tenga consecuencias.
+   *
+   * La otra mitad la pone la PÁGINA, con la cabecera `X-Robots-Tag` en su
+   * propia respuesta. Aquí no se puede: ver `src/pages/noticias/[slug].astro`.
+   */
+  noIndex?: boolean;
+  /**
+   * `inicio` deja la cabecera completa; `interior` nace con la barra oscura ya
+   * recogida. Se calcula solo a partir de la ruta y casi nunca hay que pasarlo.
+   */
+  vista?: 'inicio' | 'interior';
+  /**
+   * La página de un índice paginado (`?pagina=2`). Solo la pasan las vistas que
+   * paginan, y por eso NO se lee aquí de `Astro.url`.
+   *
+   * La diferencia importa: si este layout leyera el parámetro por su cuenta,
+   * `/alexa?pagina=7` —o cualquier basura que un rastreador invente— saldría con
+   * canónica propia y con «Página 7» en el título, o sea que el sitio estaría
+   * declarando indexables infinitas URLs de páginas que no paginan. Declarándolo
+   * la página, una vista sin paginador no puede tenerlas.
+   *
+   * Lo que cambia son dos cosas, y las dos por el mismo motivo —que la 2 no es la
+   * 1—: la canónica se apunta a SÍ MISMA con el parámetro, y el `<title>` lleva su
+   * número. Sin lo primero, la página 2 le dice a Google que es un duplicado de la
+   * 1 y las 42 notas que solo viven ahí se quedan sin indexar; sin lo segundo, las
+   * cinco páginas de Beat Scanner comparten título, que es justo lo que el 301 de
+   * `/beat-scanner/editorial` vino a arreglar el 2026-09-07.
+   */
+  pagina?: number | null;
+}
+
+const {
+  titulo,
+  descripcion,
+  imagen = null,
+  imagenAlt = null,
+  imagenAncho = null,
+  imagenAlto = null,
+  tipo = 'website',
+  publicado = null,
+  modificado = null,
+  noIndex = false,
+  pagina = null,
+} = Astro.props;
+
+/** El Inicio se distingue por la RUTA, no por lo que declare la página. */
+const esInicio = Astro.url.pathname === '/';
+
+/**
+ * En los INTERIORES la barra oscura de navegación no se muestra: la página
+ * arranca como si ya se hubiera hecho scroll, con la barra clara del player, su
+ * wordmark y su hamburguesa. Decisión de Carlos (2026-09-01).
+ *
+ * El razonamiento: dentro de una sección lo que orienta es dónde estás, y eso ya
+ * lo dice la tira de `NavSecciones`. Dos navegaciones apiladas —el menú y la
+ * tira— repiten el mismo trabajo y roban 56px de la primera pantalla justo donde
+ * empieza a leerse.
+ *
+ * Se calcula por RUTA y no lo declara cada página, por la razón de siempre: lo
+ * que hay que acordarse de poner en cada archivo nuevo es lo que un día se
+ * olvida.
+ */
+const vista = Astro.props.vista ?? (esInicio ? 'inicio' : 'interior');
+
+/**
+ * El chrome se resuelve UNA vez aquí y baja por props, en vez de que cada
+ * componente pida lo suyo. Las dos van en paralelo, y las dos consultas están
+ * memorizadas o cacheadas en el cliente del CMS, así que no cuestan por página.
+ *
+ * Aquí había una TERCERA consulta —`queSuena()`, la bitácora— y se retiró
+ * (decisión de Carlos, 2026-09-03): **lo que suena lo dice el SDK de Triton, no
+ * el CMS**. Los cue points vienen DENTRO del stream, así que llegan alineados con
+ * lo que el oyente está escuchando; la bitácora es la hora del playout y va
+ * desfasada (medido: 5 s). Y esta consulta corría en CADA página del sitio.
+ *
+ * El efecto visible: hasta que alguien pulsa play, la barra dice el nombre de
+ * la estación en vez de una canción. Eso es MÁS honesto, no menos: antes
+ * afirmaba saber qué sonaba para un oyente que no estaba oyendo nada.
+ *
+ * Lo que NO se puede mover al SDK es el HISTORIAL —«LO QUE SONÓ», que desde el
+ * 2026-09-09 vive solo en `/en-vivo`—: los cue points solo cuentan el presente, y
+ * solo mientras haya una conexión abierta. Eso sigue saliendo de `bitacora`.
+ *
+ * Si el CMS no responde, el sitio se sirve igual: la estación cae a un objeto
+ * mínimo y el player anuncia la marca. Degradar es la regla — `web-enfoque`
+ * responde 200 con cero notas cuando su CMS no está, y eso es lo correcto.
+ */
+const [estacion, redes] = await Promise.all([
+  obtenerEstacion().catch(() => null),
+  redesEstacion().catch(() => []),
+]);
+
+const marca = estacion ?? {
+  id: 0,
+  nombre: 'Beat 100.9',
+  codigo: 'beat',
+  nombrePublicacion: 'BEAT',
+  dominio: 'beatdigital.mx',
+  tritonMount: 'XHSONFM',
+};
+
+/*
+  Las reglas de indexación, igual que en el middleware, MÁS la del documento.
+
+  Las dos primeras hablan del despliegue —el dominio con el que se compiló y el
+  `Host` de esta petición— y las pone también el middleware por cabecera, que
+  protege TODA respuesta; este `<meta>` es su segunda capa.
+
+  La tercera es `noIndex`, y es de otra naturaleza: la trae el documento del
+  CMS y la pasa la página. El middleware NO puede evaluarla —cuando corre, todavía
+  no se sabe qué documento se va a servir—, así que la nota se encarga de su propia
+  cabecera. Ver la prop `noIndex` arriba.
+
+  Se combinan con `||` a propósito: cada una solo puede CERRAR. Ninguna abre lo
+  que otra cerró.
+*/
+const noIndexar = NOINDEX_SITIO || noIndexarHost(Astro.url.hostname) || noIndex;
+/*
+  La canónica se apunta a SÍ MISMA, con la página cuando la hay.
+
+  Es el ÚNICO parámetro que entra: todo lo demás del query se descarta, como
+  siempre. Un `?utm_source=…` o un `?fbclid=…` no hacen otra página, y dejarlos
+  entrar convertiría cada enlace compartido en una URL canónica distinta.
+*/
+const paginaCanonica = typeof pagina === 'number' && pagina > 1 ? pagina : null;
+const canonical = new URL(
+  paginaCanonica ? rutaPagina(Astro.url.pathname, paginaCanonica) : Astro.url.pathname,
+  SITE_URL,
+).href;
+
+/*
+  El número va al FINAL y no incrustado en medio. Los títulos de este sitio son
+  cadenas escritas a mano —«Beat Scanner — Beat 100.9», «Ibiza — Beat Scanner —
+  Beat 100.9»— y meter el segmento en su sitio «correcto» obligaría a partirlas
+  aquí por guiones, que es adivinar la forma de un texto que escribió otro archivo.
+  Al final funciona con las dos y no puede romper ninguna.
+*/
+const tituloPagina = paginaCanonica ? `${titulo} — Página ${paginaCanonica}` : titulo;
+
+/**
+ * La imagen de compartir, SIEMPRE absoluta y siempre presente.
+ *
+ * Facebook y X descartan una `og:image` relativa sin decir nada: la publicación
+ * sale sin imagen y desde el sitio no se nota. Por eso se resuelve aquí una sola
+ * vez y no en cada página.
+ *
+ * Se resuelve contra `SITE_URL` —el dominio CANÓNICO— y no contra el host que
+ * sirve. Es deliberado y es lo mismo que ya hacen `canonical` y los enlaces de
+ * compartir de la nota: lo que se publica tiene que apuntar al sitio real, no a la
+ * preproducción. Efecto secundario conocido: compartir desde v2 enseña la ficha del
+ * sitio en producción.
+ *
+ * El respaldo lo genera `pnpm favicon` desde el mismo SVG del logo, así que no
+ * puede quedarse en una marca anterior. Ver `scripts/favicon.mjs`.
+ */
+const imagenCompartir = imagen
+  ? new URL(imagen, SITE_URL).href
+  : new URL(TARJETA_COMPARTIR.ruta, SITE_URL).href;
+
+/**
+ * Lo que se sabe de esa imagen: qué se ve en ella y cuánto mide.
+ *
+ * Los tres datos se eligen JUNTOS y del mismo lado. Si la página trae foto
+ * propia, las medidas son las suyas o no hay medidas; jamás las de la tarjeta de
+ * marca. Mezclarlos —la foto de una nota con el 1200×630 del respaldo— es
+ * exactamente el fallo silencioso que las etiquetas de medida vienen a evitar.
+ *
+ * El `alt` del respaldo describe lo que `pnpm favicon` genera: el wordmark
+ * blanco centrado sobre el negro del sitio. Si algún día la tarjeta se dibuja de
+ * otra forma, este texto se cambia con ella (`scripts/favicon.mjs`).
+ */
+const tarjeta = imagen
+  ? { alt: imagenAlt, ancho: imagenAncho, alto: imagenAlto }
+  : {
+      alt: 'El wordmark de Beat 100.9 en blanco sobre fondo negro.',
+      ancho: TARJETA_COMPARTIR.ancho,
+      alto: TARJETA_COMPARTIR.alto,
+    };
+
+/**
+ * La descripción de respaldo: una página sin bajada no debe compartirse muda.
+ *
+ * Tiene que decir LO MISMO que la `descripcion` del Inicio
+ * (`src/pages/index.astro`). Son dos textos que se desincronizan solos —ya pasó:
+ * este hablaba de «Beat Scanner, Editorial y la agenda» mientras el Inicio decía
+ * «Beat Editorial», un nombre de sección que ya no existe— y el efecto es que la
+ * misma casa se presenta de dos maneras según por dónde entres.
+ *
+ * Y dice qué ES la estación antes que qué tiene. La versión anterior enumeraba
+ * secciones, que no le sirve ni a quien no ha entrado nunca —no sabe qué es el
+ * Fenómeno Residente— ni a quien ya conoce el sitio, que no lee la descripción.
+ * Desde que hay Open Graph esta frase es además lo que se lee en WhatsApp.
+ */
+const RESUMEN_CASA =
+  'La estación de música electrónica de la Ciudad de México. Escucha el 100.9 FM en vivo y sigue lo que suena, se lanza y se mueve en la pista.';
+
+/**
+ * La descripción se recorta a 160 caracteres, y el recorte vive AQUÍ.
+ *
+ * Google corta ahí, así que el tope no es una preferencia de estilo. Lo que no se
+ * puede es confiar en que el texto llegue ya corto: la mitad de las rutas pasan un
+ * campo del CMS —`resumen` de una nota, `descripcion` de un evento— y ahí escribe
+ * la redacción, sin un contador delante. Hoy el `resumen` más largo mide 150 (11
+ * notas, medido contra `admin.nrm.com.mx`), o sea que el problema no ha llegado
+ * pero no hay nada que lo detenga.
+ *
+ * Se corta en el ESPACIO anterior y se cierra con «…», no a mitad de palabra.
+ * El corte de Google es tipográfico y el lector no lo ve venir; este es un corte
+ * declarado, y en una tarjeta de WhatsApp —donde esta frase también se lee— es la
+ * diferencia entre una frase que termina y una que se traga la última sílaba.
+ *
+ * También colapsa los espacios: un campo de texto largo del CMS trae saltos de
+ * línea, y en un atributo se ven como huecos dobles.
+ */
+const TOPE_RESUMEN = 160;
+
+function recortar(texto: string): string {
+  const limpio = texto.replace(/\s+/g, ' ').trim();
+  if (limpio.length <= TOPE_RESUMEN) return limpio;
+  const corte = limpio.slice(0, TOPE_RESUMEN - 1);
+  const espacio = corte.lastIndexOf(' ');
+  const base = espacio > TOPE_RESUMEN / 2 ? corte.slice(0, espacio) : corte;
+  return `${base.replace(/[\s.,;:—–-]+$/, '')}…`;
+}
+
+const resumen = recortar(descripcion ?? RESUMEN_CASA);
+
+/**
+ * La ficha de la ESTACIÓN en JSON-LD, y va solo en el Inicio.
+ *
+ * Vive en el layout y no en `src/pages/index.astro` por una razón concreta: los
+ * dos datos que la sostienen —el nombre público de la estación y sus redes— ya
+ * están resueltos aquí arriba, y son LOS MISMOS que pintan la cabecera y el pie.
+ * Resolverlos otra vez en el Inicio abriría la puerta a que el `sameAs` enlace a
+ * una cuenta distinta de la que el lector ve en el pie, que es la clase de
+ * discrepancia que Google lee como marcado engañoso.
+ *
+ * Solo en el Inicio: es la ficha de la casa, no de cada página. Repetirla en
+ * el resto de las rutas no le dice nada nuevo a nadie.
+ */
+const fichaEstacion = esInicio
+  ? serializar([
+      nodoEstacion({
+        nombrePublico: marca.nombrePublicacion,
+        redes: redes.map((r) => r.url),
+      }),
+    ])
+  : null;
+
+/**
+ * LOS CUATRO CONTENEDORES DE MEDICIÓN, y la regla que los gobierna: **sin
+ * valor en el env, el snippet NO se emite.**
+ *
+ * No es prolijidad. Preproducción y producción son la MISMA imagen de Docker
+ * (`docs/despliegue-v2.md`), así que un id horneado le suma cada visita de
+ * revisión a la propiedad real. El caro es comScore: es la medición que NRM le
+ * reporta a los anunciantes para justificar CPMs, o sea que ensuciarlo no deja un
+ * dato feo — infla una cifra de audiencia CERTIFICADA con tráfico que no es
+ * audiencia.
+ *
+ * Son `PUBLIC_*`, y Vite las hornea AL COMPILAR: llenar el `.env` no enciende
+ * nada hasta que se RECONSTRUYE. Reiniciar el servicio no sirve de nada. Es el
+ * paso 2 del día del corte, y hasta hoy no tenía qué encender — el port del v1 se
+ * trajo el emisor (`src/scripts/analitica.ts`) y dejó los receptores en el
+ * `BaseHead.astro` que este layout reemplazó, así que `ga4()` buscaba
+ * `window.gtag` y `window.dataLayer`, no encontraba ninguno, y su `try/catch` se
+ * comía en silencio cada evento del player, de los anuncios y de las pistas.
+ *
+ * `PUBLIC_GA_ID` no está en esta lista a propósito: **GA4 entra por GTM y
+ * nunca directo.** Con las dos vías las páginas vistas salen al DOBLE, y el
+ * síntoma se parece tanto a un buen mes que puede tardar semanas en levantar
+ * sospechas. Esa variable la lee únicamente el SDK de Triton (`player.ts`).
+ *
+ * El `.trim()` hace que un `PUBLIC_HOTJAR_ID=" "` mal pegado cuente como ausente
+ * en vez de cargar un contenedor con un id en blanco.
+ */
+const contenedor = (valor?: string): string | null => valor?.trim() || null;
+
+const GTM_ID = contenedor(import.meta.env.PUBLIC_GTM_ID);
+const COMSCORE_C2 = contenedor(import.meta.env.PUBLIC_COMSCORE_C2);
+const HOTJAR_ID = contenedor(import.meta.env.PUBLIC_HOTJAR_ID);
+const METRICOOL_HASH = contenedor(import.meta.env.PUBLIC_METRICOOL_HASH);
+---
+
+<!doctype html>
+{/*
+  Sin `data-theme`: el sitio es SOLO oscuro (decisión de Carlos, 2026-08-20). El DS
+  trae un set claro `[data-theme="neblina"]` para "momentos de respiro", pero queda
+  fuera del alcance, así que no se expone un conmutador que nadie va a usar.
+  `color-scheme: dark` le dice al navegador que pinte de oscuro sus propios
+  controles (scrollbars, campos de formulario, el fondo antes de que cargue el CSS).
+*/}
+<html lang={IDIOMA} style="color-scheme: dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{tituloPagina}</title>
+    <meta name="description" content={resumen} />
+    <link rel="canonical" href={canonical} />
+
+    {/*
+      Open Graph y Twitter Card. Faltaban ENTERAS (agregadas el 2026-09-07).
+
+      Los tres botones de compartir de la nota funcionaban —Carlos dudaba de ellos y
+      no era eso—, pero lo que llegaba a Facebook o a X era un enlace pelado: sin
+      imagen, sin titular y sin bajada, porque no había nada que leer. Un titular
+      trabajado y una foto de portada no sirven de nada si lo que se publica es una
+      línea de texto gris.
+
+      `og:image` va ABSOLUTA o no cuenta, y el fallo es silencioso. Ver
+      `imagenCompartir`.
+
+      `og:type` es `article` solo en una nota. No es cosmético: con `article`,
+      las plataformas esperan `article:published_time` y presentan la ficha como
+      pieza fechada.
+
+      `twitter:card` es lo único que X necesita de su propio espacio de nombres —
+      el resto lo lee de Open Graph—. Duplicar `twitter:title` y compañía sería
+      mantener dos veces lo mismo para que digan lo mismo. Por eso tampoco hay
+      `twitter:image:alt`: X lee el `og:image:alt` de abajo.
+
+      Las tres etiquetas de la IMAGEN se completaron el 2026-09-07 y no son
+      adorno:
+        · `og:image:alt` es lo que se lee en lugar de la foto — en el lector de
+          pantalla de Facebook y en la vista previa que no acaba de cargar.
+        · `og:image:width/height` le dan a la plataforma el hueco exacto ANTES de
+          bajar el archivo. Sin ellas, la primera vez que se comparte un enlace la
+          tarjeta se pinta encogida o recortada, y solo se acomoda cuando el
+          rastreador vuelve.
+      Las tres son condicionales a propósito: se emiten si el dato existe. Ver
+      `tarjeta`.
+    */}
+    <meta property="og:site_name" content="Beat 100.9" />
+    <meta property="og:locale" content={LOCALE_OG} />
+    <meta property="og:type" content={tipo} />
+    <meta property="og:title" content={tituloPagina} />
+    <meta property="og:description" content={resumen} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={imagenCompartir} />
+    {tarjeta.alt && <meta property="og:image:alt" content={tarjeta.alt} />}
+    {
+      tarjeta.ancho && tarjeta.alto && (
+        <>
+          <meta property="og:image:width" content={String(tarjeta.ancho)} />
+          <meta property="og:image:height" content={String(tarjeta.alto)} />
+        </>
+      )
+    }
+    {tipo === 'article' && publicado && (
+      <meta property="article:published_time" content={publicado} />
+    )}
+    {tipo === 'article' && modificado && (
+      <meta property="article:modified_time" content={modificado} />
+    )}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@BEATOFICIAL" />
+    {/*
+      El juego entero, no solo el `.ico`. Lo genera `pnpm favicon` desde
+      `public/img/beat-blanco.svg`, que es el MISMO archivo del que sale el logo
+      de la cabecera: así el icono no puede quedarse en una marca anterior sin
+      que nadie lo note. Es lo que había pasado — la pestaña seguía enseñando la
+      abeja amarilla de 2025.
+
+      El orden importa poco salvo en una cosa: `sizes="any"` en el `.ico` le dice
+      al navegador que ese archivo sirve para cualquier medida, así que las
+      declaraciones concretas de abajo son las que gana para las suyas.
+    */}
+    <link rel="icon" href="/favicon/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
+    <link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#050706" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+    {/*
+      El color con el que el navegador pinta SU propio cromo —la barra de
+      direcciones en Android, la barra de título de una PWA—. Estaba en blanco
+      porque venía del generador de iconos que hizo el juego viejo, y eso ponía
+      una franja blanca encima de un sitio negro.
+    */}
+    <meta name="theme-color" content="#050706" />
+    <meta name="robots" content={noIndexar ? 'noindex, nofollow' : 'index, follow'} />
+
+    {/*
+      Los datos estructurados de la ESTACIÓN. Solo en el Inicio; ver
+      `fichaEstacion` arriba.
+
+      guarda-ok set:html: es el único modo de emitir JSON-LD en Astro, y el valor
+      no es HTML del CMS sino JSON que arma `serializar()`, que además escapa `<`
+      —el vector real aquí es un `</script>` dentro de un titular, no una etiqueta
+      suelta—. Ver `src/lib/jsonld.ts`.
+
+      `is:inline` es obligatorio: sin él Astro trata el bloque como un script
+      del sitio y se lo lleva al bundle, donde ningún rastreador lo va a leer.
+    */}
+    {fichaEstacion && <script type="application/ld+json" is:inline set:html={fichaEstacion} />}
+
+    {/*
+      SIN ESTO el `transition:persist` de la cabecera NO HACE NADA.
+      Cada navegación sería una carga completa del documento y el radio se cortaría
+      al cambiar de página — que es justo lo contrario del §4.1 del mapa de sitio:
+      "el reproductor en vivo es persistente… es la afirmación de que Beat sigue
+      siendo una estación de radio en vivo".
+
+      Estuvo faltando desde que se construyó la cabecera: el atributo estaba puesto
+      y no servía de nada, porque no había router que lo respetara.
+    */}
+    <ClientRouter />
+
+    {/*
+      GPT, la librería de Google Ad Manager.
+
+      Va `async` porque así lo pide Google y porque no debe bloquear el render: el
+      snippet crea `window.googletag.cmd` de inmediato, así que nuestro módulo
+      puede encolar trabajo antes de que la librería termine de bajar. Esa es la
+      razón de que TODO lo de GPT vaya dentro de `cmd.push` — sin eso, en móvil o
+      con red lenta `googletag` es solo el stub y el TypeError cancela la
+      inicialización entera.
+
+      El ad unit NO está aquí ni en ningún archivo: sale de
+      `PUBLIC_GAM_NETWORK_ID` y `PUBLIC_GAM_AD_UNIT`. Ver `src/scripts/anuncios.ts`.
+    */}
+    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js" is:inline></script>
+    <script is:inline>
+      window.googletag = window.googletag || { cmd: [] };
+    </script>
+
+    {/*
+      LA MEDICIÓN. Los cuatro contenedores, cada uno tras su propia guarda; la
+      regla y el por qué están arriba, con las constantes.
+
+      Ninguno bloquea el render, con el mismo criterio que `gpt.js`: lo que
+      pesa —la librería de cada contenedor— se inyecta con `async`. Lo que corre
+      en línea es solo la cola y la etiqueta que la va a buscar.
+
+      Y ninguno se vuelve a ejecutar al navegar, sin que haga falta guarda
+      nuestra: el `ClientRouter` recuerda cada script en línea que ya corrió —por
+      su TEXTO— y lo marca `data-astro-exec` antes de reinsertarlo en el `head`
+      nuevo (`astro/dist/transitions/swap-functions.js`). Comprobado yendo del
+      Inicio a una nota y volviendo: un solo `gtm.start` en la cola y una sola
+      copia de cada snippet. Por eso mismo, aquí NUNCA va `data-astro-rerun`:
+      bajaría un contenedor nuevo por navegación y contaría todo dos veces.
+
+      Lo que el `ClientRouter` sí hace es BORRAR del `head` los scripts que
+      estos contenedores inyectaron (`gtm.js`, `beacon.js`, el de Hotjar) al
+      reemplazarlo. No importa: el código ya se ejecutó y vive en memoria, y el
+      nodo `<script>` no es el que mide. Es la misma situación en la que ya está
+      GPT.
+    */}
+    {
+      GTM_ID && (
+        <>
+          {/*
+            La cola ANTES del contenedor, por la misma razón que el stub de
+            `googletag` de aquí arriba: `analitica.ts` empuja eventos en cuanto el
+            player arranca, y eso puede pasar antes de que `gtm.js` termine de
+            bajar. Sin la cola creada, el primer `play` —que es el que interesa—
+            se pierde en el `try/catch` del emisor.
+
+            Va DENTRO de la guarda de GTM y no fuera. Crear `dataLayer` sin
+            contenedor que la vacíe dejaría los eventos apilándose en un array que
+            nadie lee, y encima rompería el único diagnóstico que hay:
+            `Array.isArray(window.dataLayer)` es lo que dice si hay receptor (ver
+            `agents/analytics.md`).
+          */}
+          <script is:inline>window.dataLayer = window.dataLayer || [];</script>
+          {/*
+            El contenedor central. GA4 y todo lo demás se activan DENTRO de GTM,
+            no aquí: este es el único punto de control, y el día que NRM quiera un
+            banner de consentimiento es también el único sitio donde hay que
+            tocarlo.
+
+            Del snippet canónico de Google se cae una sola cosa, el parámetro `l`
+            que sirve para renombrar la cola: aquí no puede cambiar de nombre
+            —`analitica.ts` empuja a `window.dataLayer` por ese nombre exacto—, así
+            que su rama muerta sobraba.
+          */}
+          <script is:inline define:vars={{ idGtm: GTM_ID }}>
+            window.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
+            (function (d) {
+              var primero = d.getElementsByTagName('script')[0];
+              var etiqueta = d.createElement('script');
+              etiqueta.async = true;
+              etiqueta.src = 'https://www.googletagmanager.com/gtm.js?id=' + idGtm;
+              primero.parentNode.insertBefore(etiqueta, primero);
+            })(document);
+          </script>
+        </>
+      )
+    }
+    {/*
+      comScore. El snippet más pequeño y el que más pesa: es lo que NRM le reporta
+      a los anunciantes, así que esta cifra es la que sostiene los CPMs. Cualquier
+      cambio se coordina con adops y no se prueba en producción.
+
+      `c1: '2'` es la constante de comScore para «página web», no un dato nuestro;
+      lo único de la cuenta es `c2`.
+
+      Las dos `options` vienen tal cual del v1, que es como adops lo tiene
+      configurado hoy: cookie de primera parte y sin esperar consentimiento. En el
+      sitio no hay CMP (México, LFPDPPP) — si algún día entra uno, el
+      `bypassUserConsentRequirement…` es la primera línea que hay que revisar,
+      porque es exactamente la que se lo salta.
+    */}
+    {
+      COMSCORE_C2 && (
+        <script is:inline define:vars={{ c2Comscore: COMSCORE_C2 }}>
+          window._comscore = window._comscore || [];
+          window._comscore.push({
+            c1: '2',
+            c2: c2Comscore,
+            options: {
+              enableFirstPartyCookie: true,
+              bypassUserConsentRequirementFor1PCookie: true,
+            },
+          });
+          (function (d) {
+            var primero = d.getElementsByTagName('script')[0];
+            var etiqueta = d.createElement('script');
+            etiqueta.async = true;
+            etiqueta.src = 'https://sb.scorecardresearch.com/cs/' + c2Comscore + '/beacon.js';
+            primero.parentNode.insertBefore(etiqueta, primero);
+          })(document);
+        </script>
+      )
+    }
+    {/*
+      Hotjar. `hj` se define como cola antes de que baje la librería —la misma idea
+      que `dataLayer` y que `googletag.cmd`— para que una llamada temprana no se
+      pierda.
+
+      `hjsv` es la versión del SNIPPET (la 6, la que publica Hotjar), no una
+      versión nuestra; y el `Number()` está porque Hotjar arma la URL y compara con
+      un número, mientras del env el id llega siempre como cadena.
+    */}
+    {
+      HOTJAR_ID && (
+        <script is:inline define:vars={{ idHotjar: HOTJAR_ID }}>
+          window.hj =
+            window.hj ||
+            function () {
+              (window.hj.q = window.hj.q || []).push(arguments);
+            };
+          window._hjSettings = { hjid: Number(idHotjar), hjsv: 6 };
+          (function (d) {
+            var etiqueta = d.createElement('script');
+            etiqueta.async = true;
+            etiqueta.src =
+              'https://static.hotjar.com/c/hotjar-' +
+              window._hjSettings.hjid +
+              '.js?sv=' +
+              window._hjSettings.hjsv;
+            d.head.appendChild(etiqueta);
+          })(document);
+        </script>
+      )
+    }
+    {/*
+      Metricool queda CABLEADO Y APAGADO: `PUBLIC_METRICOOL_HASH` va vacía
+      porque el hash no lo tenemos, así que hoy este bloque no se emite nunca. Se
+      escribe igual para que encenderlo sea llenar una variable y reconstruir, que
+      es lo que el resto de este archivo promete.
+
+      Dos diferencias con el v1, las dos por lo mismo: el `loadScript` de allá
+      colgaba el callback de `onload` **y** de `onreadystatechange` —eso es de IE8
+      y sobra—, y llamaba a `beTracker` sin comprobar que existiera, así que un
+      `be.js` que no bajaba dejaba un TypeError en la consola de cada página.
+    */}
+    {
+      METRICOOL_HASH && (
+        <script is:inline define:vars={{ hashMetricool: METRICOOL_HASH }}>
+          (function (d) {
+            var etiqueta = d.createElement('script');
+            etiqueta.async = true;
+            etiqueta.src = 'https://tracker.metricool.com/resources/be.js';
+            etiqueta.onload = function () {
+              if (window.beTracker) window.beTracker.t({ hash: hashMetricool });
+            };
+            d.head.appendChild(etiqueta);
+          })(document);
+        </script>
+      )
+    }
+
+    {/*
+      Las fuentes son AUTO-HOSPEDADAS (`public/fuentes/`, generadas con
+      `pnpm fuentes`). Antes iban por `<link>` a Google, y antes de eso por un
+      `@import` dentro del CSS del DS. Ya no hay ninguna de las dos: los `.woff2`
+      salen de nuestro propio dominio, así que no hace falta `preconnect` a
+      terceros ni se le manda a Google la IP del lector en cada visita.
+
+      Son SUSTITUTOS, no las tipografías de marca — el DS lo dice: "no licensed
+      brand fonts were provided". Al llegar las licenciadas se reemplazan los
+      archivos y las familias de `ds/tokens/typography.css`.
+    */}
+  </head>
+  {/*
+    `data-vista` es lo que le dice al CSS y a `cabecera.ts` si esta página lleva
+    la barra oscura. Va en el `body` y no en `<html>` a propósito: el `body` SÍ lo
+    reemplaza el router en cada navegación, así que el dato viaja con la página.
+    La cabecera, en cambio, lleva `transition:persist` y sobrevive — su marcado
+    del servidor se descarta al navegar, y por eso el estado no puede vivir ahí.
+  */}
+  <body
+    data-vista={vista}
+    class="min-h-screen bg-surface-canvas font-text text-body text-text-body antialiased"
+  >
+    {/*
+      Hueco POR ENCIMA del chrome. Hoy lo usa solo el Inicio, para el banner de
+      portada: el orden del lienzo es **publicidad → player → menú** (13a lo pinta
+      así, y 14a igual en móvil). Los interiores no lo llenan y arrancan directo
+      con la cabecera.
+
+      Va aquí y no dentro de la página porque el `<slot />` de contenido está
+      DEBAJO de la cabecera: desde ahí es imposible pintar algo encima. Y no va
+      dentro de `Cabecera` porque la cabecera lleva `transition:persist` — lo que
+      entra ahí sobrevive a la navegación, y un banner de portada que se quedara
+      pegado al navegar a una nota sería un error de facturación, no de maquetado.
+    */}
+    {/*
+      La barra de progreso de navegación. Va PRIMERO en el `body` y con
+      `transition:persist`.
+
+      Lo primero, porque es `position: fixed` en la coronilla de la pantalla y
+      tiene que quedar por encima de todo lo demás del cromo, incluido el banner
+      de portada.
+
+      Lo segundo es lo que la hace funcionar: sin `transition:persist`, el
+      intercambio de vistas reemplaza este nodo por el de la página nueva a mitad
+      de la animación, y la barra desaparecería justo cuando el lector la está
+      mirando. Es lo mismo que hace la cabecera con el player.
+
+      Y el nombre va EXPLÍCITO —`="progreso"`—, como el `="cabecera"` de la
+      cabecera. Sin nombre, Astro genera uno por POSICIÓN y no coincide entre
+      páginas: medido, el Inicio emitía `astro-gyrtbwwo-3` y una nota
+      `astro-gyrtbwwo-5`, porque la nota tiene más elementos con directiva de
+      transición delante. Con nombres distintos no hay nada que emparejar y el nodo
+      se reemplaza en silencio — la barra se moría a mitad de la navegación y desde
+      el código se veía correcta.
+
+      `aria-hidden`: el `ClientRouter` ya anuncia el cambio de ruta por su
+      cuenta. Ver `src/scripts/progreso.ts`.
+    */}
+    <div class="progreso" data-progreso aria-hidden="true" transition:persist="progreso">
+      <div class="progreso-barra"></div>
+    </div>
+
+    {/*
+      LA CAPA DEL HALO DEL CURSOR, y va en el marcado a propósito.
+
+      Antes no existía: el halo era el `::after` del `<body>` y su centro salía de
+      una variable que `cursor.ts` escribía en `<html>` en cada movimiento del
+      ratón. Escribir en la raíz invalida el estilo de todo el documento —3.35 ms
+      medidos, con la página cargada— y el degradado se repintaba a pantalla
+      completa. Con eso encima, la respuesta al puntero llegaba tarde: el `:hover`
+      entraba con retraso y el cursor no cambiaba a manita, así que los botones de
+      las cápsulas y los de compartir se sentían deshabilitados. Ver `beat.css`.
+
+      Como elemento propio, la posición va en un `transform` sobre una capa
+      promovida y moverla no cuesta ni estilo ni pintado.
+
+      `transition:persist` por lo mismo que la barra de progreso: sin él, cada
+      navegación trae un nodo nuevo y la referencia que guarda `cursor.ts` se queda
+      apuntando a uno huérfano. El script comprueba `isConnected` de todos modos,
+      pero la red y el cinturón cuestan lo mismo aquí.
+
+      Vacío y `aria-hidden`: es luz, no contenido.
+    */}
+    <div class="cursor-halo" data-halo aria-hidden="true" transition:persist="halo"></div>
+
+    {/*
+      EL VISOR FLOTANTE DE LAS CANCIONES.
+
+      Va en el marcado y no lo construye `pista.ts`, por lo mismo que la barra: con
+      `transition:persist` sobrevive a la navegación y la canción sigue sonando al
+      cambiar de página. Creado desde el script, cada navegación traería un marco
+      nuevo y el iframe anterior quedaría sonando dentro de un nodo huérfano, sin
+      nadie que lo pueda parar.
+
+      Y va VISIBLE, con su X. Las políticas del reproductor incrustado de
+      YouTube piden un reproductor visible, de al menos 200×200 y sin obstruir, y
+      prohíben separar el audio del video. `min-height: 202px` en el CSS no es un
+      número de gusto: es esa regla.
+
+      Nace con `hidden` y lo quita el script al primer play. Y `hidden` en vez de
+      una clase para que haya UNA sola verdad sobre si se ve — el atributo lo
+      respetan igual el CSS, el lector de pantalla y el tabulador.
+
+      El `<video>` de montaje es lo que Plyr toma para construirse; al asignarle
+      una fuente de YouTube lo REEMPLAZA por su iframe, así que su atributo
+      desaparece del DOM. Está medido y no importa: la instancia se crea una vez y
+      se guarda en `window`.
+    */}
+    <div class="pista-visor" data-pista-visor hidden transition:persist="pista-visor">
+      <button type="button" class="pista-visor-cerrar" data-pista-cerrar aria-label="Cerrar el video">
+        <Icono nombre="x" tamano={16} />
+      </button>
+      <video data-pista-montaje playsinline></video>
+      {/*
+        El hueco del widget de SoundCloud. Nace vacío: el iframe lo monta
+        `pista.ts` la primera vez que alguien pide una canción de ahí, igual que
+        Plyr monta el suyo. Cuál de los dos se ve lo decide el atributo
+        `data-motor` del visor.
+      */}
+      <div class="pista-visor-sc" data-pista-sc></div>
+    </div>
+
+    {/*
+      Los dos `<noscript>` de la medición: el iframe de GTM y el pixel de comScore.
+      Cada uno tras la misma guarda que su script, o sea que sin variable tampoco
+      salen.
+
+      Van en el `<body>` y NO junto a sus scripts en el `<head>`, aunque el v1
+      los tuviera arriba. El `<head>` solo admite metadatos: un `<img>` o un
+      `<iframe>` ahí le dice al parser que el head terminó, y con el JavaScript
+      apagado —que es justo el caso que estas dos etiquetas atienden— lo que
+      quedaba del head se acaba pintando dentro del body.
+
+      No son la primerísima línea del `body` porque ese sitio es de la barra de
+      progreso, y por una razón de pintado (ver arriba). Da igual: con JS un
+      `<noscript>` no existe, y sin JS estas dos etiquetas van ocultas y no ocupan
+      lugar, así que no hay nada que se les ponga delante.
+
+      Y solo viven en la carga INICIAL del documento: el `ClientRouter` borra
+      todos los `<noscript>` del documento que trae al navegar
+      (`astro/dist/transitions/router.js`, justo después del `parseFromString`).
+      Comprobado, y no es un problema: sin JavaScript no hay navegación de router
+      —cada clic es un documento completo, que llega con las dos etiquetas—, y con
+      JavaScript estas dos no tienen nada que hacer.
+
+      El pixel del v1 va ROTO y el error no se hereda: lleva `cv=cv=4.4.0` y un
+      salto de línea que parte `cj=1` a mitad de la URL.
+    */}
+    {
+      GTM_ID && (
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+            title="Google Tag Manager"
+            height="0"
+            width="0"
+            style="display:none;visibility:hidden"
+          />
+        </noscript>
+      )
+    }
+    {
+      COMSCORE_C2 && (
+        <noscript>
+          <img
+            src={`https://sb.scorecardresearch.com/p?c1=2&c2=${COMSCORE_C2}&cv=4.4.0&cj=1`}
+            alt=""
+            height="1"
+            width="1"
+            style="display:none"
+          />
+        </noscript>
+      )
+    }
+
+    <slot name="sobre-cabecera" />
+    <Cabecera estacion={marca} compacta={vista === 'interior'} />
+    {/*
+      El menú a pantalla completa. Va FUERA de la cabecera a propósito: la
+      cabecera es persistente y el menú no debe serlo — así una navegación lo
+      cierra sola, que es justo lo que tiene que pasar al pulsar uno de sus
+      enlaces. Ver `MenuLleno.astro`.
+    */}
+    <MenuLleno />
+    <main id="contenido">
+      <slot />
+    </main>
+    <Pie estacion={marca} redes={redes} />
+
+    <script>
+      import { prepararAnuncios } from '@/scripts/anuncios';
+      import { prepararVideo } from '@/scripts/video';
+      import { prepararEscritura } from '@/scripts/escribir';
+      import { prepararRevelado } from '@/scripts/revelar';
+      import { prepararSenal } from '@/scripts/senal';
+      import { prepararParrilla } from '@/scripts/parrilla';
+      import { prepararCursor } from '@/scripts/cursor';
+      import { prepararRejilla } from '@/scripts/rejilla';
+      import { prepararIntro } from '@/scripts/intro';
+      import { prepararCabecera } from '@/scripts/cabecera';
+      import { prepararPista } from '@/scripts/pista';
+      import { prepararAudioNota } from '@/scripts/audio-nota';
+      import { prepararMenu } from '@/scripts/menu';
+      import { prepararProgreso } from '@/scripts/progreso';
+      import { prepararVoto } from '@/scripts/voto';
+      import { prepararCarrusel } from '@/scripts/carrusel';
+      prepararAnuncios();
+      prepararEscritura();
+      prepararRevelado();
+      prepararSenal();
+      prepararParrilla();
+      prepararCursor();
+      prepararRejilla();
+      prepararIntro();
+      prepararCabecera();
+      prepararPista();
+      // Solo CABLEA: si la nota no trae mp3 no crea ningún `<audio>` ni descarga
+      // nada. Ver `audio-nota.ts`.
+      prepararAudioNota();
+      prepararMenu();
+      prepararProgreso();
+      prepararVoto();
+      prepararCarrusel();
+      // Solo CABLEA los visores; Plyr (110 KB) no se baja hasta que alguien
+      // pide un video.
+      prepararVideo();
+    </script>
+  </body>
+</html>
