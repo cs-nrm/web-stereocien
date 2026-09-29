@@ -269,6 +269,27 @@ export async function getStaticPaths() {
     /iP(hone|od|ad)/.test(navigator.userAgent) ||
     (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
+  // Diagnóstico en dispositivo: con ?debug=1 los pasos del play/ad se muestran en pantalla
+  // (en iPhone no hay consola a la mano).
+  const DEBUG = new URLSearchParams(window.location.search).has("debug");
+  const debugStart = Date.now();
+  function dbg(msg) {
+    if (!DEBUG) return;
+    const line = `${((Date.now() - debugStart) / 1000).toFixed(1)}s ${msg}`;
+    console.log("[debug]", line);
+    let panel = document.getElementById("sr-debug");
+    if (!panel) {
+      panel = document.createElement("pre");
+      panel.id = "sr-debug";
+      panel.style.cssText =
+        "position:fixed;left:0;right:0;bottom:0;z-index:9999;max-height:40vh;overflow:auto;" +
+        "margin:0;padding:8px;font:11px/1.3 monospace;color:#0f0;background:rgba(0,0,0,.85);white-space:pre-wrap;";
+      document.body.appendChild(panel);
+    }
+    panel.textContent += line + "\n";
+    panel.scrollTop = panel.scrollHeight;
+  }
+
   // Referencias a los listeners del media element actual, para poder desengancharlos
   // antes de destruir/recrear el player (el <video> del DOM se reutiliza entre ciclos).
   let mediaListeners = null;
@@ -1318,7 +1339,7 @@ export async function getStaticPaths() {
       setAdUI(true);
       clearAdStallTimer();
       adStallTimer = setTimeout(function () {
-        console.warn("[ads] el anuncio no arrancó; se pide un toque para reintentar");
+        dbg(`ads: el anuncio no arrancó en ${AD_STALL_MS / 1000}s`);
         resetToTapToPlay();
       }, AD_STALL_MS);
     };
@@ -1383,7 +1404,9 @@ export async function getStaticPaths() {
 
     // Siempre a través de player.play() (nunca audioPlayer.play() directo): es la única forma
     // en que el plugin de ads de Plyr intercepta la reproducción para meter el pre-roll.
-    player.play().catch((error) => {
+    dbg("play(): llamado");
+    player.play().then(() => dbg("play(): ok")).catch((error) => {
+      dbg(`play(): rechazado (${error && error.name})`);
       if (error && error.name === "NotAllowedError") {
         // Safari iOS no permite audio con sonido sin un gesto del usuario en ESTA página:
         // el click en el slider ocurrió en otra pestaña y no se hereda al abrir la estación.
@@ -1424,6 +1447,20 @@ export async function getStaticPaths() {
     playerHasFreshAds = !!withAds;
 
     attachAudioListeners(audioPlayer);
+
+    if (DEBUG) {
+      [
+        "play", "playing", "pause", "waiting", "error",
+        "adsloaded", "adscontentpauserequested", "adsstarted",
+        "adscontentresumerequested", "adscomplete", "adsalladscompleted",
+      ].forEach((name) => audioPlayer.addEventListener(name, () => dbg(`evento: ${name}`)));
+      if (player.ads && player.ads.managerPromise) {
+        player.ads.managerPromise.then(
+          () => dbg("ads: Ad Manager devolvió anuncio"),
+          () => dbg("ads: sin anuncio / error de IMA")
+        );
+      }
+    }
   }
 
   function clearAdStallTimer() {
@@ -1431,30 +1468,25 @@ export async function getStaticPaths() {
     adStallTimer = null;
   }
 
-  // Resuelve true si Ad Manager devolvió un anuncio para la instancia actual, false si no hubo
-  // fill / falló IMA / no hubo respuesta a tiempo.
-  function waitForAdDecision(timeoutMs) {
-    const ads = player && player.ads;
-    if (!ads || !ads.enabled || !ads.managerPromise) return Promise.resolve(false);
-    return Promise.race([
-      ads.managerPromise.then(
-        () => true,
-        () => false
-      ),
-      new Promise((resolve) => setTimeout(() => resolve(null), timeoutMs)),
-    ]);
+  // En iOS, IMA reproduce el anuncio en su propio <video> (no en el del stream), y ese elemento
+  // solo se desbloquea si initialize() corre DENTRO del toque del usuario. Plyr lo llama después,
+  // cuando termina de cargar el VAST (ya fuera del gesto), y el ad se queda colgado. Por eso lo
+  // llamamos nosotros de forma síncrona en cada reproducción iniciada por un toque.
+  function initAdDisplayInGesture() {
+    try {
+      const dc = player && player.ads && player.ads.elements && player.ads.elements.displayContainer;
+      if (dc) dc.initialize();
+      dbg(`ads: initialize() en el gesto (${dc ? "ok" : "IMA aún no cargado"})`);
+    } catch (e) {
+      dbg(`ads: initialize() falló: ${e && e.message}`);
+    }
   }
 
   // Entrada única para reproducir desde un gesto del usuario (botón ▶ u overlay).
   function startPlayback() {
     if (player && playerHasFreshAds) {
-      // Reutilizamos la instancia que ya precargó el ad. En iOS, IMA reproduce el anuncio en su
-      // propio <video>, y ese elemento solo se desbloquea si initialize() corre DENTRO del toque;
-      // Plyr lo llama después de forma asíncrona (fuera del gesto) y el ad se queda colgado.
-      try {
-        const dc = player.ads && player.ads.elements && player.ads.elements.displayContainer;
-        if (dc) dc.initialize();
-      } catch (e) {}
+      // Reutilizamos la instancia que ya precargó el ad al abrir la página: arranca más rápido.
+      initAdDisplayInGesture();
       playerHasFreshAds = false;
       lastAdAttemptAt = Date.now();
       isAdPending = true;
@@ -1467,6 +1499,7 @@ export async function getStaticPaths() {
   // El navegador bloqueó la reproducción (o el ad no pudo arrancar sin gesto): dejamos una
   // instancia nueva con el ad precargado y pedimos un toque real para arrancar.
   function resetToTapToPlay() {
+    dbg("reset: se pide un toque");
     clearAdStallTimer();
     isAdPending = false;
     ignoreAudioErrorsUntil = Date.now() + 1500;
@@ -1515,6 +1548,9 @@ export async function getStaticPaths() {
     destroyPlayer();
     createPlayer(withAds);
     playerHasFreshAds = false;
+    // Con el SDK de IMA ya cargado (lo cargó la instancia inicial), Plyr crea el display
+    // container de forma síncrona, así que aquí todavía estamos dentro del gesto.
+    if (withAds) initAdDisplayInGesture();
 
     playRadio();
   }
@@ -1578,29 +1614,18 @@ export async function getStaticPaths() {
     }
 
     // Optional autoplay via query param (?autoplay=1)
-    // En iOS la página se abre sin gesto del usuario (el click fue en el slider, en otra pestaña):
-    // el stream en vivo sí arranca solo, pero el anuncio de IMA no. Esperamos a saber si Ad Manager
-    // devolvió anuncio: sin anuncio, autoplay normal; con anuncio, pedimos un toque.
-    let autoplayHandled = false;
+    // En iOS la página se abre sin un toque del usuario en ELLA (el click fue en el slider, en
+    // otra pestaña) y Safari no deja arrancar audio con sonido ni el anuncio de IMA sin ese toque.
+    // En vez de intentar y quedarnos colgados, pedimos el toque de inmediato; el ad ya se está
+    // precargando con la instancia creada arriba, así que arranca rápido al tocar.
+    dbg(`init: iOS=${IS_IOS} autoplay=${shouldAutoplay()}`);
     if (shouldAutoplay()) {
       hasUserPressedPlay = true;
       pendingPlayTrigger = "autoplay";
       if (IS_IOS) {
-        setStatus("CARGANDO");
-        setLoadingUI(true);
-        waitForAdDecision(6000).then(function (hasAd) {
-          if (autoplayHandled) return;
-          autoplayHandled = true;
-          setLoadingUI(false);
-          if (hasAd === false) {
-            startPlayback();
-          } else {
-            setStatus("TOCA ▶");
-            setTapToPlay(true);
-          }
-        });
+        setStatus("TOCA ▶");
+        setTapToPlay(true);
       } else {
-        autoplayHandled = true;
         attemptPrerollAndPlay();
       }
     }
@@ -1608,7 +1633,7 @@ export async function getStaticPaths() {
     const tapToPlay = $("tap-to-play");
     if (tapToPlay) {
       tapToPlay.addEventListener("click", function () {
-        autoplayHandled = true;
+        dbg("toque: overlay");
         setTapToPlay(false);
         hasUserPressedPlay = true;
         pendingPlayTrigger = "button";
@@ -1619,7 +1644,7 @@ export async function getStaticPaths() {
     const playBtn = $("play-btn");
     if (playBtn) {
       playBtn.addEventListener("click", function () {
-        autoplayHandled = true;
+        dbg("toque: botón play");
         setTapToPlay(false);
         hasUserPressedPlay = true;
         pendingPlayTrigger = "button";
