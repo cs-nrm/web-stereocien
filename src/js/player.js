@@ -585,7 +585,13 @@ document.addEventListener('astro:page-load', ev => {
                 const buttonId = this.id;
                 const soundType = buttonId.replace('sounds-', '');
                 const url = `/station/${soundType}?utm_source=stereocien&utm_medium=web&utm_campaign=${soundType}&autoplay=1`;
-                if (!soundWin || soundWin.closed) {
+                // En iPhone/iPad cada estación abre su propia pestaña (iOS reutilizaría la misma por el
+                // nombre 'soundPopup'). La estación nueva detiene a las demás vía BroadcastChannel.
+                const isIOS = /iP(hone|od|ad)/.test(navigator.userAgent) ||
+                    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+                if (isIOS) {
+                    window.open(url, '_blank');
+                } else if (!soundWin || soundWin.closed) {
                     soundWin = window.open(url, 'soundPopup', 'width=500,height=900');
                 } else {
                     soundWin.location.href = url;

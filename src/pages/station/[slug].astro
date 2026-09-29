@@ -269,6 +269,15 @@ export async function getStaticPaths() {
     /iP(hone|od|ad)/.test(navigator.userAgent) ||
     (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
+  // Solo una estación suena a la vez: en iPhone cada estación abre su propia pestaña, así que al
+  // arrancar (stream o anuncio) avisamos a las demás pestañas de Sounds para que se detengan.
+  const TAB_ID = Math.random().toString(36).slice(2);
+  const stationChannel =
+    "BroadcastChannel" in window ? new BroadcastChannel("sounds-station") : null;
+  function announcePlayback() {
+    if (stationChannel) stationChannel.postMessage({ type: "play", from: TAB_ID });
+  }
+
   // Diagnóstico en dispositivo: con ?debug=1 los pasos del play/ad se muestran en pantalla
   // (en iPhone no hay consola a la mano).
   const DEBUG = new URLSearchParams(window.location.search).has("debug");
@@ -1268,6 +1277,7 @@ export async function getStaticPaths() {
       if (isAdActive) return; // el ciclo del ad lo maneja el plugin de ads (eventos ads*)
       isAdPending = false;
       isPlaying = true;
+      announcePlayback();
       setTapToPlay(false);
       setLoadingUI(false);
       setStatus("REPRODUCIENDO");
@@ -1336,6 +1346,7 @@ export async function getStaticPaths() {
     };
 
     const onAdsPauseRequested = function () {
+      announcePlayback();
       setAdUI(true);
       clearAdStallTimer();
       adStallTimer = setTimeout(function () {
@@ -1629,6 +1640,19 @@ export async function getStaticPaths() {
       } else {
         attemptPrerollAndPlay();
       }
+    }
+
+    if (stationChannel) {
+      stationChannel.onmessage = function (e) {
+        const msg = e.data || {};
+        if (msg.type !== "play" || msg.from === TAB_ID) return;
+        // Solo si esta pestaña está sonando o arrancando: una pestaña en espera ("Toca para
+        // escuchar") conserva su instancia con el ad precargado.
+        if (isPlaying || isAdActive || isAdPending) {
+          dbg("otra estación empezó a sonar: se detiene esta");
+          stopRadio();
+        }
+      };
     }
 
     const tapToPlay = $("tap-to-play");
