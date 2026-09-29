@@ -1362,7 +1362,8 @@ export async function getStaticPaths() {
     mediaEl.addEventListener("error", onError);
     // Fases del pre-roll, disparadas por el plugin de ads de Plyr sobre player.media.
     mediaEl.addEventListener("adscontentpauserequested", onAdsPauseRequested);
-    mediaEl.addEventListener("adsstarted", onAdsStarted);
+    // Plyr nombra el evento como "ads" + valor de google.ima.AdEvent.Type.STARTED ("start").
+    mediaEl.addEventListener("adsstart", onAdsStarted);
     mediaEl.addEventListener("adscontentresumerequested", onAdsResumeRequested);
 
     // Guardamos las referencias para poder desengancharlas en destroyPlayer(): el <video>
@@ -1375,7 +1376,7 @@ export async function getStaticPaths() {
       canplay: onCanPlay,
       error: onError,
       adscontentpauserequested: onAdsPauseRequested,
-      adsstarted: onAdsStarted,
+      adsstart: onAdsStarted,
       adscontentresumerequested: onAdsResumeRequested,
     };
   }
@@ -1451,7 +1452,7 @@ export async function getStaticPaths() {
     if (DEBUG) {
       [
         "play", "playing", "pause", "waiting", "error",
-        "adsloaded", "adscontentpauserequested", "adsstarted",
+        "adsloaded", "adscontentpauserequested", "adsstart",
         "adscontentresumerequested", "adscomplete", "adsalladscompleted",
       ].forEach((name) => audioPlayer.addEventListener(name, () => dbg(`evento: ${name}`)));
       if (player.ads && player.ads.managerPromise) {
