@@ -124,6 +124,17 @@ export async function getStaticPaths() {
             style={`background-image:url(${post?.sounds_logo_url || ""});`}
           >
           </div>
+          <button
+            id="tap-to-play"
+            class="sr-tapplay sr-hidden"
+            type="button"
+            aria-label="Toca para escuchar"
+          >
+            <svg viewBox="0 0 24 24" width="48" height="48" fill="currentColor" aria-hidden="true">
+              <path d="M8 5v14l12-7-12-7z"></path>
+            </svg>
+            <span>Toca para escuchar</span>
+          </button>
         </div>
 
         <div class="sr-meta">
@@ -461,6 +472,11 @@ export async function getStaticPaths() {
     } catch (e) {
       return false;
     }
+  }
+
+  function setTapToPlay(show) {
+    const el = $("tap-to-play");
+    if (el) el.classList.toggle("sr-hidden", !show);
   }
 
   function setStatus(label) {
@@ -1221,6 +1237,7 @@ export async function getStaticPaths() {
       if (isAdActive) return; // el ciclo del ad lo maneja el plugin de ads (eventos ads*)
       isAdPending = false;
       isPlaying = true;
+      setTapToPlay(false);
       setLoadingUI(false);
       setStatus("REPRODUCIENDO");
       setPlayingUI(true);
@@ -1346,10 +1363,19 @@ export async function getStaticPaths() {
     // en que el plugin de ads de Plyr intercepta la reproducción para meter el pre-roll.
     player.play().catch((error) => {
       if (error && error.name === "NotAllowedError") {
+        // Safari iOS no permite audio con sonido sin un gesto del usuario en ESTA página:
+        // el click en el slider ocurrió en otra pestaña y no se hereda al abrir la estación.
         isAdPending = false;
         console.warn("[audio] Safari requiere un toque para iniciar la reproducción:", error);
+        // Este intento no reprodujo nada: liberamos el debounce para que el toque siguiente
+        // sí pida el pre-roll a Ad Manager, y descartamos la instancia con el ad a medio pedir.
+        lastAdAttemptAt = 0;
+        stopMetadataFeed();
+        destroyPlayer();
+        createPlayer(false);
         setLoadingUI(false);
         setStatus("TOCA ▶");
+        setTapToPlay(true);
         return;
       }
       if (isAdActive || isAdPending) {
@@ -1480,9 +1506,20 @@ export async function getStaticPaths() {
       attemptPrerollAndPlay();
     }
 
+    const tapToPlay = $("tap-to-play");
+    if (tapToPlay) {
+      tapToPlay.addEventListener("click", function () {
+        setTapToPlay(false);
+        hasUserPressedPlay = true;
+        pendingPlayTrigger = "button";
+        attemptPrerollAndPlay();
+      });
+    }
+
     const playBtn = $("play-btn");
     if (playBtn) {
       playBtn.addEventListener("click", function () {
+        setTapToPlay(false);
         hasUserPressedPlay = true;
         pendingPlayTrigger = "button";
 
@@ -1881,6 +1918,25 @@ export async function getStaticPaths() {
     to {
       transform: rotate(360deg);
     }
+  }
+
+  /* Fallback cuando el navegador (Safari iOS) bloquea el ?autoplay=1: pide un toque real */
+  .sr-tapplay {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 0;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: rgba(0, 0, 0, 0.45);
+    cursor: pointer;
   }
 
   .sr-hidden {
