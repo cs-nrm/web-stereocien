@@ -258,6 +258,16 @@ export async function getStaticPaths() {
   let isAdPending = false;
   let lastAdAttemptAt = 0;
   const AD_FETCH_DEBOUNCE_MS = 15000;
+  // true mientras la instancia actual de Plyr tiene un ad pedido y todavía no se ha usado para
+  // reproducir: en iOS hay que reutilizarla para que el ad ya esté cargado al momento del toque.
+  let playerHasFreshAds = false;
+  // Si IMA pausa el contenido para el ad pero el ad nunca arranca (iOS bloqueó su <video>),
+  // este timer evita que el player se quede cargando para siempre.
+  let adStallTimer = null;
+  const AD_STALL_MS = 8000;
+  const IS_IOS =
+    /iP(hone|od|ad)/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
   // Referencias a los listeners del media element actual, para poder desengancharlos
   // antes de destruir/recrear el player (el <video> del DOM se reutiliza entre ciclos).
@@ -1306,9 +1316,19 @@ export async function getStaticPaths() {
 
     const onAdsPauseRequested = function () {
       setAdUI(true);
+      clearAdStallTimer();
+      adStallTimer = setTimeout(function () {
+        console.warn("[ads] el anuncio no arrancó; se pide un toque para reintentar");
+        resetToTapToPlay();
+      }, AD_STALL_MS);
+    };
+
+    const onAdsStarted = function () {
+      clearAdStallTimer();
     };
 
     const onAdsResumeRequested = function () {
+      clearAdStallTimer();
       setAdUI(false);
       // Plyr ya llamó player.media.play() internamente al reanudar; solo resincronizamos metadata.
       startMetadataFeed();
@@ -1321,6 +1341,7 @@ export async function getStaticPaths() {
     mediaEl.addEventListener("error", onError);
     // Fases del pre-roll, disparadas por el plugin de ads de Plyr sobre player.media.
     mediaEl.addEventListener("adscontentpauserequested", onAdsPauseRequested);
+    mediaEl.addEventListener("adsstarted", onAdsStarted);
     mediaEl.addEventListener("adscontentresumerequested", onAdsResumeRequested);
 
     // Guardamos las referencias para poder desengancharlas en destroyPlayer(): el <video>
@@ -1333,6 +1354,7 @@ export async function getStaticPaths() {
       canplay: onCanPlay,
       error: onError,
       adscontentpauserequested: onAdsPauseRequested,
+      adsstarted: onAdsStarted,
       adscontentresumerequested: onAdsResumeRequested,
     };
   }
@@ -1365,17 +1387,8 @@ export async function getStaticPaths() {
       if (error && error.name === "NotAllowedError") {
         // Safari iOS no permite audio con sonido sin un gesto del usuario en ESTA página:
         // el click en el slider ocurrió en otra pestaña y no se hereda al abrir la estación.
-        isAdPending = false;
         console.warn("[audio] Safari requiere un toque para iniciar la reproducción:", error);
-        // Este intento no reprodujo nada: liberamos el debounce para que el toque siguiente
-        // sí pida el pre-roll a Ad Manager, y descartamos la instancia con el ad a medio pedir.
-        lastAdAttemptAt = 0;
-        stopMetadataFeed();
-        destroyPlayer();
-        createPlayer(false);
-        setLoadingUI(false);
-        setStatus("TOCA ▶");
-        setTapToPlay(true);
+        resetToTapToPlay();
         return;
       }
       if (isAdActive || isAdPending) {
@@ -1408,8 +1421,71 @@ export async function getStaticPaths() {
     });
     audioPlayer = player.media;
     audioPlayer.preload = "none";
+    playerHasFreshAds = !!withAds;
 
     attachAudioListeners(audioPlayer);
+  }
+
+  function clearAdStallTimer() {
+    if (adStallTimer) clearTimeout(adStallTimer);
+    adStallTimer = null;
+  }
+
+  // Resuelve true si Ad Manager devolvió un anuncio para la instancia actual, false si no hubo
+  // fill / falló IMA / no hubo respuesta a tiempo.
+  function waitForAdDecision(timeoutMs) {
+    const ads = player && player.ads;
+    if (!ads || !ads.enabled || !ads.managerPromise) return Promise.resolve(false);
+    return Promise.race([
+      ads.managerPromise.then(
+        () => true,
+        () => false
+      ),
+      new Promise((resolve) => setTimeout(() => resolve(null), timeoutMs)),
+    ]);
+  }
+
+  // Entrada única para reproducir desde un gesto del usuario (botón ▶ u overlay).
+  function startPlayback() {
+    if (player && playerHasFreshAds) {
+      // Reutilizamos la instancia que ya precargó el ad. En iOS, IMA reproduce el anuncio en su
+      // propio <video>, y ese elemento solo se desbloquea si initialize() corre DENTRO del toque;
+      // Plyr lo llama después de forma asíncrona (fuera del gesto) y el ad se queda colgado.
+      try {
+        const dc = player.ads && player.ads.elements && player.ads.elements.displayContainer;
+        if (dc) dc.initialize();
+      } catch (e) {}
+      playerHasFreshAds = false;
+      lastAdAttemptAt = Date.now();
+      isAdPending = true;
+      playRadio();
+      return;
+    }
+    attemptPrerollAndPlay();
+  }
+
+  // El navegador bloqueó la reproducción (o el ad no pudo arrancar sin gesto): dejamos una
+  // instancia nueva con el ad precargado y pedimos un toque real para arrancar.
+  function resetToTapToPlay() {
+    clearAdStallTimer();
+    isAdPending = false;
+    ignoreAudioErrorsUntil = Date.now() + 1500;
+    if (isAdActive && player && player.ads) {
+      try {
+        player.ads.cancel();
+      } catch (e) {}
+    }
+    setAdUI(false);
+    stopMetadataFeed();
+    destroyPlayer();
+    // Liberamos el debounce: este intento no reprodujo ningún anuncio.
+    lastAdAttemptAt = 0;
+    createPlayer(true);
+    isPlaying = false;
+    setPlayingUI(false);
+    setLoadingUI(false);
+    setStatus("TOCA ▶");
+    setTapToPlay(true);
   }
 
   function destroyPlayer() {
@@ -1438,6 +1514,7 @@ export async function getStaticPaths() {
     // interno pisando nuestra propia llamada — recrear evita ese estado acumulado.
     destroyPlayer();
     createPlayer(withAds);
+    playerHasFreshAds = false;
 
     playRadio();
   }
@@ -1448,6 +1525,7 @@ export async function getStaticPaths() {
     // For live streams, "pause" causes buffered delay. We do a hard stop.
     isStopping = true;
     isAdPending = false;
+    clearAdStallTimer();
     ignoreAudioErrorsUntil = Date.now() + 1500;
 
     if (isAdActive && player.ads) {
@@ -1500,25 +1578,48 @@ export async function getStaticPaths() {
     }
 
     // Optional autoplay via query param (?autoplay=1)
+    // En iOS la página se abre sin gesto del usuario (el click fue en el slider, en otra pestaña):
+    // el stream en vivo sí arranca solo, pero el anuncio de IMA no. Esperamos a saber si Ad Manager
+    // devolvió anuncio: sin anuncio, autoplay normal; con anuncio, pedimos un toque.
+    let autoplayHandled = false;
     if (shouldAutoplay()) {
       hasUserPressedPlay = true;
       pendingPlayTrigger = "autoplay";
-      attemptPrerollAndPlay();
+      if (IS_IOS) {
+        setStatus("CARGANDO");
+        setLoadingUI(true);
+        waitForAdDecision(6000).then(function (hasAd) {
+          if (autoplayHandled) return;
+          autoplayHandled = true;
+          setLoadingUI(false);
+          if (hasAd === false) {
+            startPlayback();
+          } else {
+            setStatus("TOCA ▶");
+            setTapToPlay(true);
+          }
+        });
+      } else {
+        autoplayHandled = true;
+        attemptPrerollAndPlay();
+      }
     }
 
     const tapToPlay = $("tap-to-play");
     if (tapToPlay) {
       tapToPlay.addEventListener("click", function () {
+        autoplayHandled = true;
         setTapToPlay(false);
         hasUserPressedPlay = true;
         pendingPlayTrigger = "button";
-        attemptPrerollAndPlay();
+        startPlayback();
       });
     }
 
     const playBtn = $("play-btn");
     if (playBtn) {
       playBtn.addEventListener("click", function () {
+        autoplayHandled = true;
         setTapToPlay(false);
         hasUserPressedPlay = true;
         pendingPlayTrigger = "button";
@@ -1530,7 +1631,7 @@ export async function getStaticPaths() {
           return;
         }
 
-        attemptPrerollAndPlay();
+        startPlayback();
       });
     }
 
