@@ -879,3 +879,38 @@ article .plyr--video{
 #ad-slot-leaderboard1, #ad-slot-leaderboard2, #ad-slot-leaderboard3, #ad-slot-leaderboard4, #ad-slot-leaderboard5 {position:relative; cursor: pointer;}
 #ad-slot-leaderboard1 iframe:hover, #ad-slot-leaderboard2 iframe:hover, #ad-slot-leaderboard3 iframe:hover, #ad-slot-leaderboard4 iframe:hover, #ad-slot-leaderboard5 iframe:hover{height:400px;z-index:100000;position:absolute; cursor: pointer;}
 #ad-slot-leaderboard1 iframe, #ad-slot-leaderboard2 iframe, #ad-slot-leaderboard3 iframe, #ad-slot-leaderboard4 iframe, #ad-slot-leaderboard5 iframe{ margin: 0 auto;}
+
+/* CORONA */
+
+/*.fondo-corona{
+  background: url("https://storage.googleapis.com/nrm-web/stereocien/corona-stereocien.jpg");
+  background-size: cover;
+  background-position: top center;
+  background-repeat: no-repeat;
+}*/
+.fondo-corona{
+    background: #052B60;
+    background: linear-gradient(0deg,rgba(5, 43, 96, 1) 0%, rgba(10, 83, 196, 1) 54%, rgba(11, 97, 234, 1) 100%);
+}
+.fondo-cuadrado{
+    background-image: url('https://networksites.livenationinternational.com/networksites/fgakpnsq/grid.webp');
+    background-size: cover;
+}
+@media (min-width: 768px) and (max-width: 1023px){
+  .fondo-corona .container-home {
+      margin-top: 80px;
+  }
+}
+@media (min-width: 500px) and (max-width: 767px){
+  .fondo-corona .container-home {
+      margin-top: 130px;
+  }
+  .corona-gorillaz{
+    top: -16px !important;
+  }
+}
+@media (max-width: 499px){
+  .fondo-corona .container-home {
+      margin-top: 70px;
+  }
+}

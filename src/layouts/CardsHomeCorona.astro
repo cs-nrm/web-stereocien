@@ -18,9 +18,12 @@ const filteredPosts = posts.filter((post:any) => !post.acf?.fijo);
         {
           filteredPosts.slice(0, 4).map((post:any, idx:number) => (
             <div class={`cards-filtro-${idx}`}>
-              <article class="news-card transition duration-[0.2s] hover:translate-y-[-4px]">
+              <article class="news-card">
                 <a href={`/corona-capital/${post.slug}/`}>
-                  <div class="bg-black"><img loading="lazy" class="aspect-not h-auto w-full" src={post?._embedded?.['wp:featuredmedia']?.[0]?.media_details?.sizes?.['stc-size']?.source_url|| PLACEHOLDER_IMG} alt={post?._embedded?.['wp:featuredmedia']?.[0]?.alt_text||"Imagen Front Row"}/></div>
+                  {idx === 0 && <img class="corona-gorillaz" src="https://storage.googleapis.com/nrm-web/stereocien/gorrillaz-stereocien-corona.png" alt="Integrantes de Gorillaz asomándose sobre la noticia" />}
+                  <div class="bg-black">
+                    <img loading="lazy" class="aspect-not h-auto w-full" src={post?._embedded?.['wp:featuredmedia']?.[0]?.media_details?.sizes?.['stc-size']?.source_url|| PLACEHOLDER_IMG} alt={post?._embedded?.['wp:featuredmedia']?.[0]?.alt_text||"Imagen Front Row"}/>
+                  </div>
                   <div class="news-content p-6">
                     <h5 set:html={post.title.rendered}></h5>
                     <!--div class="text-sm resumen" set:html={post.excerpt.rendered}></div-->
@@ -35,8 +38,8 @@ const filteredPosts = posts.filter((post:any) => !post.acf?.fijo);
       </div>
 
 <div class="m-auto text-center">
-    <a href="/corona-capital" class="hover:text-white">
-        <button class="ver-mas lovelo group relative h-8 w-36 m-4 overflow-hidden bg-white hover:bg-[#ef4444] uppercase text-xs font-bold tracking-[3px]">
+    <a href="/corona-capital">
+      <button class="ver-mas lovelo group relative h-8 w-36 m-4 overflow-hidden bg-white uppercase text-xs font-bold tracking-[3px]">
             <span>Ver más</span>
         </button>
     </a>
@@ -44,7 +47,15 @@ const filteredPosts = posts.filter((post:any) => !post.acf?.fijo);
 
 <style>
 .cards-filtro-3{display: none;}
-.cards-filtro-0{background:#e7ff00; padding: 10px;}
+.cards-filtro-0{position: relative; background:#e7ff00; padding: 10px;}
+.corona-gorillaz{position:absolute; z-index:10; top:-10px; left:50%; width:calc(100% - 20px); height:auto; transform:translate(-50%, -90%); pointer-events:none;}
+.cards .news-card, .cards .news-card:hover{transform:none !important; transition:none !important;}
+.cards .news-card img:not(.corona-gorillaz), .cards .news-card:hover img:not(.corona-gorillaz){
+  filter: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
 .cards-filtro-1{background:#04095d; padding: 10px;}
 .cards-filtro-2{background:#e7ff00; padding: 10px;}
 .cards-filtro-3{background:#04095d; padding: 10px;}
@@ -55,6 +66,7 @@ const filteredPosts = posts.filter((post:any) => !post.acf?.fijo);
 @media (min-width: 769px) and (max-width: 1024px){
   .cards-filtro-3{display: block;}
 }
+
 /*
 .texto-nota{
   box-shadow: none;
