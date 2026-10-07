@@ -69,7 +69,7 @@ import CardsHomeCorona from "../layouts/CardsHomeCorona.astro";
             </div>
         </section-->
         <SliderSounds />
-        <div class="mt-8"><img class="max-w-[728px] w-full h-auto mx-auto" src="https://storage.googleapis.com/nrm-web/stereocien/leader-corona-stereocien.jpg"/></div>
+        <div class="mt-8"><a href="#seccion-corona"><img class="max-w-[728px] w-full h-auto mx-auto" src="https://storage.googleapis.com/nrm-web/stereocien/leader-corona-stereocien.png"/></a></div>
         <section class="flex items-start justify-center gap-4 px-4">
             <Skin1 />
             <div class="container-home p-4 mx-auto">
@@ -79,7 +79,7 @@ import CardsHomeCorona from "../layouts/CardsHomeCorona.astro";
         </section>
         <LeaderBoard2 />
         <section>
-            <div class="fondo-corona">
+            <div id="seccion-corona" class="fondo-corona">
                 <div class="fondo-cuadrado">
                     <div class="titulo">
                         <img class="max-w-[328px] m-auto py-5" src="https://storage.googleapis.com/nrm-web/stereocien/logo-corona-capital.png" alt="Tecate Emblema"/>
@@ -206,6 +206,18 @@ import CardsHomeCorona from "../layouts/CardsHomeCorona.astro";
             </div>
         </section>
     </main>
+
+<style is:global>
+    html {
+        scroll-behavior: smooth;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        html {
+            scroll-behavior: auto;
+        }
+    }
+</style>
     <!--Navidad /-->
 
     <!--Modal /-->
