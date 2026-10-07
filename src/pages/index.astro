@@ -81,6 +81,20 @@ import CardsHomeCorona from "../layouts/CardsHomeCorona.astro";
         <section>
             <div id="seccion-corona" class="fondo-corona">
                 <div class="fondo-cuadrado">
+                    <div class="corona-marquee" aria-label="Noviembre 20, 21 y 22 2026. Autódromo Hnos. Rodríguez. Lo que pasa aquí, se queda contigo.">
+                        <div class="corona-marquee__track">
+                            <div class="corona-marquee__group">
+                                <span>NOVIEMBRE 20, 21 Y 22 2026</span>
+                                <span>AUTÓDROMO HNOS. RODRÍGUEZ</span>
+                                <span>LO QUE PASA AQUÍ, SE QUEDA CONTIGO</span>
+                            </div>
+                            <div class="corona-marquee__group" aria-hidden="true">
+                                <span>NOVIEMBRE 20, 21 Y 22 2026</span>
+                                <span>AUTÓDROMO HNOS. RODRÍGUEZ</span>
+                                <span>LO QUE PASA AQUÍ, SE QUEDA CONTIGO</span>
+                            </div>
+                        </div>
+                    </div>
                     <div class="titulo">
                         <img class="max-w-[328px] m-auto py-5" src="https://storage.googleapis.com/nrm-web/stereocien/logo-corona-capital.png" alt="Tecate Emblema"/>
                     </div>
@@ -207,17 +221,7 @@ import CardsHomeCorona from "../layouts/CardsHomeCorona.astro";
         </section>
     </main>
 
-<style is:global>
-    html {
-        scroll-behavior: smooth;
-    }
 
-    @media (prefers-reduced-motion: reduce) {
-        html {
-            scroll-behavior: auto;
-        }
-    }
-</style>
     <!--Navidad /-->
 
     <!--Modal /-->

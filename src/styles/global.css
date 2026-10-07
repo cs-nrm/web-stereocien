@@ -5,6 +5,7 @@
  */
 
  @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+ @import url('https://fonts.googleapis.com/css2?family=League+Gothic&display=swap');
 
  :root {
 	--accent: #2337ff;
@@ -934,3 +935,71 @@ article .plyr--video{
       margin-top: 70px;
   }
 }
+
+
+
+    .corona-marquee {
+        overflow: hidden;
+        padding-block: 0.75rem;
+        border-block: 2px solid #f1ff19;
+        background: #031a45;
+        color: #f1ff19;
+    }
+
+    .corona-marquee__track {
+        display: flex;
+        width: max-content;
+        animation: corona-marquee-scroll 28s linear infinite;
+    }
+
+    .corona-marquee__group {
+        display: flex;
+        flex: 0 0 auto;
+        min-width: 100vw;
+        align-items: center;
+        justify-content: space-around;
+        gap: clamp(1.5rem, 4vw, 4rem);
+        padding-inline: 1.5rem;
+        white-space: nowrap;
+    }
+
+    .corona-marquee__group span {
+        font-family: 'League Gothic', sans-serif;
+        font-size: clamp(1rem, 2vw, 1.35rem);
+        font-weight: 400;
+        color: #f1ff19;
+    }
+
+    @keyframes corona-marquee-scroll {
+        to {
+            transform: translateX(-50%);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .corona-marquee__track {
+            width: 100%;
+            animation: none;
+        }
+
+        .corona-marquee__group {
+            min-width: 0;
+            flex-wrap: wrap;
+            justify-content: center;
+            row-gap: 0.5rem;
+        }
+
+        .corona-marquee__group[aria-hidden="true"] {
+            display: none;
+        }
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        html {
+            scroll-behavior: auto;
+        }
+    }
