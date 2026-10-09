@@ -644,6 +644,17 @@ document.addEventListener('astro:page-load', ev => {
             wrapAround: true
         });
 
+        var elemportada = document.querySelector('.carousel-portada');
+        var flktyportada = new Flickity(elemportada, {
+            cellAlign: 'center',
+            prevNextButtons: false,
+            pageDots: false,
+            pauseAutoPlayOnHover: true,
+            freeScroll: false,
+            wrapAround: true,
+            autoPlay: 5000,
+        });
+
         document.querySelectorAll('.panel-stereo').forEach(el => el.addEventListener('click', () => flktypod.resize()));
         document.querySelectorAll('.panel-enf').forEach(el => el.addEventListener('click', () => flktyenf.resize()));
 
