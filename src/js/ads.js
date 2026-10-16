@@ -75,7 +75,7 @@ function initGPT() {
     // Crear intervalo para refresh cada 2 minutos (120000 ms)
     window.slotBoxbanner1RefreshInterval = setInterval(function(){
       googletag.pubads().refresh([window.slotBoxbanner1]);
-    }, 120000);
+    }, 60000);
   });
 }
 // initGPT() NO se llama aquí — astro:page-load dispara en carga inicial Y en navegaciones,
