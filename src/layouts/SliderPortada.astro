@@ -9,7 +9,8 @@ const PLACEHOLDER_IMG = 'https://storage.googleapis.com/nrm-web/beat/resources/i
 const { posts = [] } = Astro.props;
 
 ---
-<div class="slider-portada">
+<div class="slider-portada bg-black text-center px-4 pb-4 md:px-8 md:pb-8">
+    <span class="roboto text-[8px] md:text-xs text-zinc-500">PUBLICIDAD</span>
 	<div class="carousel carousel-portada cards ">
 
 	{
@@ -29,6 +30,7 @@ const { posts = [] } = Astro.props;
 <style>
 .cards img {
     mask-image: none !important;
+    max-width: 970px;
 }
 .slider-promociones{
 	/*mask-image: linear-gradient(to right, hsla(var(--color-black), 0) 0, hsla(var(--color-black), 1) var(--page-padding-inline), hsla(var(--color-black), 1) calc(100% - var(--page-padding-inline)), hsla(var(--color-black), 0) 100%);

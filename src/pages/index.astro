@@ -51,7 +51,7 @@ const hasSliderPortada = Array.isArray(sliderPortadaPosts) && sliderPortadaPosts
 ---
 
 <BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
-    <div class="w-full bg-[#f5f5f5] hidden md:block">
+    <div class="w-full bg-[#f5f5f5]">
         {hasSliderPortada ? <SliderPortada posts={sliderPortadaPosts} /> : <LeaderBoard />}
     </div>
     <BarStereo/>
