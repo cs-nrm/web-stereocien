@@ -65,17 +65,33 @@ function initGPT() {
     if (document.getElementById('ad-slot-boxbanner6')) googletag.display('ad-slot-boxbanner6');
     if (document.getElementById('ad-slot-videonota')) googletag.display('ad-slot-videonota');
 
-    googletag.pubads().refresh([window.slotBoxbanner1]);
+    // Slots con refresh automático, por tamaño. Solo entran los que tienen su
+    // div en esta página (refrescar un slot sin div no renderiza nada).
+    var slotsConRefresh = [
+      window.slotBoxbanner1,   // 300x250
+      window.slotdoublebox,    // 300x600
+      window.slotLeaderboard1, // 728x90 (en móvil estos slots sirven 320x50)
+      window.slotLeaderboard2,
+      window.slotLeaderboard3,
+      window.slotLeaderboard4,
+      window.slotLeaderboard5
+    ].filter(function (slot) {
+      return slot && document.getElementById(slot.getSlotElementId());
+    });
 
     // Limpiar intervalo anterior si existe (por navegación SPA)
-    if (window.slotBoxbanner1RefreshInterval) {
-      clearInterval(window.slotBoxbanner1RefreshInterval);
+    if (window.adsRefreshInterval) {
+      clearInterval(window.adsRefreshInterval);
+      window.adsRefreshInterval = null;
     }
 
-    // Crear intervalo para refresh cada 2 minutos (120000 ms)
-    window.slotBoxbanner1RefreshInterval = setInterval(function(){
-      googletag.pubads().refresh([window.slotBoxbanner1]);
-    }, 60000);
+    // Crear intervalo para refresh cada 60 segundos (60000 ms); una sola
+    // llamada refresca todos los slots juntos.
+    if (slotsConRefresh.length) {
+      window.adsRefreshInterval = setInterval(function(){
+        googletag.pubads().refresh(slotsConRefresh);
+      }, 60000);
+    }
   });
 }
 // initGPT() NO se llama aquí — astro:page-load dispara en carga inicial Y en navegaciones,
