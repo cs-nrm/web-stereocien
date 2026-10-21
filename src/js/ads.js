@@ -91,7 +91,7 @@ function initGPT() {
     if (slotsConRefresh.length) {
       window.adsRefreshInterval = setInterval(function(){
         googletag.pubads().refresh(slotsConRefresh);
-      }, 5000);
+      }, 60000);
     }
   });
 }
