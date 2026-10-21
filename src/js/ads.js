@@ -85,12 +85,13 @@ function initGPT() {
       window.adsRefreshInterval = null;
     }
 
-    // Crear intervalo para refresh cada 60 segundos (60000 ms); una sola
+    // Crear intervalo para refresh cada 5 segundos (5000 ms); una sola
     // llamada refresca todos los slots juntos.
+    // PRUEBA: regresar a 60000 al terminar de probar.
     if (slotsConRefresh.length) {
       window.adsRefreshInterval = setInterval(function(){
         googletag.pubads().refresh(slotsConRefresh);
-      }, 60000);
+      }, 5000);
     }
   });
 }
