@@ -6,7 +6,7 @@
   "description": "Front público de Stereo Cien 100.1 — Astro SSR sobre cms-estaciones (Payload multi-estación).",
   "packageManager": "pnpm@9.0.0",
   "engines": {
-    "node": ">=22.12"
+    "node": "^22.23.4 || ^24.22.1 || >=26.12.1"
   },
   "scripts": {
     "dev": "astro dev",

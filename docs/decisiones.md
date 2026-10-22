@@ -676,3 +676,36 @@ commit.
   [`public/favicon/`](../public/favicon/),
   [`public/img/og-stereocien.png`](../public/img/og-stereocien.png), y la medida
   en `MEDIDA_TARJETA` de [`src/config/site.ts`](../src/config/site.ts).
+
+### 34. Node se fija con patch exacto, y `engines` solo admite versiones parcheadas
+
+- **Decisión:** `.nvmrc` dice `22.23.4`, con patch, y la CI lo lee de ahí.
+  `engines` de `package.json` admite solo la versión parcheada de cada línea
+  viva: `^22.23.4 || ^24.22.1 || >=26.12.1`.
+- **Quién y cuándo:** 2026-10-22, por el security release de Node del
+  2026-10-21 (diez CVE, cuatro altas; la más grave, una escritura fuera de
+  límites en el decodificador Brotli que alcanza a `fetch()`).
+- **Por qué:**
+  - Con `.nvmrc` en `22`, `actions/setup-node` toma el Node que el runner trae
+    en caché si cumple el rango, sin buscar uno más nuevo. La última corrida de
+    la puerta (36488621284, 2026-09-28) dice «Found in cache @
+    .../node/22.23.2» y compiló con 22.23.2, que quedó vulnerable. Con el patch
+    escrito, la CI baja esa versión exacta.
+  - El lector del CMS ([`src/lib/cms/client.ts`](../src/lib/cms/client.ts)) y
+    los sitemaps ([`src/lib/feeds.ts`](../src/lib/feeds.ts)) hacen `fetch()` en
+    el servidor, y es el camino del CVE de Brotli. Hoy el CMS responde `gzip`
+    (medido el 2026-10-22 con Node 22.23.4, en `/api/estaciones` y
+    `/sitemap.xml`), pero eso lo decide el servidor de enfrente, no este repo.
+  - `>=22.12`, el valor anterior, aceptaba cualquier 22 vulnerable, y
+    `>=22.23.4` habría aceptado de 24.0 a 24.22.0 y de 26.0 a 26.12.0, que
+    también lo son.
+- **Descartado:** dejar `.nvmrc` en `22` con `check-latest: true` en la CI. La
+  CI se pondría al día sola, pero `nvm use` en local toma el 22 más alto que
+  esté instalado, que puede ser el viejo, y la puerta y el equipo compilarían
+  con versiones distintas sin que nadie lo viera.
+- **Lo que deja abierto:** cada security release es un commit que cambia
+  `.nvmrc` y `engines` juntos. Y el servidor que va a correr este proceso
+  (decisión 7) todavía no existe: cuando exista, su Node tiene que cumplir
+  `engines`.
+- **Dónde vive:** [`.nvmrc`](../.nvmrc), [`package.json`](../package.json)
+  (`engines`), [`.github/workflows/ci.yml`](../.github/workflows/ci.yml).

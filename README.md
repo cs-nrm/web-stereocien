@@ -80,8 +80,10 @@ donde se abrió la sesión, y desde la del sitio viejo levanta el sitio viejo.
 
 ## Arrancar
 
-1. **Node 22**, 22.12 o más nuevo (`engines` de `package.json`). `.nvmrc` dice
-   `22`, así que con nvm basta `nvm use`.
+1. **Node 22.23.4** (`.nvmrc`), así que con nvm basta `nvm install` y luego
+   `nvm use`. `engines` de `package.json` admite solo versiones sin los CVE del
+   security release del 2026-10-21: 22.23.4, 24.22.1 o 26.12.1 en adelante, cada
+   una en su línea.
 2. **pnpm 9.0.0**, fijado en `packageManager` y servido por corepack:
 
    ```bash

@@ -47,8 +47,15 @@ jobs:
       - uses: actions/checkout@v4
 
       # La versión sale de `.nvmrc`, que es la misma que acepta `engines` de
-      # package.json (>=22.12). Que se lea del archivo y no esté escrita aquí es
-      # justo lo que evita que las dos se separen sin que nadie lo note.
+      # package.json. Que se lea del archivo y no esté escrita aquí es justo lo
+      # que evita que las dos se separen sin que nadie lo note.
+      #
+      # Trampa: `.nvmrc` lleva el patch exacto, no `22`. Con `22`, setup-node se
+      # queda con el Node que el runner trae en caché si cumple el rango, sin
+      # buscar uno más nuevo: la corrida 36488621284 (2026-09-28) dice «Found in
+      # cache @ .../node/22.23.2», y ese Node quedó vulnerable con el security
+      # release del 2026-10-21. Subir de versión es cambiar `.nvmrc` y `engines`
+      # en el mismo commit (docs/decisiones.md, 34).
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc

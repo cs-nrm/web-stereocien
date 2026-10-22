@@ -49,8 +49,10 @@ pnpm install
 pnpm dev                # http://localhost:4321
 ```
 
-Node 22.12 o más nuevo (`engines`; `.nvmrc` dice `22`), pnpm 9.0.0 fijado en
-`packageManager`. Si el pnpm global estorba, `corepack pnpm <comando>`.
+Node 22.23.4 (`.nvmrc`, con patch exacto a propósito: ver
+[docs/decisiones.md](docs/decisiones.md), 34; `engines` admite solo versiones
+parcheadas), pnpm 9.0.0 fijado en `packageManager`. Si el pnpm global estorba,
+`corepack pnpm <comando>`.
 
 | Comando | Qué hace |
 |---|---|
