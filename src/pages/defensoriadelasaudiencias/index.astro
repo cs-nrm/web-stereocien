@@ -1,0 +1,139 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts";
+import DoubleBox from "../../components/DoubleBox.astro";
+import BoxBanner from "../../components/BoxBanner.astro";
+import BarNrm from "../../components/BarNrm.astro";
+---
+
+<BaseLayout title="Código de Ética y Lineamientos Generales para la Protección de los Derechos de las Audiencias" description={SITE_DESCRIPTION}>
+    <BarNrm />
+    <Header title={SITE_TITLE} />
+
+    <main>
+        <div class=" my-12 mx-auto max-w-[1080px]">
+            <h1
+                class="audiowide neon-verde text-center md:text-left pt-4 font-bold text-4xl md:text-5xl lg:text-4xl xl:text-5xl"
+            >
+                Código de Ética y Lineamientos Generales para la Protección de los Derechos de las Audiencias
+            </h1>
+            <div class="flex flex-col lg:flex-row">
+                <div class="sm:min-w-[calc(100%-400px)] lg:mr-10 roboto">
+                </br>
+<p>En cumplimiento de la legislación vigente, ponemos a disposición de nuestros radioescuchas los datos de contacto de los Defensores de las Audiencias designados por la Cámara Nacional de la Industria de Radio y Televisión (CIRT), quienes reciben y atienden quejas, observaciones y sugerencias relacionadas con nuestros contenidos y programación.</p>
+<p>Lic. Eli Manuel Ramírez Villaseñor</p>
+<div class="contact-email">
+    <a class="contact-address" href="mailto:defensor1@cirtcomunicacion.com">defensor1@cirtcomunicacion.com</a>
+    <div class="mail-actions" aria-label="Escribir a defensor1@cirtcomunicacion.com">
+        <a
+            class="mail-action gmail"
+            href="https://mail.google.com/mail/?view=cm&fs=1&to=defensor1%40cirtcomunicacion.com&su=Contacto%20con%20la%20Defensor%C3%ADa%20de%20las%20Audiencias"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            <span>Gmail</span>
+        </a>
+        <a
+            class="mail-action outlook"
+            href="https://outlook.office.com/mail/deeplink/compose?to=defensor1%40cirtcomunicacion.com&subject=Contacto%20con%20la%20Defensor%C3%ADa%20de%20las%20Audiencias"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            <span>Outlook</span>
+        </a>
+    </div>
+</div>
+<p>Lic. Fabiana Estrada Tena</p>
+<div class="contact-email">
+    <a class="contact-address" href="mailto:defensor2@cirtcomunicacion.com">defensor2@cirtcomunicacion.com</a>
+    <div class="mail-actions" aria-label="Escribir a defensor2@cirtcomunicacion.com">
+        <a
+            class="mail-action gmail"
+            href="https://mail.google.com/mail/?view=cm&fs=1&to=defensor2%40cirtcomunicacion.com&su=Contacto%20con%20la%20Defensor%C3%ADa%20de%20las%20Audiencias"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            <span>Gmail</span>
+        </a>
+        <a
+            class="mail-action outlook"
+            href="https://outlook.office.com/mail/deeplink/compose?to=defensor2%40cirtcomunicacion.com&subject=Contacto%20con%20la%20Defensor%C3%ADa%20de%20las%20Audiencias"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            <span>Outlook</span>
+        </a>
+    </div>
+</div>
+<p>Domicilio: Av. Horacio 1013, Col. Polanco III Sección, Alcaldía Miguel Hidalgo, C.P. 11540, Ciudad de México.</p>
+Teléfono: 55 5726 9909</p>
+</br>
+</br>
+</br>
+<div><a target="_blank" href="https://storage.googleapis.com/nrm-web/nrm/CodigoEtica/CODIGO%20DE%20ETICA%202026%20AFILIADOS%20%20CIRT%20-%20RADIO%20XHMM-FM%20(STC).pdf"><p>Descarga Código de Ética.</p></a></div>
+<div><a target="_blank" href="https://storage.googleapis.com/nrm-web/nrm/CodigoEtica/Lineamientos%20Generales%20para%20la%20Proteccio%CC%81n%20de%20los%20Derechos%20de%20las%20Audiencias.pdf"><p>Descarga Lineamientos Generales para la Protección de los Derechos de las Audiencias.</p></a></div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </main>
+</BaseLayout>
+<Footer />
+
+
+<style>
+a {
+    color: #60A5FA;
+}
+
+.contact-email {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1rem;
+    margin-bottom: 1rem;
+}
+
+.contact-address {
+    overflow-wrap: anywhere;
+}
+
+.mail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.mail-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 3rem;
+    padding: 0.65rem 1rem;
+    border: 1px solid #60A5FA;
+    border-radius: 0.375rem;
+    background: #fff;
+    color: #1e293b;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0;
+    text-decoration: none;
+    transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.mail-action:hover {
+    border-color: #3b82f6;
+    background: #eff6ff;
+}
+
+.mail-action:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+
+</style>
