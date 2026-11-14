@@ -37,9 +37,6 @@
   top: 0;
   left: 0;
   display: flex;
-  animation-name: modal;
-  animation-duration: 20s;
-  animation-delay: 0s;
   visibility: hidden;
   opacity: 0;
   max-height: 100% !important;
@@ -100,11 +97,18 @@
   right: 5%;
   top: 5%;
   cursor: pointer;
-  animation-name: modal;
-  animation-duration: 20s;
-  animation-delay: 0s;
   visibility: hidden;
   opacity: 0;
+}
+/* El modal solo aparece cuando GAM entrega el takeover: ads.js le pone .con-anuncio
+   en slotRenderEnded. Sin campaña activa no sale el velo blanco vacío.
+   trampa: al terminar la animación se oculta solo. Con 20s (90% visible = 18s) cortaba
+   un spot de video de 20s; con 30s queda ~27s a la vista. La X lo cierra antes. */
+#modal.con-anuncio .modals,
+#modal.con-anuncio #cerrar + label {
+  animation-name: modal;
+  animation-duration: 30s;
+  animation-delay: 0s;
 }
 #modal #cerrar:checked + label, #modal #cerrar:checked ~ .modals {
   display: none;

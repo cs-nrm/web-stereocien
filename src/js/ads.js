@@ -49,6 +49,21 @@ function initGPT() {
     if (window._gptHuboPrimeraVista) googletag.pubads().updateCorrelator();
     window._gptHuboPrimeraVista = true;
 
+    // Takeover (Modal.astro): el modal solo se muestra si ad-slot14 trae anuncio.
+    // No hace falta pedir por tamaño a mano: mapping14 ya pide uno solo según el ancho.
+    // Los listeners de pubads sobreviven a destroySlots() y initGPT() corre en cada
+    // navegación, así que se registra una sola vez. Busca #modal al disparar, no antes:
+    // al volver al Inicio el modal es otro nodo.
+    if (!window._takeoverListener) {
+      window._takeoverListener = true;
+      googletag.pubads().addEventListener('slotRenderEnded', function (e) {
+        if (e.slot.getSlotElementId() === 'ad-slot14' && !e.isEmpty) {
+          var modal = document.getElementById('modal');
+          if (modal) modal.classList.add('con-anuncio');
+        }
+      });
+    }
+
     googletag.enableServices();
     if (document.getElementById('ad-slot-leaderboard1')) googletag.display('ad-slot-leaderboard1');
     if (document.getElementById('ad-slot-leaderboard2')) googletag.display('ad-slot-leaderboard2');

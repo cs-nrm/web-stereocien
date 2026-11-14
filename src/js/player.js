@@ -109,7 +109,12 @@ function startAd(e) {
 }
 
 var start = function () {
-    streaming.playAd('vastAd', { url: 'https://pubads.g.doubleclick.net/gampad/ads?sz=600x360&iu=/23349147378/StereoCien/VideoVast&ciu_szs=600x360&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&url=[referrer_url]&description_url=[description_url]&correlator=[timestamp]' });
+    // trampa: el SDK de Triton (td-sdk 2.9) no expande macros tipo [referrer_url] ni
+    // [timestamp]; llegaban literales a GAM y todas las solicitudes compartían el mismo
+    // correlator. Se arman aquí, justo antes de pedir el anuncio.
+    // plcmt=1: in-stream iniciado por el usuario (el clic en Play).
+    var pageUrl = encodeURIComponent(location.href);
+    streaming.playAd('vastAd', { url: 'https://pubads.g.doubleclick.net/gampad/ads?sz=600x360&iu=/23349147378/StereoCien/VideoVast&ciu_szs=600x360&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&plcmt=1&vpa=click&vpmute=0&url=' + pageUrl + '&description_url=' + pageUrl + '&correlator=' + Date.now() });
 };
 
 
