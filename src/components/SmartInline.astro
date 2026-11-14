@@ -1,0 +1,92 @@
+---
+---
+
+<!-- Smart AdServer / Equativ - Medios Federales (formato 111268 "Inline").
+     Aquí solo va el contenedor. El onecall, el render, el botón de cerrar y el mostrado
+     condicional están en src/components/head/AdScripts.astro, que corre en cada
+     astro:page-load.
+     No romper: el id "inline" tiene que coincidir letra por letra con el tagId del
+     onecall y con sas.render(); los ids de HTML distinguen mayúsculas. -->
+<div id="smart-inline">
+	<button type="button" id="smart-inline-cerrar" aria-label="Cerrar publicidad">&times;</button>
+	<span class="smart-inline-rotulo">PUBLICIDAD</span>
+	<div id="inline"></div>
+</div>
+
+<style>
+/* Flotante del lado izquierdo: el botón de la radio (#radiobutton, Player.astro) vive
+   anclado a la derecha, así que la izquierda es el lado libre.
+   z-index 100000 a propósito: por debajo del modal del takeover y del video
+   intersticial (100001, Modal.astro). Queda por encima de #radiobutton (10002), así que
+   no debe encimarse con él: por eso el ajuste de móvil. */
+#smart-inline {
+	position: fixed;
+	left: 12px;
+	bottom: 90px;
+	z-index: 100000;
+	width: 300px;
+	max-width: calc(100vw - 24px);
+	padding: 6px;
+	border-radius: 0.75rem;
+	line-height: 0;
+	pointer-events: none;
+}
+/* Sin anuncio el recuadro está en su lugar pero transparente, sin rótulo ni X, y no
+   atrapa clics. trampa: no puede ir display:none hasta que haya anuncio. El formato
+   (plantilla video-read de Equativ) mide el ancho del div y se despliega cuando el lector
+   hace scroll con el div a la vista; oculto mide 0 y no arranca. Tampoco sirve contar
+   hijos del div: Smart mete ahí sus <script> haya o no video (medido el 14 nov 2026:
+   el recuadro salía vacío con el rótulo solo). Se muestra cuando el div crece
+   (ResizeObserver en AdScripts.astro). */
+.smart-inline-rotulo,
+#smart-inline-cerrar {
+	display: none;
+}
+#smart-inline.con-anuncio {
+	background: rgba(0, 0, 0, 0.75);
+	pointer-events: auto;
+}
+#smart-inline.cerrado {
+	display: none;
+}
+#smart-inline.con-anuncio .smart-inline-rotulo {
+	display: block;
+	font-family: Roboto, sans-serif;
+	font-size: 10px;
+	line-height: 1.4;
+	color: #a1a1aa;
+	text-align: left;
+	padding-left: 2px;
+}
+#smart-inline-cerrar {
+	position: absolute;
+	top: -10px;
+	right: -10px;
+	width: 26px;
+	height: 26px;
+	line-height: 22px;
+	border-radius: 50%;
+	background: #000;
+	color: #fff;
+	font-size: 18px;
+	text-align: center;
+	cursor: pointer;
+	border: 2px solid #fff;
+	padding: 0;
+}
+#smart-inline.con-anuncio #smart-inline-cerrar {
+	display: block;
+}
+
+/* En móvil #radiobutton (250px de ancho, bottom 30px) ocupa la esquina inferior derecha
+   y en 375px de ancho se cruzaría con un recuadro de 300px: aquí sube para quedar
+   encima de él y no encimado. Medido a 375x812: el botón llega hasta 116px del borde
+   de abajo; con 130px quedan ~14px libres. */
+@media (max-width: 768px) {
+	#smart-inline {
+		left: 8px;
+		bottom: 130px;
+		max-width: calc(100vw - 16px);
+	}
+}
+</style>
