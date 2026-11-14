@@ -66,6 +66,10 @@ function initGPT() {
         if (!e.isEmpty && e.lineItemId) {
           var modal = document.getElementById('modal');
           if (modal) modal.classList.add('con-anuncio');
+        } else if (window.startVideoIntersticial) {
+          // Sin takeover directo: intentar el video intersticial (deals de video, p. ej.
+          // KIA). Ver src/js/videoIntersticial.js.
+          window.startVideoIntersticial();
         }
       });
     }
