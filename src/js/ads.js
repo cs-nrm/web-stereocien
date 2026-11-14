@@ -49,7 +49,12 @@ function initGPT() {
     if (window._gptHuboPrimeraVista) googletag.pubads().updateCorrelator();
     window._gptHuboPrimeraVista = true;
 
-    // Takeover (Modal.astro): el modal solo se muestra si ad-slot14 trae anuncio.
+    // Takeover (Modal.astro): el modal solo se muestra si ad-slot14 trae una línea de GAM
+    // (venta directa o deal). No basta con !e.isEmpty: el 14 nov 2026, en producción,
+    // AdX llenó el 600x800 de relleno (isBackfill: true, lineItemId: null) y el Inicio
+    // mostraba un anuncio de AdX a pantalla completa en cada visita.
+    // trampa: usar lineItemId, no sourceAgnosticLineItemId; el segundo también trae
+    // valor en el relleno de AdX (el line item agnóstico 7334843233).
     // No hace falta pedir por tamaño a mano: mapping14 ya pide uno solo según el ancho.
     // Los listeners de pubads sobreviven a destroySlots() y initGPT() corre en cada
     // navegación, así que se registra una sola vez. Busca #modal al disparar, no antes:
@@ -57,7 +62,8 @@ function initGPT() {
     if (!window._takeoverListener) {
       window._takeoverListener = true;
       googletag.pubads().addEventListener('slotRenderEnded', function (e) {
-        if (e.slot.getSlotElementId() === 'ad-slot14' && !e.isEmpty) {
+        if (e.slot.getSlotElementId() !== 'ad-slot14') return;
+        if (!e.isEmpty && e.lineItemId) {
           var modal = document.getElementById('modal');
           if (modal) modal.classList.add('con-anuncio');
         }

@@ -100,8 +100,9 @@
   visibility: hidden;
   opacity: 0;
 }
-/* El modal solo aparece cuando GAM entrega el takeover: ads.js le pone .con-anuncio
-   en slotRenderEnded. Sin campaña activa no sale el velo blanco vacío.
+/* El modal solo aparece cuando GAM entrega el takeover de una línea propia (no el
+   relleno de AdX): ads.js le pone .con-anuncio en slotRenderEnded. Sin campaña activa
+   no sale nada.
    trampa: al terminar la animación se oculta solo. Con 20s (90% visible = 18s) cortaba
    un spot de video de 20s; con 30s queda ~27s a la vista. La X lo cierra antes. */
 #modal.con-anuncio .modals,
