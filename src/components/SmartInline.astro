@@ -1,16 +1,10 @@
 ---
 ---
 
-<!-- Smart AdServer / Equativ - Medios Federales (formato 111268 "Inline").
-     Aquí solo va el contenedor. El onecall, el render, el botón de cerrar y el mostrado
-     condicional están en src/components/head/AdScripts.astro, que corre en cada
-     astro:page-load.
-     No romper: el id "inline" tiene que coincidir letra por letra con el tagId del
-     onecall y con sas.render(); los ids de HTML distinguen mayúsculas. -->
 <div id="smart-inline">
 	<button type="button" id="smart-inline-cerrar" aria-label="Cerrar publicidad">&times;</button>
 	<span class="smart-inline-rotulo">PUBLICIDAD</span>
-	<div id="inline"></div>
+	<div id="Inline"></div>
 </div>
 
 <style>
@@ -37,7 +31,7 @@
    hace scroll con el div a la vista; oculto mide 0 y no arranca. Tampoco sirve contar
    hijos del div: Smart mete ahí sus <script> haya o no video (medido el 14 nov 2026:
    el recuadro salía vacío con el rótulo solo). Se muestra cuando el div crece
-   (ResizeObserver en AdScripts.astro). */
+   (ResizeObserver en SmartMediosFederales.astro). */
 .smart-inline-rotulo,
 #smart-inline-cerrar {
 	display: none;
