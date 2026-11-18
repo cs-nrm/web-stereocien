@@ -541,8 +541,7 @@ function updateCarousel(newIndex) {
 	const activeSlug = activeCard?.dataset.slug || "";
 	const sponsorUrl = activeCard?.dataset.sponsorImage || "";
 	const sponsorHref = activeCard?.dataset.sponsorLink || "";
-	const hasSponsorStation = ["nu-disco", "rock-en-espanol", "rock-en-español"].includes(activeSlug);
-	const showSponsor = hasSponsorStation && /^https?:\/\//i.test(sponsorUrl);
+	const showSponsor = /^https?:\/\//i.test(sponsorUrl);
 	if (sponsorInfo && sponsorLogo) {
 		sponsorInfo.hidden = !showSponsor;
 		if (showSponsor) {

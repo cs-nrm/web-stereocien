@@ -485,11 +485,9 @@ function updateCarousel(newIndex) {
     role: 'Descripción no disponible'
   };
 	const activeCard = cards[currentIndex];
-	const activeSlug = activeCard?.dataset.slug || '';
 	const sponsorImage = activeCard?.dataset.sponsorImage || '';
 	const sponsorHref = activeCard?.dataset.sponsorLink || '';
-	const hasSponsorStation = ['nu-disco', 'rock-en-espanol', 'rock-en-español'].includes(activeSlug);
-	const showSponsor = hasSponsorStation && /^https?:\/\//i.test(sponsorImage);
+	const showSponsor = /^https?:\/\//i.test(sponsorImage);
 
 	if (sponsorInfo && sponsorLogo) {
 		sponsorInfo.hidden = !showSponsor;
