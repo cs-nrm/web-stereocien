@@ -3,7 +3,7 @@
 // all pages through the use of the <BaseHead /> component.
 import '../styles/global.css';
 import AdScripts from './head/AdScripts.astro';
-import SmartMediosFederales from './head/SmartMediosFederales.astro';
+// import SmartMediosFederales from './head/SmartMediosFederales.astro';
 import AnalyticsScripts from './head/AnalyticsScripts.astro';
 
 interface Props {
@@ -64,7 +64,10 @@ const { title, description, image = '/stereocien-share1001.jpg', seccion } = Ast
 <meta name="robots" content="index, follow">
 
 <AdScripts />
-<SmartMediosFederales />
+{/* Medios Federales comentado el 19 nov 2026 a pedido de Carlos: chocaría con ShowHeroes/Exte,
+    que regresan a las notas. Se reactiva cuando se decida dónde va; los <SmartInline /> del
+    Inicio y de las notas también están comentados.
+<SmartMediosFederales /> */}
 <AnalyticsScripts />
 
 <!-- TONEFUSE APPLE MUSIC -->

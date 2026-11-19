@@ -10,10 +10,7 @@ function initGPT() {
     var mappingBox         = googletag.sizeMapping().addSize([0, 0], [300, 250]).build();
     var mappingdoublebox   = googletag.sizeMapping().addSize([0, 0], [300, 600]).build();
     var mapping14          = googletag.sizeMapping().addSize([768, 0], [600, 800]).addSize([0, 0], [320, 480]).build();
-    // ShowHeroes/Exte (llegaban por GAM en ad-slot-videonota) apagados el 15 nov 2026 a
-    // pedido de Carlos; en las notas va Medios Federales (SmartInline). Comentado, no
-    // borrado, a propósito: Carlos lo quiere a la mano para regresarlo.
-    // var mappingVideoNota   = googletag.sizeMapping().addSize([0, 0], [400, 311]).build();
+    var mappingVideoNota   = googletag.sizeMapping().addSize([0, 0], [400, 311]).build();
 
     window.slotLeaderboard1 = googletag.defineSlot("/23349147378/StereoCien", [[728, 90], [320, 50]], 'ad-slot-leaderboard1').defineSizeMapping(mappingLeaderboard).addService(googletag.pubads());
     window.slotLeaderboard2 = googletag.defineSlot("/23349147378/StereoCien", [[728, 90], [320, 50]], 'ad-slot-leaderboard2').defineSizeMapping(mappingLeaderboard).addService(googletag.pubads());
@@ -28,9 +25,9 @@ function initGPT() {
     window.slotBoxbanner4 = googletag.defineSlot("/23349147378/StereoCien/Box3", [300, 250], 'ad-slot-boxbanner4').defineSizeMapping(mappingBox).addService(googletag.pubads());
     window.slotBoxbanner5 = googletag.defineSlot("/23349147378/StereoCien/Box4", [300, 250], 'ad-slot-boxbanner5').defineSizeMapping(mappingBox).addService(googletag.pubads());
     window.slotBoxbanner6 = googletag.defineSlot("/23349147378/StereoCien/Box5", [300, 250], 'ad-slot-boxbanner6').defineSizeMapping(mappingBox).addService(googletag.pubads());
-    // if (document.getElementById('ad-slot-videonota')) {
-    //   window.slotVideoNota = googletag.defineSlot("/23349147378/StereoCien", [400, 311], 'ad-slot-videonota').defineSizeMapping(mappingVideoNota).addService(googletag.pubads());
-    // }
+    if (document.getElementById('ad-slot-videonota')) {
+      window.slotVideoNota = googletag.defineSlot("/23349147378/StereoCien", [400, 311], 'ad-slot-videonota').defineSizeMapping(mappingVideoNota).addService(googletag.pubads());
+    }
 
     // Migrado de `pubads().setTargeting("test", "responsive")`, que GPT marcó
     // como deprecado (aviso `goo.gle/gpt-message#170`). Mismo alcance: con un
@@ -91,7 +88,7 @@ function initGPT() {
     if (document.getElementById('ad-slot-boxbanner4')) googletag.display('ad-slot-boxbanner4');
     if (document.getElementById('ad-slot-boxbanner5')) googletag.display('ad-slot-boxbanner5');
     if (document.getElementById('ad-slot-boxbanner6')) googletag.display('ad-slot-boxbanner6');
-    // if (document.getElementById('ad-slot-videonota')) googletag.display('ad-slot-videonota');
+    if (document.getElementById('ad-slot-videonota')) googletag.display('ad-slot-videonota');
 
     // Slots con refresh automático, por tamaño. Solo entran los que tienen su
     // div en esta página (refrescar un slot sin div no renderiza nada).
