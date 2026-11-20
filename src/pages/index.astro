@@ -15,7 +15,7 @@ import DoubleBox from "../components/DoubleBox.astro";
 import BoxBanner from "../components/BoxBanner.astro";
 import LeaderBoard from "../components/LeaderBoard.astro";
 import Modal from "../components/Modal.astro";
-// import SmartInline from "../components/SmartInline.astro";
+import SmartInline from "../components/SmartInline.astro";
 import LeaderBoard2 from "../components/LeaderBoard2.astro";
 import SuperLeader from "../components/SuperLeader.astro";
 import BillBoard from "../components/BillBoard.astro";
@@ -72,7 +72,7 @@ const hasSliderPortada = Array.isArray(sliderPortadaPosts) && sliderPortadaPosts
             </div>
         </section-->
         <SliderSounds />
-        <div class="mt-8"><a href="#seccion-corona"><img class="max-w-[728px] w-full h-auto mx-auto" src="https://storage.googleapis.com/nrm-web/stereocien/leader-corona-stereocien.png"/></a></div>
+        <SuperLeader />
         <section class="flex items-start justify-center gap-4 px-4">
             <Skin1 />
             <div class="container-home p-4 mx-auto">
@@ -80,7 +80,7 @@ const hasSliderPortada = Array.isArray(sliderPortadaPosts) && sliderPortadaPosts
             </div>
             <Skin2 />
         </section>
-        <LeaderBoard2 />
+        <div class="mt-8"><a href="#seccion-corona"><img class="max-w-[728px] w-full h-auto mx-auto" src="https://storage.googleapis.com/nrm-web/stereocien/leader-corona-stereocien.png"/></a></div>
         <section>
             <div id="seccion-corona" class="fondo-corona">
                 <div class="fondo-cuadrado">
@@ -168,7 +168,7 @@ const hasSliderPortada = Array.isArray(sliderPortadaPosts) && sliderPortadaPosts
         <section>
             <Libros />
         </section>
-        <SuperLeader />
+        <LeaderBoard2 />
         <!--section>
             <div class="bg-[url('https://storage.googleapis.com/nrm-web/stereocien/vinyl-mobil.png')] lg:bg-[url('https://storage.googleapis.com/nrm-web/stereocien/portada-vidavinyl.jpg')] bg-no-repeat bg-cover bg-top">
                 <h1 class="text-center p-4 my-4 font-bold text-2xl lg:text-4xl">
@@ -228,7 +228,7 @@ const hasSliderPortada = Array.isArray(sliderPortadaPosts) && sliderPortadaPosts
     <!--Navidad /-->
 
     <Modal />
-    {/* <SmartInline /> */}
+    <SmartInline />
     <!--Notificacion /-->
     <Footer />
 </BaseLayout>
