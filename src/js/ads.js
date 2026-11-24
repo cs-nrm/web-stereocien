@@ -63,7 +63,18 @@ function initGPT() {
     if (!window._takeoverListener) {
       window._takeoverListener = true;
       googletag.pubads().addEventListener('slotRenderEnded', function (e) {
-        if (e.slot.getSlotElementId() !== 'ad-slot14') return;
+        var slotId = e.slot.getSlotElementId();
+        if (/^ad-slot-leaderboard[1-4]$/.test(slotId)) {
+          var leaderboardElement = document.getElementById(slotId);
+          if (leaderboardElement) {
+            leaderboardElement.classList.toggle(
+              'has-line-item',
+              e.lineItemId !== null && e.lineItemId !== undefined
+            );
+          }
+        }
+
+        if (slotId !== 'ad-slot14') return;
         if (!e.isEmpty && e.lineItemId) {
           var modal = document.getElementById('modal');
           if (modal) modal.classList.add('con-anuncio');
