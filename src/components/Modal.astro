@@ -1,4 +1,4 @@
-<div id="modal">
+<div id="modal" class="con-imagen">
 	<input type="checkbox" id="cerrar">
 	<label for="cerrar" id="btn-cerrar">X</label>
 	<div class="modals">
@@ -106,15 +106,17 @@
   visibility: hidden;
   opacity: 0;
 }
-/* El modal solo aparece cuando GAM entrega el takeover de una línea propia (no el
-   relleno de AdX): ads.js le pone .con-anuncio en slotRenderEnded. Sin campaña activa
-   no sale nada.
-   trampa: al terminar la animación se oculta solo. Con 20s (90% visible = 18s) cortaba
-   un spot de video de 20s; con 30s queda ~27s a la vista. La X lo cierra antes. */
+/* La imagen se oculta automáticamente al terminar su animación de 15 segundos. */
 #modal.con-anuncio .modals,
 #modal.con-anuncio #cerrar + label {
   animation-name: modal;
-  animation-duration: 30s;
+  animation-duration: 15s;
+  animation-delay: 0s;
+}
+#modal.con-imagen .modals,
+#modal.con-imagen #cerrar + label {
+  animation-name: modal;
+  animation-duration: 15s;
   animation-delay: 0s;
 }
 

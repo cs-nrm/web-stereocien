@@ -13,10 +13,9 @@
 // bien evita que los DSP invaliden la impresión. vpa y vpmute los agrega IMA según
 // setAdWillAutoPlay y setAdWillPlayMuted.
 //
-// Portado de web-oye (src/js/videoIntersticial.js); cambian el bloque y la clave de sesión.
+// Portado de web-oye (src/js/videoIntersticial.js); cambia el bloque de StereoCien.
 
 var VI_AD_UNIT = '/23349147378/StereoCien/VideoVast';
-var VI_SESSION_KEY = 'stereocien_vi_visto';
 var VI_IMA_SRC = 'https://imasdk.googleapis.com/js/sdkloader/ima3.js';
 
 var viState = { loader: null, manager: null, activo: false };
@@ -31,16 +30,6 @@ function viBuildTag() {
   return 'https://pubads.g.doubleclick.net/gampad/ads?iu=' + VI_AD_UNIT +
     '&sz=600x360&gdfp_req=1&env=vp&output=vast&impl=s&unviewed_position_start=1&plcmt=3' +
     '&url=' + pageUrl + '&description_url=' + pageUrl + '&correlator=' + Date.now();
-}
-
-// Una vez por sesión: se marca en STARTED, no al pedir, para que un VAST vacío no gaste
-// la oportunidad de la sesión.
-function viYaVisto() {
-  try { return sessionStorage.getItem(VI_SESSION_KEY) === '1'; } catch (e) { return false; }
-}
-
-function viMarcarVisto() {
-  try { sessionStorage.setItem(VI_SESSION_KEY, '1'); } catch (e) {}
 }
 
 function viCargarIma() {
@@ -78,7 +67,7 @@ function startVideoIntersticial() {
   var adEl = document.getElementById('vi-ad');
   var videoEl = document.getElementById('vi-video');
   if (!modal || !adEl || !videoEl) return;
-  if (viState.activo || viYaVisto()) return;
+  if (viState.activo) return;
   viState.activo = true;
 
   viCargarIma().then(function () {
@@ -102,7 +91,6 @@ function startVideoIntersticial() {
       manager.addEventListener(ima.AdErrorEvent.Type.AD_ERROR, fin);
       manager.addEventListener(ima.AdEvent.Type.ALL_ADS_COMPLETED, fin);
       manager.addEventListener(ima.AdEvent.Type.SKIPPED, fin);
-      manager.addEventListener(ima.AdEvent.Type.STARTED, function () { viMarcarVisto(); });
 
       // Mostrar el modal antes de arrancar para que la impresión cuente visible.
       modal.classList.add('con-video');
