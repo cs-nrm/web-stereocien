@@ -1,4 +1,4 @@
-<div id="modal" class="con-imagen">
+<div id="modal">
 	<input type="checkbox" id="cerrar">
 	<label for="cerrar" id="btn-cerrar">X</label>
 	<div class="modals">
@@ -106,15 +106,9 @@
   visibility: hidden;
   opacity: 0;
 }
-/* La imagen se oculta automáticamente al terminar su animación de 15 segundos. */
+/* El takeover se muestra al llegar una respuesta de GAM y se oculta a los 15 segundos. */
 #modal.con-anuncio .modals,
 #modal.con-anuncio #cerrar + label {
-  animation-name: modal;
-  animation-duration: 15s;
-  animation-delay: 0s;
-}
-#modal.con-imagen .modals,
-#modal.con-imagen #cerrar + label {
   animation-name: modal;
   animation-duration: 15s;
   animation-delay: 0s;

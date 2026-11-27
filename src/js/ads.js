@@ -19,7 +19,12 @@ function initGPT() {
     window.slotLeaderboard4 = googletag.defineSlot("/23349147378/StereoCien", [[728, 90], [320, 50]], 'ad-slot-leaderboard4').defineSizeMapping(mappingLeaderboard).addService(googletag.pubads());
     window.slotLeaderboard5 = googletag.defineSlot("/23349147378/StereoCien", [[970, 90], [320, 50]], 'ad-slot-leaderboard5').defineSizeMapping(mappingSuperleader).addService(googletag.pubads());
     window.slotdoublebox  = googletag.defineSlot("/23349147378/StereoCien", [300, 600], 'ad-slot-doublebox').defineSizeMapping(mappingdoublebox).addService(googletag.pubads());
-    window.slot14 = googletag.defineSlot("/23349147378/StereoCien", [[600, 800], [320, 480]], 'ad-slot14').defineSizeMapping(mapping14).addService(googletag.pubads());
+    if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+      // Unidad de prueba de Google para verificar el modal sin depender de campañas locales.
+      window.slot14 = googletag.defineSlot('/6355419/Travel/Europe/France/Paris', [300, 250], 'ad-slot14').addService(googletag.pubads());
+    } else {
+      window.slot14 = googletag.defineSlot("/23349147378/StereoCien", [[600, 800], [320, 480]], 'ad-slot14').defineSizeMapping(mapping14).addService(googletag.pubads());
+    }
     window.slotBoxbanner1 = googletag.defineSlot("/23349147378/StereoCien", [300, 250], 'ad-slot-boxbanner1').defineSizeMapping(mappingBox).addService(googletag.pubads());
     window.slotBoxbanner2 = googletag.defineSlot("/23349147378/StereoCien/Box", [300, 250], 'ad-slot-boxbanner2').defineSizeMapping(mappingBox).addService(googletag.pubads());
     window.slotBoxbanner3 = googletag.defineSlot("/23349147378/StereoCien/Box2", [300, 250], 'ad-slot-boxbanner3').defineSizeMapping(mappingBox).addService(googletag.pubads());
@@ -50,13 +55,9 @@ function initGPT() {
     if (window._gptHuboPrimeraVista) googletag.pubads().updateCorrelator();
     window._gptHuboPrimeraVista = true;
 
-    // Takeover (Modal.astro): el modal solo se muestra si ad-slot14 trae una línea de GAM
-    // (venta directa o deal). No basta con !e.isEmpty: el 14 nov 2026, en producción,
-    // AdX llenó el 600x800 de relleno (isBackfill: true, lineItemId: null) y el Inicio
-    // mostraba un anuncio de AdX a pantalla completa en cada visita.
-    // trampa: usar lineItemId, no sourceAgnosticLineItemId; el segundo también trae
-    // valor en el relleno de AdX (el line item agnóstico 7334843233).
-    // No hace falta pedir por tamaño a mano: mapping14 ya pide uno solo según el ancho.
+    // Takeover (Modal.astro): mostrar cualquier respuesta no vacía de ad-slot14,
+    // incluidos los anuncios de relleno. Si el slot queda vacío, intentar el video.
+    // mapping14 ya selecciona el tamaño según el ancho.
     // Los listeners de pubads sobreviven a destroySlots() y initGPT() corre en cada
     // navegación, así que se registra una sola vez. Busca #modal al disparar, no antes:
     // al volver al Inicio el modal es otro nodo.
@@ -75,7 +76,7 @@ function initGPT() {
         }
 
         if (slotId !== 'ad-slot14') return;
-        if (!e.isEmpty && e.lineItemId) {
+        if (!e.isEmpty) {
           var modal = document.getElementById('modal');
           if (modal) modal.classList.add('con-anuncio');
         } else if (window.startVideoIntersticial) {
