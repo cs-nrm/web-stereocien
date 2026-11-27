@@ -50,10 +50,7 @@ function initGPT() {
     if (window._gptHuboPrimeraVista) googletag.pubads().updateCorrelator();
     window._gptHuboPrimeraVista = true;
 
-    // ad-slot14 vive dentro del modal. Si el slot queda vacío, intentar el video.
-    // Los listeners de pubads sobreviven a destroySlots() y initGPT() corre en cada
-    // navegación, así que se registra una sola vez. Busca #modal al disparar, no antes:
-    // al volver al Inicio el modal es otro nodo.
+    // Los listeners de pubads sobreviven a destroySlots(); registrar una sola vez.
     if (!window._takeoverListener) {
       window._takeoverListener = true;
       googletag.pubads().addEventListener('slotRenderEnded', function (e) {
@@ -67,12 +64,12 @@ function initGPT() {
             );
           }
         }
-
-        if (slotId === 'ad-slot14' && e.isEmpty && window.startVideoIntersticial) {
-          // Sin takeover directo: intentar el video intersticial (deals de video, p. ej.
-          // KIA). Ver src/js/videoIntersticial.js.
-          window.startVideoIntersticial();
-        }
+        // Fallback de video conservado, pero desactivado para que el modal use solo ad-slot14:
+        // if (slotId === 'ad-slot14' && e.isEmpty && window.startVideoIntersticial) {
+        //   // Sin takeover directo: intentar el video intersticial (deals de video, p. ej.
+        //   // KIA). Ver src/js/videoIntersticial.js.
+        //   window.startVideoIntersticial();
+        // }
       });
     }
 

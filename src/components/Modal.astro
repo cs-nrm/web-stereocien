@@ -21,7 +21,7 @@
        
 			<div class="modal-video">
 				<!--div id="ad-slot-takeover"></div-->
-        <div id="ad-slot14"></div>
+				<div id="ad-slot14"></div>
 			</div>
 			<!-- Video intersticial (src/js/videoIntersticial.js): solo visible con #modal.con-video -->
 			<!--div id="vi-wrap">
@@ -108,10 +108,8 @@
   opacity: 1;
   animation: modal 15s forwards;
 }
-
-/* Video intersticial: sin temporizador; videoIntersticial.js quita .con-video al terminar
-   el anuncio o al cerrar con la X. El display del takeover (.modal-video) se esconde
-   mientras tanto. */
+/*
+Video interstitial styles kept disabled so this modal only displays ad-slot14.
 #vi-wrap { display: none; }
 #modal.con-video .modals,
 #modal.con-video #cerrar + label {
@@ -119,7 +117,6 @@
   opacity: 1;
 }
 #modal.con-video .modal-video { display: none; }
-/* No romper: mismo tamaño que viTamano() en videoIntersticial.js. */
 #modal.con-video #vi-wrap {
   display: block;
   position: relative;
@@ -147,6 +144,7 @@
   font-size: 13px;
   cursor: pointer;
 }
+*/
 #modal #cerrar:checked + label, #modal #cerrar:checked ~ .modals {
   display: none;
 }
@@ -178,7 +176,7 @@
     opacity: 0;
   }
 }
-	
+
 #modal .embed-container {
     position: relative;
     padding-bottom: 56.25%;
